@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/publish-081-release-notes.yml'
+      - 'docs/RELEASE_NOTES_0.8.1.md'
   workflow_dispatch:
 permissions:
   contents: write
