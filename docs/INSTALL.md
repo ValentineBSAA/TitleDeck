@@ -8,7 +8,7 @@
 4. In Gaming Mode, open **Quick Access → Decky → TitleDeck → Open full library manager**.
 5. Select a game, edit the title and save. Verify the visible name in Steam.
 
-**Do not install** `TitleDeck.Screenshots.zip`: it is only source material for the screenshot gallery.
+The screenshots are displayed in the [GitHub gallery](SCREENSHOTS.md). The only ZIP you need for installing TitleDeck is the plugin release ZIP.
 
 ## Backup and reverting
 Custom names are stored separately from installed games. Before major updates, use TitleDeck Settings to make a manual backup. An update should preserve aliases; never clear Decky plugin settings as an upgrade step.
