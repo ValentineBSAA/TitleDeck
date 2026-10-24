@@ -37,7 +37,7 @@ A controller-first Decky Loader plugin for customizing **displayed Steam game ti
 4. Open Quick Access → Decky → TitleDeck → **Open full library manager**.
 5. Choose a game and save its custom display name.
 
-The screenshot ZIP attached to the release is not the plugin installer. Existing aliases should be preserved when updating. [Detailed installation instructions](docs/INSTALL.md).
+The release's ZIP is the plugin installer. The seven screenshots are already organized in the repository gallery, with no separate screenshot download needed. Existing aliases should be preserved when updating. [Detailed installation instructions](docs/INSTALL.md).
 
 ## Verified on a Steam Deck
 
