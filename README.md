@@ -61,8 +61,8 @@ python3 -m unittest discover -s tests -p 'test_backend.py'
 
 ## Support and discussion
 
-Report reproducible bugs via [Issues](https://github.com/ValentineBSAA/TitleDeck/issues), including SteamOS, Decky, theme, and TitleDeck version. [Support and troubleshooting](SUPPORT.md).
+Report reproducible bugs via [Issues](https://github.com/ValentineBSAA/TitleDeck/issues), including SteamOS, Decky, theme, and TitleDeck version. [Support and troubleshooting](SUPPORT.md) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
 
-GitHub Discussions is not enabled at present. A repository administrator can enable it in **Settings → General → Features → Discussions**.
+Share feedback, questions, and screenshots in [GitHub Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
 
 Created by Valentine. Independent from Valve, Steam, Decky Loader, and game publishers. MIT license, see [LICENSE](LICENSE).
