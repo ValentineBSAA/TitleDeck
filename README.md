@@ -1,12 +1,17 @@
-# TitleDeck
-
-**Your library. Your names.**
+<p align="center"><img src="assets/titledeck-icon.png" width="126" alt="TitleDeck icon"></p>
+<h1 align="center">TitleDeck</h1>
+<p align="center"><strong>Your library. Your names.</strong></p>
+<p align="center">
+<a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1"><img src="https://img.shields.io/badge/version-0.8.1-orange" alt="Version 0.8.1"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT"></a>
+<img src="https://img.shields.io/badge/platform-Steam%20Deck-lightgrey" alt="Steam Deck">
+<img src="https://img.shields.io/badge/release-prerelease-yellow" alt="Prerelase">
+</p>
 
 A controller-first Decky Loader plugin for customizing **displayed Steam game titles** without changing installed game files, Steam manifests, or canonical metadata.
 
 **Version:** 0.8.1 (Steam Deck device-test prerelease) · **License:** MIT · **Platform:** Steam Deck / SteamOS Gaming Mode.
 
-![TitleDeck icon](assets/titledeck-icon.png)
 
 ## Features
 
@@ -18,7 +23,11 @@ A controller-first Decky Loader plugin for customizing **displayed Steam game ti
 
 ## Screenshots
 
-[Browse the organized Steam Deck screenshots](docs/SCREENSHOTS.md).
+| Actual Steam Deck screenshot 01 | Actual Steam Deck screenshot 02 |
+|:---:|:---:|
+| [![TitleDeck screenshot 1](docs/screenshots/v0.8.1/01-img-9119.jpg)](docs/screenshots/v0.8.1/01-img-9119.jpg) | [![TitleDeck screenshot 2](docs/screenshots/v0.8.1/02-img-9120.jpg)](docs/screenshots/v0.8.1/02-img-9120.jpg) |
+
+[**View all seven screenshots →**](docs/SCREENSHOTS.md)
 
 ## Install
 
@@ -61,8 +70,6 @@ python3 -m unittest discover -s tests -p 'test_backend.py'
 
 ## Support and discussion
 
-Report reproducible bugs via [Issues](https://github.com/ValentineBSAA/TitleDeck/issues), including SteamOS, Decky, theme, and TitleDeck version. [Support and troubleshooting](SUPPORT.md) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
-
-Share feedback, questions, and screenshots in [GitHub Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
+Report reproducible bugs via [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) and share questions, ideas, or screenshots in [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions). Include your SteamOS, Decky, CSS Loader theme, and TitleDeck versions when reporting compatibility problems. [Support and troubleshooting](SUPPORT.md).
 
 Created by Valentine. Independent from Valve, Steam, Decky Loader, and game publishers. MIT license, see [LICENSE](LICENSE).
