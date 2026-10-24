@@ -1,0 +1,112 @@
+name: Import TitleDeck 0.8.1 source and screenshots
+on:
+  push:
+    paths:
+      - .github/workflows/import-release-assets.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download official 0.8.1 release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/titledeck
+          gh release download 0.8.1 --repo "$GITHUB_REPOSITORY" --dir /tmp/titledeck --pattern 'TitleDeck-0.8.1-Editor-DPad-Fix.zip'
+          gh release download 0.8.1 --repo "$GITHUB_REPOSITORY" --dir /tmp/titledeck --pattern 'TitleDeck.Screenshots.zip'
+      - name: Verify release hashes, extract source and organize screenshots
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          import hashlib, re
+          root=Path('/tmp/titledeck')
+          pkg=root/'TitleDeck-0.8.1-Editor-DPad-Fix.zip'
+          shot=root/'TitleDeck.Screenshots.zip'
+          known={
+            pkg:'8f70292a1e2afafbfaaea053ff171c06ba5db86adf3987e5e535a1c600864663',
+            shot:'3d9983783f1a8d5ba9e7a17f4be3f9a06de9026203e21933215c7cb5e5a8b299'
+          }
+          for path,expected in known.items():
+            actual=hashlib.sha256(path.read_bytes()).hexdigest()
+            if actual!=expected:raise SystemExit(f'Checksum mismatch: {path.name}')
+          approved=[
+            'LICENSE','CHANGELOG.md','main.py','package.json','plugin.json',
+            'src/index.js','dist/index.js','assets/titledeck-icon.png',
+            'assets/titledeck-qam.webp','tests/frontend.test.cjs',
+            'tests/test_backend.py','docs/LAYOUT_VALIDATION.md'
+          ]
+          with ZipFile(pkg) as zipfile:
+            for name in approved:
+              data=zipfile.read('TitleDeck/'+name)
+              if len(data)>4_000_000:raise SystemExit(f'Unexpected file size: {name}')
+              dest=Path(name)
+              dest.parent.mkdir(parents=True,exist_ok=True)
+              dest.write_bytes(data)
+          gallery=Path('docs/screenshots/v0.8.1')
+          gallery.mkdir(parents=True,exist_ok=True)
+          entries=[]
+          with ZipFile(shot) as zipfile:
+            images=[]
+            for item in zipfile.infolist():
+              path=PurePosixPath(item.filename)
+              if item.is_dir() or path.is_absolute() or '..' in path.parts or '__MACOSX' in path.parts:continue
+              if path.suffix.lower() not in {'.png','.jpg','.jpeg','.webp'}:continue
+              if item.file_size>12_000_000:raise SystemExit('Screenshot exceeds size limit')
+              images.append(item)
+            if not images or len(images)>40:raise SystemExit(f'Unexpected screenshot count: {len(images)}')
+            for i,item in enumerate(sorted(images,key=lambda x:x.filename.lower()),1):
+              original=PurePosixPath(item.filename)
+              stem=original.stem
+              slug=re.sub(r'[^a-z0-9]+','-',stem.lower()).strip('-')[:55] or 'capture'
+              filename=f'{i:02d}-{slug}{original.suffix.lower()}'
+              (gallery/filename).write_bytes(zipfile.read(item.filename))
+              title=re.sub(r'[_-]+',' ',stem).strip()
+              if not title or title.lower().startswith(('img ','dsc ','photo ','screenshot ')):
+                title=f'Steam Deck screenshot {i:02d}'
+              entries.append((title,filename))
+          lines=[
+            '# TitleDeck on Steam Deck','',
+            'Actual Gaming Mode screenshots supplied with the official 0.8.1 prerelease.',
+            '',
+            '> Screens may include a custom CSS Loader theme. Artwork and presentation vary by Steam configuration.','',
+            '[Back to TitleDeck](../README.md)','',
+            f'**{len(entries)} screenshots** · [v0.8.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1)',''
+          ]
+          for title,filename in entries:
+            path='screenshots/v0.8.1/'+filename
+            lines.extend([f'### {title}','','[!['+title+']('+path+')]('+path+')',''])
+          Path('docs/SCREENSHOTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          print('Imported',len(approved),'source files and',len(entries),'screenshots')
+          for _,filename in entries:print(' -',filename)
+          PY
+      - name: Validate source and regression tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_backend.py'
+          node --test tests/frontend.test.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          a=json.loads(Path('plugin.json').read_text())
+          b=json.loads(Path('package.json').read_text())
+          assert a['version']==b['version']=='0.8.1'
+          assert Path('src/index.js').read_bytes()==Path('dist/index.js').read_bytes()
+          assert list(Path('docs/screenshots/v0.8.1').glob('*'))
+          print('Version, frontend, and screenshot checks passed')
+          PY
+      - name: Commit organized official release source and gallery
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add LICENSE CHANGELOG.md main.py package.json plugin.json src/index.js dist/index.js assets tests docs/LAYOUT_VALIDATION.md docs/SCREENSHOTS.md docs/screenshots/v0.8.1
+          if git diff --cached --quiet; then
+            echo "Source and gallery already synchronized"
+          else
+            git commit -m "Import verified 0.8.1 plugin source and organize screenshots"
+            git push origin HEAD:main
+          fi
