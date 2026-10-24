@@ -22,4 +22,4 @@ This is a **community device-test prerelease**, not an assertion of universal St
 - Review of 200+ aliases on hardware.
 - All Steam library locations after future UI updates.
 
-[Verified status](VERIFIED_ON_DECK.md) · [Installation](INSTALL.md).
+[Verified behavior](https://github.com/ValentineBSAA/TitleDeck/blob/main/docs/VERIFIED_ON_DECK.md) · [Installation](https://github.com/ValentineBSAA/TitleDeck/blob/main/docs/INSTALL.md) · [Screenshot gallery](https://github.com/ValentineBSAA/TitleDeck/blob/main/docs/SCREENSHOTS.md).
