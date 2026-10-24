@@ -1,0 +1,17 @@
+{
+  "name": "TitleDeck",
+  "author": "Valentine",
+  "flags": [],
+  "api_version": 1,
+  "publish": {
+    "tags": [
+      "utility",
+      "library",
+      "customization"
+    ],
+    "description": "Rename Steam library display titles. A redesigned full-screen, controller-first game browser with local aliases and reversible text replacements.",
+    "image": "assets/titledeck-icon.png"
+  },
+  "version": "0.8.1",
+  "description": "TitleDeck 0.8.1: Four-way editor navigation for every game, full-library controller rows, and paginated Restore All."
+}

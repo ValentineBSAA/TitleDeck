@@ -1,0 +1,19 @@
+{
+  "name": "titledeck",
+  "version": "0.8.1",
+  "private": true,
+  "description": "TitleDeck 0.8.1: Four-way editor navigation for every game, full-library controller rows, and paginated Restore All.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Valentine",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs"
+  },
+  "keywords": [
+    "decky",
+    "steam-deck",
+    "steam",
+    "rename",
+    "library"
+  ]
+}
