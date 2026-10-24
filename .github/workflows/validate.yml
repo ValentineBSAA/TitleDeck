@@ -1,0 +1,53 @@
+name: TitleDeck checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'main.py'
+      - 'src/**'
+      - 'dist/**'
+      - 'tests/**'
+      - 'plugin.json'
+      - 'package.json'
+      - '.github/workflows/validate.yml'
+  pull_request:
+    paths:
+      - 'main.py'
+      - 'src/**'
+      - 'dist/**'
+      - 'tests/**'
+      - 'plugin.json'
+      - 'package.json'
+      - '.github/workflows/validate.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    name: Backend, frontend and manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frontend tests
+        run: node --test tests/frontend.test.cjs
+      - name: Run backend tests
+        run: python3 -m unittest discover -s tests -p 'test_backend.py'
+      - name: Verify Decky manifest and bundled frontend
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          plugin=json.loads(Path('plugin.json').read_text(encoding='utf-8'))
+          package=json.loads(Path('package.json').read_text(encoding='utf-8'))
+          assert plugin['name']=='TitleDeck'
+          assert plugin['version']==package['version']
+          assert plugin['api_version']==1
+          assert Path('assets/titledeck-icon.png').is_file()
+          assert Path('src/index.js').read_bytes()==Path('dist/index.js').read_bytes()
+          print('TitleDeck manifest, version, and frontend bundle OK')
+          PY
