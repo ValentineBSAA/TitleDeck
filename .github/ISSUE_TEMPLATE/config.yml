@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and community discussion
+    url: https://github.com/ValentineBSAA/TitleDeck/discussions
+    about: Ask questions or share feedback
+  - name: Installation and troubleshooting
+    url: https://github.com/ValentineBSAA/TitleDeck/blob/main/SUPPORT.md
+    about: Check known limitations before filing an issue
