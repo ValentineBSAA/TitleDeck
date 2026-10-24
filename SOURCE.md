@@ -10,7 +10,7 @@ TitleDeck 0.8.1 is a Decky Loader plugin with a self-contained frontend and Pyth
 - `tests/`: frontend and backend regression checks
 - `docs/screenshots/v0.8.1/`: release gallery
 
-The [v0.8.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1) is the source of the installable ZIP. The import workflow verifies its SHA-256 before extracting files into this repository.
+The [v0.8.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1) is the source of the installable ZIP. The original 0.8.1 release source and seven screenshots were imported after SHA-256 verification on 2026-10-24; the one-time importer was retired after the files were committed. Future code changes are checked by `.github/workflows/validate.yml`.
 
 ## Tests
 
