@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a TitleDeck issue in Steam Deck Gaming Mode
+title: "[Bug] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: "Please do not include passwords, codes, or sensitive account data."
+  - type: input
+    id: version
+    attributes:
+      label: TitleDeck version
+      placeholder: "0.8.1"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: SteamOS / Decky / CSS Loader theme
+      placeholder: "Versions and current theme (or none)"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected feature
+      options:
+        - Displayed game title
+        - Game library manager
+        - Four-direction controller navigation
+        - Editor / keyboard
+        - Restore All / backups / recovery
+        - Quick Access
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include exact D-pad directions and relevant game when applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or additional details
