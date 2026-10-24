@@ -2,7 +2,7 @@
 
 **Version 0.8.1 · 7 real Gaming Mode screenshots**
 
-These images were imported from the original `TitleDeck.Screenshots.zip` attached to the [0.8.1 prerelease](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1), preserving all seven captures.
+These images were imported from the original `TitleDeck.Screenshots.zip` previously attached to the [0.8.1 prerelease](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1), preserving all seven captures.
 
 > The Steam interface shown may use a custom CSS Loader theme. TitleDeck's color and layout may differ with your Steam settings.
 
@@ -23,6 +23,6 @@ These images were imported from the original `TitleDeck.Screenshots.zip` attache
 
 ## Screenshot source
 
-All seven images were imported using a checksum-verified workflow. The gallery lives at `docs/screenshots/v0.8.1/`, grouped by release so future TitleDeck versions can have their own galleries. The original screenshots can remain as a historical release attachment, but the gallery no longer depends on that ZIP.
+All seven images were imported using a checksum-verified workflow. The gallery lives at `docs/screenshots/v0.8.1/`, grouped by release so future TitleDeck versions can have their own galleries. The original screenshots ZIP has been removed from the release, but the gallery no longer depends on it.
 
 [Install TitleDeck](INSTALL.md) · [Verified features](VERIFIED_ON_DECK.md)
