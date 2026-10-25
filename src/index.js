@@ -388,33 +388,56 @@ export function findDescriptionPlayBar(doc,target){
    visible native Game Info container, then insert our text beside the
    existing description without modifying Steam's description markup. */
 export function findSteamGameInfoDescription(doc,gameRoot){
-  if(!doc||!gameRoot)return null;
-  const scope=gameRoot.parentElement||gameRoot;
-  const within=el=>!!el&&(typeof scope.contains==='function'?scope.contains(el):true);
-  const containers=[
-    '[class*="appdetailsgameinfopanel_Container"]',
-    '[class*="appdetailsgameinfo_Container"]',
-    '[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]'
+  // This is called ONLY after runNow() confirms the Steam game's app ID.
+  // Game Info may be a sibling of the AppDetailsContainer or a portal, so
+  // searching just gameRoot.parentElement silently fails on real SteamOS.
+  if(!doc||!gameRoot||!appidFromVisibleGame(gameRoot))return null;
+  const page=gameRoot.closest?.('[class*="AppDetailsRoot"]')
+    ||gameRoot.closest?.('[class*="AppDetailsContainer"]')||gameRoot.parentElement||gameRoot;
+  const within=el=>!!(page?.contains?.(el)||gameRoot?.contains?.(el));
+  const visible=el=>{
+    if(!el?.isConnected)return false;
+    // Do not reject the native description itself if TitleDeck hid it.
+    try{
+      if(el.offsetParent===null)return false;
+      const style=el.ownerDocument?.defaultView?.getComputedStyle?.(el);
+      return style?.display!=='none'&&style?.visibility!=='hidden';
+    }catch{return true}
+  };
+  const descriptionSelectors=[
+    '[class*="appdetailsgameinfopanel_GameDescription"]',
+    '[class*="appdetailsgameinfopanel_Description"]',
+    '[class*="appdetailsgameinfocontainer_GameDescription"]',
+    '[class*="appdetailsgameinfocontainer_Description"]'
   ];
-  for(const selector of containers){
-    let list=[];
-    try{list=doc.querySelectorAll(selector)||[]}catch{}
-    for(const root of list){
-      if(!within(root)||!root.isConnected||root.offsetParent===null)continue;
-      const selectors=[
-        '[class*="appdetailsgameinfopanel_GameDescription"]',
-        '[class*="appdetailsgameinfopanel_Description"]',
-        '[class*="appdetailsgameinfocontainer_GameDescription"]'
-      ];
-      for(const descSelector of selectors)try{
-        for(const el of root.querySelectorAll(descSelector)||[]){
-          if(el.isConnected&&el.parentElement)return {container:root,nativeDescription:el};
-        }
-      }catch{}
-      return {container:root,nativeDescription:null};
-    }
-  }
-  return null;
+  const containerSelectors=[
+    '[class*="appdetailsgameinfopanel_Container"]',
+    '[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]',
+    '[class*="appdetailsgameinfo_Container"]',
+    '[class*="appdetailsgameinfopanel_SectionContainer"]'
+  ];
+  const findAll=selectors=>{
+    const result=new Set();
+    for(const selector of selectors)try{
+      for(const el of doc.querySelectorAll(selector)||[])if(el&&!el.closest?.('[data-titledeck-gameinfo-description]'))result.add(el);
+    }catch{}
+    return [...result];
+  };
+  const containers=findAll(containerSelectors).filter(visible);
+  const descriptions=findAll(descriptionSelectors)
+    .filter(el=>el.isConnected&&el.parentElement&&containers.some(parent=>parent.contains?.(el)||parent===el.parentElement));
+  // An original description hidden by TitleDeck must remain discoverable.
+  // Prefer the current AppDetails page. If Game Info was rendered in a portal,
+  // ONLY a single visible Game Info panel in the whole document is eligible.
+  const eligible=containers.filter(el=>!el.closest?.('[aria-hidden="true"]'));
+  const scoped=eligible.filter(within);
+  const root=scoped.length===1?scoped[0]:scoped.length===0&&eligible.length===1?eligible[0]:null;
+  if(!root)return null; // refuse ambiguous or unrelated Steam panels
+  const matching=descriptions.filter(el=>root.contains?.(el));
+  const nativeDescription=matching.find(el=>/GameDescription/.test(String(el.className||'')))||matching[0]||null;
+  return {container:root,nativeDescription,
+    diagnostic:{containers:containers.length,scoped:scoped.length,descriptions:descriptions.length,
+      selected:root.className||'native game info'}};
 }
 
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
@@ -423,8 +446,13 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     const prior=nativeInfo.get(doc);
     if(!prior)return;
     try{
-      if(prior.nativeNode?.isConnected&&prior.nativeNode.style?.display==='none')
-        prior.nativeNode.style.display=prior.originalDisplay;
+      if(prior.nativeNode?.isConnected&&prior.nativeNode.style){
+        const style=prior.nativeNode.style;
+        if(prior.originalDisplayProperty!==null&&typeof style.setProperty==='function'){
+          if(prior.originalDisplayProperty)style.setProperty('display',prior.originalDisplayProperty,prior.originalDisplayPriority||'');
+          else style.removeProperty('display');
+        }else if(style.display==='none')style.display=prior.originalDisplay;
+      }
       prior.panel?.remove?.();
     }catch{}
     nativeInfo.delete(doc);
@@ -457,11 +485,21 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       body.setAttribute('data-titledeck-gameinfo-text','true');
       body.style.cssText='margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.5;color:#f1f6ff;';
       panel.appendChild(heading);panel.appendChild(body);
-      const originalDisplay=nativeDescription?.style?.display??'';
+      const style=nativeDescription?.style;
+      const originalDisplay=style?.display??'';
+      const originalDisplayProperty=typeof style?.getPropertyValue==='function'?style.getPropertyValue('display'):null;
+      const originalDisplayPriority=typeof style?.getPropertyPriority==='function'?style.getPropertyPriority('display'):'';
       try{parent.insertBefore(panel,nativeDescription||parent.firstChild||null)}catch{return false}
-      if(nativeDescription?.style)nativeDescription.style.display='none';
-      prior={appid,parent,nativeNode:nativeDescription,originalDisplay,panel};
+      if(style){
+        if(typeof style.setProperty==='function')style.setProperty('display','none','important');
+        else style.display='none';
+      }
+      prior={appid,parent,nativeNode:nativeDescription,originalDisplay,originalDisplayProperty,originalDisplayPriority,panel};
       nativeInfo.set(doc,prior);
+    }
+    if(prior.nativeNode?.style&&typeof prior.nativeNode.style.getPropertyValue==='function'&&
+       prior.nativeNode.style.getPropertyValue('display')!=='none'){
+      prior.nativeNode.style.setProperty('display','none','important');
     }
     const body=prior.panel.querySelector?.('[data-titledeck-gameinfo-text]')||prior.panel.lastChild;
     if(body&&body.textContent!==description)body.textContent=description;
