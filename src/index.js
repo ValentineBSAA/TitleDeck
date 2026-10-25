@@ -2062,7 +2062,7 @@ function Manager(){
           state.description_position==='game_info'?'● Game Info selected · open Steam’s GAME INFO tab'
             :state.description_position==='hero_footer'?'● Artwork Footer selected · compact preview above Play'
             :'● Below Play selected · full description panel'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Description placement: ${state.description_position==='game_info'?'Game Info':state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
+        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Current view: ${descriptionAdapter?.status||'not ready'}. Last captured Steam game page: ${formatDescriptionGameProbe()}. Description placement: ${state.description_position==='game_info'?'Game Info':state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
           button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'})),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
@@ -2082,11 +2082,16 @@ function Manager(){
       rail,actions,workspace,bottom,showMessage));
 }
 function QuickPanel(){
- const data=useStateSnapshot(),[error,setError]=R.useState('');
+ const data=useStateSnapshot(),[error,setError]=R.useState(''),[capture,setCapture]=R.useState('');
  const open=()=>{try{UI.Navigation.CloseSideMenus?.();UI.Navigation.Navigate(ROUTE);}catch(e){setError(String(e));}};
+ const scan=()=>{try{descriptionAdapter?.runNow();setCapture(formatDescriptionGameProbe())}
+   catch(e){setCapture('Game Info scan error: '+String(e?.message||e))}};
  return h(UI.PanelSection,{title:'TitleDeck'},h('div',{'data-titledeck-ui':'true'},
    h('div',{style:{display:'flex',alignItems:'center',gap:9,padding:'6px 0'}},h('img',{src:ICON_DATA_URI,style:{width:42,height:42,borderRadius:9}}),h('div',null,h('div',{style:{display:'flex',alignItems:'center',gap:7}},h('strong',null,'TitleDeck'),h('span',{className:'td-qam-version',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),h('div',{style:{fontSize:12,opacity:.7}},`${Object.keys(data.aliases||{}).length} custom names`))),
    h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:open,layout:'below'},'Open full library manager')),
+   h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:scan,layout:'below'},'Capture current Game Info page')),
+   h('div',{style:{fontSize:11,opacity:.84,lineHeight:1.4,padding:'6px 4px',whiteSpace:'normal',overflowWrap:'anywhere'}},
+     capture||'Capture while GAME INFO is visible, before opening the full manager. Only app IDs and DOM selector counts are recorded.'),
    error?h('div',null,error):null));
 }
 function discoverDocuments(){
