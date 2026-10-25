@@ -62,3 +62,12 @@ TitleDeck now has a **Game description placement** setting in its full-manager S
 Community reports indicate TitleDeck titles may work on Windows and Android/DroidDeck. That is **not verification of custom descriptions** or of the native Steam panel on those platforms. This milestone targets **Steam Deck Gaming Mode** first.
 
 The released 0.9.0 RC1 remains unchanged, and this functionality stays in the development pull request pending acceptance.
+
+
+## Preview 7 diagnostic capture (for Game Info tab mismatch)
+
+If Game Info still shows the original text, open that game's **GAME INFO tab first**, then open the Decky Quick Access menu and select **TitleDeck → Capture current Game Info page**. This captures the currently visible game ID and native panel/description selector counts, along with a few CSS class clues. **It does not capture game description text.** The result is also retained under Full Library Manager → Settings → Steam display diagnostics.
+
+**Why:** Opening the full manager can hide or unmount the Steam game-detail page. Previous diagnostics showed `No visible Steam details container` while the manager was open, which did not identify the Game Info failure. Preview 7 records a game-page observation before navigation, keeps it across a manager visit, and ensures an empty secondary Steam UI document doesn't overwrite the meaningful status from a detected game page.
+
+This is an instrumentation / detection-quality update; physical Game Info replacement still needs acceptance on Steam Deck. Original below-Play description and keyboard flows remain available.
