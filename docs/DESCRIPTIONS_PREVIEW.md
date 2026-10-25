@@ -94,3 +94,12 @@ Research: MetaDeck (`EmuDeck/MetaDeck`, GPL-3.0) uses the Steam `appDetailsStore
 **Physical acceptance still required:** Steam may cache descriptions and fail to re-read them until the game page is reopened. Select Game Info, exit to the library, open the game again, then capture the native hook/call/override counters. If Game Info stays unchanged, record those counters; don't presume the data patch succeeded merely because unit tests passed.
 
 This research uses public techniques, not copied MetaDeck code. A future implementation should review interoperability with Decky Metadata and other Game Info plugins on hardware.
+
+
+## Preview 10: Native-looking Game Info display
+
+Hardware acceptance of Preview 9: Catherine Classic (Steam app 893180) showed the saved custom description inside the real **GAME INFO** tab, but as a blue TitleDeck card labeled **YOUR CUSTOM GAME DESCRIPTION**, which did not resemble Steam's own description presentation. This was the DOM fallback adding a separately styled section; it was not the desired visual result.
+
+Preview 10 removes the TitleDeck-branded card **in Game Info mode only**. Where Steam renders a native description element, TitleDeck creates a shallow copy of that element's shell, retaining its CSS classes and native theme styling, then puts the custom plain text inside. The original Steam element is temporarily hidden unchanged and restored on disabling TitleDeck, switching placement, deleting the custom description, or unloading the plugin. The copy omits Steam's child nodes and ID to avoid duplicates or React-state sharing. If no native description element exists, a minimal text element inherits its surrounding theme instead of imposing a blue card. Long and multiline user text remains safely escaped, and no persistent Steam metadata is overwritten.
+
+**Hardware acceptance for preview 10:** open Catherine Classic → GAME INFO; custom text should look like normal Steam description text without a separate tinted box or YOUR CUSTOM GAME DESCRIPTION heading. Test editing, deleting and restoring; then test both the user’s Art Hero/CSS Loader layout and ordinary Steam theme if possible. The Below Play and Artwork Footer placements intentionally retain their separate-card styling. No claim of pixel-perfect styling until a real Steam Deck screenshot confirms it.
