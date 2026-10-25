@@ -706,7 +706,9 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       if(!match?.el?.parentElement){
         clear(doc);clearGameInfo(doc);
         const issue=!options.length?'No visible Steam details container':id?'Visible app ID does not match route '+id:'Cannot confirm one visible game page';
-        issues.push(issue);
+        // A second empty Steam/Decky document is not evidence about the
+        // actual game page and must never override the useful Game Info result.
+        if(id||uniqueIds.length)issues.push(issue);
         continue;
       }
       const position=state.description_position==='game_info'?'game_info'
