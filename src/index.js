@@ -606,6 +606,36 @@ export function formatDescriptionGameProbe(probe=getLastDescriptionGameProbe()){
     ' · CSS clues '+(probe.cssHints||'none')+
     ' · '+probe.time;
 }
+/** Render custom Game Info as native Steam body text.
+ *  We clone only the native description element's shell (no Steam children or
+ *  text), retaining its CSS module classes and font/layout inheritance. The
+ *  separate TitleDeck blue card is reserved for Below Play/Artwork Footer.
+ *  All user text goes through textContent, never HTML or markdown injection. */
+export function createNativeSteamDescriptionPanel(doc,nativeDescription,appid){
+  let panel=null;
+  if(nativeDescription?.cloneNode)try{panel=nativeDescription.cloneNode(false)}catch{}
+  if(!panel){
+    const tag=String(nativeDescription?.tagName||'div').toLowerCase();
+    panel=doc.createElement(/^(?:div|section|p|article|span)$/.test(tag)?tag:'div');
+    if(nativeDescription?.className&&typeof nativeDescription.className==='string')
+      panel.className=nativeDescription.className;
+  }
+  // A cloned native id must never collide with Steam's existing element.
+  try{panel.removeAttribute?.('id')}catch{}
+  panel.setAttribute('data-titledeck-gameinfo-description',appid);
+  panel.setAttribute('aria-label','Game description');
+  if(!nativeDescription){
+    // Some games have no native description. Inherit the surrounding Steam
+    // Game Info typography with no plugin-colored background or heading.
+    panel.style.cssText='font:inherit;color:inherit;background:transparent;border:0;margin:0;padding:0;';
+  }
+  const body=doc.createElement('span');
+  body.setAttribute('data-titledeck-gameinfo-text','true');
+  body.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;';
+  panel.appendChild(body);
+  return panel;
+}
+
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
   const MARK='data-titledeck-description',owned=new Map(),nativeInfo=new Map(),watchers=[],scrollListeners=[];
   function clearGameInfo(doc){
@@ -645,18 +675,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       clearGameInfo(doc);prior=null;
     }
     if(!prior){
-      const panel=doc.createElement('section');
-      panel.setAttribute('data-titledeck-gameinfo-description',appid);
-      panel.setAttribute('role','region');
-      panel.setAttribute('aria-label','Custom game description from TitleDeck');
-      panel.style.cssText='box-sizing:border-box;width:100%;margin:8px 0 14px;padding:12px 15px;border-radius:7px;background:rgba(26,37,54,.84);border:1px solid rgba(126,151,178,.45);color:#eff6ff;';
-      const heading=doc.createElement('div');
-      heading.textContent='YOUR CUSTOM GAME DESCRIPTION';
-      heading.style.cssText='font-size:12px;font-weight:700;letter-spacing:.035em;color:#c2d8f0;margin-bottom:6px;';
-      const body=doc.createElement('p');
-      body.setAttribute('data-titledeck-gameinfo-text','true');
-      body.style.cssText='margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.5;color:#f1f6ff;';
-      panel.appendChild(heading);panel.appendChild(body);
+      const panel=createNativeSteamDescriptionPanel(doc,nativeDescription,appid);
       const style=nativeDescription?.style;
       const originalDisplay=style?.display??'';
       const originalDisplayProperty=typeof style?.getPropertyValue==='function'?style.getPropertyValue('display'):null;
@@ -675,7 +694,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     }
     const body=prior.panel.querySelector?.('[data-titledeck-gameinfo-text]')||prior.panel.lastChild;
     if(body&&body.textContent!==description)body.textContent=description;
-    status='Game Info: custom description active for app '+appid;
+    status='Game Info: native-styled description active for app '+appid;
     return true;
   }
   let stopped=false,ticker=null,pending=null,checks=0,status='Waiting for Steam game page';
