@@ -537,10 +537,21 @@ export function findSteamGameInfoDescription(doc,gameRoot){
     '[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]',
     '[class*="appdetailsgameinfo_Container"]'
   ];
+  const isTitleDeckOwned=el=>{
+    // Native shells intentionally carry the *same* Steam GameDescription CSS
+    // classes as the real element. Without explicit exclusion, a live class
+    // query selects our clone first and every scan tears down/rebuilds the
+    // description. Long text makes that repeated rebuild visibly scroll-jump.
+    for(let node=el,depth=0;node&&depth<35;node=node.parentElement,depth++){
+      if(node.getAttribute?.('data-titledeck-gameinfo-description')!==null&&
+         node.getAttribute?.('data-titledeck-gameinfo-description')!==undefined)return true;
+    }
+    return false;
+  };
   const findAll=selectors=>{
     const result=new Set();
     for(const selector of selectors)try{
-      for(const el of doc.querySelectorAll(selector)||[])if(el&&!el.closest?.('[data-titledeck-gameinfo-description]'))result.add(el);
+      for(const el of doc.querySelectorAll(selector)||[])if(el&&!isTitleDeckOwned(el))result.add(el);
     }catch{}
     return [...result];
   };
@@ -549,7 +560,7 @@ export function findSteamGameInfoDescription(doc,gameRoot){
   const resolved=resolveLiveSteamGameInfoClasses();
   const byClass=name=>{
     if(!name)return[];
-    try{return Array.from(doc.getElementsByClassName?.(name)||[])}
+    try{return Array.from(doc.getElementsByClassName?.(name)||[]).filter(el=>!isTitleDeckOwned(el))}
     catch{return[]}
   };
   const containers=[...new Set([...findAll(containerSelectors),...byClass(resolved?.owner)])].filter(visible);
@@ -654,7 +665,16 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     nativeInfo.delete(doc);
   }
   function drawGameInfo(doc,gameRoot,appid,description){
-    const found=findSteamGameInfoDescription(doc,gameRoot);
+    // On a stable game page the existing Steam native node is the source of
+    // truth. Never re-identify the original from a DOM containing our styled
+    // clone, even if Steam's live class finder changes the match order.
+    let prior=nativeInfo.get(doc);
+    if(prior&&(prior.appid!==appid||!prior.parent?.isConnected||
+      !prior.nativeNode?.isConnected||!prior.panel?.isConnected)){
+      clearGameInfo(doc);prior=null;
+    }
+    const found=prior?{container:prior.parent,nativeDescription:prior.nativeNode}
+      :findSteamGameInfoDescription(doc,gameRoot);
     if(!found){
       clearGameInfo(doc);
       let panelCount=0,descCount=0;
@@ -669,11 +689,6 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     const {container,nativeDescription}=found;
     const parent=nativeDescription?.parentElement||container;
     if(!parent?.insertBefore)return false;
-    let prior=nativeInfo.get(doc);
-    if(prior&&(prior.appid!==appid||prior.parent!==parent||prior.nativeNode!==nativeDescription
-      ||!prior.panel?.isConnected)){
-      clearGameInfo(doc);prior=null;
-    }
     if(!prior){
       const panel=createNativeSteamDescriptionPanel(doc,nativeDescription,appid);
       const style=nativeDescription?.style;
