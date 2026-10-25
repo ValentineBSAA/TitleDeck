@@ -1432,3 +1432,64 @@ test('Live Steam Game Info CSS module lookup fails safely if module finder is ab
  const junk={findModuleChild(predicate){return predicate({GameInfoContainer:'bad',GameInfoQuickLinks:'x'})}};
  assert.equal(m.resolveLiveSteamGameInfoClasses(junk),null,'must have BOTH description and owner exports');
 });
+
+
+test('MetaDeck-style native GetDescriptions returns local custom text only for active correct game',async()=>{
+ const m=await moduleForTest();
+ const original=function(appid){return{strFullDescription:'Steam original '+appid,strSnippet:'Original snippet',source:'Steam'}};
+ const parent={GetDescriptions:original},store=Object.create(parent);
+ const context={appDetailsStore:store,
+   Router:{WindowStore:{GamepadUIMainWindowInstance:{m_history:{location:{pathname:'/library/app/893180/tab/gameinfo'}}}}}};
+ const state={enabled:true,description_position:'game_info',
+   descriptions:{'893180':'My Catherine description','620':'My Portal description'}};
+ const adapter=m.createGameInfoDataAdapter(()=>state,()=>[context]);
+ try{
+   assert.equal(m.currentSteamGameAppId(context),'893180');
+   adapter.start();
+   assert.equal(store.hasOwnProperty('GetDescriptions'),true);
+   assert.equal(adapter.hookedStores,1);
+   assert.deepEqual(store.GetDescriptions(893180),{
+     strFullDescription:'My Catherine description',strSnippet:'My Catherine description',source:'Steam'
+   });
+   assert.equal(store.GetDescriptions(620).strFullDescription,'Steam original 620');
+   assert.equal(adapter.overrides,1,'cross-game calls cannot be replaced');
+   state.description_position='below_play';
+   assert.equal(store.GetDescriptions(893180).strFullDescription,'Steam original 893180');
+   state.description_position='game_info';
+   state.enabled=false;
+   assert.equal(store.GetDescriptions(893180).strSnippet,'Original snippet');
+   state.enabled=true;
+   context.Router.WindowStore.GamepadUIMainWindowInstance.m_history.location.pathname='/library/app/620/tab/gameinfo';
+   assert.equal(store.GetDescriptions(893180).strFullDescription,'Steam original 893180');
+   assert.equal(store.GetDescriptions(620).strFullDescription,'My Portal description');
+   context.Router.WindowStore.GamepadUIMainWindowInstance.m_history.location.pathname='/library/home';
+   assert.equal(store.GetDescriptions(620).strSnippet,'Original snippet','no override outside game detail route');
+ }finally{adapter.stop();}
+ assert.equal(store.hasOwnProperty('GetDescriptions'),false,'restore inherited native getter');
+ assert.equal(store.GetDescriptions,original);
+});
+test('native description adapter restores own method descriptor and never changes underlying cache',async()=>{
+ const m=await moduleForTest();
+ const fn=function(){return this.details};
+ const ctx={appDetailsStore:{GetDescriptions:fn,details:{strFullDescription:'Unchanged native'}}};
+ const saved=Object.getOwnPropertyDescriptor(ctx.appDetailsStore,'GetDescriptions');
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'Edited'}};
+ const adapter=m.createGameInfoDataAdapter(()=>state,()=>[ctx]);
+ adapter.start();
+ try{
+   assert.equal(adapter.hookedStores,1);
+   assert.equal(ctx.appDetailsStore.GetDescriptions(893180),ctx.appDetailsStore.details);
+   assert.equal(adapter.overrides,0,'no verified game route means no override');
+   assert.equal(ctx.appDetailsStore.details.strFullDescription,'Unchanged native');
+ }finally{adapter.stop();}
+ assert.deepEqual(Object.getOwnPropertyDescriptor(ctx.appDetailsStore,'GetDescriptions'),saved);
+});
+test('GetDescriptions route parser accepts game tabs and refuses a different app or unrelated pages',async()=>{
+ const m=await moduleForTest();
+ const base={Router:{WindowStore:{GamepadUIMainWindowInstance:{m_history:{location:{pathname:'/routes/library/details/893180/tab/gameinfo'}}}}}};
+ assert.equal(m.currentSteamGameAppId(base),'893180');
+ base.Router.WindowStore.GamepadUIMainWindowInstance.m_history.location.pathname='/library/app/620';
+ assert.equal(m.currentSteamGameAppId(base),'620');
+ base.Router.WindowStore.GamepadUIMainWindowInstance.m_history.location.pathname='/library/home';
+ assert.equal(m.currentSteamGameAppId(base),'');
+});
