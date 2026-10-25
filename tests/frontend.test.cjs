@@ -755,7 +755,7 @@ test('single-screen title field rises on OSK appearance and falls on Steam statu
  const doc={defaultView:win,documentElement:{clientWidth:960,clientHeight:544},querySelectorAll(){return visible?[overlay]:[]},activeElement:field,body:{}};
  const wrap={ownerDocument:doc,closest(){return root},querySelector(){return field},contains(el){return el===field},
   addEventListener(n,fn){listeners[n]=fn},removeEventListener(n){delete listeners[n]}};
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useEffect:fn=>{effect=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useState:v=>[v,()=>{}],useEffect:fn=>{effect=fn}};
  globalThis.DFL={TextField:'steam-field',DialogButton:'button',Focusable:'focusable'};
  globalThis.SteamClient={Keyboard:{RegisterForStatus(fn){statusCallback=fn;return{unregister(){}}}}};
  try{
@@ -890,7 +890,7 @@ test('cleanup preview B returns safely to editor and D-pad moves between Keep / 
 test('native single-screen text field accepts an insertion in the middle of text without losing Σ',async()=>{
  const oldR=globalThis.SP_REACT,oldDFL=globalThis.DFL;
  let eff,dispose,winTick,current='Ninja Gaiden Σ2';const changes=[];
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useEffect:fn=>{eff=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useState:v=>[v,()=>{}],useEffect:fn=>{eff=fn}};
  globalThis.DFL={TextField:'native-steam-text-field',Focusable:'focusable',DialogButton:'button'};
  const {InlineGameNameField}=await moduleForTest();
  try{
