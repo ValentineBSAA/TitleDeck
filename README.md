@@ -12,6 +12,8 @@
 
 > **Compatibility warning:** Developed and tested on a **physical Valve Steam Deck in SteamOS Gaming Mode**. **ROG Ally, other PC handhelds running alternative SteamOS-like systems, Steam Desktop Mode, Windows, Android/DroidDeck and other platforms are untested and may not work properly.** Steam UI / CSS Loader themes may also affect behavior. [Full compatibility statement](docs/COMPATIBILITY.md).
 
+**Community testing note:** A user reports the plugin working on Windows and Android with DroidDeck. That's useful early feedback, but these platforms remain **unverified** in maintainers' hardware testing, so compatibility is not guaranteed. The new custom game-description editor is [development-only](docs/DESCRIPTIONS_PREVIEW.md) and is **not** included in the published 0.9.0 RC1 ZIP.
+
 ## 0.9.0 RC1 Steam Deck screenshots
 
 Eight real screenshots of the current release, captured on the maintainer's Steam Deck. The original seven **0.8.1** screenshots are also preserved in the [gallery](docs/SCREENSHOTS.md).
