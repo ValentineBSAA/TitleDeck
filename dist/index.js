@@ -327,7 +327,17 @@ export function createGameInfoDataAdapter(getState,getContexts=()=>[globalThis])
         const result=original.apply(this,args);
         requests++;
         const state=getState()||{},id=normId(args[0]),desc=state.descriptions?.[id];
-        const visibleApp=currentSteamGameAppId(context)||currentSteamGameAppId(globalThis);
+        // Steam's GetDescriptions can live in a different window than its
+        // router. Cross-check every available live context, never use an old
+        // saved game ID as proof that a different game is currently visible.
+        const routes=new Set();
+        try{for(const c of getContexts()||[]){
+          const current=currentSteamGameAppId(c);
+          if(current)routes.add(current);
+        }}catch{}
+        const localRoute=currentSteamGameAppId(context);
+        if(localRoute)routes.add(localRoute);
+        const visibleApp=routes.size===1?[...routes][0]:'';
         if(state.enabled!==true||state.description_position!=='game_info'||
            !id||!visibleApp||visibleApp!==id||typeof desc!=='string'||!desc.trim())return result;
         overrides++;status='Native description served for app '+id;
