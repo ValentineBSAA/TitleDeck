@@ -9,10 +9,15 @@ let moduleCounter=0;
 async function moduleForTest(){return import('file://'+dist+'?test='+ ++moduleCounter)}
 function walk(n){if(n===undefined||n===null||typeof n!=='object')return[];return[n,...(n.children||[]).flatMap(walk)]}
 function resolveButton(n){return typeof n?.type==='function'?n.type({...n.props,children:n.children}):n}
-function setupMock({games=[],aliases={},view='library',selected='',draft=''}={}){
-  const state={schema:1,enabled:true,aliases,games,manual_backup:{available:false,count:0},recovery:{available:false,count:0}};
+function setupMock({games=[],aliases={},descriptions={},view='library',selected='',draft=''}={}){
+  const state={schema:1,enabled:true,aliases,descriptions,games,manual_backup:{available:false,count:0},recovery:{available:false,count:0}};
   let route, hooks=[],cursor=0,refs=[],refCursor=0;
-  const api={routerHook:{addRoute(_name,fn){route=fn},removeRoute(){},addGlobalComponent(){},removeGlobalComponent(){}},call:async name=>name==='snapshot'?state:null};
+  const api={routerHook:{addRoute(_name,fn){route=fn},removeRoute(){},addGlobalComponent(){},removeGlobalComponent(){}},call:async (name,...args)=>{
+    if(name==='snapshot')return state;
+    if(name==='save_description'){state.descriptions[String(args[0])]=args[1];return state;}
+    if(name==='delete_description'){delete state.descriptions[String(args[0])];return state;}
+    return null;
+  }};
   const R={
     createElement:(type,props,...children)=>({type,props:props||{},children:children.flat(Infinity).filter(x=>x!==undefined&&x!==false)}),
     Fragment:'fragment',useEffect(){},useRef(v){const i=refCursor++;if(!refs[i])refs[i]={current:v};return refs[i]},useCallback:f=>f,
@@ -897,4 +902,29 @@ test('native single-screen text field accepts an insertion in the middle of text
   assert.deepEqual(changes,['Ninja MASTER Gaiden Σ2']);
   assert.equal(input.selectionStart,12,'typing into the middle should not force cursor position to the end');
  }finally{dispose?.();globalThis.SP_REACT=oldR;globalThis.DFL=oldDFL}
+});
+
+test('custom game descriptions use a reversible, locally saved editor without changing the title grid',async()=>{
+ const game={appid:'620',name:'Portal 2'};
+ const mock=setupMock({games:[game],selected:'620',view:'description',descriptions:{'620':'An old summary'}});
+ const {plugin}=await mock.init();
+ try{
+   let tree=walk(mock.render());
+   const field=tree.find(n=>n.type==='textarea'&&n.props['data-td-focus']==='description-input');
+   assert(field,'multiline description editor missing');
+   assert.equal(field.props.maxLength,4000);
+   assert(tree.some(n=>n.props['data-td-focus']==='description-save'));
+   assert(tree.some(n=>n.props['data-td-focus']==='description-restore'));
+   field.props.onChange({target:{value:'A revised game description Σ'}});
+   tree=walk(mock.render());
+   const save=tree.find(n=>n.props['data-td-focus']==='description-save');
+   assert(!save.props.disabled);
+   save.props.onClick();
+   await new Promise(resolve=>setImmediate(resolve));
+   assert.equal(mock.state.descriptions['620'],'A revised game description Σ');
+   const restore=walk(mock.render()).find(n=>n.props['data-td-focus']==='description-restore');
+   restore.props.onClick();
+   await new Promise(resolve=>setImmediate(resolve));
+   assert.equal(mock.state.descriptions['620'],undefined);
+ }finally{plugin.onDismount();mock.cleanup();}
 });
