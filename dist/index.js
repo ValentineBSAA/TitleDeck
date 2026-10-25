@@ -430,8 +430,24 @@ export function findSteamGameInfoDescription(doc,gameRoot){
     return [...result];
   };
   const containers=findAll(containerSelectors).filter(visible);
-  const descriptions=findAll(descriptionSelectors)
-    .filter(el=>el.isConnected&&el.parentElement&&containers.some(parent=>contains(parent,el)));
+  const allDescriptions=findAll(descriptionSelectors)
+    .filter(el=>el.isConnected&&el.parentElement);
+  const descriptions=allDescriptions.filter(el=>containers.some(parent=>contains(parent,el)));
+  if(!descriptions.length&&allDescriptions.length===1){
+    // Newer Steam builds can rename only the wrapping panel, leaving the
+    // native GameDescription selector intact. A single description-bearing
+    // parent with a native appdetailsgameinfo ancestor is sufficient here,
+    // because the caller already confirmed the page's unique app ID.
+    const native=allDescriptions[0];
+    let ancestor=native.parentElement;
+    let recognized=false;
+    for(let i=0;ancestor&&i<8;i++,ancestor=ancestor.parentElement){
+      if(/appdetailsgameinfo/i.test(String(ancestor.className||''))){recognized=true;break}
+    }
+    if(recognized&&visible(native.parentElement))
+      return {container:native.parentElement,nativeDescription:native,
+        diagnostic:{containers:0,scoped:0,descriptions:1,selected:'native-description-parent'}};
+  }
   // An original description hidden by TitleDeck must remain discoverable.
   // Prefer the current AppDetails page. If Game Info was rendered in a portal,
   // ONLY a single visible Game Info panel in the whole document is eligible.
@@ -474,7 +490,13 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     const found=findSteamGameInfoDescription(doc,gameRoot);
     if(!found){
       clearGameInfo(doc);
-      status='Game Info: open the GAME INFO tab to see your custom description';
+      let panelCount=0,descCount=0;
+      try{
+        panelCount=doc.querySelectorAll('[class*="appdetailsgameinfopanel_Container"],[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]').length;
+        descCount=doc.querySelectorAll('[class*="appdetailsgameinfopanel_GameDescription"],[class*="appdetailsgameinfocontainer_GameDescription"]').length;
+      }catch{}
+      status='Game Info not located: '+panelCount+' panels, '+descCount+
+        ' native descriptions. Open GAME INFO, then use Rescan Steam UI.';
       return false;
     }
     const {container,nativeDescription}=found;
