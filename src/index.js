@@ -433,7 +433,7 @@ export function findSteamGameInfoDescription(doc,gameRoot){
   const allDescriptions=findAll(descriptionSelectors)
     .filter(el=>el.isConnected&&el.parentElement);
   const descriptions=allDescriptions.filter(el=>containers.some(parent=>contains(parent,el)));
-  if(!containers.length&&allDescriptions.length===1){
+  if(!descriptions.length&&allDescriptions.length===1){
     // Newer Steam builds can rename only the wrapping panel, leaving the
     // native GameDescription selector intact. A single description-bearing
     // parent with a native appdetailsgameinfo ancestor is sufficient here,
