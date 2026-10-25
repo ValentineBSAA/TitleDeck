@@ -418,6 +418,11 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
 }
 
 const STYLE=`
+/* Short-screen description editor: accessible fixed actions and genuine page scrolling. */
+.td-root .td-description-toolbar{display:grid!important;grid-template-columns:1.15fr 1.1fr 1fr .7fr!important;min-width:0!important;gap:6px!important}
+.td-root .td-description-toolbar .td-action{width:100%!important;min-width:0!important;white-space:normal!important;line-height:1.1!important}
+.td-root [data-td-description-workspace]{overflow-y:auto!important;overscroll-behavior-y:contain!important;padding-bottom:92px!important;scroll-padding-bottom:80px!important;min-height:0!important;}
+.td-root [data-td-description-workspace] .td-game-editor-card{max-height:none!important;overflow:visible!important;min-height:max-content!important}
 /* Review uses six names per page, paginated through the entire alias collection. */
 .td-root .td-review-workspace{overflow:hidden!important;min-height:0;display:flex;flex-direction:column}
 .td-root .td-review-panel{max-width:850px;width:100%;height:100%;min-height:0;padding:12px 18px;margin:0 auto!important;display:flex;flex-direction:column;gap:5px;overflow:hidden}
@@ -698,6 +703,11 @@ function focusNode(el){
   try{el.focus?.({preventScroll:true});el.scrollIntoView?.({block:'nearest'});return el.ownerDocument?.activeElement===el;}catch{return false;}
 }
 function focusQuery(root,selector,delay=0){setTimeout(()=>{try{focusNode(root?.querySelector(selector));}catch{}},delay);}
+export function scrollDescriptionWorkspace(root,bottom=true){
+  const scroller=root?.querySelector?.('[data-td-description-workspace]');
+  if(!scroller)return false;
+  try{scroller.scrollTop=bottom?scroller.scrollHeight:0;return true}catch{return false}
+}
 function directionTo(root,next,e){const node=root?.querySelector?.(`[data-td-focus="${next}"]`);if(node && focusNode(node)){halt(e);return true;}return false;}
 export function gridDestination(index,d,length,width=5) {
   if(!Number.isInteger(index)||index<0||index>=length)return null;
@@ -1348,7 +1358,12 @@ function Manager(){
     enterView('editor','edit-name');
   };
   const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
-  const openDescription=()=>{activeInlineKeyboard?.close();setDescriptionDraft(state.descriptions?.[selected]||'');enterView('description','description-open');};
+  const openDescription=()=>{
+    activeInlineKeyboard?.close();
+    setDescriptionDraft(state.descriptions?.[selected]||'');
+    enterView('description','description-open');
+    setTimeout(()=>scrollDescriptionWorkspace(root.current,false),110);
+  };
   const openDescriptionTyping=()=>{
     const wrap=root.current?.querySelector?.('[data-td-inline-description]');
     const field=wrap?.querySelector?.('input, textarea');
@@ -1556,8 +1571,9 @@ function Manager(){
         'description-back':{10:'description-open',12:'description-save'},
         'description-open':{9:'description-back',10:'description-input',12:'description-save'},
         'description-input':{9:'description-open',10:'description-save'},
-        'description-save':{9:'description-input',12:'description-restore',11:'description-back'},
-        'description-restore':{11:'description-save',9:'description-input'}
+        'description-save':{9:'description-open',12:'description-restore',11:'description-back'},
+        'description-restore':{11:'description-save',12:'description-bottom',9:'description-open'},
+        'description-bottom':{11:'description-restore',10:'description-open'}
       }[key]?.[d];
       if(dest&&directionTo(root.current,dest,e))return true;
       halt(e);return true;
@@ -1565,10 +1581,14 @@ function Manager(){
     rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM DESCRIPTION'),
       h('div',{className:'td-rail-label'},'Steam game '+selected),
       h('div',{className:'td-rail-label'},stored?'● Locally saved':'○ No override'));
-    actions=h('div',{className:'td-actions',style:{display:'flex'}},
+    // Save and Restore stay visible in the fixed toolbar. On short-screen Deck
+    // resolutions the previous buttons were clipped below a nested focus view.
+    actions=h('div',{className:'td-actions td-description-toolbar',style:{display:'flex'}},
       h(Btn,{className:'td-action','data-td-focus':'description-back',nav:e=>descNav('description-back',e),onClick:()=>enterView('editor','edit-description')},'← Game editor'),
-      h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Plain text · 4000 characters maximum'));
-    workspace=h('div',{className:'td-workspace'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto'}},
+      h(Btn,{className:'td-action','data-td-focus':'description-save',nav:e=>descNav('description-save',e),disabled:working||!descriptionDraft.trim(),onClick:()=>void saveDescription(false)},working?'Saving…':'✓ Save description'),
+      h(Btn,{className:'td-action','data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default'),
+      h(Btn,{className:'td-action','data-td-focus':'description-bottom',nav:e=>descNav('description-bottom',e),onClick:()=>scrollDescriptionWorkspace(root.current,true)},'↓ Bottom'));
+    workspace=h('div',{className:'td-workspace','data-td-description-workspace':'true'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto',paddingBottom:28}},
       h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
       h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck displays this text in its editor and in a separate section on the matching Steam library game page. Original Steam About text and store metadata stay unchanged.'),
       h(UI.Focusable,{'flow-children':'down'},h(Btn,{'data-td-focus':'description-open',nav:e=>descNav('description-open',e),onClick:openDescriptionTyping},'⌨ Edit description using Steam keyboard')),
@@ -1579,13 +1599,10 @@ function Manager(){
           placeholder:'Write your custom description…',fieldKind:'description',finishFocus:'description-save',
           onEnter:()=>focusQuery(root.current,'[data-td-focus="description-save"]',70)})),
       h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',minHeight:85,
-        padding:'14px 16px',borderRadius:10,background:'#172234',border:'1px solid #43566e'}},
+        maxHeight:160,overflowY:'auto',padding:'14px 16px',borderRadius:10,background:'#172234',border:'1px solid #43566e'}},
         descriptionDraft||'Your custom description preview will appear here.'),
-      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · Edit using Steam’s native keyboard · Done editing returns to Save'),
-      h(UI.Focusable,{'flow-children':'right',className:'td-editor-action-row',style:{marginTop:14}},
-        h(Btn,{'data-td-focus':'description-save',nav:e=>descNav('description-save',e),disabled:working||!descriptionDraft.trim(),onClick:()=>void saveDescription(false)},working?'Saving…':'✓ Save description'),
-        h(Btn,{'data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default')),
-      stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',marginTop:15}},'Saved local description: '+stored):null
+      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · Save and Restore remain in the toolbar above'),
+      stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:150,overflowY:'auto',marginTop:15}},'Saved local description: '+stored):null
     ));
     bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
   }else if(view==='keyboard'||view==='search'||view==='appid'){
