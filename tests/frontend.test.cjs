@@ -1513,3 +1513,78 @@ test('MetaDeck-inspired native override follows route in separate Steam window, 
    assert.equal(store.GetDescriptions(893180).strFullDescription,'Edited Catherine');
  }finally{adapter.stop()}
 });
+
+
+test('Game Info custom text uses native Steam description shell, never a blue TitleDeck card',async()=>{
+ const m=await moduleForTest(),page=nativeGamePageForDescription('893180');
+ const native=page.node('p');
+ native.className='_steamGameDescription123';
+ native.style.cssText='font-size:15px;line-height:1.4;color:inherit;margin:0;';
+ native.setAttribute('id','steam-description-original');
+ native.textContent='This original Steam description must not be mutated';
+ let cloneCount=0;
+ native.cloneNode=deep=>{
+   assert.equal(deep,false,'clone only CSS wrapper, not original children');
+   cloneCount++;
+   const el=page.node('p');
+   el.className=native.className;
+   el.style.cssText=native.style.cssText;
+   el.setAttribute('id','steam-description-original');
+   return el;
+ };
+ const panel=m.createNativeSteamDescriptionPanel(page.doc,native,'893180');
+ assert.equal(cloneCount,1);
+ assert.equal(panel.className,native.className);
+ assert.equal(panel.style.cssText,native.style.cssText,'Steam native font and color are retained');
+ assert.equal(panel.getAttribute('id'),null,'do not duplicate native Steam id');
+ assert.equal(panel.getAttribute('data-titledeck-gameinfo-description'),'893180');
+ assert.equal(panel.children.length,1,'one native-looking body, no custom heading');
+ assert.equal(panel.lastChild.tag,'span');
+ assert.equal(panel.lastChild.getAttribute('data-titledeck-gameinfo-text'),'true');
+ assert(!JSON.stringify(panel).includes('YOUR CUSTOM GAME DESCRIPTION'));
+ assert(!panel.style.cssText.includes('background:#203045'));
+ assert.equal(native.textContent,'This original Steam description must not be mutated');
+});
+test('Game Info native shell supports plain text, multiline and exact restoration',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const wrap=p.node('div'),native=p.node('p');
+ wrap.className='appdetailsgameinfopanel_Container_x';
+ native.className='appdetailsgameinfopanel_GameDescription_x';
+ native.textContent='Original Steam description';
+ wrap.appendChild(native);p.visible.appendChild(wrap);
+ const query=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>sel.includes('appdetailsgameinfopanel_Container')?[wrap]
+  :sel.includes('appdetailsgameinfopanel_GameDescription')?[native]:query(sel);
+ const unsafe='<b>TitleDeck</b>\nA second line & symbols';
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':unsafe}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(adapter.runNow(),1);
+  const custom=wrap.children[0];
+  assert.equal(custom.className,native.className,'adopt the native Steam Game Info class');
+  assert.equal(custom.children.length,1);
+  assert.equal(custom.lastChild.textContent,unsafe,'escape user text, retain newline');
+  assert.equal(custom.lastChild.children.length,0,'markup-like text creates no HTML nodes');
+  assert(!custom.style.cssText.includes('background'));
+  assert.equal(native.style.display,'none');
+  state.descriptions['893180']='Updated without blue box';
+  assert.equal(adapter.runNow(),1);
+  assert.equal(wrap.children[0],custom,'in-place update retains native shell');
+  assert.equal(custom.lastChild.textContent,'Updated without blue box');
+  state.enabled=false;
+  assert.equal(adapter.runNow(),0);
+  assert.equal(wrap.children.length,1);
+  assert.equal(wrap.children[0],native);
+  assert.equal(native.style.display,'');
+  assert.equal(native.textContent,'Original Steam description');
+ }finally{adapter.stop()}
+});
+test('Game Info with no native description inherits surrounding Steam styling',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('620');
+ const panel=m.createNativeSteamDescriptionPanel(p.doc,null,'620');
+ assert.equal(panel.children.length,1);
+ assert.equal(panel.tag,'div');
+ assert(panel.style.cssText.includes('color:inherit'));
+ assert(panel.style.cssText.includes('background:transparent'));
+ assert(!panel.style.cssText.includes('border-radius'));
+});
