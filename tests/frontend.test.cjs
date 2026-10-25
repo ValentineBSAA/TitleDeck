@@ -913,7 +913,7 @@ test('custom game descriptions use a reversible, locally saved editor without ch
    let tree=walk(mock.render());
    const field=tree.find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description');
    assert(field,'Steam-native description TextField component missing');
-   assert.equal(field.props.maxLength,4000);
+   assert.equal(field.props.maxLength,1020);
    assert.equal(field.props.label,'Custom game description');
    assert(tree.some(n=>n.props['data-td-focus']==='description-open'));
    assert(tree.some(n=>n.props['data-td-focus']==='description-save'));
@@ -1026,7 +1026,7 @@ test('description keyboard uses the SAME Decky TextField and click path as Chang
    const root=nodes.find(n=>n.props.className==='td-root');
    const fieldComp=nodes.find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description');
    assert(action&&fieldComp);
-   assert.equal(fieldComp.props.maxLength,4000);
+   assert.equal(fieldComp.props.maxLength,1020);
    let clicks=0,focuses=0;
    const input={focus(){focuses++},click(){clicks++}};
    const wrapped={querySelector(sel){return sel==='input, textarea'?input:null}};
@@ -1041,12 +1041,12 @@ test('description keyboard uses the SAME Decky TextField and click path as Chang
    const rendered=mod.InlineGameNameField(fieldComp.props);
    const inp=walk(rendered).find(n=>n.type==='decky-steam-textfield');
    assert(inp,'must use same native Steam TextField as Change Name');
-   assert.equal(inp.props.maxLength,4000);
+   assert.equal(inp.props.maxLength,1020);
    assert.equal(inp.props['aria-label'],'Custom game description');
    assert.equal(inp.props.bShowClearAction,false,'no X clear icon for long descriptions');
    const count=walk(rendered).find(n=>n.props['data-td-description-count']==='true');
    assert(count,'live character counter must be rendered with the editor');
-   assert(count.children.includes('0 / 4000 characters · 4000 remaining'));
+   assert(count.children.includes('0 / 1020 characters · 1020 remaining'));
    inp.props.onChange({target:{value:'Long custom text Σ'}});
    assert.equal(walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description').props.value,'Long custom text Σ');
  }finally{plugin.onDismount();mock.cleanup();}
@@ -1596,7 +1596,7 @@ test('Game Info with no native description inherits surrounding Steam styling',a
 });
 
 
-test('native description shows live remaining count and hard-stops at 4000 characters',async()=>{
+test('native description shows live remaining count and hard-stops at 1020 characters',async()=>{
  const mock=setupMock({games:[{appid:'893180',name:'Catherine Classic'}],selected:'893180',view:'description'});
  const {mod,plugin}=await mock.init();
  try{
@@ -1604,15 +1604,17 @@ test('native description shows live remaining count and hard-stops at 4000 chara
   const component=walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description');
   assert(component);
   const overlong='a'.repeat(4100);
-  const rendered=mod.InlineGameNameField({...component.props,value:'A'.repeat(3995)});
+  const rendered=mod.InlineGameNameField({...component.props,value:'A'.repeat(1015)});
   let count=walk(rendered).find(n=>n.props['data-td-description-count']==='true');
-  assert(count.children.includes('3995 / 4000 characters · 5 remaining'));
+  assert(count.children.includes('1015 / 1020 characters · 5 remaining'));
   const input=walk(rendered).find(n=>n.type==='decky-steam-textfield');
-  assert.equal(input.props.maxLength,4000);
+  assert.equal(input.props.maxLength,1020);
   input.props.onChange({target:{value:overlong}});
-  assert.equal(walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description').props.value.length,4000);
-  count=walk(mod.InlineGameNameField({...component.props,value:'a'.repeat(4000)})).find(n=>n.props['data-td-description-count']==='true');
-  assert(count.children.includes('4000 / 4000 characters · 0 remaining'));
+  assert.equal(walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description').props.value.length,1020);
+  count=walk(mod.InlineGameNameField({...component.props,value:'a'.repeat(1020)})).find(n=>n.props['data-td-description-count']==='true');
+  assert(count.children.includes('1020 / 1020 characters · 0 remaining'));
+  count=walk(mod.InlineGameNameField({...component.props,value:'a'.repeat(1750)})).find(n=>n.props['data-td-description-count']==='true');
+  assert(count.children.includes('1750 / 1020 characters · Existing description exceeds new limit; shorten before saving'));
  }finally{plugin.onDismount();mock.cleanup()}
 });
 test('description layout moves on keyboard request even when no keyboard status is received yet',async()=>{
@@ -1781,7 +1783,7 @@ test('saved description in general editor is compact at 1005 and 4000 characters
      const panel=tree.find(n=>n.props?.['data-td-saved-description-preview']==='true');
      assert(panel,'compact saved text panel missing');
      const content=walk(panel).flatMap(n=>n.children||[]).filter(x=>typeof x==='string').join(' ');
-     assert(content.includes(size+' / 4000 characters'));
+     assert(content.includes(size+' / 1020 characters'));
      assert(content.includes('Full text is preserved'));
      assert(!content.includes(full),'a long saved description should not flood the editor');
      assert(tree.some(n=>n.props?.['data-td-focus']==='edit-description'),'full editor stays available');
@@ -1816,7 +1818,7 @@ test('description keyboard clear replaces Done editing and restores 1005 charact
  const update=value=>{draft=value};
  const render=kind=>{
    ri=0;si=0;
-   const tree=m.InlineGameNameField({value:draft,setValue:update,maxLength:4000,
+   const tree=m.InlineGameNameField({value:draft,setValue:update,maxLength:1020,
      fieldKind:kind,label:'Custom game description'});
    tree.props.ref.current={querySelector:()=>input};
    return tree;
@@ -1862,7 +1864,7 @@ test('description clear undo expires when user types new text and name field ret
  const setValue=v=>{value=v};
  const input={get value(){return inputValue},set value(v){inputValue=v}};
  const render=kind=>{
-   ri=0;si=0;const tree=m.InlineGameNameField({value,setValue,fieldKind:kind,maxLength:4000});
+   ri=0;si=0;const tree=m.InlineGameNameField({value,setValue,fieldKind:kind,maxLength:1020});
    tree.props.ref.current={querySelector:()=>input};
    return tree;
  };
