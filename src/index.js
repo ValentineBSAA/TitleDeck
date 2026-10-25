@@ -10,7 +10,7 @@ let bridge, adapter;
 let steamDocument = null;
 let steamBridgeStatus = "Waiting for Steam window";
 const STEAM_ANCHOR = "TitleDeckSteamTextBridge";
-let latestState = { schema:1, enabled:true, aliases:{}, games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
+let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
 const observers = new Set();
 function connect() {
   if (bridge) return bridge;
@@ -1126,7 +1126,8 @@ export function editorDestination(key,d,{canSave=true,canRestore=true}={}){
   if(![9,10,11,12].includes(d))return null;
   const active={
     'close':{10:'edit-back'},
-    'edit-back':{9:'close',10:'edit-name'},
+    'edit-back':{9:'close',10:'edit-name',12:'edit-description'},
+    'edit-description':{11:'edit-back',10:'edit-name'},
     'edit-name':{9:'edit-back',12:'edit-clean',10:'edit-save'},
     'edit-clean':{9:'edit-back',11:'edit-name',10:'edit-restore'},
     'edit-save':{9:'edit-name',12:'edit-restore'},
@@ -1149,6 +1150,7 @@ function Manager(){
   const [selected,setSelected]=R.useState(''),[draft,setDraft]=R.useState(''),[notice,setNotice]=R.useState(null),[working,setWorking]=R.useState(false);
   const [entry,setEntry]=R.useState(''),[lastTile,setLastTile]=R.useState(''),[catalogBusy,setCatalogBusy]=R.useState(false);
   const [renderCols,setRenderCols]=R.useState(4);
+  const [descriptionDraft,setDescriptionDraft]=R.useState('');
   R.useEffect(()=>{
     const shell=root.current,win=shell?.ownerDocument?.defaultView;
     if(!shell)return;
@@ -1201,9 +1203,11 @@ function Manager(){
   const openGame=g=>{
     activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);
     setLastTile(g.appid);setSelected(g.appid);setDraft(aliases[g.appid]||g.name);
+    setDescriptionDraft(state.descriptions?.[g.appid]||'');
     enterView('editor','edit-name');
   };
   const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
+  const openDescription=()=>{activeInlineKeyboard?.close();setDescriptionDraft(state.descriptions?.[selected]||'');enterView('description','description-input');};
   const cancelCleanupPreview=()=>{setCleanupPreview(null);focusQuery(root.current,'[data-td-focus="edit-clean"]',45)};
   const applyCleanup=()=>{
     if(!cleanupPreview||cleanupPreview.appid!==selected)return;
@@ -1255,6 +1259,7 @@ function Manager(){
     if(view==='resetConfirm'){enterView('settings','setting-restore-all');return;}
     if(view==='backupConfirm'){enterView('settings','setting-backup-restore');return;}
     if(view==='search'||view==='appid'||view==='settings'){returnLibrary();return;}
+    if(view==='description'){enterView('editor','edit-description');return;}
     if(view==='editor')returnLibrary();
   };
   const save=async(method,...args)=>{
@@ -1268,6 +1273,23 @@ function Manager(){
       notify(method==='save_alias'?`Saved “${args[1]}”. TitleDeck confirmed your alias. Open Steam's game page to check the visible title.`:
         method==='delete_alias'?'Restored original Steam title.':'Display replacements updated.',setNotice,true);
     }catch(e){notify('Could not save: '+String(e?.message||e),setNotice);}finally{setWorking(false);}
+  };
+  const saveDescription=async(remove=false)=>{
+    if(working)return;
+    const content=descriptionDraft.replace(/\r\n?/g,'\n').trim();
+    if(!remove&&(!content||content.length>4000||/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(content))){
+      notify('Description must be 1–4000 plain-text characters.',setNotice);return;
+    }
+    setWorking(true);
+    try{
+      if(remove)await call('delete_description',selected);
+      else await call('save_description',selected,content);
+      const verified=await refreshState();
+      if(remove?Boolean(verified.descriptions?.[selected]):verified.descriptions?.[selected]!==content)throw Error('Description readback did not match.');
+      setDescriptionDraft(remove?'':content);
+      notify(remove?'Removed your local description override.':'Custom description saved. This preview is local to TitleDeck; Steam game-page display is not yet verified.',setNotice,true);
+    }catch(e){notify('Could not save description: '+String(e?.message||e),setNotice);}
+    finally{setWorking(false);}
   };
   const restoreAll=async()=>{
     if(working)return;
@@ -1314,8 +1336,8 @@ function Manager(){
     if(to&&directionTo(root.current,to,e))return true;
     halt(e);return true;
   };
-  const title=view==='library'?'Library':view==='editor'?'Rename game':view==='settings'?'Settings':view==='resetConfirm'?'Restore original titles':view==='backupConfirm'?'Restore backup':view==='search'?'Search your games':'Find game by App ID';
-  const summary=view==='library'?`${games.length} games  ·  ${installedCount} installed  ·  ${Object.keys(aliases).length} renamed`:'Custom display titles, saved locally';
+  const title=view==='description'?'Edit game description':view==='library'?'Library':view==='editor'?'Rename game':view==='settings'?'Settings':view==='resetConfirm'?'Restore original titles':view==='backupConfirm'?'Restore backup':view==='search'?'Search your games':'Find game by App ID';
+  const summary=view==='library'?`${games.length} games  ·  ${installedCount} installed  ·  ${Object.keys(aliases).length} renamed`:view==='description'?'Local custom descriptions · original Steam data preserved':'Custom display titles, saved locally';
   const changeFilter=k=>{setScope(k);setQuery('');focusQuery(root.current,'[data-td-focus="tile-0"]',65);};
   const showMessage=h(Toast,{notice});
   const footer=(primary,secondary)=>h('div',{className:'td-bottom'},h('span',{className:'td-status'},primary),h('strong',null,secondary));
@@ -1344,7 +1366,7 @@ function Manager(){
     bottom=footer('D-pad: browse   •   A: rename   •   B: back   •   Search and filters above',`${filtered.length} titles`);
   }else if(view==='editor'){
     rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM NAME'),h('div',{className:'td-rail-label',style:{textAlign:'center'}},'Steam game '+selected),h('div',{className:'td-rail-label',style:{textAlign:'right'}},aliases[selected]?'● Saved override':'Original title'));
-    actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'edit-back',nav:e=>editorNav('edit-back',e),onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Edit → Save → Verify in Steam'));
+    actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'edit-back',nav:e=>editorNav('edit-back',e),onClick:returnLibrary},'← All games'),h(Btn,{className:'td-action','data-td-focus':'edit-description',nav:e=>editorNav('edit-description',e),onClick:openDescription},state.descriptions?.[selected]?'✎ Edit description ●':'✎ Add description'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Edit → Save → Verify in Steam'));
     workspace=h('div',{className:'td-workspace'},h('div',{className:'td-editor'},h('div',null,h('div',{className:'td-editor-art'},h(Cover,{id:selected,title:original}))),
       h('div',{className:'td-card td-game-editor-card'},
         h('div',{className:'td-copy-label'},'CUSTOM DISPLAY TITLE'),
@@ -1374,6 +1396,40 @@ function Manager(){
         h('div',{className:'td-editor-note'},aliases[selected]?`Saved as: ${aliases[selected]}. Changes to visible game titles are active when TitleDeck is enabled.`:
           'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original clears a draft or saved alias.'))));
     bottom=footer('A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
+  }else if(view==='description'){
+    const stored=state.descriptions?.[selected]||'';
+    const descNav=(key,e)=>{
+      const d=dir(e),dest={
+        'description-back':{10:'description-input',12:'description-save'},
+        'description-input':{9:'description-back',10:'description-save'},
+        'description-save':{9:'description-input',12:'description-restore',11:'description-back'},
+        'description-restore':{11:'description-save',9:'description-input'}
+      }[key]?.[d];
+      if(dest&&directionTo(root.current,dest,e))return true;
+      halt(e);return true;
+    };
+    rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM DESCRIPTION'),
+      h('div',{className:'td-rail-label'},'Steam game '+selected),
+      h('div',{className:'td-rail-label'},stored?'● Locally saved':'○ No override'));
+    actions=h('div',{className:'td-actions',style:{display:'flex'}},
+      h(Btn,{className:'td-action','data-td-focus':'description-back',nav:e=>descNav('description-back',e),onClick:()=>enterView('editor','edit-description')},'← Game editor'),
+      h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Plain text · 4000 characters maximum'));
+    workspace=h('div',{className:'td-workspace'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto'}},
+      h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
+      h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck stores and displays this text locally. Steam store descriptions and game files remain unchanged. Replacing text on Steam’s actual game-detail page is not yet supported.'),
+      h('textarea',{value:descriptionDraft,maxLength:4000,rows:7,'aria-label':'Custom game description','data-td-focus':'description-input',
+        onGamepadDirection:e=>descNav('description-input',e),
+        onChange:e=>setDescriptionDraft(String(e?.target?.value??'')),
+        placeholder:'Write a description of this game…',
+        style:{boxSizing:'border-box',width:'100%',minHeight:190,maxHeight:330,resize:'vertical',borderRadius:12,
+          padding:15,fontSize:17,lineHeight:1.55,color:'#f0f4fa',background:'#182233',border:'2px solid #697b98',fontFamily:'inherit'}}),
+      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · Keyboard input and paste supported when Steam permits'),
+      h(UI.Focusable,{'flow-children':'right',className:'td-editor-action-row',style:{marginTop:14}},
+        h(Btn,{'data-td-focus':'description-save',nav:e=>descNav('description-save',e),disabled:working||!descriptionDraft.trim(),onClick:()=>void saveDescription(false)},working?'Saving…':'✓ Save description'),
+        h(Btn,{'data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default')),
+      stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',marginTop:15}},'Saved local description: '+stored):null
+    ));
+    bottom=footer('A: edit or save  •  B: return to game editor','Descriptions are visible within TitleDeck only');
   }else if(view==='keyboard'||view==='search'||view==='appid'){
     const isTitle=view==='keyboard',isSearch=view==='search';
     const context=isTitle?'Change display title':isSearch?'Search your game library':'Find game by Steam App ID';
@@ -1492,7 +1548,7 @@ function Manager(){
       h('header',{className:'td-header'},h('div',{className:'td-identity'},h('img',{src:ICON_DATA_URI,className:'td-logo',alt:''}),
         h('div',{style:{minWidth:0}},h('div',{className:'td-heading'},'TitleDeck ',h('span',{className:'td-version-chip'},`v${PLUGIN_VERSION}`),' · ',title),h('div',{className:'td-sub'},summary))),
         h('div',{className:'td-header-tools'},h('span',{className:'td-pill'},`${Object.keys(aliases).length} renamed`),
-          h(Btn,{className:'td-close','data-td-focus':'close',nav:e=>view==='editor'?editorNav('close',e):navHeader('close',e),onClick:back},view==='library'?'✕ Close':'← Back'))),
+          h(Btn,{className:'td-close','data-td-focus':'close',nav:e=>view==='editor'?editorNav('close',e):view==='description'?null:navHeader('close',e),onClick:back},view==='library'?'✕ Close':'← Back'))),
       rail,actions,workspace,bottom,showMessage));
 }
 function QuickPanel(){
