@@ -961,11 +961,19 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     }catch{}
     ticker=setInterval(runNow,1800);
   }
+  function restoreGameInfo(appid=''){
+    const target=appid?normId(appid):'';
+    for(const doc of documents()){
+      const prior=nativeInfo.get(doc);
+      if(prior&&(!target||prior.appid===target))clearGameInfo(doc);
+      recoverGameInfoOrphans(doc);
+    }
+  }
   function stop(){
     stopped=true;if(ticker!==null)clearInterval(ticker);if(pending!==null)clearTimeout(pending);
     watchers.forEach(w=>w.disconnect());scrollListeners.forEach(stop=>stop());for(const doc of documents()){clear(doc);clearGameInfo(doc);recoverGameInfoOrphans(doc)}
   }
-  return{start,stop,runNow,get shown(){return owned.size+nativeInfo.size},get checks(){return checks},get status(){return status}};
+  return{start,stop,runNow,restoreGameInfo,get shown(){return owned.size+nativeInfo.size},get checks(){return checks},get status(){return status}};
 }
 
 const STYLE=`
@@ -2015,8 +2023,12 @@ function Manager(){
     }
     setWorking(true);
     try{
-      if(remove)await call('delete_description',selected);
-      else await call('save_description',selected,content);
+      if(remove){
+        await call('delete_description',selected);
+        // Undo the active Game Info injection immediately after backend
+        // deletion, regardless of whether Steam's next periodic scan runs.
+        descriptionAdapter?.restoreGameInfo?.(selected);
+      }else await call('save_description',selected,content);
       const verified=await refreshState();
       if(remove?Boolean(verified.descriptions?.[selected]):verified.descriptions?.[selected]!==content)throw Error('Description readback did not match.');
       setDescriptionDraft(remove?'':content);
