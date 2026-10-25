@@ -80,6 +80,8 @@ class TitleDeckBackendTests(unittest.TestCase):
             for bad in ("", "hero", "<script>", 1, None, [], {}):
                 with self.subTest(value=bad), self.assertRaises(ValueError):
                     await plugin.set_description_position(bad)
+            await plugin.set_description_position("game_info")
+            self.assertEqual(main.load_state()["description_position"], "game_info")
             await plugin.set_description_position("hero_footer")
             self.assertEqual(main.load_state()["description_position"], "hero_footer")
             await plugin.create_backup()
