@@ -387,6 +387,39 @@ export function findDescriptionPlayBar(doc,target){
    not merely an extra card below Play. Locate only the selected game's
    visible native Game Info container, then insert our text beside the
    existing description without modifying Steam's description markup. */
+export function resolveLiveSteamGameInfoClasses(ui=UI){
+  // Decky Metadata confirms that Steam's GameInfoContainer and
+  // GameDescription are exported in separate live SteamUI CSS modules.
+  // Never enumerate Steam store data or execute untrusted module factories.
+  const finder=ui?.findModuleChild;
+  if(typeof finder!=='function')return null;
+  const inspect=(mod,kind)=>{
+    const match=obj=>obj&&typeof obj==='object'&&!Array.isArray(obj)&&
+      (kind==='owner'
+        ?typeof obj.GameInfoContainer==='string'&&typeof obj.GameInfoQuickLinks==='string'
+        :typeof obj.GameDescription==='string'&&typeof obj.DescriptionStatsCtn==='string');
+    if(match(mod))return mod;
+    if(!mod||typeof mod!=='object')return null;
+    try{
+      for(const entry of Object.values(mod)){
+        if(match(entry))return entry;
+      }
+    }catch{}
+    return null;
+  };
+  const find=kind=>{
+    try{
+      const found=finder(mod=>inspect(mod,kind)||undefined);
+      return inspect(found,kind);
+    }catch{return null}
+  };
+  const owner=find('owner'),description=find('description');
+  if(!owner||!description)return null;
+  const token=x=>typeof x==='string'&&/^[A-Za-z_-][A-Za-z0-9_-]{0,140}$/.test(x)?x:null;
+  const ownerName=token(owner.GameInfoContainer),descriptionName=token(description.GameDescription);
+  return ownerName&&descriptionName?{owner:ownerName,description:descriptionName}:null;
+}
+
 export function findSteamGameInfoDescription(doc,gameRoot){
   // This is called ONLY after runNow() confirms the Steam game's app ID.
   // Game Info may be a sibling of the AppDetailsContainer or a portal, so
@@ -429,8 +462,16 @@ export function findSteamGameInfoDescription(doc,gameRoot){
     }catch{}
     return [...result];
   };
-  const containers=findAll(containerSelectors).filter(visible);
-  const allDescriptions=findAll(descriptionSelectors)
+  // Live Decky module class tokens are preferred over hard-coded hash/name
+  // fragments; real Steam Deck builds do not necessarily include those names.
+  const resolved=resolveLiveSteamGameInfoClasses();
+  const byClass=name=>{
+    if(!name)return[];
+    try{return Array.from(doc.getElementsByClassName?.(name)||[])}
+    catch{return[]}
+  };
+  const containers=[...new Set([...findAll(containerSelectors),...byClass(resolved?.owner)])].filter(visible);
+  const allDescriptions=[...new Set([...findAll(descriptionSelectors),...byClass(resolved?.description)])]
     .filter(el=>el.isConnected&&el.parentElement);
   const descriptions=allDescriptions.filter(el=>containers.some(parent=>contains(parent,el)));
   if(!descriptions.length&&allDescriptions.length===1){
