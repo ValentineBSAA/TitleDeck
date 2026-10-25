@@ -26,6 +26,18 @@ This branch extends TitleDeck's per-game **description editor** with a reversibl
 - Diagnostic view reports visible panel count and game identity matching status.
 - Regression tests cover identity mismatches, route changes, duplicate prevention, text-as-text, delete and disable, and existing rename behavior.
 
+## Optional placement: Artwork Footer vs Below Play
+
+TitleDeck now has a **Game description placement** setting in its full-manager Settings page.
+
+- **Below Play** (default for existing settings): keeps the original full-sized panel between the Play bar and Steam's content tabs. Entire descriptions remain visible.
+- **Artwork Footer**: puts a compact, 2-line read-only preview into the strip immediately **below the hero artwork and above the Play bar**. This is intended to match the unused dark area shown with Metagawa's Art Hero 3.2.03. The panel follows the measured Play bar on theme layout changes, and hides when the header is scrolled away instead of floating over Steam controls.
+- Setting changes are persistent, reversible and do not require editing a description again. Older settings and existing descriptions default to Below Play for compatibility.
+- If TitleDeck cannot safely find a suitable Play bar, it falls back to Below Play rather than positioning into an unverified UI area.
+- TitleDeck never changes Art Hero or CSS Loader files, artwork, game metadata, or Valve's Play controls.
+
+**Unverified on hardware:** positioning with the user's exact theme settings and any combinations of Art Hero height sliders or other CSS Loader themes. The mock/CI geometry test is not a substitute for user acceptance.
+
 ## Remaining release acceptance
 
 - [ ] Verify the panel renders and stays in the correct position on a **physical Steam Deck**, especially with SteamOS updates and CSS Loader.
