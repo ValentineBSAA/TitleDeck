@@ -1746,3 +1746,54 @@ test('Restore Default exposes immediate explicit teardown of mounted Game Info p
   assert.equal(adapter.runNow(),0,'later scanner must not re-add removed description');
  }finally{adapter.stop()}
 });
+
+
+test('manager prefers existing Steam custom portrait artwork before remote store cover',async()=>{
+ const m=await moduleForTest();
+ const nonSteam=m.coverSources('2312439508');
+ assert.deepEqual(nonSteam.slice(0,3),[
+   '/customimages/2312439508p.png',
+   '/customimages/2312439508p.jpg',
+   '/customimages/2312439508p.webp'
+ ]);
+ assert(nonSteam.indexOf('/assets/2312439508/library_600x900.jpg')>=3);
+ assert(nonSteam.at(-1).includes('steamstatic.com'));
+ const ordinary=m.coverSources('620');
+ assert(ordinary.includes('/assets/620/library_600x900.jpg'));
+ assert(ordinary.some(src=>src.includes('/steam/apps/620/library_600x900.jpg')));
+ assert(!ordinary.some(src=>src.includes('2312439508')));
+ assert.deepEqual(m.coverSources('../etc'),[],'never interpolate unsafe IDs into art URLs');
+ assert.deepEqual(m.coverSources('https://evil.example'),[]);
+});
+test('saved description in general editor is compact at 1005 and 4000 characters',async()=>{
+ const m=await moduleForTest();
+ for(const size of [505,765,1005,2800,4000]){
+   const full='X'.repeat(size);
+   const preview=m.savedDescriptionPreview(full);
+   assert.equal(preview.length,size);
+   assert(preview.excerpt.length<=211,'do not render an enormous description in manager');
+   assert.equal(preview.truncated,true);
+   const mock=setupMock({games:[{appid:'893180',name:'Catherine Classic'}],descriptions:{'893180':full},
+     selected:'893180',view:'editor'});
+   const {plugin}=await mock.init();
+   try{
+     const tree=walk(mock.render());
+     const panel=tree.find(n=>n.props?.['data-td-saved-description-preview']==='true');
+     assert(panel,'compact saved text panel missing');
+     const content=walk(panel).flatMap(n=>n.children||[]).filter(x=>typeof x==='string').join(' ');
+     assert(content.includes(size+' / 4000 characters'));
+     assert(content.includes('Full text is preserved'));
+     assert(!content.includes(full),'a long saved description should not flood the editor');
+     assert(tree.some(n=>n.props?.['data-td-focus']==='edit-description'),'full editor stays available');
+   }finally{plugin.onDismount();mock.cleanup();}
+ }
+});
+test('saved description preview flattens paragraph breaks while preserving original saved content',async()=>{
+ const m=await moduleForTest();
+ const text='First paragraph.\n\nSecond paragraph with   spaces.\nThird one.';
+ const preview=m.savedDescriptionPreview(text,100);
+ assert.equal(preview.excerpt,'First paragraph. Second paragraph with spaces. Third one.');
+ assert.equal(preview.length,text.length);
+ assert.equal(preview.truncated,false);
+ assert.equal(m.savedDescriptionPreview('',210).excerpt,'');
+});
