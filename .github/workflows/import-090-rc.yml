@@ -1,0 +1,69 @@
+name: Import TitleDeck 0.9.0 RC1
+on:
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-rc:
+    if: github.repository == 'ValentineBSAA/TitleDeck' && (github.event_name == 'workflow_dispatch' || github.event.release.tag_name == '0.9.0-rc.1')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Download candidate from official release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/titledeck-rc
+          gh release download 0.9.0-rc.1 --repo "$GITHUB_REPOSITORY" --dir /tmp/titledeck-rc --pattern 'TitleDeck-0.9.0-RC1-SteamDeck.zip'
+      - name: Check exact SHA-256, safe archive structure and import source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import hashlib,json
+          z=Path('/tmp/titledeck-rc/TitleDeck-0.9.0-RC1-SteamDeck.zip')
+          expected='6bf8467b3637334ee21b3e50302be5d9ea15880ab80dbc27f190438bbc415c73'
+          assert hashlib.sha256(z.read_bytes()).hexdigest()==expected, 'RC ZIP checksum mismatch'
+          source=['main.py','plugin.json','package.json','CHANGELOG.md','src/index.js','dist/index.js','assets/titledeck-icon.png','assets/titledeck-qam.webp','tests/frontend.test.cjs','tests/release_metadata.test.cjs','tests/test_backend.py']
+          with ZipFile(z) as archive:
+            names=archive.namelist()
+            assert len(names)==13 and all(n.startswith('TitleDeck/') for n in names), 'Unexpected archive contents'
+            assert set(names)=={'TitleDeck/'+n for n in source+['README.md','LICENSE']}, 'Unexpected release files'
+            for name in source:
+              item=archive.getinfo('TitleDeck/'+name)
+              assert 0<item.file_size<5000000 and not item.is_dir(), 'Invalid file'
+              target=Path(name)
+              target.parent.mkdir(parents=True,exist_ok=True)
+              target.write_bytes(archive.read(item))
+          a=json.loads(Path('plugin.json').read_text())
+          b=json.loads(Path('package.json').read_text())
+          assert a['name']=='TitleDeck' and a['version']==b['version']=='0.9.0-rc.1'
+          assert Path('src/index.js').read_bytes()==Path('dist/index.js').read_bytes()
+          print('Verified checksum, manifest, archive structure and frontend parity')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test published RC source
+        run: |
+          node --test tests/*.test.cjs
+          python3 -m unittest discover -s tests -p 'test_backend.py'
+      - name: Commit verified code only; preserve README and historical screenshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add main.py plugin.json package.json CHANGELOG.md src/index.js dist/index.js assets/titledeck-icon.png assets/titledeck-qam.webp tests/frontend.test.cjs tests/release_metadata.test.cjs tests/test_backend.py
+          if git diff --cached --quiet; then
+            echo 'Source already synchronized'
+          else
+            git commit -m 'Sync verified TitleDeck 0.9.0 RC1 source from release'
+            git push origin HEAD:main
+          fi
