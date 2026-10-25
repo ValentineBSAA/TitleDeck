@@ -1,3 +1,4 @@
+# Preview 14 QA: bounded descriptions, reversible clear and legacy-safe upgrades
 name: TitleDeck description preview installer
 on:
   push:
