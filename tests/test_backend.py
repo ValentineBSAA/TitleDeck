@@ -71,6 +71,47 @@ class TitleDeckBackendTests(unittest.TestCase):
             self.assertEqual(main.load_state()['descriptions'], {})
         asyncio.run(scenario())
 
+    def test_new_description_limit_1020_preserves_preexisting_long_drafts_and_backups(self):
+        self.assertEqual(main.MAX_DESCRIPTION, 1020)
+        self.assertEqual(len(main.validate_description("A" * 1005)), 1005)
+        self.assertEqual(len(main.validate_description("A" * 1020)), 1020)
+        for count in (1021, 1200, 4000):
+            with self.subTest(count=count), self.assertRaisesRegex(ValueError, "1–1020"):
+                main.validate_description("A" * count)
+
+        # Upgrade safety: already saved 4000-character drafts must still load.
+        legacy = main.blank_state()
+        legacy["descriptions"] = {"893180": "L" * 4000}
+        main.store_state(legacy)
+        self.assertEqual(len(main.load_state()["descriptions"]["893180"]), 4000)
+        self.assertEqual(len(main.validate_description("L" * 4000, allow_legacy=True)), 4000)
+        with self.assertRaises(ValueError):
+            main.validate_description("L" * 4001, allow_legacy=True)
+
+        async def scenario():
+            plugin = main.Plugin()
+            exported = await plugin.export_aliases()
+            backup = await plugin.create_backup()
+            self.assertEqual(len(main.load_state()["descriptions"]["893180"]), 4000)
+            # Updating unrelated state or saving another synopsis must retain it.
+            await plugin.save_alias("620", "Portal II")
+            await plugin.save_description("620", "N" * 1020)
+            self.assertEqual(len(main.load_state()["descriptions"]["893180"]), 4000)
+            with self.assertRaisesRegex(ValueError, "1–1020"):
+                await plugin.save_description("893180", "N" * 1021)
+            self.assertEqual(len(main.load_state()["descriptions"]["893180"]), 4000)
+            # Import of an older export must preserve old content rather than
+            # rejecting the entire user backup due to the new edit limit.
+            await plugin.delete_description("893180")
+            await plugin.import_aliases(exported)
+            self.assertEqual(len(main.load_state()["descriptions"]["893180"]), 4000)
+            await plugin.delete_description("893180")
+            await plugin.restore_backup()
+            self.assertEqual(len(main.load_state()["descriptions"]["893180"]), 4000)
+            await plugin.save_description("893180", "Shortened synopsis")
+            self.assertEqual(main.load_state()["descriptions"]["893180"], "Shortened synopsis")
+        asyncio.run(scenario())
+
     def test_description_placement_persists_and_roundtrips_backups(self):
         self.assertEqual(main.load_state()["description_position"], "below_play")
 
