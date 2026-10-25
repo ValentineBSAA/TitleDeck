@@ -1394,7 +1394,8 @@ function Manager(){
               else notify('Unsaved edits cleared. Original Steam title restored in the editor.',setNotice,true);
             }},'Restore original'))),
         h('div',{className:'td-editor-note'},aliases[selected]?`Saved as: ${aliases[selected]}. Changes to visible game titles are active when TitleDeck is enabled.`:
-          'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original clears a draft or saved alias.'))));
+          'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original clears a draft or saved alias.'),
+        state.descriptions?.[selected]?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',marginTop:10}},'Saved game description: '+state.descriptions[selected]):null)));
     bottom=footer('A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
   }else if(view==='description'){
     const stored=state.descriptions?.[selected]||'';
