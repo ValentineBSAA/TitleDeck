@@ -1306,7 +1306,13 @@ function Manager(){
     enterView('editor','edit-name');
   };
   const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
-  const openDescription=()=>{activeInlineKeyboard?.close();setDescriptionDraft(state.descriptions?.[selected]||'');enterView('description','description-input');};
+  const openDescription=()=>{activeInlineKeyboard?.close();setDescriptionDraft(state.descriptions?.[selected]||'');enterView('description','description-open');};
+  const openDescriptionTyping=()=>{
+    const field=root.current?.querySelector?.('[data-td-focus="description-input"]');
+    if(!field){notify('Description field not ready. Try again.',setNotice);return}
+    try{field.focus?.({preventScroll:true})}catch{try{field.focus?.()}catch{}}
+    try{field.click?.()}catch{}
+  };
   const cancelCleanupPreview=()=>{setCleanupPreview(null);focusQuery(root.current,'[data-td-focus="edit-clean"]',45)};
   const applyCleanup=()=>{
     if(!cleanupPreview||cleanupPreview.appid!==selected)return;
@@ -1500,8 +1506,9 @@ function Manager(){
     const stored=state.descriptions?.[selected]||'';
     const descNav=(key,e)=>{
       const d=dir(e),dest={
-        'description-back':{10:'description-input',12:'description-save'},
-        'description-input':{9:'description-back',10:'description-save'},
+        'description-back':{10:'description-open',12:'description-save'},
+        'description-open':{9:'description-back',10:'description-input',12:'description-save'},
+        'description-input':{9:'description-open',10:'description-save'},
         'description-save':{9:'description-input',12:'description-restore',11:'description-back'},
         'description-restore':{11:'description-save',9:'description-input'}
       }[key]?.[d];
@@ -1517,13 +1524,14 @@ function Manager(){
     workspace=h('div',{className:'td-workspace'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto'}},
       h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
       h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck displays this text in its editor and in a separate section on the matching Steam library game page. Original Steam About text and store metadata stay unchanged.'),
+      h(UI.Focusable,{'flow-children':'down'},h(Btn,{'data-td-focus':'description-open',nav:e=>descNav('description-open',e),onClick:openDescriptionTyping},'⌨ Edit description using Steam keyboard')),
       h('textarea',{value:descriptionDraft,maxLength:4000,rows:7,'aria-label':'Custom game description','data-td-focus':'description-input',
         onGamepadDirection:e=>descNav('description-input',e),
         onChange:e=>setDescriptionDraft(String(e?.target?.value??'')),
         placeholder:'Write a description of this game…',
         style:{boxSizing:'border-box',width:'100%',minHeight:190,maxHeight:330,resize:'vertical',borderRadius:12,
           padding:15,fontSize:17,lineHeight:1.55,color:'#f0f4fa',background:'#182233',border:'2px solid #697b98',fontFamily:'inherit'}}),
-      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · Keyboard input and paste supported when Steam permits'),
+      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · If the keyboard does not open, press STEAM + X · Press Done on the keyboard to return'),
       h(UI.Focusable,{'flow-children':'right',className:'td-editor-action-row',style:{marginTop:14}},
         h(Btn,{'data-td-focus':'description-save',nav:e=>descNav('description-save',e),disabled:working||!descriptionDraft.trim(),onClick:()=>void saveDescription(false)},working?'Saving…':'✓ Save description'),
         h(Btn,{'data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default')),
