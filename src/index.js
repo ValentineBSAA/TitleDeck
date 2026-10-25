@@ -652,17 +652,45 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
   function clearGameInfo(doc){
     const prior=nativeInfo.get(doc);
     if(!prior)return;
-    try{
-      if(prior.nativeNode?.isConnected&&prior.nativeNode.style){
-        const style=prior.nativeNode.style;
-        if(prior.originalDisplayProperty!==null&&typeof style.setProperty==='function'){
-          if(prior.originalDisplayProperty)style.setProperty('display',prior.originalDisplayProperty,prior.originalDisplayPriority||'');
-          else style.removeProperty('display');
-        }else if(style.display==='none')style.display=prior.originalDisplay;
-      }
-      prior.panel?.remove?.();
-    }catch{}
+    // A failure restoring one style must not prevent removing the clone.
+    const native=prior.nativeNode,style=native?.style;
+    if(style)try{
+      if(prior.originalDisplayProperty!==null&&typeof style.setProperty==='function'){
+        if(prior.originalDisplayProperty)style.setProperty('display',prior.originalDisplayProperty,prior.originalDisplayPriority||'');
+        else style.removeProperty('display');
+      }else if(style.display==='none')style.display=prior.originalDisplay;
+    }catch{
+      try{if(style.display==='none')style.display=''}catch{}
+    }
+    try{native?.removeAttribute?.('data-titledeck-native-original')}catch{}
+    try{prior.panel?.remove?.()}catch{}
     nativeInfo.delete(doc);
+  }
+  function recoverGameInfoOrphans(doc){
+    // Older previews could leave a clone behind on the game page. Cleanup is
+    // constrained to TitleDeck-marked panels, never generic Steam elements.
+    const retained=nativeInfo.get(doc)?.panel;
+    let orphans=[];
+    try{orphans=[...(doc.querySelectorAll?.('[data-titledeck-gameinfo-description]')||[])]}catch{}
+    for(const panel of orphans){
+      if(panel===retained)continue;
+      const native=panel.nextSibling;
+      if(native&&native.style){
+        const marked=native.getAttribute?.('data-titledeck-native-original')==='true';
+        const sameClass=typeof panel.className==='string'&&!!panel.className&&
+          panel.className===native.className;
+        if(marked||sameClass){
+          try{
+            if(native.style.display==='none'){
+              if(typeof native.style.removeProperty==='function')native.style.removeProperty('display');
+              else native.style.display='';
+            }
+            native.removeAttribute?.('data-titledeck-native-original');
+          }catch{}
+        }
+      }
+      try{panel.remove?.()}catch{}
+    }
   }
   function drawGameInfo(doc,gameRoot,appid,description){
     // On a stable game page the existing Steam native node is the source of
@@ -696,6 +724,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const originalDisplayProperty=typeof style?.getPropertyValue==='function'?style.getPropertyValue('display'):null;
       const originalDisplayPriority=typeof style?.getPropertyPriority==='function'?style.getPropertyPriority('display'):'';
       try{parent.insertBefore(panel,nativeDescription||parent.firstChild||null)}catch{return false}
+      try{nativeDescription?.setAttribute?.('data-titledeck-native-original','true')}catch{}
       if(style){
         if(typeof style.setProperty==='function')style.setProperty('display','none','important');
         else style.display='none';
@@ -812,6 +841,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     let docNo=0;
     for(const doc of docs){
       docNo++;
+      recoverGameInfoOrphans(doc);
       const id=routeId(doc);
       if(!state.enabled||!Object.keys(descriptions).length){
         clear(doc);clearGameInfo(doc);status=!state.enabled?'Display overrides paused':'No saved descriptions';continue;
@@ -922,16 +952,18 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
       if(typeof Observer!=='function')continue;
       const watcher=new Observer(schedule);watcher.observe(doc.documentElement,{childList:true,subtree:true});watchers.push(watcher);
-      doc.addEventListener?.('scroll',schedule,true);
-      const onResize=()=>schedule();
-      doc.defaultView?.addEventListener?.('resize',onResize);
-      scrollListeners.push(()=>{doc.removeEventListener?.('scroll',schedule,true);doc.defaultView?.removeEventListener?.('resize',onResize)});
+      // Native Game Info needs no scroll-driven DOM updates; these can
+      // interfere with Steam's own scroll anchoring for long descriptions.
+      const reposition=()=>{if(getState()?.description_position==='hero_footer')schedule()};
+      doc.addEventListener?.('scroll',reposition,true);
+      doc.defaultView?.addEventListener?.('resize',reposition);
+      scrollListeners.push(()=>{doc.removeEventListener?.('scroll',reposition,true);doc.defaultView?.removeEventListener?.('resize',reposition)});
     }catch{}
     ticker=setInterval(runNow,1800);
   }
   function stop(){
     stopped=true;if(ticker!==null)clearInterval(ticker);if(pending!==null)clearTimeout(pending);
-    watchers.forEach(w=>w.disconnect());scrollListeners.forEach(stop=>stop());for(const doc of documents()){clear(doc);clearGameInfo(doc)}
+    watchers.forEach(w=>w.disconnect());scrollListeners.forEach(stop=>stop());for(const doc of documents()){clear(doc);clearGameInfo(doc);recoverGameInfoOrphans(doc)}
   }
   return{start,stop,runNow,get shown(){return owned.size+nativeInfo.size},get checks(){return checks},get status(){return status}};
 }
