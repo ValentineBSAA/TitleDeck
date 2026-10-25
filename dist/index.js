@@ -10,7 +10,7 @@ let bridge, adapter, descriptionAdapter;
 let steamDocument = null;
 let steamBridgeStatus = "Waiting for Steam window";
 const STEAM_ANCHOR = "TitleDeckSteamTextBridge";
-let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
+let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, description_position:'below_play', games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
 const observers = new Set();
 function connect() {
   if (bridge) return bridge;
@@ -299,8 +299,53 @@ export function steamLibraryRouteId(location){
     return found?normId(found[1]):'';
   }catch{return ''}
 }
+
+/* Art Hero and other CSS Loader themes change artwork height. Anchor the
+   optional overlay to Steam's actual Play-bar rectangle, never to a guessed
+   fixed screen Y coordinate or to the artwork's internal React children. */
+export function heroFooterGeometry(rect,viewportWidth,viewportHeight){
+  if(!rect||!Number.isFinite(rect.top)||!Number.isFinite(rect.left)||!Number.isFinite(rect.width))return null;
+  const w=Number(viewportWidth)||0,h=Number(viewportHeight)||0;
+  if(w<300||h<250||rect.width<180||rect.width>w*1.5)return null;
+  const height=76,margin=12,top=Math.round(rect.top-height-margin);
+  // If the header or Play bar has scrolled out of view, remove this overlay.
+  if(top<68||rect.top>h+70)return null;
+  const left=Math.max(8,Math.round(rect.left+16));
+  const width=Math.min(w-left-8,Math.round(rect.width-32));
+  if(width<150)return null;
+  return{left,top,width,height};
+}
+export function findDescriptionPlayBar(doc,target){
+  const selectors=[
+    '[class*="appdetailsplaysection_PlayBar"]',
+    '[class*="appdetailsplaysection_PlaySection"]',
+    '[class*="appdetailsplaysection_Container"]',
+    '[class*="appdetailsplaysection_PlayArea"]'
+  ];
+  const plausible=node=>{
+    if(!node?.getBoundingClientRect||!node.isConnected)return false;
+    const rect=node.getBoundingClientRect();
+    const height=rect?.height||((rect?.bottom||0)-(rect?.top||0));
+    return height>=32&&height<=160&&rect.width>=180;
+  };
+  // Prefer the official Play bar. Do not select arbitrary CSS Loader art layers.
+  for(const sel of selectors)try{
+    const nodes=doc.querySelectorAll(sel);
+    for(const node of nodes){
+      if(!plausible(node))continue;
+      if(node.offsetParent===null)continue;
+      return node;
+    }
+  }catch{}
+  // On Steam versions without module names, the game details content is
+  // normally the Play bar's next sibling.
+  const near=target?.previousElementSibling;
+  if(plausible(near)&&near.offsetParent!==null)return near;
+  return null;
+}
+
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
-  const MARK='data-titledeck-description',owned=new Map(),watchers=[];
+  const MARK='data-titledeck-description',owned=new Map(),watchers=[],scrollListeners=[];
   let stopped=false,ticker=null,pending=null,checks=0,status='Waiting for Steam game page';
   function documents(){
     const result=new Set(),add=d=>{if(d?.documentElement&&d.querySelectorAll&&d.createElement)result.add(d)};
@@ -328,7 +373,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       if(style?.display==='none'||style?.visibility==='hidden')return false;}catch{}
     return true;
   }
-  function draw(doc,target,id,description){
+  function draw(doc,target,id,description,position='below_play') {
     const parent=target.parentElement;if(!parent)return false;
     let pane=owned.get(doc);
     if(pane&&!pane.isConnected){owned.delete(doc);pane=null}
@@ -342,13 +387,53 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const body=doc.createElement('p');body.setAttribute('data-titledeck-description-text','true');
       body.style.cssText='margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.5;';
       pane.appendChild(heading);pane.appendChild(body);
-      try{parent.insertBefore(pane,target)}catch{return false}
       owned.set(doc,pane);
     }
-    if(pane.parentElement!==parent||pane.nextSibling!==target)
-      try{parent.insertBefore(pane,target)}catch{return false}
+    const preferHero=position==='hero_footer';
+    const playBar=preferHero?findDescriptionPlayBar(doc,target):null;
+    const win=doc.defaultView;
+    const rect=playBar?.getBoundingClientRect?.();
+    const box=preferHero?heroFooterGeometry(rect,win?.innerWidth||doc.documentElement?.clientWidth,
+      win?.innerHeight||doc.documentElement?.clientHeight):null;
+    if(preferHero&&playBar&&!box){
+      // Scrolling into the activity section should not leave a floating
+      // description across Steam's tabs, buttons or global navigation.
+      pane.remove?.();owned.delete(doc);return false;
+    }
+    const layout=preferHero&&box?'hero_footer':'below_play';
+    if(layout==='hero_footer'){
+      if(!doc.body?.appendChild)return false;
+      if(pane.parentElement!==doc.body)doc.body.appendChild(pane);
+      const key=[box.left,box.top,box.width,box.height].join(':');
+      if(pane._titledeckLayoutKey!==key||pane._titledeckMode!=='hero_footer'){
+        pane._titledeckLayoutKey=key;pane._titledeckMode='hero_footer';
+        pane.style.cssText='box-sizing:border-box;position:fixed;left:'+box.left+'px;top:'+box.top+'px;width:'+box.width+'px;height:'+box.height+
+          'px;z-index:50;overflow:hidden;pointer-events:none;margin:0;padding:9px 16px;border-radius:8px;background:rgba(16,22,34,.82);border:1px solid rgba(119,149,179,.65);color:#f2f7fe;box-shadow:0 2px 15px rgba(0,0,0,.27);';
+      }
+    }else{
+      if(pane.parentElement!==parent||pane.nextSibling!==target)
+        try{parent.insertBefore(pane,target)}catch{return false}
+      if(pane._titledeckMode!=='below_play'){
+        pane._titledeckMode='below_play';pane._titledeckLayoutKey='';
+        pane.style.cssText='box-sizing:border-box;width:calc(100% - 40px);margin:12px 20px;padding:16px 20px;border-radius:9px;background:#203045;border:1px solid #445b73;color:#ecf3f9;';
+      }
+    }
+    if(pane.getAttribute?.('data-titledeck-position')!==layout)pane.setAttribute?.('data-titledeck-position',layout);
+    const heading=pane.querySelector?.('h3')||pane.children?.[0];
+    if(heading&&heading._titledeckHeadingMode!==layout){
+      heading._titledeckHeadingMode=layout;
+      heading.style.cssText=layout==='hero_footer'
+        ?'margin:0 0 4px;font-size:12px;font-weight:750;color:#b8d7f0;letter-spacing:.035em;'
+        :'margin:0 0 9px;font-size:15px;font-weight:750;color:#afd3f2;';
+    }
     const body=pane.querySelector?.('[data-titledeck-description-text]')||pane.lastChild;
-    if(body&&body.textContent!==description)body.textContent=description; // plain text, never HTML.
+    if(body){
+      if(body.textContent!==description)body.textContent=description; // Plain text only.
+      const textStyle=layout==='hero_footer'
+        ?'margin:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.4;'
+        :'margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.5;';
+      if(body._titledeckTextMode!==layout){body.style.cssText=textStyle;body._titledeckTextMode=layout}
+    }
     return true;
   }
   function runNow(){
@@ -394,8 +479,11 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
         status=!options.length?'No visible Steam details container':id?'Visible app ID does not match route '+id:'Cannot confirm one visible game page';
         continue;
       }
-      if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim())){
-        applied++;status='Shown for Steam app '+match.gameId;
+      const position=state.description_position==='hero_footer'?'hero_footer':'below_play';
+      if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim(),position)){
+        applied++;status='Shown for Steam app '+match.gameId+' ('+position+')';
+      }else if(position==='hero_footer'){
+        status='Artwork footer unavailable or scrolled out of view';
       }
     }
     return applied;
@@ -407,12 +495,16 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
       if(typeof Observer!=='function')continue;
       const watcher=new Observer(schedule);watcher.observe(doc.documentElement,{childList:true,subtree:true});watchers.push(watcher);
+      doc.addEventListener?.('scroll',schedule,true);
+      const onResize=()=>schedule();
+      doc.defaultView?.addEventListener?.('resize',onResize);
+      scrollListeners.push(()=>{doc.removeEventListener?.('scroll',schedule,true);doc.defaultView?.removeEventListener?.('resize',onResize)});
     }catch{}
     ticker=setInterval(runNow,1800);
   }
   function stop(){
     stopped=true;if(ticker!==null)clearInterval(ticker);if(pending!==null)clearTimeout(pending);
-    watchers.forEach(w=>w.disconnect());for(const doc of documents())clear(doc);
+    watchers.forEach(w=>w.disconnect());scrollListeners.forEach(stop=>stop());for(const doc of documents())clear(doc);
   }
   return{start,stop,runNow,get shown(){return owned.size},get checks(){return checks},get status(){return status}};
 }
@@ -1434,11 +1526,16 @@ function Manager(){
     setCleanupPreview(null);setCleanupUndo(null);
     setWorking(true);
     try{await call(method,...args);const verified=await refreshState();
-      const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]:method==='delete_alias'?!verified.aliases?.[String(args[0])]:verified.enabled===args[0];
+      const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]
+        :method==='delete_alias'?!verified.aliases?.[String(args[0])]
+        :method==='set_description_position'?verified.description_position===args[0]
+        :verified.enabled===args[0];
       if(!valid)throw Error('Settings readback failed');
-      adapter?.runNow();
+      adapter?.runNow();descriptionAdapter?.runNow();
       notify(method==='save_alias'?`Saved “${args[1]}”. TitleDeck confirmed your alias. Open Steam's game page to check the visible title.`:
-        method==='delete_alias'?'Restored original Steam title.':'Display replacements updated.',setNotice,true);
+        method==='delete_alias'?'Restored original Steam title.'
+        :method==='set_description_position'?`Description placement changed to ${args[0]==='hero_footer'?'Artwork Footer':'Below Play'}.`
+        :'Display replacements updated.',setNotice,true);
     }catch(e){notify('Could not save: '+String(e?.message||e),setNotice);}finally{setWorking(false);}
   };
   const saveDescription=async(remove=false)=>{
@@ -1680,7 +1777,7 @@ function Manager(){
     actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'settings-back',nav:e=>{if(dir(e)===10)return directionTo(root.current,'setting-0',e);if(dir(e)===9)return directionTo(root.current,'close',e);halt(e);return true;},onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Aliases & recovery'));
     const settingPanel=(id,title,desc,action,extra='',wide=false)=>h('section',{className:`td-setting-panel ${wide?'td-panel-wide':''}`,'data-td-setting':id},
       h('h3',null,title),h('p',null,desc),extra?h('div',{className:'td-mini-state'},extra):null,action);
-    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],['setting-scan'],['setting-restore-all']];
+    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],['setting-placement','setting-scan'],['setting-restore-all']];
     const settingsDirection=(key,e)=>{
       const d=dir(e),coord=settingsGrid.flatMap((r,y)=>r.map((v,x)=>({v,y,x}))).find(x=>x.v===key);
       if(!coord)return false;
@@ -1707,7 +1804,13 @@ function Manager(){
           button('Restore saved backup',()=>{setView('backupConfirm');focusQuery(root.current,'[data-td-focus="backup-cancel"]',90)},{disabled:!manual.available,focus:'setting-backup-restore'}),manual.available?'● Backup available':'○ No backup'),
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
+        settingPanel('description-placement','Custom game description location',
+          'Choose where your custom description appears on the Steam game page. Artwork Footer uses the unused strip above Play (works with Art Hero-style layouts); Below Play keeps the current full-size panel.',
+          button(state.description_position==='hero_footer'?'Use Below Play (full panel)':'Use Artwork Footer (above Play)',
+            ()=>void save('set_description_position',state.description_position==='hero_footer'?'below_play':'hero_footer'),
+            {focus:'setting-placement'}),
+          state.description_position==='hero_footer'?'● Artwork Footer selected · compact two-line preview':'● Below Play selected · full description'),
+        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Description placement: ${state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
           button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'})),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
