@@ -26,9 +26,18 @@ This branch extends TitleDeck's per-game **description editor** with a reversibl
 - Diagnostic view reports visible panel count and game identity matching status.
 - Regression tests cover identity mismatches, route changes, duplicate prevention, text-as-text, delete and disable, and existing rename behavior.
 
+## Native Steam GAME INFO support
+
+The original Reddit request is specifically the description displayed **inside Steam's GAME INFO tab**, not a separate card below Play. Description Preview 5 introduces a **Game Info** placement option.
+
+- On a matching Steam game page, open **GAME INFO**. When Steam mounts its native Game Info panel, TitleDeck inserts the custom text in the native description area and temporarily hides that original description.
+- TitleDeck preserves the original native DOM text untouched. Selecting a different location, pausing TitleDeck, changing games or unloading TitleDeck restores the original display and removes only the TitleDeck element.
+- The custom replacement is local to TitleDeck, not uploaded to Steam or edited in the Steam store.
+- It may not appear when Steam provides no GAME INFO tab. This is not yet physically validated on the current Steam Deck OS build.
+
 ## Optional placement: Artwork Footer vs Below Play
 
-TitleDeck now has a **Game description placement** setting in its full-manager Settings page.
+TitleDeck now has a **Game description placement** setting in its full-manager Settings page with **three independent choices: Game Info, Artwork Footer and Below Play.**
 
 - **Below Play** (default for existing settings): keeps the original full-sized panel between the Play bar and Steam's content tabs. Entire descriptions remain visible.
 - **Artwork Footer**: puts a compact, 2-line read-only preview into the strip immediately **below the hero artwork and above the Play bar**. This is intended to match the unused dark area shown with Metagawa's Art Hero 3.2.03. The panel follows the measured Play bar on theme layout changes, and hides when the header is scrolled away instead of floating over Steam controls.
