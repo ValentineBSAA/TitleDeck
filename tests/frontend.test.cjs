@@ -1117,7 +1117,7 @@ test('Artwork Footer follows the Play bar and keeps legacy Below Play selectable
  const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
  p.doc.defaultView.innerWidth=1280;p.doc.defaultView.innerHeight=800;
  p.doc.body=p.node('body');p.doc.body._root=true;
- const play=p.node('div');play.getBoundingClientRect=()=>({left:25,top:680,width:1190,height:64,bottom:744});
+ const play=p.node('div');play._root=true;play.getBoundingClientRect=()=>({left:25,top:680,width:1190,height:64,bottom:744});
  Object.defineProperty(p.visible,'previousElementSibling',{get:()=>play});
  const state={enabled:true,description_position:'hero_footer',descriptions:{'893180':'Catherine test description'}};
  const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
@@ -1170,9 +1170,13 @@ test('Settings exposes description placement as a persistent reversible choice',
    btn.props.onClick();
    await new Promise(resolve=>setImmediate(resolve));
    assert.equal(mock.state.description_position,'hero_footer');
-   nodes=walk(mock.render());
-   panel=nodes.find(n=>n.props?.['data-td-setting']==='description-placement');
-   btn=walk(panel).find(n=>n.props?.['data-td-focus']==='setting-placement');
-   assert(JSON.stringify(btn.children).includes('Below Play'));
+   const second=setupMock({view:'settings',description_position:mock.state.description_position});
+   const result=await second.init();
+   try{
+     nodes=walk(second.render());
+     panel=nodes.find(n=>n.props?.['data-td-setting']==='description-placement');
+     btn=walk(panel).find(n=>n.props?.['data-td-focus']==='setting-placement');
+     assert(JSON.stringify(btn.children).includes('Below Play'));
+   }finally{result.plugin.onDismount();second.cleanup();}
  }finally{plugin.onDismount();mock.cleanup();}
 });
