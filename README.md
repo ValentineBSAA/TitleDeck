@@ -49,7 +49,7 @@ Seven real photos from the creator's Steam Deck. These **older 0.8.1 screenshots
 
 ## Install / update
 
-For **0.9.0 RC1**, download `TitleDeck-0.9.0-RC1-SteamDeck.zip` from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases) and install via **Decky Loader → Developer → Install Plugin from ZIP**. If the RC is not listed yet, the maintainer has not published its ZIP. The prior **0.8.1** public release remains available.
+For **0.9.0 RC1**, download `TitleDeck-0.9.0-RC1-SteamDeck.zip` from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases) and install via **Decky Loader → Developer → Install Plugin from ZIP**. The release is published under tag **`0.9.0`**; the plugin version inside the ZIP is **`0.9.0-rc.1`**. The previous **0.8.1** release is preserved.
 
 In Gaming Mode, open **Quick Access → Decky → TitleDeck → Open full library manager**. Choose a game, edit using Change Name or review Suggest Cleanup, and explicitly press **Save Custom Title**. Back up your aliases before upgrading.
 
@@ -59,6 +59,6 @@ In Gaming Mode, open **Quick Access → Decky → TitleDeck → Open full librar
 
 ## Open source and community
 
-The 0.9.0 RC1 ZIP contains its matching frontend, backend and tests. A guarded release import will sync the new source into this repository **after the maintainer publishes the RC ZIP**, while preserving this README and the historical screenshots. Until then, main may still show the previous published source. [Source details](SOURCE.md).
+The 0.9.0 RC1 ZIP contains its matching frontend, backend and tests. The repository's `main.py`, `src/`, `dist/`, manifests and tests have been synchronized **byte-for-byte** with the checksum-verified, published RC1 installer. The public README and seven historical screenshots are preserved. [Source details](SOURCE.md).
 
 [GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Support](SUPPORT.md). MIT licensed. Independent from Valve, Steam, Decky and game publishers.

@@ -1,21 +1,19 @@
-# Publish TitleDeck 0.9.0 RC1 to GitHub
+# TitleDeck 0.9.0 RC1: published release verification
 
-The README, compatibility warning, verified feature matrix, screenshots and other public docs are already prepared. **Do not call RC1 stable or claim non-Steam Deck hardware support.**
+**The RC1 is already published.** The correct release tag is **`0.9.0`**, and the plugin version inside the ZIP is **`0.9.0-rc.1`**.
 
-1. Open [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases) and create a **new draft release**.
-2. Create tag **`0.9.0-rc.1`** (target `main`), with title **`TitleDeck 0.9.0 RC1 — Steam Deck Release Candidate`**.
-3. Upload **`TitleDeck-0.9.0-RC1-SteamDeck.zip`** while the release is still a **draft**.
-4. Copy the description from [0.9.0 RC1 release notes](RELEASE_NOTES_0.9.0_RC1.md). Clearly retain the native keyboard B-close known issue and Steam Deck-only tested platform.
-5. Mark **Set as a pre-release** and **publish only after the ZIP finishes uploading**. Keep 0.8.1 published as historical reference.
-6. Check [GitHub Actions](https://github.com/ValentineBSAA/TitleDeck/actions). **Import TitleDeck 0.9.0 RC1** should validate the exact uploaded ZIP, run tests, and then synchronize new source and version metadata to GitHub main.
-7. If the asset was uploaded *after* release publication, use **Actions → Import TitleDeck 0.9.0 RC1 → Run workflow**. Source stays at the previous public version until import succeeds.
-8. Check **TitleDeck checks** is green. The screenshot gallery already contains seven real Steam Deck photos from 0.8.1; no screenshots ZIP is required.
+[View published RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0) · [Release notes](RELEASE_NOTES_0.9.0_RC1.md) · [Verified features](VERIFIED_ON_DECK.md)
 
-**Expected SHA-256** of the RC installer:
-```
-6bf8467b3637334ee21b3e50302be5d9ea15880ab80dbc27f190438bbc415c73  TitleDeck-0.9.0-RC1-SteamDeck.zip
-```
+- [x] Correct maintainer ZIP uploaded: `TitleDeck-0.9.0-RC1-SteamDeck.zip`
+- [x] GitHub release marked **prerelease**, not stable
+- [x] SHA-256 verified: `6bf8467b3637334ee21b3e50302be5d9ea15880ab80dbc27f190438bbc415c73`
+- [x] RC source, tests and artwork matched the published ZIP
+- [x] Public README, seven original 0.8.1 screenshots and compatibility warnings retained
+- [x] 48 frontend and 11 backend tests passed on the published ZIP
+- [x] Kept old 0.8.1 release accessible
 
-Repacked or modified ZIPs will not pass the guarded import until a deliberate new release workflow is made.
+**Known issue:** The Steam keyboard sometimes dismisses with B without lowering the title editor. The Done editing control remains the workaround.
 
-**Platform notice:** Physical Valve Steam Deck Gaming Mode is the tested baseline. ROG Ally, other non-Steam Deck SteamOS-like handhelds, Windows, Android/DroidDeck and Desktop Mode are not verified.
+**Platform notice:** Only physical Valve Steam Deck Gaming Mode has been tested by the maintainer. ROG Ally, other SteamOS-like handhelds, Desktop Mode, Windows, and Android/DroidDeck are unverified.
+
+No replacement ZIP or code modifications are required for this synchronization.

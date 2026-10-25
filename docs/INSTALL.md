@@ -4,7 +4,7 @@
 
 ## Download
 
-The RC1 installer is **`TitleDeck-0.9.0-RC1-SteamDeck.zip`** under tag **`0.9.0-rc.1`** when published. See [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). **If the RC release is not listed, it has not yet been uploaded on GitHub.** The previous 0.8.1 installer remains available.
+The RC1 installer is **`TitleDeck-0.9.0-RC1-SteamDeck.zip`** under GitHub release tag **`0.9.0`** (internal version **`0.9.0-rc.1`**). See [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). **The RC1 prerelease is published with its matching ZIP.** The previous 0.8.1 installer remains available.
 
 ## Install with Decky Loader
 

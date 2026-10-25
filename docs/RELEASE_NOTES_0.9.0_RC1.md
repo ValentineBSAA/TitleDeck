@@ -1,6 +1,6 @@
 # TitleDeck 0.9.0 RC1 — Steam Deck Release Candidate
 
-**GitHub tag:** `0.9.0-rc.1`  
+**GitHub release tag:** `0.9.0` (internal plugin version `0.9.0-rc.1`)  
 **Release installer ZIP:** `TitleDeck-0.9.0-RC1-SteamDeck.zip`  
 **Status:** Public testing **release candidate**, not fully stable.
 
@@ -28,6 +28,6 @@ Metadata-refresh persistence, every Steam UI surface / CSS Loader theme, 200+ al
 
 ## Release availability
 
-The **0.9.0 RC1** ZIP is distributed from [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). If tag `0.9.0-rc.1` is not visible yet, the RC download has **not** been published. Existing 0.8.1 remains as an older release.
+The **0.9.0 RC1** ZIP is distributed from [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). The published prerelease is tagged **`0.9.0`** and contains the exact `0.9.0-rc.1` plugin ZIP. The original 0.8.1 release remains available.
 
 Install using Decky Loader's developer **Install Plugin from ZIP** feature. [Installation guide](INSTALL.md) · [Seven historical Steam Deck screenshots](SCREENSHOTS.md) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
