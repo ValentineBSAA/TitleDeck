@@ -10,7 +10,7 @@ let bridge, adapter, descriptionAdapter;
 let steamDocument = null;
 let steamBridgeStatus = "Waiting for Steam window";
 const STEAM_ANCHOR = "TitleDeckSteamTextBridge";
-let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
+let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, description_position:'below_play', games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
 const observers = new Set();
 function connect() {
   if (bridge) return bridge;
@@ -418,11 +418,14 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
         pane.style.cssText='box-sizing:border-box;width:calc(100% - 40px);margin:12px 20px;padding:16px 20px;border-radius:9px;background:#203045;border:1px solid #445b73;color:#ecf3f9;';
       }
     }
-    pane.setAttribute?.('data-titledeck-position',layout);
+    if(pane.getAttribute?.('data-titledeck-position')!==layout)pane.setAttribute?.('data-titledeck-position',layout);
     const heading=pane.querySelector?.('h3')||pane.children?.[0];
-    if(heading)heading.style.cssText=layout==='hero_footer'
-      ?'margin:0 0 4px;font-size:12px;font-weight:750;color:#b8d7f0;letter-spacing:.035em;'
-      :'margin:0 0 9px;font-size:15px;font-weight:750;color:#afd3f2;';
+    if(heading&&heading._titledeckHeadingMode!==layout){
+      heading._titledeckHeadingMode=layout;
+      heading.style.cssText=layout==='hero_footer'
+        ?'margin:0 0 4px;font-size:12px;font-weight:750;color:#b8d7f0;letter-spacing:.035em;'
+        :'margin:0 0 9px;font-size:15px;font-weight:750;color:#afd3f2;';
+    }
     const body=pane.querySelector?.('[data-titledeck-description-text]')||pane.lastChild;
     if(body){
       if(body.textContent!==description)body.textContent=description; // Plain text only.
@@ -1769,7 +1772,7 @@ function Manager(){
     actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'settings-back',nav:e=>{if(dir(e)===10)return directionTo(root.current,'setting-0',e);if(dir(e)===9)return directionTo(root.current,'close',e);halt(e);return true;},onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Aliases & recovery'));
     const settingPanel=(id,title,desc,action,extra='',wide=false)=>h('section',{className:`td-setting-panel ${wide?'td-panel-wide':''}`,'data-td-setting':id},
       h('h3',null,title),h('p',null,desc),extra?h('div',{className:'td-mini-state'},extra):null,action);
-    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],['setting-scan'],['setting-restore-all']];
+    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],['setting-placement','setting-scan'],['setting-restore-all']];
     const settingsDirection=(key,e)=>{
       const d=dir(e),coord=settingsGrid.flatMap((r,y)=>r.map((v,x)=>({v,y,x}))).find(x=>x.v===key);
       if(!coord)return false;
@@ -1796,7 +1799,13 @@ function Manager(){
           button('Restore saved backup',()=>{setView('backupConfirm');focusQuery(root.current,'[data-td-focus="backup-cancel"]',90)},{disabled:!manual.available,focus:'setting-backup-restore'}),manual.available?'● Backup available':'○ No backup'),
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
+        settingPanel('description-placement','Custom game description location',
+          'Choose where your custom description appears on the Steam game page. Artwork Footer uses the unused strip above Play (works with Art Hero-style layouts); Below Play keeps the current full-size panel.',
+          button(state.description_position==='hero_footer'?'Use Below Play (full panel)':'Use Artwork Footer (above Play)',
+            ()=>void save('set_description_position',state.description_position==='hero_footer'?'below_play':'hero_footer'),
+            {focus:'setting-placement'}),
+          state.description_position==='hero_footer'?'● Artwork Footer selected · compact two-line preview':'● Below Play selected · full description'),
+        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Description placement: ${state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
           button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'})),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
