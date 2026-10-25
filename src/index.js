@@ -284,7 +284,7 @@ export function appidFromVisibleGame(el){
     const key=Object.keys(el||{}).find(k=>k.startsWith('__reactFiber$'));
     let fiber=key?el[key]:null;
     for(let i=0;fiber&&i<40;i++,fiber=fiber.return){
-      const ov=fiber.memoizedProps?.overview,id=normId(ov?.appid??ov?.appId??ov?.m_nAppID);
+      const ov=fiber.memoizedProps?.overview||fiber.pendingProps?.overview,id=normId(ov?.appid??ov?.appId??ov?.m_gameid??ov?.m_nAppID);
       if(id)return id;
     }
   }catch{}
@@ -292,6 +292,13 @@ export function appidFromVisibleGame(el){
 }
 
 
+export function steamLibraryRouteId(location){
+  try{
+    const route=[location?.pathname,location?.search,location?.hash].filter(Boolean).join('');
+    const found=route.match(/\/library\/app\/([1-9][0-9]{0,11})(?:[/?#&]|$)/);
+    return found?normId(found[1]):'';
+  }catch{return ''}
+}
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
   const MARK='data-titledeck-description',owned=new Map(),watchers=[];
   let stopped=false,ticker=null,pending=null,checks=0,status='Waiting for Steam game page';
@@ -305,14 +312,14 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     try{for(const el of doc.querySelectorAll('['+MARK+']'))if(el.getAttribute?.(MARK))el.remove?.()}catch{}
   }
   function routeId(doc){
-    const path=String(doc.defaultView?.location?.pathname||globalThis.location?.pathname||'');
-    const found=path.match(/\/library\/app\/([1-9][0-9]{0,11})(?:\/|$)/);
-    return found?normId(found[1]):'';
+    // Steam often uses a hash route. Only reading pathname made preview.2
+    // silently remove saved descriptions even on the correct game page.
+    return steamLibraryRouteId(doc.defaultView?.location)||steamLibraryRouteId(globalThis.location);
   }
   function candidates(doc){
     const result=new Set(),klass=getClass();
     if(typeof klass==='string'&&klass.trim())try{for(const el of doc.getElementsByClassName?.(klass)||[])result.add(el)}catch{}
-    try{for(const el of doc.querySelectorAll('[class*="AppDetailsContainer"]'))result.add(el)}catch{}
+    try{for(const el of doc.querySelectorAll('[class*="AppDetailsContainer"],[class*="AppDetailsRoot"]'))result.add(el)}catch{}
     return [...result];
   }
   function visible(node){
@@ -349,14 +356,47 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     const state=getState()||{},descriptions=state.descriptions||{};
     let applied=0;
     for(const doc of documents()){
-      const id=routeId(doc),description=descriptions[id];
-      if(!state.enabled||!id||typeof description!=='string'||!description.trim()){
-        clear(doc);status=!state.enabled?'Display overrides paused':!id?'Not on a game details page':'No saved description';continue;
+      const id=routeId(doc);
+      if(!state.enabled||!Object.keys(descriptions).length){
+        clear(doc);status=!state.enabled?'Display overrides paused':'No saved descriptions';continue;
       }
-      // URL alone is unsafe during game transitions: confirm React fiber identity.
-      const target=candidates(doc).find(el=>visible(el)&&appidFromVisibleGame(el)===id);
-      if(!target?.parentElement){clear(doc);status='Visible Steam app identity not confirmed';continue}
-      if(draw(doc,target,id,description.trim())){applied++;status='Shown on matching Steam game page'}
+      let options=candidates(doc).filter(visible);
+      if(id&&!options.length){
+        // Decky style-token exports and Valve's hashed classes may differ.
+        // Only attempt a bounded fiber lookup on an actual game-details route.
+        try{
+          const all=doc.querySelectorAll('div');
+          const limit=Math.min(all.length,3200);
+          for(let i=0;i<limit;i++){
+            const el=all[i];
+            if(!visible(el)||appidFromVisibleGame(el)!==id)continue;
+            // Select a reasonably large parent so we add a panel to the
+            // game page rather than inside its title/play-button text.
+            let anchor=el;
+            for(let depth=0;depth<5&&anchor.parentElement;depth++){
+              const parent=anchor.parentElement,cls=String(parent.className||'');
+              if(/AppDetails(Container|Root)/.test(cls)){anchor=parent;break}
+              if(parent===doc.body||parent===doc.documentElement)break;
+              anchor=parent;
+            }
+            options.push(anchor);break;
+          }
+        }catch{}
+      }
+      const matches=options.map(el=>({el,gameId:appidFromVisibleGame(el)}))
+        .filter(item=>item.gameId&&typeof descriptions[item.gameId]==='string'&&descriptions[item.gameId].trim());
+      // Route and visible Steam React overview must agree when a route is
+      // known. Without a route, accept only one unambiguous visible page ID.
+      const uniqueIds=[...new Set(matches.map(item=>item.gameId))];
+      const match=id?matches.find(item=>item.gameId===id):(uniqueIds.length===1?matches[0]:null);
+      if(!match?.el?.parentElement){
+        clear(doc);
+        status=!options.length?'No visible Steam details container':id?'Visible app ID does not match route '+id:'Cannot confirm one visible game page';
+        continue;
+      }
+      if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim())){
+        applied++;status='Shown for Steam app '+match.gameId;
+      }
     }
     return applied;
   }
