@@ -1379,3 +1379,56 @@ test('Quick Access offers a Game Info scan without navigating into the full mana
    assert(all.some(n=>n.children?.includes('Open full library manager')));
  }finally{plugin.onDismount();mock.cleanup()}
 });
+
+
+test('Steam Game Info uses live Decky CSS module exports when hashed classes have no stable names',async()=>{
+ const ownerClass='_abcGameInfoOwner',descClass='_xyzGameDesc';
+ let finderCalls=0;
+ const ui={findModuleChild(predicate){
+   finderCalls++;
+   const modules=[
+     {GameInfoContainer:ownerClass,GameInfoQuickLinks:'_link'},
+     {GameDescription:descClass,Description:'_desc',DescriptionStatsCtn:'_stats'}
+   ];
+   for(const mod of modules){const match=predicate(mod);if(match)return match}
+   return null;
+ }};
+ globalThis.DFL=ui;
+ const m=await moduleForTest();
+ const p=nativeGamePageForDescription('893180');
+ const container=p.node('div');container.className=ownerClass;
+ const original=p.node('p');original.className=descClass;original.textContent='Original Catherine metadata';
+ container.appendChild(original);p.visible.appendChild(container);
+ const oldClass=p.doc.getElementsByClassName;
+ p.doc.getElementsByClassName=name=>name===ownerClass?[container]:name===descClass?[original]:oldClass(name);
+ const resolved=m.resolveLiveSteamGameInfoClasses(ui);
+ assert.deepEqual(resolved,{owner:ownerClass,description:descClass});
+ assert.deepEqual(m.resolveLiveSteamGameInfoClasses(ui),resolved);
+ assert.equal(finderCalls,2,'do not rescan entire Steam webpack tree on every UI refresh');
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'Replacement inside actual Game Info'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+   const found=m.findSteamGameInfoDescription(p.doc,p.visible);
+   assert(found,'Game Info with hashed CSS classes must be discoverable');
+   assert.equal(found.nativeDescription,original);
+   assert.equal(adapter.runNow(),1);
+   assert.equal(original.style.display,'none');
+   assert.equal(container.children[0].lastChild.textContent,'Replacement inside actual Game Info');
+   const probe=m.getLastDescriptionGameProbe();
+   assert.equal(probe.moduleStatus,'resolved');
+   assert.equal(probe.infoPanels,1);
+   assert.equal(probe.nativeDescriptions,1);
+   assert(m.formatDescriptionGameProbe().includes('Live CSS modules resolved'));
+   state.enabled=false;assert.equal(adapter.runNow(),0);
+   assert.equal(original.style.display,'');
+   assert.equal(container.children.length,1);
+   assert.equal(original.textContent,'Original Catherine metadata');
+ }finally{adapter.stop();delete globalThis.DFL}
+});
+test('Live Steam Game Info CSS module lookup fails safely if module finder is absent',async()=>{
+ const m=await moduleForTest();
+ assert.equal(m.resolveLiveSteamGameInfoClasses({}),null);
+ assert.equal(m.resolveLiveSteamGameInfoClasses(null),null);
+ const junk={findModuleChild(predicate){return predicate({GameInfoContainer:'bad',GameInfoQuickLinks:'x'})}};
+ assert.equal(m.resolveLiveSteamGameInfoClasses(junk),null,'must have BOTH description and owner exports');
+});
