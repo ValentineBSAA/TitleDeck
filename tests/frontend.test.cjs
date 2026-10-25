@@ -1493,3 +1493,23 @@ test('GetDescriptions route parser accepts game tabs and refuses a different app
  base.Router.WindowStore.GamepadUIMainWindowInstance.m_history.location.pathname='/library/home';
  assert.equal(m.currentSteamGameAppId(base),'');
 });
+
+
+test('MetaDeck-inspired native override follows route in separate Steam window, fails closed on conflicting app views',async()=>{
+ const m=await moduleForTest();
+ const store={GetDescriptions(id){return{strFullDescription:'Steam '+id,strSnippet:'Original'}}};
+ const storeWindow={appDetailsStore:store};
+ const steamWindow={Router:{WindowStore:{GamepadUIMainWindowInstance:{m_history:{location:{pathname:'/library/app/893180/tab/gameinfo'}}}}}};
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'Edited Catherine'}};
+ let contexts=[storeWindow,steamWindow];
+ const adapter=m.createGameInfoDataAdapter(()=>state,()=>contexts);
+ adapter.start();
+ try{
+   assert.equal(store.GetDescriptions(893180).strFullDescription,'Edited Catherine','route and store can be in different windows');
+   const staleWindow={Router:{WindowStore:{GamepadUIMainWindowInstance:{m_history:{location:{pathname:'/library/app/620/tab/gameinfo'}}}}}};
+   contexts=[storeWindow,steamWindow,staleWindow];
+   assert.equal(store.GetDescriptions(893180).strFullDescription,'Steam 893180','conflicting app routes must not cross-contaminate');
+   contexts=[storeWindow,steamWindow];
+   assert.equal(store.GetDescriptions(893180).strFullDescription,'Edited Catherine');
+ }finally{adapter.stop()}
+});
