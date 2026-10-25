@@ -1163,26 +1163,78 @@ test('Art Hero footer geometry rejects missing or implausible Play areas',async(
  assert.equal(m.heroFooterGeometry({left:0,top:650,width:80},1280,800),null);
  assert.equal(m.heroFooterGeometry({left:0,top:650,width:1190},1280,800).height,76);
 });
-test('Settings exposes description placement as a persistent reversible choice',async()=>{
+test('Settings exposes Game Info, Artwork Footer and Below Play independently',async()=>{
  const mock=setupMock({view:'settings',description_position:'below_play'});
  const {plugin}=await mock.init();
  try{
-   let nodes=walk(mock.render());
-   let panel=nodes.find(n=>n.props?.['data-td-setting']==='description-placement');
+   let nodes=walk(mock.render()),panel=nodes.find(n=>n.props?.['data-td-setting']==='description-placement');
    assert(panel);
-   let btn=walk(panel).find(n=>n.props?.['data-td-focus']==='setting-placement');
-   assert(btn);
-   assert(JSON.stringify(btn.children).includes('Artwork Footer'));
-   btn.props.onClick();
+   const buttons=walk(panel);
+   const info=buttons.find(n=>n.props?.['data-td-focus']==='setting-placement-info');
+   const hero=buttons.find(n=>n.props?.['data-td-focus']==='setting-placement-hero');
+   const below=buttons.find(n=>n.props?.['data-td-focus']==='setting-placement-below');
+   assert(info&&hero&&below);
+   assert(JSON.stringify(info.children).includes('GAME INFO'));
+   assert(JSON.stringify(hero.children).includes('Artwork Footer'));
+   assert(JSON.stringify(below.children).includes('Below Play'));
+   info.props.onClick();
    await new Promise(resolve=>setImmediate(resolve));
-   assert.equal(mock.state.description_position,'hero_footer');
+   assert.equal(mock.state.description_position,'game_info');
    const second=setupMock({view:'settings',description_position:mock.state.description_position});
    const result=await second.init();
    try{
      nodes=walk(second.render());
      panel=nodes.find(n=>n.props?.['data-td-setting']==='description-placement');
-     btn=walk(panel).find(n=>n.props?.['data-td-focus']==='setting-placement');
-     assert(JSON.stringify(btn.children).includes('Below Play'));
+     assert(JSON.stringify(walk(panel).find(n=>n.props?.['data-td-focus']==='setting-placement-info').children).includes('selected'));
    }finally{result.plugin.onDismount();second.cleanup();}
- }finally{plugin.onDismount();mock.cleanup();}
+ }finally{plugin.onDismount();mock.cleanup()}
+});
+
+
+test('native Game Info mode replaces visible description but preserves Steam text',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const nativeContainer=p.node('div'),original=p.node('p');
+ nativeContainer.className='appdetailsgameinfopanel_Container_2jPMy';
+ original.className='appdetailsgameinfopanel_GameDescription_3GkV1';
+ original.textContent='Original Steam description for Catherine Classic';
+ nativeContainer.appendChild(original);p.visible.appendChild(nativeContainer);
+ nativeContainer.querySelectorAll=sel=>sel.includes('GameDescription')?[original]:[];
+ const query=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>sel.includes('appdetailsgameinfopanel_Container')?[nativeContainer]:query(sel);
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'New Catherine custom synopsis'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+   assert.equal(m.findSteamGameInfoDescription(p.doc,p.visible).nativeDescription,original);
+   assert.equal(adapter.runNow(),1);
+   assert.equal(original.textContent,'Original Steam description for Catherine Classic','original text unchanged');
+   assert.equal(original.style.display,'none');
+   const custom=nativeContainer.children[0];
+   assert.equal(custom.getAttribute('data-titledeck-gameinfo-description'),'893180');
+   assert.equal(custom.lastChild.textContent,'New Catherine custom synopsis');
+   assert.equal(adapter.runNow(),1);
+   assert.equal(nativeContainer.children.length,2,'no duplicate Game Info descriptions');
+   state.descriptions['893180']='Edited synopsis';
+   assert.equal(adapter.runNow(),1);
+   assert.equal(custom.lastChild.textContent,'Edited synopsis');
+   state.description_position='below_play';
+   assert.equal(adapter.runNow(),1);
+   assert.equal(nativeContainer.children.length,1,'custom removed when mode switched');
+   assert.equal(original.style.display,'');
+   assert.equal(original.textContent,'Original Steam description for Catherine Classic');
+   state.description_position='game_info';
+   assert.equal(adapter.runNow(),1);
+   state.enabled=false;assert.equal(adapter.runNow(),0);
+   assert.equal(original.style.display,'');
+   assert.equal(nativeContainer.children.length,1);
+ }finally{adapter.stop()}
+});
+test('Game Info mode waits for that tab and never shows its text below Play',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('620');
+ const state={enabled:true,description_position:'game_info',descriptions:{'620':'Portal custom text'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+   assert.equal(adapter.runNow(),0);
+   assert.equal(p.root.children.length,2);
+   assert(adapter.status.includes('open the GAME INFO tab'));
+ }finally{adapter.stop()}
 });
