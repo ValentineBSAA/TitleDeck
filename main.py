@@ -64,7 +64,7 @@ def validate_description(value: Any) -> str:
 
 
 def blank_state() -> dict[str, Any]:
-    return {"schema": SCHEMA, "enabled": True, "aliases": {}, "descriptions": {}}
+    return {"schema": SCHEMA, "enabled": True, "aliases": {}, "descriptions": {}, "description_position": "below_play"}
 
 
 def load_state(path: Path | None = None) -> dict[str, Any]:
@@ -86,8 +86,11 @@ def load_state(path: Path | None = None) -> dict[str, Any]:
         raise ValueError("Invalid description collection")
     for appid, description in saved_descriptions.items():
         descriptions[normalize_id(appid)] = validate_description(description)
+    position = raw.get("description_position", "below_play")
+    if position not in ("below_play", "hero_footer") or not isinstance(position, str):
+        raise ValueError("Invalid description placement")
     return {"schema": SCHEMA, "enabled": raw.get("enabled") is not False,
-            "aliases": aliases, "descriptions": descriptions}
+            "aliases": aliases, "descriptions": descriptions, "description_position": position}
 
 
 def store_state(state: dict[str, Any], path: Path | None = None) -> None:
@@ -270,6 +273,16 @@ class Plugin:
             store_state(current)
             return {**current, "recovered_count": len(previous["aliases"])}
 
+    async def set_description_position(self, position: str) -> dict[str, Any]:
+        """Choose a reversible TitleDeck-only placement, without writing Steam or CSS Loader files."""
+        if not isinstance(position, str) or position not in ("below_play", "hero_footer"):
+            raise ValueError("Unsupported description position")
+        async with self._lock:
+            state = load_state()
+            state["description_position"] = position
+            store_state(state)
+            return state
+
     async def set_enabled(self, enabled: bool) -> dict[str, Any]:
         if not isinstance(enabled, bool):
             raise ValueError("Enabled must be true or false")
@@ -315,10 +328,15 @@ class Plugin:
         added_descriptions = {
             normalize_id(k): validate_description(v) for k, v in incoming_descriptions.items()
         }
+        position = obj.get("description_position")
+        if position is not None and (not isinstance(position, str) or position not in ("below_play", "hero_footer")):
+            raise ValueError("Unsupported imported description placement")
         async with self._lock:
             state = load_state()
             state["aliases"].update(additions)
             state["descriptions"].update(added_descriptions)
+            if position is not None:
+                state["description_position"] = position
             if (len(state["aliases"]) > MAX_ALIAS_ENTRIES
                     or len(state["descriptions"]) > MAX_ALIAS_ENTRIES):
                 raise ValueError("Maximum number of saved customizations reached")
