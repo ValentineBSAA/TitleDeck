@@ -42,7 +42,7 @@ jobs:
           import json, shutil, zipfile, hashlib
           from pathlib import Path
 
-          version = "0.9.1-desc-preview.7"
+          version = "0.9.1-desc-preview.8"
           root = Path("preview-staging/TitleDeck")
           root.mkdir(parents=True, exist_ok=True)
           for item in ("main.py","plugin.json","package.json","README.md","CHANGELOG.md","LICENSE"):
@@ -68,18 +68,18 @@ jobs:
 
           assert (root/"src/index.js").read_bytes() == (root/"dist/index.js").read_bytes()
           (root/"TEST_THIS_FIRST.txt").write_text(
-              "TitleDeck custom-description v0.9.1-desc-preview.7 live Game Info capture diagnostics. NOT stable.\n\n"
+              "TitleDeck custom-description v0.9.1-desc-preview.8 live Steam Game Info CSS-module resolution and diagnostics. NOT stable.\n\n"
               "Back up your existing TitleDeck names in TitleDeck Settings before installing.\n"
               "This installs OVER your current TitleDeck, not alongside it.\n"
               "Decky Loader -> Settings -> Developer -> Install Plugin from ZIP.\n"
-              "Use the inner TitleDeck-0.9.1-description-preview-7-Decky.zip file.\n"
+              "Use the inner TitleDeck-0.9.1-description-preview-8-Decky.zip file.\n"
               "Open TitleDeck -> Full library manager -> select a game -> Add description.\n"
               "Use Edit description using Steam keyboard. Same native Steam TextField as Change Name.\n"
               "Edit, Save, then open the same game's NORMAL STEAM LIBRARY detail page.\n"
               "In Game Info mode open Steam's GAME INFO tab; TitleDeck should replace the description there. Other modes use the separate panel.\n"
               "Change games; delete the description; verify the custom panel disappears.\n"
               "TitleDeck Settings -> Custom game description location -> Show inside GAME INFO.\n"
-              "If GAME INFO text remains unchanged: STAY on that game's GAME INFO page, open Decky Quick Access > TitleDeck > Capture current Game Info page. Take a screenshot of the displayed App ID, panel counts, CSS clues and status. Then go to Full Manager > Settings to view last captured game page. Do not rely only on the Current view diagnostic when Full Manager is open.\n"
+              "If GAME INFO text remains unchanged: STAY on that game's GAME INFO page, open Decky Quick Access > TitleDeck > Capture current Game Info page. Take a screenshot of the App ID, panel counts, Live CSS modules status, CSS clues and status. Then go to Full Manager > Settings to view last captured game page. Do not rely only on the Current view diagnostic when Full Manager is open.\n"
               "Artwork Footer is independently selectable and requires an identifiable Steam Play bar.\n"
               "The default Below Play option is preserved. In Artwork Footer, preview is two lines.\n"
               "Description editor: Save and Restore are in the fixed top toolbar; Bottom scrolls to the end.\n"
@@ -90,7 +90,7 @@ jobs:
           )
           out = Path("preview-download")
           out.mkdir(exist_ok=True)
-          archive = out / "TitleDeck-0.9.1-description-preview-7-Decky.zip"
+          archive = out / "TitleDeck-0.9.1-description-preview-8-Decky.zip"
           with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
               for file in sorted(root.rglob("*")):
                   if file.is_file():
@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TitleDeck-description-preview-installer
-          path: preview-download/TitleDeck-0.9.1-description-preview-7-Decky.zip
+          path: preview-download/TitleDeck-0.9.1-description-preview-8-Decky.zip
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
