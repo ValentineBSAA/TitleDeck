@@ -706,7 +706,7 @@ test('separate keyboard dismissal requires no callback to expose Save/Restore ag
 test('single-screen game name field syncs Steam paste without a React onChange',async()=>{
  const originalR=globalThis.SP_REACT,originalDFL=globalThis.DFL;
  let effect,cleanup,syncTick;let typed='Catherine';const updates=[];
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children:children.flat()}),useRef:v=>({current:v}),useEffect:fn=>{effect=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children:children.flat()}),useRef:v=>({current:v}),useState:v=>[v,()=>{}],useEffect:fn=>{effect=fn}};
  globalThis.DFL={TextField:'steam-field'};
  const {InlineGameNameField}=await moduleForTest();
  try{
@@ -1796,4 +1796,89 @@ test('saved description preview flattens paragraph breaks while preserving origi
  assert.equal(preview.length,text.length);
  assert.equal(preview.truncated,false);
  assert.equal(m.savedDescriptionPreview('',210).excerpt,'');
+});
+
+
+test('description keyboard clear replaces Done editing and restores 1005 characters with Undo before Save',async()=>{
+ const originalReact=globalThis.SP_REACT,originalUI=globalThis.DFL;
+ const refs=[],states=[];let ri=0,si=0;
+ globalThis.SP_REACT={
+   createElement:(type,props,...children)=>({type,props:props||{},children:children.flat(Infinity)}),
+   useRef(initial){const i=ri++;return refs[i]||(refs[i]={current:initial})},
+   useState(initial){const i=si++;if(!states[i])states[i]={value:initial};
+     return[states[i].value,next=>{states[i].value=typeof next==='function'?next(states[i].value):next}]},
+   useEffect(){}
+ };
+ globalThis.DFL={TextField:'steam-description-field',Focusable:'focusable'};
+ const m=await moduleForTest();
+ let draft='Catherine '.repeat(100)+'more',fieldValue=draft;
+ const saved='Previously saved original Catherine description';
+ const update=value=>{draft=value};
+ const render=kind=>{
+   ri=0;si=0;
+   const tree=m.InlineGameNameField({value:draft,setValue:update,maxLength:4000,
+     fieldKind:kind,label:'Custom game description'});
+   tree.props.ref.current={querySelector:()=>input};
+   return tree;
+ };
+ const input={get value(){return fieldValue},set value(v){fieldValue=v}};
+ try{
+   assert(draft.length>1000);
+   let tree=render('description'),nodes=walk(tree);
+   let button=nodes.find(n=>n.props?.['data-td-description-clear']==='true');
+   assert(button);
+   assert.equal(button.children[0],'Clear text field');
+   assert.equal(nodes.some(n=>n.children?.includes('Done editing')),false);
+   assert.equal(button.props.disabled,false);
+   resolveButton(button).props.onClick();
+   assert.equal(draft,'','clear changes draft immediately');
+   assert.equal(fieldValue,'','native text field is cleared immediately');
+   assert.equal(saved,'Previously saved original Catherine description','no automatic backend deletion');
+   tree=render('description');nodes=walk(tree);
+   button=nodes.find(n=>n.props?.['data-td-description-clear']==='true');
+   assert(button.children[0].includes('Undo clear'),'one-step undo remains available');
+   resolveButton(button).props.onClick();
+   assert(draft.length>1000,'Undo restores full draft without losing characters');
+   assert.equal(fieldValue,draft);
+   assert.equal(saved,'Previously saved original Catherine description');
+   tree=render('description');
+   button=walk(tree).find(n=>n.props?.['data-td-description-clear']==='true');
+   assert.equal(button.children[0],'Clear text field');
+ }finally{globalThis.SP_REACT=originalReact;globalThis.DFL=originalUI}
+});
+test('description clear undo expires when user types new text and name field retains Done editing',async()=>{
+ const originalReact=globalThis.SP_REACT,originalUI=globalThis.DFL;
+ const refs=[],states=[];let ri=0,si=0;
+ globalThis.SP_REACT={
+   createElement:(type,props,...children)=>({type,props:props||{},children:children.flat(Infinity)}),
+   useRef(initial){const i=ri++;return refs[i]||(refs[i]={current:initial})},
+   useState(initial){const i=si++;if(!states[i])states[i]={value:initial};
+     return[states[i].value,next=>{states[i].value=typeof next==='function'?next(states[i].value):next}]},
+   useEffect(){}
+ };
+ globalThis.DFL={TextField:'steam-field',Focusable:'focusable'};
+ const m=await moduleForTest();
+ let value='one thousand words of text',inputValue=value;
+ const setValue=v=>{value=v};
+ const input={get value(){return inputValue},set value(v){inputValue=v}};
+ const render=kind=>{
+   ri=0;si=0;const tree=m.InlineGameNameField({value,setValue,fieldKind:kind,maxLength:4000});
+   tree.props.ref.current={querySelector:()=>input};
+   return tree;
+ };
+ try{
+   let tree=render('description');
+   let button=walk(tree).find(n=>n.props?.['data-td-description-clear']==='true');
+   resolveButton(button).props.onClick();
+   tree=render('description');
+   const field=walk(tree).find(n=>n.type==='steam-field');
+   field.props.onChange({target:{value:'New text'}});
+   inputValue='New text';
+   tree=render('description');
+   button=walk(tree).find(n=>n.props?.['data-td-description-clear']==='true');
+   assert.equal(button.children[0],'Clear text field','typing invalidates Undo');
+   assert.equal(value,'New text');
+   assert.equal(walk(render('name')).some(n=>n.children?.includes('Done editing')),true);
+   assert.equal(walk(render('name')).some(n=>n.props?.['data-td-description-clear']==='true'),false);
+ }finally{globalThis.SP_REACT=originalReact;globalThis.DFL=originalUI}
 });
