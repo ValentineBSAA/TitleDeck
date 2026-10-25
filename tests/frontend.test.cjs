@@ -1053,3 +1053,60 @@ test('name editor still uses its original 180-char Steam TextField',async()=>{
    assert.equal(input.props.label,'Custom display title');
  }finally{plugin.onDismount();mock.cleanup();}
 });
+
+
+test('Steam hash-based routes show the right native description instead of silently discarding it',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ p.doc.defaultView.location.pathname='/';
+ p.doc.defaultView.location.hash='#/library/app/893180';
+ const state={enabled:true,descriptions:{'893180':'Catherine Classic custom description','620':'Portal description'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(m.steamLibraryRouteId(p.doc.defaultView.location),'893180');
+  assert.equal(adapter.runNow(),1);
+  assert.equal(p.root.children[0].getAttribute('data-titledeck-description'),'893180');
+  assert.equal(p.root.children[0].lastChild.textContent,'Catherine Classic custom description');
+  p.doc.defaultView.location.hash='#/library/app/620';
+  assert.equal(adapter.runNow(),0,'when Steam URL changes but old game remains visible do not leak old description');
+  assert.equal(p.root.children.length,2,'old panel removed on route transition');
+ }finally{adapter.stop()}
+});
+test('when Steam hides its route, only ONE confirmed visible game identity may show a description',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ p.doc.defaultView.location.pathname='/';
+ p.doc.defaultView.location.hash='';
+ const state={enabled:true,descriptions:{'893180':'Catherine custom description'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(m.steamLibraryRouteId(p.doc.defaultView.location),'');
+  assert.equal(adapter.runNow(),1,'visible Steam React overview is enough on matching app details container');
+  p.visible['__reactFiber$test'].memoizedProps.overview.appid=620;
+  assert.equal(adapter.runNow(),0,'never display Catherine description on another game');
+  assert.equal(p.root.children.length,2,'clear stale custom description');
+ }finally{adapter.stop()}
+});
+test('descriptions remain accessible at short Deck heights with fixed toolbar and scroll to bottom',async()=>{
+ const mock=setupMock({games:[{appid:'893180',name:'Catherine Classic'}],view:'description',selected:'893180',
+  descriptions:{'893180':'A custom Catherine description'}});
+ const {plugin}=await mock.init();
+ try{
+  const tree=walk(mock.render());
+  const ids=tree.map(n=>n.props?.['data-td-focus']).filter(Boolean);
+  for(const id of ['description-back','description-open','description-save','description-restore','description-bottom']){
+    assert.equal(ids.filter(x=>x===id).length,1,'missing or repeated action '+id);
+  }
+  const top=tree.find(n=>n.props?.className==='td-actions td-description-toolbar');
+  assert(top,'fixed description toolbar missing');
+  assert(walk(top).some(n=>n.props?.['data-td-focus']==='description-save'));
+  assert(walk(top).some(n=>n.props?.['data-td-focus']==='description-restore'));
+  const workspace=tree.find(n=>n.props?.['data-td-description-workspace']==='true');
+  assert(workspace,'scrolling workspace absent');
+  const scroller={scrollTop:0,scrollHeight:950};
+  const root=tree.find(n=>n.props?.className==='td-root');
+  root.props.ref.current={querySelector(q){return q==='[data-td-description-workspace]'?scroller:null}};
+  const bottom=tree.find(n=>n.props?.['data-td-focus']==='description-bottom');
+  bottom.props.onClick();
+  assert.equal(scroller.scrollTop,950);
+  assert.equal(bottom.props.disabled,undefined);
+ }finally{plugin.onDismount();mock.cleanup()}
+});
