@@ -1355,7 +1355,7 @@ export function savedDescriptionPreview(text,limit=210){
     truncated:flat.length>max};
 }
 function Cover({id,title,className=''}){
-  const sources=R.useMemo(()=>coverSources(id),[id]);
+  const sources=coverSources(id);
   const [index,setIndex]=R.useState(0);
   R.useEffect(()=>setIndex(0),[id]);
   if(!sources.length||index>=sources.length)
