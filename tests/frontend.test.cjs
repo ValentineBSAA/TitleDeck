@@ -928,3 +928,82 @@ test('custom game descriptions use a reversible, locally saved editor without ch
    assert.equal(mock.state.descriptions['620'],undefined);
  }finally{plugin.onDismount();mock.cleanup();}
 });
+
+
+function nativeGamePageForDescription(appid='620'){
+ const doc={documentElement:{},defaultView:{location:{pathname:'/library/app/'+appid},getComputedStyle:()=>({display:'block',visibility:'visible'})}};
+ function node(tag,attrs={}){
+  const el={tag,attrs:{...attrs},children:[],style:{},ownerDocument:doc,offsetParent:{},className:'',
+   get isConnected(){return Boolean(this._root||this.parentElement?.isConnected)},
+   get nextSibling(){const a=this.parentElement?.children||[];return a[a.indexOf(this)+1]||null},
+   get lastChild(){return this.children[this.children.length-1]||null},
+   setAttribute(k,v){this.attrs[k]=String(v)},getAttribute(k){return this.attrs[k]??null},
+   appendChild(child){child.parentElement=this;this.children.push(child);return child},
+   insertBefore(child,before){
+    if(child.parentElement){const old=child.parentElement.children;const at=old.indexOf(child);if(at>=0)old.splice(at,1)}
+    const i=this.children.indexOf(before);if(i<0)throw Error('missing child');
+    child.parentElement=this;this.children.splice(i,0,child);return child;
+   },
+   remove(){if(this.parentElement){const a=this.parentElement.children,i=a.indexOf(this);if(i>=0)a.splice(i,1);this.parentElement=null}},
+   querySelector(q){if(q==='[data-titledeck-description-text]')return this.children.find(x=>x.getAttribute('data-titledeck-description-text')==='true')||null;return null}
+  };return el;
+ }
+ const root=node('div');root._root=true;
+ const visible=node('div');visible.className='AppDetailsContainer_test';
+ visible['__reactFiber$test']={memoizedProps:{overview:{appid:Number(appid)}},return:null};
+ root.appendChild(visible);
+ const unrelated=node('div');root.appendChild(unrelated);
+ const traverse=(n,out=[])=>{out.push(n);for(const child of n.children||[])traverse(child,out);return out};
+ doc.createElement=tag=>node(tag);
+ doc.getElementsByClassName=()=>[visible];
+ doc.querySelectorAll=sel=>sel==='[class*="AppDetailsContainer"]'?[visible]:sel==='[data-titledeck-description]'?
+    traverse(root).filter(n=>n.getAttribute?.('data-titledeck-description')):[];
+ return{doc,root,visible,unrelated,node};
+}
+test('game-description native panel is tied to current route AND visible Steam React game ID',async()=>{
+ const m=await moduleForTest(),page=nativeGamePageForDescription();
+ const state={enabled:true,descriptions:{'620':'Portal 2, from my collection','999':'Another custom description'}};
+ const adapter=m.createDescriptionAdapter(page.doc,()=>state,()=>[] ,()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(m.appidFromVisibleGame(page.visible),'620');
+  assert.equal(adapter.runNow(),1);
+  assert.equal(page.root.children.length,3,'one panel inserted with Steam siblings untouched');
+  let pane=page.root.children[0];
+  assert.equal(pane.getAttribute('data-titledeck-description'),'620');
+  assert.equal(pane.lastChild.textContent,'Portal 2, from my collection');
+  assert.equal(adapter.runNow(),1);assert.equal(page.root.children.length,3,'no duplicate panels');
+  page.doc.defaultView.location.pathname='/library/app/999';
+  assert.equal(adapter.runNow(),0,'old game fiber must not match new URL');
+  assert.equal(page.root.children.length,2,'stale panel removed immediately');
+  page.visible['__reactFiber$test'].memoizedProps.overview.appid=999;
+  assert.equal(adapter.runNow(),1);
+  pane=page.root.children[0];assert.equal(pane.getAttribute('data-titledeck-description'),'999');
+  assert.equal(pane.lastChild.textContent,'Another custom description');
+  assert.equal(page.root.children[1],page.visible);
+  assert.equal(page.root.children[2],page.unrelated);
+  state.enabled=false;assert.equal(adapter.runNow(),0);
+  assert.equal(page.root.children.length,2,'pausing removes custom panel');
+ }finally{adapter.stop()}
+});
+test('native description panel handles unsafe-looking text literally, reverts on delete and fails closed without identity',async()=>{
+ const m=await moduleForTest(),page=nativeGamePageForDescription('620');
+ const text='<img src=x onerror="evil()">\nSome Σ text';
+ const state={enabled:true,descriptions:{'620':text}};
+ const adapter=m.createDescriptionAdapter(page.doc,()=>state);
+ try{
+  assert.equal(adapter.runNow(),1);
+  const pane=page.root.children[0];
+  assert.equal(pane.lastChild.textContent,text,'textContent used, no markup parsing');
+  assert.equal(pane.children.length,2,'no additional HTML nodes injected');
+  state.descriptions['620']='A new description';
+  assert.equal(adapter.runNow(),1);
+  assert.equal(page.root.children[0],pane,'update in place, no DOM rebuilding');
+  assert.equal(pane.lastChild.textContent,'A new description');
+  delete state.descriptions['620'];assert.equal(adapter.runNow(),0);
+  assert.equal(page.root.children.length,2);
+  state.descriptions['620']='Restored';
+  page.visible['__reactFiber$test'].memoizedProps.overview.appid=777;
+  assert.equal(adapter.runNow(),0,'never infer identity from route alone');
+  assert.equal(page.root.children.length,2);
+ }finally{adapter.stop()}
+});
