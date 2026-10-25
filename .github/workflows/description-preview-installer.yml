@@ -42,7 +42,7 @@ jobs:
           import json, shutil, zipfile, hashlib
           from pathlib import Path
 
-          version = "0.9.1-desc-preview.9"
+          version = "0.9.1-desc-preview.10"
           root = Path("preview-staging/TitleDeck")
           root.mkdir(parents=True, exist_ok=True)
           for item in ("main.py","plugin.json","package.json","README.md","CHANGELOG.md","LICENSE"):
@@ -68,16 +68,16 @@ jobs:
 
           assert (root/"src/index.js").read_bytes() == (root/"dist/index.js").read_bytes()
           (root/"TEST_THIS_FIRST.txt").write_text(
-              "TitleDeck custom-description v0.9.1-desc-preview.9 native Steam GetDescriptions override inspired by MetaDeck. NOT stable.\n\n"
+              "TitleDeck custom-description v0.9.1-desc-preview.10 seamless Steam-native Game Info typography. NOT stable.\n\n"
               "Back up your existing TitleDeck names in TitleDeck Settings before installing.\n"
               "This installs OVER your current TitleDeck, not alongside it.\n"
               "Decky Loader -> Settings -> Developer -> Install Plugin from ZIP.\n"
-              "Use the inner TitleDeck-0.9.1-description-preview-9-Decky.zip file.\n"
+              "Use the inner TitleDeck-0.9.1-description-preview-10-Decky.zip file.\n"
               "Open TitleDeck -> Full library manager -> select a game -> Add description.\n"
               "Use Edit description using Steam keyboard. Same native Steam TextField as Change Name.\n"
               "Edit, Save, then open the same game's NORMAL STEAM LIBRARY detail page.\n"
-              "In Game Info mode, CLOSE and REOPEN Steam's GAME INFO tab after installation so Steam re-reads the description. TitleDeck returns the saved text through GetDescriptions for the active app without modifying the persistent cache.\n"
-              "Change games; delete the description; verify the custom panel disappears.\n"
+              "In Game Info mode, open the GAME INFO tab. TitleDeck should show the custom description with Steam's own description classes. No blue YOUR CUSTOM GAME DESCRIPTION card or extra heading. Reopen the page if it was already loaded; original Steam text remains safely restorable.\n"
+              "Change games; delete/Restore Default the custom description; verify Steam's original Game Info text returns.\n"
               "TitleDeck Settings -> Custom game description location -> Show inside GAME INFO.\n"
               "If GAME INFO text remains unchanged: STAY on that game's GAME INFO page, open Decky Quick Access > TitleDeck > Capture current Game Info page. Take a screenshot of the App ID, Game Info status, native data hook count, native GetDescriptions call count, overrides served, and Live CSS modules status. Then go to Full Manager > Settings to view last captured game page. Do not rely only on the Current view diagnostic when Full Manager is open.\n"
               "Artwork Footer is independently selectable and requires an identifiable Steam Play bar.\n"
@@ -90,7 +90,7 @@ jobs:
           )
           out = Path("preview-download")
           out.mkdir(exist_ok=True)
-          archive = out / "TitleDeck-0.9.1-description-preview-9-Decky.zip"
+          archive = out / "TitleDeck-0.9.1-description-preview-10-Decky.zip"
           with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
               for file in sorted(root.rglob("*")):
                   if file.is_file():
@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TitleDeck-description-preview-installer
-          path: preview-download/TitleDeck-0.9.1-description-preview-9-Decky.zip
+          path: preview-download/TitleDeck-0.9.1-description-preview-10-Decky.zip
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
