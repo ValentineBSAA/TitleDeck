@@ -479,6 +479,7 @@ export function formatDescriptionGameProbe(probe=getLastDescriptionGameProbe()){
     ' · game containers '+probe.detailContainers+' · info panels '+probe.infoPanels+
     ' · description nodes '+probe.nativeDescriptions+
     ' · document '+probe.documentNumber+'/'+probe.documentCount+
+    ' · CSS clues '+(probe.cssHints||'none')+
     ' · '+probe.time;
 }
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
@@ -687,10 +688,22 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const uniqueIds=[...new Set(matches.map(item=>item.gameId))];
       const match=id?matches.find(item=>item.gameId===id):(uniqueIds.length===1?matches[0]:null);
       const nativeStats=()=>{
-        let infoPanels=0,nativeDescriptions=0;
+        let infoPanels=0,nativeDescriptions=0,cssHints='';
         try{infoPanels=doc.querySelectorAll('[class*="appdetailsgameinfopanel_Container"],[class*="appdetailsgameinfocontainer_AppGameInfoContainer"],[class*="appdetailsgameinfo_Container"]').length}catch{}
         try{nativeDescriptions=doc.querySelectorAll('[class*="appdetailsgameinfopanel_GameDescription"],[class*="appdetailsgameinfocontainer_GameDescription"]').length}catch{}
-        return {infoPanels,nativeDescriptions};
+        try{
+          const nodes=doc.querySelectorAll('[class*="gameinfo"],[class*="GameInfo"],[class*="GameDescription"]');
+          const clues=new Set();
+          for(let i=0;i<Math.min(100,nodes.length)&&clues.size<3;i++){
+            const names=String(nodes[i]?.className||'').split(/\s+/);
+            for(const cls of names){
+              if(/gameinfo|GameDescription/i.test(cls)&&/^[A-Za-z0-9_-]{4,110}$/.test(cls))clues.add(cls.slice(0,75));
+              if(clues.size>=3)break;
+            }
+          }
+          cssHints=[...clues].join(', ');
+        }catch{}
+        return {infoPanels,nativeDescriptions,cssHints};
       };
       if(id||match||uniqueIds.length){
         realPageSeen=true;
