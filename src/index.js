@@ -394,7 +394,14 @@ export function findSteamGameInfoDescription(doc,gameRoot){
   if(!doc||!gameRoot||!appidFromVisibleGame(gameRoot))return null;
   const page=gameRoot.closest?.('[class*="AppDetailsRoot"]')
     ||gameRoot.closest?.('[class*="AppDetailsContainer"]')||gameRoot.parentElement||gameRoot;
-  const within=el=>!!(page?.contains?.(el)||gameRoot?.contains?.(el));
+  const contains=(parent,child)=>{
+    if(!parent||!child)return false;
+    if(parent===child||parent.contains?.(child))return true;
+    let node=child;
+    for(let i=0;node&&i<35;i++,node=node.parentElement)if(node===parent)return true;
+    return false;
+  };
+  const within=el=>contains(page,el)||contains(gameRoot,el);
   const visible=el=>{
     if(!el?.isConnected)return false;
     // Do not reject the native description itself if TitleDeck hid it.
@@ -413,8 +420,7 @@ export function findSteamGameInfoDescription(doc,gameRoot){
   const containerSelectors=[
     '[class*="appdetailsgameinfopanel_Container"]',
     '[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]',
-    '[class*="appdetailsgameinfo_Container"]',
-    '[class*="appdetailsgameinfopanel_SectionContainer"]'
+    '[class*="appdetailsgameinfo_Container"]'
   ];
   const findAll=selectors=>{
     const result=new Set();
@@ -425,15 +431,22 @@ export function findSteamGameInfoDescription(doc,gameRoot){
   };
   const containers=findAll(containerSelectors).filter(visible);
   const descriptions=findAll(descriptionSelectors)
-    .filter(el=>el.isConnected&&el.parentElement&&containers.some(parent=>parent.contains?.(el)||parent===el.parentElement));
+    .filter(el=>el.isConnected&&el.parentElement&&containers.some(parent=>contains(parent,el)));
   // An original description hidden by TitleDeck must remain discoverable.
   // Prefer the current AppDetails page. If Game Info was rendered in a portal,
   // ONLY a single visible Game Info panel in the whole document is eligible.
   const eligible=containers.filter(el=>!el.closest?.('[aria-hidden="true"]'));
   const scoped=eligible.filter(within);
-  const root=scoped.length===1?scoped[0]:scoped.length===0&&eligible.length===1?eligible[0]:null;
-  if(!root)return null; // refuse ambiguous or unrelated Steam panels
-  const matching=descriptions.filter(el=>root.contains?.(el));
+  let group=scoped.length?scoped:eligible;
+  // Game Info has nested wrappers, not multiple game tabs. Prefer a unique
+  // innermost visible panel containing the actual native description.
+  const withDesc=group.filter(el=>descriptions.some(child=>contains(el,child)));
+  if(withDesc.length)group=withDesc;
+  const inner=group.filter(el=>!group.some(other=>other!==el&&contains(el,other)));
+  if(inner.length)group=inner;
+  const root=group.length===1?group[0]:null;
+  if(!root)return null; // refuse genuinely ambiguous active Game Info tabs
+  const matching=descriptions.filter(el=>contains(root,el));
   const nativeDescription=matching.find(el=>/GameDescription/.test(String(el.className||'')))||matching[0]||null;
   return {container:root,nativeDescription,
     diagnostic:{containers:containers.length,scoped:scoped.length,descriptions:descriptions.length,
