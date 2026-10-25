@@ -127,3 +127,15 @@ Physical report after Preview 11: a longer 500-plus-character custom description
 - Adds regression tests for 150 repeated scans with a 2,800-character description, restore with another game still saved, orphan cleanup, style restoration failure, and immediate Restore Default.
 
 **Hardware verification is still required**: these are code-level fixes based on the observed symptom, not a guarantee that all SteamOS scroll anchoring issues are resolved. Keep this experimental preview out of main until a real Deck can display and restore a long description without jitter. If older transient Steam UI state remains broken, disable TitleDeck and restart Steam/the Deck; do not delete TitleDeck data.
+
+
+## Preview 13: Full Manager artwork and compact saved synopsis
+
+Physical Preview 12 testing reached 1,005 characters of custom Steam-native Game Info description for Catherine Classic with the user reporting no jumping at 765 and showing stable-looking layout at 1,005. Restore Original on physical hardware still needs explicit acceptance. New screenshots exposed two Full Manager defects: games including a non-Steam Apple TV shortcut and a Steam game (Assassin's Creed Revelations) displayed initials instead of existing cover art, and the general game editor rendered the entire saved 1,005-character description, inflating the editor and shifting visible controls.
+
+Fixes:
+- Cover component now probes native Steam portrait paths `/customimages/<appid>p.png|jpg|webp`, Steam's `/assets/<appid>/library_600x900.jpg|png`, then public Steam CDN JPG/PNG. Missing candidates are advanced only by the image error callback; images remain lazy-loaded. The old 32-bit-only early fallback was removed. This is a display-only read; no Steam artwork files are changed. If no image exists in Steam or the storefront, initials remain the honest fallback.
+- In the general editor, the full saved description is retained in backend data but previewed as up to 210 normalized characters, with a visible total counter and a prompt to open Edit Description for full text. The preview is bounded to three lines and cannot expand the general title-editor card indefinitely.
+- Opening a game editor resets its scroll position to the top after focusing the title field. Actual Edit Description and native Game Info text handling remain unchanged.
+
+Automated tests check local artwork candidate priority, non-Steam IDs, safe IDs, fallback order, and bounded previews at 505, 765, 1,005, 2,800, and 4,000 characters. Pending physical Deck acceptance: validate native custom-image URLs load through the Steam document's origin, switching between games preserves artwork and focus, no unexpected scroll, and Restore Default brings the original Game Info text back.
