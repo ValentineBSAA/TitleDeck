@@ -1,5 +1,5 @@
-/** TitleDeck 0.8: compact controller-first game library, editable aliases, conservative Steam title overlay. */
-const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '0.8.1', ROUTE = '/titledeck/manager';
+/** TitleDeck 0.9.0 RC: compact controller-first game library, editable aliases, conservative Steam title overlay. */
+const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '0.9.0-rc.1', ROUTE = '/titledeck/manager';
 const R = globalThis.SP_REACT;
 const UI = globalThis.DFL;
 const h = (...a) => R.createElement(...a);
@@ -31,11 +31,39 @@ function useStateSnapshot(){
   return snap;
 }
 async function refreshState(){return acceptState(await call('snapshot'));}
+// Suggest capitalization edits without destroying distinctive symbols or series names.
+// Not applied automatically: the user must review the draft and choose Save.
+const ORIGINAL_CASE_TOKENS = new Set([
+  'HD','VR','DX','DLC','RPG','MMO','FPS','PC','PS','PSP','PSVITA','GTA','NFS',
+  'DOOM','NBA','NFL','FIFA','WWE','UFC','USA','UK','EU','GOTY','FFXII','FFXIV',
+  'FFXI','FFVII','FFVIII','FFXVI','FFX','FFIX','FFXV','FFXIII',
+]);
+function keepUppercaseToken(word){
+  return ORIGINAL_CASE_TOKENS.has(word) || /^(?:[IVXLCDM]{2,}|FF[IVXLCDM]+)$/.test(word) || (word.length<=2 && !/^(?:A|AN|AT|BY|IN|IT|OF|ON|OR|TO)$/.test(word));
+}
 export function cleanTitle(title){
   const old=String(title||'').trim();
   let candidate=old.replace(/[™®©]/g,'').replace(/\s{2,}/g,' ').trim();
-  if(candidate && candidate===candidate.toUpperCase() && /[A-Z]/.test(candidate)) candidate=candidate.toLowerCase().replace(/(^|[\s:()\-])([a-z])/g,(_,a,b)=>a+b.toUpperCase());
-  return candidate!==old ? candidate : '';
+  // Only alter genuinely ALL-CAPS Latin words. Mixed-case words, Greek letters
+  // (Σ, Ω), digits, Roman-numeral suffixes and punctuation stay unchanged.
+  const latin=/[A-Za-z]+(?:['’][A-Za-z]+)*/g;
+  const words=[...candidate.matchAll(latin)].map(m=>m[0]);
+  const needsCase=words.some(word=>word.length>=3 && word===word.toUpperCase() && !keepUppercaseToken(word));
+  if(needsCase){
+    let pos=0,afterBoundary=true;
+    candidate=candidate.replace(latin,(word,offset,whole)=>{
+      const before=whole.slice(pos,offset);
+      if(/[.:!?]/.test(before))afterBoundary=true;
+      const atStart=afterBoundary || offset===0;
+      pos=offset+word.length;
+      afterBoundary=false;
+      if(word!==word.toUpperCase() || keepUppercaseToken(word))return word;
+      const lower=word.toLowerCase();
+      if(!atStart && /^(?:and|or|of|for|to|in|on|at|by|the|a|an)$/.test(lower))return lower;
+      return lower[0].toUpperCase()+lower.slice(1);
+    });
+  }
+  return candidate!==old?candidate:'';
 }
 function normId(value){const s=String(value??'').trim();return /^[1-9]\d{0,11}$/.test(s)?String(Number(s)):'';}
 function steamOverview(store,id){
@@ -80,18 +108,18 @@ export function collectSteamGames(store, local=[], extras=[]) {
   return [...games.values()].sort((a,b)=>a.name.localeCompare(b.name)||Number(a.appid)-Number(b.appid));
 }
 
-// Alias replacement targets actual text nodes, not Steam metadata, installs, logos or artwork.
-// It discovers Steam/Decky documents instead of assuming the plugin's global document
-// is the same document the library is rendered into. Bounded and fully reversible.
+// TitleDeck title overlay: refresh text *during Steam's mutation microtask*, before
+// the next paint whenever Steam's client allows it. Preserve metadata and DOM structure.
+// Only exact, uniquely identified original titles are replaced. Every write is reversible.
 export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStore,getDocuments=()=>[]) {
-  let stopped=false, scanTimer=null, heartbeat=null, observerList=[], count=0, scanned=0;
+  let stopped=false, scanTimer=null, heartbeat=null, observerList=[], scanned=0, fastPasses=0;
   const changed=new Map();
-  const MAX_NODES=9000;
+  const MAX_NODES=9000, MAX_MUTATION_NODES=3500;
   function restore(){
     for(const [node,saved] of changed){
-      try{if(node.isConnected && node.nodeValue===saved.alias) node.nodeValue=saved.original;}catch{}
+      try{if(node.isConnected && node.nodeValue===saved.alias)node.nodeValue=saved.original;}catch{}
     }
-    changed.clear();count=0;
+    changed.clear();
   }
   function docs(){
     const unique=new Set();
@@ -100,77 +128,155 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
     try{add(globalThis.document);}catch{}
     try{add(globalThis.top?.document);}catch{}
     try{add(globalThis.window?.top?.document);}catch{}
-    try{const frame=globalThis.document?.querySelectorAll?.('iframe');for(const f of [...(frame||[])].slice(0,12))add(f.contentDocument);}catch{}
+    try{const frames=globalThis.document?.querySelectorAll?.('iframe');for(const frame of [...(frames||[])].slice(0,12))add(frame.contentDocument);}catch{}
     try{getDocuments().forEach(add);}catch{}
     return [...unique];
   }
   function isExcluded(el){
-    if(!el || !el.isConnected) return true;
-    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-exclude], [role="dialog"], [contenteditable], input, textarea, script, style, select, option'))return true;}catch{}
+    if(!el || !el.isConnected)return true;
+    // Allow Steam's own game-options dialogs, whose headings can show a title.
+    // Keep editable controls, other Decky panels, and unrelated notifications untouched.
+    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-exclude], [contenteditable], [role="textbox"], [role="combobox"], input, textarea, script, style, select, option'))return true;}catch{}
     const name=String(el.className||'');
-    if(/(?:decky|notification|toast|tooltip|chat|friendslist)/i.test(name))return true;
-    return false;
+    return /(?:decky|notification|toast|tooltip|chat|friendslist)/i.test(name);
   }
-  function apply(){
-    if(stopped)return 0;
+  function titleMap(){
     const {enabled,aliases={},games=[]}=getState()||{};
-    if(!enabled||!Object.keys(aliases).length){restore();return 0;}
-    const mapping=new Map(), duplicates=new Set();
+    if(!enabled)return new Map();
+    const mapping=new Map(),owners=new Map(),ambiguous=new Set();
+    const gamesById=new Map(games.map(game=>[String(game.appid),game]));
+    let store=null;
+    try{store=getStore();}catch{}
     for(const [id,alias] of Object.entries(aliases)){
-      if(!alias)continue;
-      const original=steamOverview(getStore(),id)?.display_name||games.find(g=>String(g.appid)===id)?.name;
-      if(!original || original===alias)continue;
-      if(mapping.has(original)&&mapping.get(original)!==alias) duplicates.add(original);
-      mapping.set(original,alias);
-    }
-    for(const original of duplicates)mapping.delete(original);
-    for(const [node,saved] of [...changed]){
-      if(!node.isConnected){changed.delete(node);continue;}
-      const next=mapping.get(String(saved.original).trim());
-      if(!next){if(node.nodeValue===saved.alias)node.nodeValue=saved.original;changed.delete(node);}
-      else if(node.nodeValue===saved.alias && String(next)!==String(saved.alias).trim()) {
-        const old=saved.original,trimmed=old.trim(),offset=old.indexOf(trimmed);
-        const replacement=old.slice(0,offset)+next+old.slice(offset+trimmed.length);
-        node.nodeValue=replacement;saved.alias=replacement;
+      if(typeof alias!=='string'||!alias.trim())continue;
+      const overview=steamOverview(store,id);
+      const game=gamesById.get(id);
+      // Steam can refresh names in the app store and retain the previous local
+      // manifest name for a while. Accept either *known original* for this ID.
+      for(const value of [overview?.display_name,game?.name]){
+        const original=String(value||'').trim();
+        if(!original||original===alias)continue;
+        if(owners.has(original)&&owners.get(original)!==id)ambiguous.add(original);
+        owners.set(original,id);mapping.set(original,alias);
       }
-      else if(node.nodeValue!==saved.alias && node.nodeValue!==saved.original)changed.delete(node);
     }
-    if(!mapping.size){count=0;return 0;}
-    const activeDocs=docs();scanned++;
-    for(const doc of activeDocs){
+    for(const name of ambiguous)mapping.delete(name);
+    return mapping;
+  }
+  function substitute(raw,alias){
+    const stripped=raw.trim(),start=raw.indexOf(stripped);
+    return raw.slice(0,start)+alias+raw.slice(start+stripped.length);
+  }
+  function patchText(node,mapping,checkVisibility=false){
+    if(!node||typeof node.nodeValue!=='string')return false;
+    let prior=changed.get(node);
+    if(prior){
+      if(!node.isConnected){changed.delete(node);return false;}
+      const next=mapping.get(prior.original.trim());
+      if(!next){
+        if(node.nodeValue===prior.alias)node.nodeValue=prior.original;
+        changed.delete(node);return false;
+      }
+      const expected=substitute(prior.original,next);
+      if(node.nodeValue===prior.alias){
+        if(expected!==prior.alias){node.nodeValue=expected;prior.alias=expected;return true;}
+        return false;
+      }
+      // Steam may update the SAME text node when a menu opens. Previously the
+      // node stayed tracked but was skipped, leaving the original title visible.
+      // Re-evaluate it just like a newly-created node.
+      changed.delete(node);
+    }
+    const el=node.parentElement;
+    if(!el||isExcluded(el))return false;
+    const raw=node.nodeValue||'',stripped=raw.trim(),alias=mapping.get(stripped);
+    if(!alias||!stripped)return false;
+    try{if(el.closest?.('[aria-hidden="true"]'))return false;}catch{}
+    if(checkVisibility){
+      try{if(el.ownerDocument?.defaultView?.getComputedStyle?.(el)?.display==='none')return false;}catch{}
+    }
+    const replacement=substitute(raw,alias);
+    changed.set(node,{original:raw,alias:replacement});
+    node.nodeValue=replacement;
+    return true;
+  }
+  function reconcileExisting(mapping){
+    for(const node of [...changed.keys()])patchText(node,mapping);
+  }
+  function fullScan(){
+    if(stopped)return 0;
+    const mapping=titleMap();
+    if(!mapping.size){restore();return 0;}
+    reconcileExisting(mapping);
+    scanned++;
+    for(const doc of docs()){
       try{
-        const view=doc.defaultView;
-        const showText=view?.NodeFilter?.SHOW_TEXT||4;
-        const walker=doc.createTreeWalker(doc.body||doc.documentElement,showText);
+        const walker=doc.createTreeWalker(doc.body||doc.documentElement,doc.defaultView?.NodeFilter?.SHOW_TEXT||4);
         let node,i=0;
-        while((node=walker.nextNode())&&i++<MAX_NODES){
-          if(!node.parentElement||changed.has(node)||isExcluded(node.parentElement))continue;
-          const raw=node.nodeValue||'';const stripped=raw.trim();const alias=mapping.get(stripped);
-          if(!alias||!stripped)continue;
-          if(node.parentElement.closest?.('[aria-hidden="true"]'))continue;
-          if(view?.getComputedStyle?.(node.parentElement)?.display==='none')continue;
-          const start=raw.indexOf(stripped);const replacement=raw.slice(0,start)+alias+raw.slice(start+stripped.length);
-          changed.set(node,{original:raw,alias:replacement});node.nodeValue=replacement;
-        }
-      }catch(e){try{console.warn('[TitleDeck] UI matching:',e);}catch{}}
+        while((node=walker.nextNode())&&i++<MAX_NODES)patchText(node,mapping,true);
+      }catch(e){try{console.warn('[TitleDeck] full title scan:',e);}catch{}}
     }
-    count=[...changed].filter(([node,record])=>node.isConnected&&node.nodeValue===record.alias).length;
+    return activeCount();
+  }
+  function activeCount(){
+    let count=0;
+    for(const [node,saved] of changed)if(node.isConnected&&node.nodeValue===saved.alias)count++;
     return count;
   }
-  function schedule(){if(stopped||scanTimer)return;scanTimer=setTimeout(()=>{scanTimer=null;apply()},700);}
+  function scheduleFullScan(delay=45){
+    if(stopped||scanTimer!==null)return;
+    scanTimer=setTimeout(()=>{scanTimer=null;setup();fullScan();},delay);
+  }
+  function consumeMutations(records,doc){
+    if(stopped)return;
+    const mapping=titleMap();
+    if(!mapping.size){if(changed.size)restore();return;}
+    fastPasses++;
+    const candidates=new Set();
+    let examined=0,overflow=false;
+    const collect=node=>{
+      if(!node||candidates.has(node))return;
+      if(examined>=MAX_MUTATION_NODES){overflow=true;return;}
+      if(node.nodeType===3||(!node.nodeType&&typeof node.nodeValue==='string')){
+        examined++;candidates.add(node);return;
+      }
+      if(node.nodeType!==1&&node.nodeType!==9&&node.nodeType!==11)return;
+      // Only inspect the inserted subtree, not thousands of unrelated games.
+      const iterator=doc.createTreeWalker(node,doc.defaultView?.NodeFilter?.SHOW_TEXT||4);
+      let child;
+      while((child=iterator.nextNode())){
+        if(examined++>=MAX_MUTATION_NODES){overflow=true;break;}
+        candidates.add(child);
+      }
+    };
+    for(const record of records){
+      if(record.type==='characterData')collect(record.target);
+      else if(record.type==='childList')for(const added of record.addedNodes||[])collect(added);
+      if(overflow)break;
+    }
+    // The browser calls MutationObserver before painting the DOM mutations.
+    // Patching synchronously here eliminates the old 700 ms title reversion.
+    for(const node of candidates)patchText(node,mapping);
+    if(overflow)scheduleFullScan(36);
+  }
   function setup(){
     if(stopped)return;
     for(const doc of docs()){
-      if(observerList.some(entry=>entry.doc===doc)||typeof MutationObserver==='undefined')continue;
-      try{const watch=new MutationObserver(schedule);watch.observe(doc.body||doc.documentElement,{childList:true,characterData:true,subtree:true});observerList.push({doc,watch});}catch{}
+      if(observerList.some(entry=>entry.doc===doc))continue;
+      const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+      if(typeof Observer!=='function')continue;
+      try{
+        const watch=new Observer(records=>consumeMutations(records,doc));
+        watch.observe(doc.documentElement,{childList:true,characterData:true,subtree:true});
+        observerList.push({doc,watch});
+      }catch{}
     }
   }
-  function runNow(){if(stopped)return 0;setup();return apply();}
-  function start(){setup();runNow();heartbeat=setInterval(()=>{setup();apply()},2400);}
-  function stop(){stopped=true;if(scanTimer!=null)clearTimeout(scanTimer);if(heartbeat!=null)clearInterval(heartbeat);for(const item of observerList)item.watch.disconnect();observerList=[];restore();}
-  return{start,stop,runNow,get applied(){return count},get scans(){return scanned},get docs(){return observerList.length}};
+  function runNow(){if(stopped)return 0;setup();return fullScan();}
+  function start(){setup();fullScan();heartbeat=setInterval(()=>{setup();fullScan();},2400);}
+  function stop(){stopped=true;if(scanTimer!==null)clearTimeout(scanTimer);if(heartbeat!==null)clearInterval(heartbeat);for(const item of observerList)item.watch.disconnect();observerList=[];restore();}
+  return{start,stop,runNow,get applied(){return activeCount()},get scans(){return scanned},get fastPasses(){return fastPasses},get docs(){return observerList.length}};
 }
-
 
 const STYLE=`
 /* Review uses six names per page, paginated through the entire alias collection. */
@@ -208,12 +314,168 @@ const STYLE=`
 .td-bottom{justify-content:space-between;color:#b7bec9;font-size:11px;gap:8px;padding:4px 13px}.td-bottom strong{color:#ecf0f5;font-size:11px}.td-status{color:#b4bac5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.td-message{position:absolute;bottom:46px;left:18px;right:18px;z-index:6;max-width:860px;margin:auto;background:#33262e;color:#f6c9d1;border:1px solid #905363;border-radius:11px;box-shadow:0 10px 25px #0009;padding:10px 14px;font-size:12px;pointer-events:none}.td-message.success{background:#23362f;color:#c4edd8;border-color:#527e66}
 .td-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center;color:#aeb6c3;padding:65px 18px}.td-empty h2{font-size:20px;color:#faf8f8;margin:0}.td-empty p{margin:0;max-width:480px}
 .td-editor{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:190px minmax(0,1fr);gap:19px;padding:8px}.td-editor-art{width:190px;height:280px;object-fit:cover;border-radius:11px;background:#31353e;border:1px solid #4a4d57}.td-card{background:#252a33;border:1px solid #444c5b;border-radius:13px;padding:16px;min-width:0}.td-copy-label{color:#aeb6c2;font-size:11px;font-weight:750;letter-spacing:.075em}.td-title-large{font-size:23px;font-weight:800;line-height:1.25;overflow-wrap:anywhere;margin:6px 0 15px}.td-preview{background:#161a20;border:1px solid #595f6b;border-radius:9px;padding:12px 15px;margin:8px 0 14px;font-size:20px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}.td-editor-actions{display:flex;flex-direction:column;gap:8px;min-width:0}.td-editor-action-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}.td-editor-actions button.td-btn{min-height:44px!important}.td-editor-note{color:#b9c0cd;font-size:11px;line-height:1.4;margin-top:12px}.td-editor-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px}.td-small{font-size:12px;color:#c5cad1}.td-settings{max-width:820px;margin:auto;padding:15px}.td-setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #414752}.td-setting-row .td-btn{flex-shrink:0}
-.td-keyscreen{max-width:930px;margin:0 auto;padding:6px 12px}.td-keyscreen .td-preview{margin:9px 0 13px}.td-keygrid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}.td-root button.td-key,.td-root .td-key{height:35px!important;min-height:35px!important;padding:4px 0!important;font-size:14px!important}.td-key-help{color:#c0c6ce;font-size:12px;margin-top:12px}.td-editor-input{font-size:21px;color:#fff}.td-key-hint{font-size:11px;color:#abb2be}
+.td-native-entry{max-width:840px;margin:12px auto;padding:14px 18px;display:flex;flex-direction:column;gap:15px}.td-native-entry .td-title-large{margin:4px 0}.td-native-field{width:100%;padding:6px 0}.td-native-field input,.td-native-field textarea{display:block!important;width:100%!important;min-width:0!important;min-height:49px!important;font-size:21px!important;font-weight:650!important;line-height:1.3!important;background:#151d29!important;color:#f7f9fc!important;border:2px solid #71839a!important;border-radius:9px!important;padding:9px 13px!important;box-sizing:border-box!important}.td-native-field input:focus,.td-native-field textarea:focus{outline:2px solid #efa578!important;outline-offset:1px!important}.td-native-entry .td-native-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.td-native-entry .td-editor-note{line-height:1.5}.td-native-hint{color:#d5dce9;font-size:13px;line-height:1.55}.td-native-entry .td-title-large{overflow-wrap:anywhere}@media(max-width:600px){.td-native-entry{padding:8px}.td-native-entry .td-native-buttons{gap:6px}.td-native-field input{font-size:17px!important}}
+
+/* v0.8.7: Preserve the ordinary editor until the Steam keyboard opens.
+   Once open, animate into the keyboard-safe top area; restore when dismissed.
+   In a separate CEF window the OSK may not be visible in this document: the
+   adapter also listens for Steam Input keyboard events and the dismiss signal. */
+.td-root.td-native-screen .td-shell{
+ transition:grid-template-rows .28s ease,gap .28s ease!important;
+}
+.td-root.td-native-screen .td-native-workspace{
+ min-height:0!important;overflow-y:auto!important;scrollbar-width:thin;
+}
+.td-root.td-native-screen .td-native-entry{
+ width:min(100%,860px);margin:16px auto!important;
+ padding:14px 18px!important;gap:12px!important;
+ transition:margin-top .3s cubic-bezier(.2,.78,.2,1),padding .3s ease,gap .3s ease,transform .3s ease!important;
+}
+.td-root.td-native-screen .td-native-entry .td-native-field input{
+ min-height:54px!important;font-size:22px!important;scroll-margin-top:8px!important;
+}
+.td-root.td-native-keyboard-open .td-shell{
+ grid-template-rows:0px 0px 0px minmax(0,1fr) 0px!important;
+ gap:0!important;
+}
+.td-root.td-native-keyboard-open .td-header,
+.td-root.td-native-keyboard-open .td-rail,
+.td-root.td-native-keyboard-open .td-actions,
+.td-root.td-native-keyboard-open .td-bottom{
+ height:0!important;min-height:0!important;overflow:hidden!important;
+ padding:0!important;border-width:0!important;opacity:0!important;
+ pointer-events:none!important;visibility:hidden!important;
+}
+.td-root.td-native-keyboard-open .td-native-workspace{
+ display:flex!important;flex-direction:column!important;justify-content:flex-start!important;
+ padding:4px 10px 0!important;scrollbar-width:none;
+}
+.td-root.td-native-keyboard-open .td-native-entry{
+ margin:0 auto!important;padding:7px 13px!important;gap:5px!important;
+}
+.td-root.td-native-keyboard-open .td-native-entry .td-title-large{
+ font-size:17px!important;margin:0!important;
+}
+.td-root.td-native-keyboard-open .td-native-buttons,
+.td-root.td-native-keyboard-open .td-native-hint{
+ max-height:0!important;opacity:0!important;overflow:hidden!important;
+ margin:0!important;padding:0!important;pointer-events:none!important;
+}
+.td-root.td-native-screen .td-native-buttons,
+.td-root.td-native-screen .td-native-hint{
+ transition:max-height .22s ease,opacity .16s ease;
+}
+@media(max-height:600px){
+ .td-root.td-native-screen .td-native-entry{margin:8px auto!important;}
+ .td-root.td-native-keyboard-open .td-native-entry{margin:0 auto!important;}
+ .td-root.td-native-keyboard-open .td-native-hint{display:none!important;}
+}
+@media(prefers-reduced-motion:reduce){
+ .td-root.td-native-screen .td-shell,.td-root.td-native-screen .td-native-entry,
+ .td-root.td-native-screen .td-native-buttons,.td-root.td-native-screen .td-native-hint{
+  transition:none!important;
+ }
+}
+
 @media(max-width:1050px){.td-grid-row{gap:9px}.td-game-artbox{max-height:180px}.td-root{padding:6px 10px!important}}
 @media(max-height:700px){.td-game-artbox{max-height:160px}.td-shell{grid-template-rows:43px 37px 38px minmax(0,1fr) 31px;gap:5px}.td-game-copy{min-height:38px}}
 .td-confirm{max-width:760px;margin:22px auto;padding:23px 26px}.td-warning-label{color:#f0a1aa;font-size:12px;letter-spacing:.1em;font-weight:900}.td-confirm .td-title-large{margin-bottom:5px}.td-confirm .td-editor-note{font-size:13px;line-height:1.55}.td-confirm-examples{background:#191c25;border:1px solid #454b56;border-radius:9px;padding:10px 15px;margin:12px 0}.td-confirm-example{color:#cfd4de;font-size:12px;border-bottom:1px solid #3a4049;padding:5px 0;overflow-wrap:anywhere}.td-confirm-example:last-of-type{border-bottom:0}.td-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.td-confirm-actions .td-btn{min-height:45px!important;font-size:13px!important}.td-root .td-danger{border-color:#995261!important;background:#4d2c38!important;color:#fff4f4!important}.td-root .td-danger.gpfocus,.td-root .td-danger:focus-visible{outline:3px solid #f3b7bb!important}
 
 
+
+
+/* v0.8.12: A non-destructive suggestion with accessible controller actions. */
+.td-root .td-cleanup-preview{margin:6px 0 10px;padding:10px 12px;background:#233349!important;border:1px solid #87a1c7!important;border-radius:9px;color:#f9fbff!important}
+.td-root .td-cleanup-heading{font-weight:850;font-size:12px;color:#ffe7aa!important;letter-spacing:.025em;margin-bottom:7px}
+.td-root .td-cleanup-comparison{display:grid;grid-template-columns:1fr 1fr;gap:9px;min-width:0}
+.td-root .td-cleanup-comparison>div{min-width:0;border:1px solid #516782;background:#172333;border-radius:6px;padding:6px 8px}
+.td-root .td-cleanup-caption{display:block;color:#ced9e9!important;font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+.td-root .td-cleanup-before,.td-root .td-cleanup-after{font-size:13px;overflow-wrap:anywhere;color:#fff!important;font-weight:750;min-width:0}
+.td-root .td-cleanup-after{color:#b7f0cf!important}
+.td-root .td-cleanup-preview-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}
+.td-root .td-cleanup-preview-actions .td-btn{min-height:36px!important}
+@media(max-width:600px){.td-root .td-cleanup-comparison{grid-template-columns:1fr}.td-root .td-cleanup-preview{padding:6px}}
+
+/* v0.8.10: Single-surface editor. A B press consumed by Steam's separate
+   keyboard window leaves the normal editor in place rather than trapping
+   users behind a second route. Keep its input near the top at all sizes. */
+.td-root .td-game-editor-card{padding:10px 13px!important}
+.td-root .td-game-editor-card .td-game-name-field{padding:3px 0 1px!important;margin:2px 0 4px!important}
+.td-root .td-game-editor-card .td-game-name-field input,
+.td-root .td-game-editor-card .td-game-name-field textarea{
+ min-height:43px!important;max-height:52px!important;font-size:20px!important;
+ color:#fff!important;box-shadow:0 0 0 1px rgba(195,211,241,.22)!important
+}
+.td-root .td-editor-original-meta{color:#c6d0e0;font-size:12px;margin:4px 0 10px;line-height:1.3}
+.td-root .td-editor-original-meta strong{color:#f6f8fc}
+@media(max-height:640px){
+ .td-root .td-editor{padding:2px!important;gap:10px!important}
+ .td-root .td-game-editor-card{padding:7px 10px!important}
+ .td-root .td-editor-original-meta{margin:2px 0 6px!important}
+ .td-root .td-game-editor-card .td-game-name-field input{min-height:37px!important}
+}
+
+/* v0.8.10: Slide the *existing* game's title field into a Steam-keyboard-safe
+   dock. Never switch routes: after OSK B, the four-button editor is still here.
+   The original layout comes back when any supported keyboard-close signal fires. */
+.td-root .td-shell{transition:grid-template-rows .3s cubic-bezier(.2,.75,.2,1),gap .3s ease!important}
+.td-root .td-header,.td-root .td-rail,.td-root .td-actions,.td-root .td-bottom{
+ transition:height .3s ease,opacity .22s ease,padding .3s ease!important;
+}
+.td-root .td-editor{transition:grid-template-columns .3s cubic-bezier(.2,.75,.2,1),gap .3s ease!important}
+.td-root .td-game-editor-card{transition:padding .3s ease,margin .3s ease!important}
+.td-root .td-game-editor-card .td-editor-actions,
+.td-root .td-game-editor-card .td-editor-original-meta,
+.td-root .td-game-editor-card .td-editor-note{
+ transition:max-height .26s ease,opacity .2s ease,margin .3s ease!important;
+}
+.td-root .td-inline-keyboard-fallback{height:0;max-height:0;opacity:0;overflow:hidden;pointer-events:none;
+ transition:opacity .22s ease,max-height .3s ease!important}
+.td-root.td-inline-keyboard-open .td-shell{
+ grid-template-rows:0px 0px 0px minmax(0,1fr) 0px!important;gap:0!important;
+}
+.td-root.td-inline-keyboard-open .td-header,
+.td-root.td-inline-keyboard-open .td-rail,
+.td-root.td-inline-keyboard-open .td-actions,
+.td-root.td-inline-keyboard-open .td-bottom{
+ height:0!important;min-height:0!important;max-height:0!important;overflow:hidden!important;
+ padding:0!important;border-width:0!important;opacity:0!important;pointer-events:none!important;
+}
+.td-root.td-inline-keyboard-open .td-workspace{
+ padding:4px 8px!important;overflow-y:auto!important;scrollbar-width:none!important;
+}
+.td-root.td-inline-keyboard-open .td-editor{
+ grid-template-columns:0px minmax(0,1fr)!important;gap:0!important;padding:0 4px!important;
+ width:min(100%,980px)!important;margin:0 auto!important;
+}
+.td-root.td-inline-keyboard-open .td-editor > div:first-child{
+ overflow:hidden!important;max-width:0!important;opacity:0!important;pointer-events:none!important;
+}
+.td-root.td-inline-keyboard-open .td-game-editor-card{
+ padding:8px 13px!important;margin:0 auto!important;width:100%!important;
+ height:fit-content!important;align-self:start!important;
+}
+.td-root.td-inline-keyboard-open .td-game-editor-card .td-editor-actions,
+.td-root.td-inline-keyboard-open .td-game-editor-card .td-editor-original-meta,
+.td-root.td-inline-keyboard-open .td-game-editor-card .td-editor-note{
+ max-height:0!important;opacity:0!important;overflow:hidden!important;
+ margin:0!important;padding:0!important;pointer-events:none!important;
+}
+.td-root.td-inline-keyboard-open .td-game-name-field{margin:3px 0 0!important;padding:2px 0!important}
+.td-root.td-inline-keyboard-open .td-inline-keyboard-fallback{
+ height:auto!important;max-height:42px!important;opacity:1!important;overflow:visible!important;
+ pointer-events:auto!important;margin-top:7px!important;
+}
+.td-root.td-inline-keyboard-open .td-inline-keyboard-fallback .td-btn{
+ width:100%!important;min-height:32px!important;font-size:12px!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .td-root .td-shell,.td-root .td-header,.td-root .td-rail,.td-root .td-actions,
+ .td-root .td-bottom,.td-root .td-editor,.td-root .td-game-editor-card,
+ .td-root .td-game-editor-card .td-editor-actions,.td-root .td-inline-keyboard-fallback{
+ transition:none!important;
+ }
+}
 /* 0.5: isolate Settings from CSS Loader's native dialog skin dimensions. */
 .td-root .td-workspace .td-settings{width:min(100%,900px)!important;max-width:900px!important;min-width:0!important;margin:0 auto!important;padding:8px 12px 16px!important;overflow:visible!important;box-sizing:border-box!important}
 .td-root .td-settings *{box-sizing:border-box!important;min-width:0}
@@ -361,23 +623,457 @@ function Cover({id,title,className=''}){
   if(broken||Number(id)>4294967295)return h('div',{className:`td-art-fallback ${className}`},title?.trim()?.slice(0,2)?.toUpperCase()||'G');
   return h('img',{className:`td-art ${className}`,loading:'lazy',alt:'',src:`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.jpg`,onError:()=>setBroken(true)});
 }
-const KEYBOARD='1234567890QWERTYUIOPASDFGHJKLZXCVBNM';
-function Keypad({value,setValue,done,root}){
-  const [caps,setCaps]=R.useState(false);
-  const keys=[...KEYBOARD].map(c=>caps?c:c.toLowerCase()).concat(['SPACE','⌫','CLEAR','CAPS','.',':','-','(',')','&','DONE']);
-  return h('div',{className:'td-keyscreen','data-tdkeyboard':'true'},
-    h('div',{className:'td-copy-label'},'CONTROLLER KEYBOARD'),
-    h('div',{className:'td-preview td-editor-input'},value||'Start typing…'),
-    h('div',{className:'td-keygrid'},keys.map((key,i)=>h(Btn,{key:i,className:'td-key','data-td-focus':`key-${i}`,
-      nav:e=>{const d=dir(e),next=d===11?i-1:d===12?i+1:d===9?i-10:d===10?i+10:i;
-        if(next>=0&&next<keys.length&&next!==i&&(d!==11&&d!==12||Math.floor(i/10)===Math.floor(next/10)))return directionTo(root,`key-${next}`,e);
-        halt(e);return true;},
-      onClick:()=>{if(key==='DONE'){done();return;}if(key==='CAPS'){setCaps(!caps);return;}
-        if(key==='⌫'){setValue(v=>v.slice(0,-1));return;}
-        if(key==='CLEAR'){setValue('');return;}
-        setValue(v=>(v+(key==='SPACE'?' ':key)).slice(0,180));}
-    },key))),
-    h('div',{className:'td-key-help'},'D-pad moves between keys  •  A types  •  B returns to editor  •  DONE confirms'));
+// Native Steam/Decky text entry. Never insert a custom alphabetic controller keypad.
+// Steam's overlay Paste can update the *DOM input value* without a React change event.
+// We observe input/paste and check the active field during editing so the value cannot
+// silently fall back to the previous React snapshot. Physical keyboards also work.
+export function textFromNativeEvent(e,current=''){
+  if(typeof e==='string')return e;
+  const target=e?.target||e?.currentTarget;
+  return typeof target?.value==='string'?target.value:current;
+}
+// Identify a *visible* Steam keyboard, not merely its toolbar button or a
+// hidden keyboard template. Steam's generated class names vary between builds.
+export function steamKeyboardVisible(documents=[]){
+  const selectors='[class*="virtualkeyboard_Keyboard"], [class*="virtualkeyboard_KeyboardContainer"], [class*="virtualkeyboard_KeyboardPanel"], [data-testid="virtual-keyboard"]';
+  for(const doc of documents){
+    if(!doc?.querySelectorAll)continue;
+    let elements=[];
+    try{elements=[...doc.querySelectorAll(selectors)].slice(0,40);}catch{continue;}
+    for(const element of elements){
+      try{
+        const rect=element.getBoundingClientRect?.();
+        const win=doc.defaultView||{};
+        const width=Number(win.innerWidth)||Number(doc.documentElement?.clientWidth)||1280;
+        const height=Number(win.innerHeight)||Number(doc.documentElement?.clientHeight)||800;
+        if(!rect||rect.width<Math.min(260,width*.45)||rect.height<90||rect.bottom<height*.34||rect.top>height)continue;
+        const style=win.getComputedStyle?.(element);
+        if(style&&(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)===0))continue;
+        return true;
+      }catch{}
+    }
+  }
+  return false;
+}
+function keyboardDocuments(doc){
+  const docs=new Set();
+  const add=x=>{if(x?.querySelectorAll)docs.add(x);};
+  add(doc);add(steamDocument);
+  try{add(globalThis.document);}catch{}
+  try{add(globalThis.top?.document);}catch{}
+  try{add(globalThis.window?.top?.document);}catch{}
+  try{for(const frame of [...(doc?.querySelectorAll?.('iframe')||[])].slice(0,8))add(frame.contentDocument);}catch{}
+  return [...docs];
+}
+// Steam broadcasts OSK visibility through a different event path than the
+// older Input keyboard-message callbacks. Never equate field focus with OSK open.
+export function keyboardStatusOpen(status){
+  if(typeof status==='boolean')return status;
+  if(status&&typeof status==='object'){
+    for(const key of ['m_bIsKeyboardOpen','isOpen','open','visible'])
+      if(typeof status[key]==='boolean')return status[key];
+  }
+  return null;
+}
+// The standalone Steam keyboard runs in a separate CEF window on some Decks.
+// Its B press can be consumed before a Decky onCancel/status callback fires.
+// Listen to Steam's read-only physical controller state stream while a native
+// text editor is mounted. Steam's controller bitfield maps physical B to bit 21
+// (0x200000); also accept explicit B fields exposed by alternative Steam builds.
+// This does NOT register or change any controller bindings.
+export function controllerBDown(state){
+  if(!state||typeof state!=='object')return false;
+  if(typeof state.bB==='boolean')return state.bB;
+  if(typeof state.buttonB==='boolean')return state.buttonB;
+  if(typeof state.ulButtons==='number')return (state.ulButtons & 0x200000)!==0;
+  return false;
+}
+export function NativeTextEntry({value,setValue,done,cancel,kind='title',placeholder='Type a title…',onKeyboardState=()=>{},onKeyboardDismiss=()=>{}}){
+  const wrap=R.useRef(null);
+  const finishedRef=R.useRef(false);
+  const latest=R.useRef({value,setValue,done,cancel,onKeyboardState,onKeyboardDismiss});
+  latest.current={value,setValue,done,cancel,onKeyboardState,onKeyboardDismiss};
+  const syncFromDOM=()=>{
+    const input=wrap.current?.querySelector?.('input,textarea');
+    if(!input||typeof input.value!=='string')return latest.current.value;
+    const limit=kind==='id'?12:kind==='title'?180:220;
+    const next=input.value.slice(0,limit);
+    if(next!==latest.current.value){latest.current.value=next;latest.current.setValue(next)}
+    return next;
+  };
+  R.useEffect(()=>{
+    const node=wrap.current;if(!node)return;
+    const doc=node.ownerDocument,win=doc?.defaultView;
+    const root=node.closest?.('.td-root');
+    const timers=new Set(),unregister=[];
+    finishedRef.current=false;
+    let lifted=false,keyboardSeen=false,domKeyboardSeen=false,closingChecks=0,requested=false,disposed=false;
+    let dismissedUntil=0,openingAt=0,finished=false,windowLostFocus=false,observedSteamStatus=false;
+    const previousB=new Map();
+    const schedule=(fn,delay)=>{
+      const id=(win?.setTimeout||setTimeout)(()=>{timers.delete(id);if(!disposed)fn();},delay);
+      timers.add(id);return id;
+    };
+    const lift=next=>{
+      if(disposed||lifted===next)return;
+      lifted=next;
+      root?.classList?.toggle?.('td-native-keyboard-open',next);
+      latest.current.onKeyboardState(next);
+    };
+    const visible=()=>steamKeyboardVisible(keyboardDocuments(doc));
+    const opened=(fromDOM=false)=>{if(disposed||finished||Date.now()<dismissedUntil)return;
+      keyboardSeen=true;domKeyboardSeen=domKeyboardSeen||fromDOM;closingChecks=0;lift(true);
+    };
+    const closed=(reason='dismiss')=>{
+      if(disposed||finished||finishedRef.current)return;
+      // Ignore any initial 'not open' status sent on registration before the
+      // keyboard has actually been observed or intentionally requested.
+      if(!keyboardSeen)return;
+      dismissedUntil=Date.now()+750;keyboardSeen=false;domKeyboardSeen=false;requested=false;
+      openingAt=0;closingChecks=0;lift(false);
+      // B dismisses the OSK and cancels the unsaved title edit. RT/Enter is
+      // the separate ACCEPT path, which alone carries the draft back to Save.
+      if(kind==='title'){
+        finished=true;finishedRef.current=true;
+        schedule(()=>latest.current.onKeyboardDismiss(reason),300);
+      }
+    };
+    const input=()=>node.querySelector?.('input,textarea');
+    const requestKeyboard=()=>{
+      if(disposed)return;
+      const field=input();if(!field)return;
+      requested=true;openingAt=Date.now();dismissedUntil=0;
+      const area=root.current?.querySelector?.('.td-workspace');if(area)area.scrollTop=0;
+    try{field.focus?.({preventScroll:true})}catch{try{field.focus?.()}catch{}}
+      // Decky's Steam TextField normally opens the OSK from its click handler.
+      // Trigger that handler after the inline field mounts, not a second A press.
+      try{field.click?.()}catch{}
+      if(visible()){opened(true);return;}
+      // Steam can render the OSK in an inaccessible CEF window; give it time to
+      // appear after the click instead of lifting on mere input focus.
+      schedule(()=>{if(requested&&!keyboardSeen&&!observedSteamStatus&&Date.now()>=dismissedUntil){
+        opened();
+      }},360);
+    };
+    const watchSteam=(registration,fn,owner=globalThis.SteamClient?.Input)=>{
+      if(typeof registration!=='function')return;
+      try{const listener=registration.call(owner,fn);
+        if(typeof listener==='function')unregister.push(listener);
+        else if(typeof listener?.unregister==='function')unregister.push(()=>listener.unregister());
+      }catch{}
+    };
+    const steamInput=globalThis.SteamClient?.Input;
+    // Prefer the dedicated status channel: Steam's standalone OSK may have its
+    // own CEF document, so our DOM observer cannot see its disappearance.
+    const onStatus=(isOpen)=>{
+      const status=keyboardStatusOpen(isOpen);
+      if(status===null)return;
+      observedSteamStatus=true;
+      if(status){if(requested||keyboardSeen)opened();}
+      else closed('status');
+    };
+    const steamKeyboard=globalThis.SteamClient?.Keyboard;
+    watchSteam(steamKeyboard?.RegisterForStatus,onStatus,steamKeyboard);
+    // Some clients expose the same service under VR.Keyboard instead.
+    if(!steamKeyboard?.RegisterForStatus){
+      const vrKeyboard=globalThis.SteamClient?.VR?.Keyboard;
+      if(typeof vrKeyboard?.RegisterForStatus==='function'){
+        try{const registration=vrKeyboard.RegisterForStatus(onStatus);
+          if(typeof registration==='function')unregister.push(registration);
+          else if(typeof registration?.unregister==='function')unregister.push(()=>registration.unregister());
+        }catch{}
+      }
+    }
+    watchSteam(steamInput?.RegisterForUserDismissKeyboardMessages,()=>closed('dismiss'));
+    // Controller-level fallback. B often never reaches the Decky onCancel
+    // handler because the separate Steam keyboard consumes the input itself.
+    // Only react to a NEW B press while this editor's keyboard is active.
+    if(kind==='title')watchSteam(steamInput?.RegisterForControllerStateChanges,(changes)=>{
+      if(disposed||finished||finishedRef.current)return;
+      for(const change of Array.isArray(changes)?changes:[changes]){
+        if(!change||typeof change!=='object')continue;
+        const idx=change.unControllerIndex??0;
+        const pressed=controllerBDown(change),wasPressed=previousB.get(idx)||false;
+        previousB.set(idx,pressed);
+        if(pressed&&!wasPressed&&requested&&keyboardSeen){
+          try{globalThis.SteamClient?.Keyboard?.Hide?.()}catch{}
+          closed('controller-B');
+          break;
+        }
+      }
+    });
+    watchSteam(steamInput?.RegisterForUserKeyboardMessages,(message)=>{
+      const status=keyboardStatusOpen(message);
+      if(status===false)closed('input');
+      else if(status===true && requested)opened();
+    });
+    // A keyboard in a separate Steam window may steal focus without producing
+    // the old Input dismissal event. Returning focus is a secondary signal.
+    const onWindowBlur=()=>{if(keyboardSeen)windowLostFocus=true;};
+    const onWindowFocus=()=>{
+      if(!windowLostFocus||!keyboardSeen)return;
+      windowLostFocus=false;
+      schedule(()=>{if(keyboardSeen&&!visible())closed('focus-return');},180);
+    };
+    win?.addEventListener?.('blur',onWindowBlur);
+    win?.addEventListener?.('focus',onWindowFocus);
+    const onClick=e=>{
+      if(e?.target?.matches?.('input,textarea')){
+        // Avoid a second speculative timer for our own automatic click.
+        if(requested&&Date.now()-openingAt<700){if(visible())opened(true);return;}
+        requested=true;openingAt=Date.now();dismissedUntil=0;
+        if(visible())opened(true);
+        else schedule(()=>{if(requested&&!keyboardSeen)opened();},360);
+      }
+    };
+    const onFocus=()=>{if(visible())opened(true);}; // Focus alone is NOT keyboard-visible.
+    const onBlur=()=>schedule(()=>{
+      if(!visible()&&keyboardSeen&&Date.now()-openingAt>1000)closed('blur');
+    },420);
+    const onKeyDown=e=>{if(e?.key==='Escape')schedule(()=>{if(!visible())closed('escape');},240);};
+    const onInput=()=>syncFromDOM();
+    const onPaste=()=>schedule(syncFromDOM,0);
+    node.addEventListener?.('input',onInput,true);
+    node.addEventListener?.('paste',onPaste,true);
+    node.addEventListener?.('click',onClick,true);
+    node.addEventListener?.('focusin',onFocus,true);
+    node.addEventListener?.('focusout',onBlur,true);
+    node.addEventListener?.('keydown',onKeyDown,true);
+    const tick=()=>{
+      const found=visible();
+      if(found){opened(true);return;}
+      if(keyboardSeen&&domKeyboardSeen){
+        // Two absent samples mean the overlay rendered in this document closed.
+        if(++closingChecks>=2)closed('dom');
+      }
+    };
+    const interval=(win?.setInterval||setInterval)(()=>{syncFromDOM();tick();},120);
+    // The first click on Change Name now automatically activates the input.
+    // Wait for React/Steam to attach the real field before requesting the OSK.
+    schedule(requestKeyboard,90);
+    return()=>{
+      disposed=true;finishedRef.current=true;
+      node.removeEventListener?.('input',onInput,true);
+      node.removeEventListener?.('paste',onPaste,true);
+      node.removeEventListener?.('click',onClick,true);
+      node.removeEventListener?.('focusin',onFocus,true);
+      node.removeEventListener?.('focusout',onBlur,true);
+      node.removeEventListener?.('keydown',onKeyDown,true);
+      for(const stop of unregister)try{stop()}catch{}
+      win?.removeEventListener?.('blur',onWindowBlur);
+      win?.removeEventListener?.('focus',onWindowFocus);
+      (win?.clearInterval||clearInterval)(interval);
+      for(const id of timers)(win?.clearTimeout||clearTimeout)(id);
+      root?.classList?.remove?.('td-native-keyboard-open');
+      latest.current.onKeyboardState(false);
+    };
+  },[]);
+  const maxLength=kind==='id'?12:kind==='title'?180:220;
+  const handleChange=e=>{
+    const next=textFromNativeEvent(e,latest.current.value).slice(0,maxLength);
+    latest.current.value=next;latest.current.setValue(next);
+  };
+  const commit=()=>{
+    if(finishedRef.current)return;
+    finishedRef.current=true;
+    const next=syncFromDOM();
+    // A physical keyboard or native Enter also exits the editing view, and
+    // dismisses the OSK when Steam provides that API. No extra B press.
+    try{globalThis.SteamClient?.Keyboard?.Hide?.()}catch{}
+    latest.current.done(next);
+  };
+  const fieldProps={value,onChange:handleChange,onEnterKeyPress:commit,autoFocus:false,bShouldAutoFocus:false,
+    // Focus alone must not raise the panel before the OSK actually opens.
+    placeholder,maxLength,bShowClearAction:true,label:kind==='id'?'Steam App ID':kind==='search'?'Search games':'Custom display name',
+    'aria-label':kind==='id'?'Steam App ID':kind==='search'?'Search games':'Custom display name'};
+  const Field=UI?.TextField;
+  const field=Field?h(Field,fieldProps):h('input',{value,onChange:handleChange,autoFocus:false,placeholder,maxLength,
+    type:'text','aria-label':fieldProps['aria-label'],onKeyDown:e=>{if(e.key==='Enter'){e.preventDefault?.();commit()}}});
+  return h('div',{className:'td-native-field',ref:wrap,'data-td-input':'true',onInputCapture:syncFromDOM,
+    onPasteCapture:()=>setTimeout(syncFromDOM,0)},field,
+    h(UI.Focusable,{'flow-children':'right',className:'td-native-buttons'},
+      h(Btn,{onClick:cancel,'data-td-focus':'native-cancel'},'Cancel'),
+      h(Btn,{onClick:commit,'data-td-focus':'native-done'},kind==='title'?'Use this title':kind==='search'?'Search games':'Find game')));
+}
+// The embedded title field stays mounted in its original editor. Steam's OSK may
+// open in a separate CEF window: monitor all *available* close signals rather
+// than trusting a single keyboard-dismiss callback. No alias is persisted here.
+export function createInlineKeyboardMotion(root){
+  let raised=false,requested=false;
+  const paint=next=>{
+    raised=Boolean(next);
+    root?.classList?.toggle?.('td-inline-keyboard-open',raised);
+    try{root?.setAttribute?.('data-td-keyboard-phase',raised?'open':requested?'opening':'closed')}catch{}
+    return raised;
+  };
+  return {
+    begin(){requested=true;paint(false)},
+    show(){if(requested)paint(true)},
+    hide(){requested=false;paint(false)},
+    get raised(){return raised},
+    get requested(){return requested}
+  };
+}
+export function gamepadBEdge(pads,previous=[]){
+  let fresh=false;
+  const next=[];
+  for(let i=0;i<(pads?.length||0);i++){
+    const pad=pads[i];
+    const pressed=Boolean(pad?.connected!==false && pad?.buttons?.[1]?.pressed);
+    if(pressed&&!previous[i])fresh=true;
+    next[i]=pressed;
+  }
+  return {fresh,next};
+}
+let activeInlineKeyboard=null;
+// Keep the Steam text field *on the real game editor*. SteamOS consumes the
+// keyboard B press in a separate CEF window on some Deck builds. It cannot
+// reliably deliver that press or any close event to a Decky route. Since no
+// second screen exists, dismissing the OSK is sufficient to reveal the editor.
+// Only the explicit Save custom title action ever persists an alias.
+export function InlineGameNameField({value,setValue,onEnter=()=>{}}){
+  const wrap=R.useRef(null),latest=R.useRef({value,setValue,onEnter});
+  latest.current={value,setValue,onEnter};
+  const sync=()=>{
+    const field=wrap.current?.querySelector?.('input,textarea');
+    if(typeof field?.value!=='string')return latest.current.value;
+    const next=field.value.slice(0,180);
+    if(next!==latest.current.value){latest.current.value=next;latest.current.setValue(next)}
+    return next;
+  };
+  R.useEffect(()=>{
+    const node=wrap.current;if(!node)return;
+    const doc=node.ownerDocument,win=doc?.defaultView,root=node.closest?.('.td-root');
+    const motion=createInlineKeyboardMotion(root);
+    const dispose=[],timers=new Set();
+    let stopped=false,domObserved=false,missing=0,windowLostFocus=false,previousPads=[];
+    let requestedAt=0,liftedAt=0,seenKeyboardStatus=false;
+    const schedule=(fn,delay)=>{
+      const id=(win?.setTimeout||setTimeout)(()=>{timers.delete(id);if(!stopped)fn()},delay);
+      timers.add(id);return id;
+    };
+    const field=()=>node.querySelector?.('input,textarea');
+    const visible=()=>steamKeyboardVisible(keyboardDocuments(doc));
+    const close=()=>{if(!motion.requested)return;motion.hide();liftedAt=0;domObserved=false;missing=0;windowLostFocus=false;};
+    const show=()=>{if(!motion.raised&&motion.requested)liftedAt=Date.now();motion.show();};
+    const begin=()=>{
+      requestedAt=Date.now();seenKeyboardStatus=false;domObserved=false;missing=0;
+      motion.begin();
+      // Steam's OSK arrives in a different CEF window on physical Decks. Delay
+      // the fallback slightly to coincide with its entrance, not the button click.
+      schedule(()=>{if(motion.requested&&!motion.raised&&!seenKeyboardStatus)show()},260);
+    };
+    const state=(status)=>{
+      const value=keyboardStatusOpen(status);
+      if(value===null)return;
+      seenKeyboardStatus=true;
+      if(value){if(motion.requested)show()}
+      else if(motion.raised)close();
+    };
+    const watch=(owner,key,fn)=>{
+      const registration=owner?.[key];if(typeof registration!=='function')return;
+      try{
+        const sub=registration.call(owner,fn);
+        if(typeof sub==='function')dispose.push(sub);
+        else if(typeof sub?.unregister==='function')dispose.push(()=>sub.unregister());
+      }catch{}
+    };
+    const inputService=globalThis.SteamClient?.Input;
+    const keyboardService=globalThis.SteamClient?.Keyboard;
+    watch(keyboardService,'RegisterForStatus',state);
+    if(!keyboardService?.RegisterForStatus)watch(globalThis.SteamClient?.VR?.Keyboard,'RegisterForStatus',state);
+    watch(inputService,'RegisterForUserDismissKeyboardMessages',close);
+    watch(inputService,'RegisterForUserKeyboardMessages',state);
+    // Older Input builds may expose controller events even while keyboard has
+    // focus. This is a passive read, never a remapping of buttons.
+    const recentB=new Map();
+    watch(inputService,'RegisterForControllerStateChanges',changes=>{
+      for(const item of Array.isArray(changes)?changes:[changes]){
+        if(!item)continue;
+        const index=item.unControllerIndex??0,now=controllerBDown(item),prior=recentB.get(index)||false;
+        recentB.set(index,now);
+        if(now&&!prior&&motion.raised){close();break}
+      }
+    });
+    const onBlur=()=>{
+      // Steam can leave the keyboard's CEF process without sending a dismiss
+      // signal. Wait one animation frame after focus returns to another control.
+      schedule(()=>{
+        if(!motion.raised)return;
+        const active=doc?.activeElement;
+        if(active&&!node.contains?.(active)&&!visible()&&Date.now()-liftedAt>650)close();
+      },150);
+    };
+    const onWindowBlur=()=>{if(motion.raised)windowLostFocus=true};
+    const onWindowFocus=()=>{
+      if(!windowLostFocus||!motion.raised)return;
+      windowLostFocus=false;
+      schedule(()=>{if(motion.raised&&!visible()&&Date.now()-liftedAt>650)close()},130);
+    };
+    const onKeyDown=e=>{
+      if(['Escape','Esc'].includes(e?.key))schedule(close,100);
+      if(e?.key==='Enter')schedule(close,40);
+    };
+    const onInput=()=>sync();
+    const onPaste=()=>schedule(sync,0);
+    node.addEventListener?.('input',onInput,true);
+    node.addEventListener?.('paste',onPaste,true);
+    node.addEventListener?.('focusout',onBlur,true);
+    node.addEventListener?.('keydown',onKeyDown,true);
+    win?.addEventListener?.('blur',onWindowBlur);
+    win?.addEventListener?.('focus',onWindowFocus);
+    const tick=()=>{
+      sync();  // Steam paste may bypass React's onChange while no edit is active.
+      if(!motion.requested)return;
+      const found=visible();
+      if(found){domObserved=true;missing=0;show()}
+      else if(domObserved&&motion.raised&&++missing>=2)close();
+      // Where available, browser Gamepad API can observe a physical B edge even
+      // when the Steam keyboard swallows its Decky event.
+      try{
+        const pads=win?.navigator?.getGamepads?.()||globalThis.navigator?.getGamepads?.();
+        if(pads){const result=gamepadBEdge(pads,previousPads);previousPads=result.next;
+          if(result.fresh&&motion.raised)close();}
+      }catch{}
+      // When Steam returns focus to an editor control, the OSK is no longer
+      // steering the text field, even if it was drawn in another window.
+      const active=doc?.activeElement,realField=field();
+      if(motion.raised&&active&&active!==doc.body&&active!==realField&&
+         !node.contains?.(active)&&root?.contains?.(active)&&!found&&Date.now()-liftedAt>650)close();
+    };
+    const interval=(win?.setInterval||setInterval)(tick,90);
+    const onBegin=()=>begin();
+    const onDone=()=>{close();try{field()?.blur?.()}catch{}};
+    node.addEventListener?.('titledeck-inline-keyboard-request',onBegin);
+    node.addEventListener?.('titledeck-inline-keyboard-done',onDone);
+    activeInlineKeyboard={begin,close,done:onDone};
+    return()=>{
+      stopped=true;motion.hide();
+      if(activeInlineKeyboard?.begin===begin)activeInlineKeyboard=null;
+      node.removeEventListener?.('input',onInput,true);
+      node.removeEventListener?.('paste',onPaste,true);
+      node.removeEventListener?.('focusout',onBlur,true);
+      node.removeEventListener?.('keydown',onKeyDown,true);
+      node.removeEventListener?.('titledeck-inline-keyboard-request',onBegin);
+      node.removeEventListener?.('titledeck-inline-keyboard-done',onDone);
+      win?.removeEventListener?.('blur',onWindowBlur);
+      win?.removeEventListener?.('focus',onWindowFocus);
+      (win?.clearInterval||clearInterval)(interval);
+      for(const timer of timers)(win?.clearTimeout||clearTimeout)(timer);
+      for(const stop of dispose)try{stop()}catch{}
+    };
+  },[]);
+  const change=e=>{const next=textFromNativeEvent(e,latest.current.value).slice(0,180);
+    latest.current.value=next;latest.current.setValue(next)};
+  const enter=()=>{sync();activeInlineKeyboard?.close();latest.current.onEnter()};
+  const props={value,onChange:change,onEnterKeyPress:enter,autoFocus:false,bShouldAutoFocus:false,
+    label:'Custom display title',placeholder:'Enter a game display name…',maxLength:180,
+    bShowClearAction:true,'aria-label':'Custom display title'};
+  return h('div',{ref:wrap,className:'td-native-field td-game-name-field','data-td-inline-game-name':'true',
+    onInputCapture:sync,onPasteCapture:()=>setTimeout(sync,0)},
+    UI?.TextField?h(UI.TextField,props):h('input',{...props,type:'text',onKeyDown:e=>{if(e?.key==='Enter'){e.preventDefault?.();enter()}}}),
+    h('div',{className:'td-inline-keyboard-fallback'},
+      h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),'[data-td-focus="edit-save"]',50)}},'Done editing')));
 }
 export function libraryMove(index,d,count,columns=5){
   if(!Number.isInteger(index)||index<0||index>=count)return null;
@@ -441,6 +1137,12 @@ export function editorDestination(key,d,{canSave=true,canRestore=true}={}){
   if(to==='edit-restore'&&!canRestore)to=d===10&&key==='edit-clean'&&canSave?'edit-save':null;
   return to;
 }
+// Preview is controller navigable without changing the four standard editor slots.
+export function cleanupPreviewDestination(key,d){
+  if(key==='cleanup-keep')return d===12?'cleanup-apply':d===10?'edit-name':null;
+  if(key==='cleanup-apply')return d===11?'cleanup-keep':d===10?'edit-clean':null;
+  return null;
+}
 function Manager(){
   const state=useStateSnapshot(),root=R.useRef(null);
   const [games,setGames]=R.useState([]),[scope,setScope]=R.useState('all'),[query,setQuery]=R.useState(''),[view,setView]=R.useState('library');
@@ -457,6 +1159,10 @@ function Manager(){
     return()=>{observer?.disconnect();win?.removeEventListener?.('resize',update)};
   },[]);
   const [resetPage,setResetPage]=R.useState(0);
+  // Ephemeral, per-game editing aids. A suggestion never changes the draft until
+  // the user explicitly applies it. Undo lasts until any manual edit or save.
+  const [cleanupPreview,setCleanupPreview]=R.useState(null);
+  const [cleanupUndo,setCleanupUndo]=R.useState(null);
   R.useEffect(()=>{
     if(!notice)return;
     const id=notice.id;
@@ -492,17 +1198,58 @@ function Manager(){
   const original=games.find(g=>g.appid===selected)?.name||steamOverview(globalThis.appStore,selected)?.display_name||'';
   const restoreTile=()=>focusQuery(root.current,`[data-td-game="${lastTile||selected}"]`,70);
   const enterView=(next,first)=>{setNotice(null);setView(next);if(next==='settings')setTimeout(()=>{const scroller=root.current?.querySelector?.('[data-td-scroll="settings"]');if(scroller)scroller.scrollTop=0;},25);if(first)focusQuery(root.current,`[data-td-focus="${first}"]`,90);};
-  const openGame=g=>{setLastTile(g.appid);setSelected(g.appid);setDraft(aliases[g.appid]||g.name);enterView('editor','edit-name');};
-  const returnLibrary=()=>{setView('library');setNotice(null);restoreTile();};
-  const openSearch=()=>{setEntry(query);enterView('search','key-0')};
-  const manualId=()=>{setEntry('');enterView('appid','key-0')};
-  const chooseId=()=>{const id=normId(entry);if(!id){notify('Enter a valid positive numeric App ID.',setNotice);return;}
+  const openGame=g=>{
+    activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);
+    setLastTile(g.appid);setSelected(g.appid);setDraft(aliases[g.appid]||g.name);
+    enterView('editor','edit-name');
+  };
+  const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
+  const cancelCleanupPreview=()=>{setCleanupPreview(null);focusQuery(root.current,'[data-td-focus="edit-clean"]',45)};
+  const applyCleanup=()=>{
+    if(!cleanupPreview||cleanupPreview.appid!==selected)return;
+    setDraft(cleanupPreview.after);
+    setCleanupUndo({appid:selected,before:cleanupPreview.before,after:cleanupPreview.after});
+    setCleanupPreview(null);
+    notify('Cleanup applied to your unsaved draft. Select Undo cleanup to reverse it.',setNotice,true);
+    focusQuery(root.current,'[data-td-focus="edit-clean"]',55);
+  };
+  const suggestCleanup=()=>{
+    if(cleanupUndo?.appid===selected && draft===cleanupUndo.after){
+      setDraft(cleanupUndo.before);setCleanupUndo(null);setCleanupPreview(null);
+      notify('Cleanup undone. Your previous draft is back.',setNotice,true);
+      return;
+    }
+    // The source is always the currently editable draft, never Steam metadata.
+    const after=cleanTitle(draft||original);
+    if(!after){notify('No cleanup to suggest. Your title was not changed.',setNotice);return;}
+    setCleanupUndo(null);
+    setCleanupPreview({appid:selected,before:draft,after});
+    focusQuery(root.current,'[data-td-focus="cleanup-keep"]',75);
+  };
+  const startTitleEdit=()=>{
+    const wrap=root.current?.querySelector?.('[data-td-inline-game-name]');
+    const field=wrap?.querySelector?.('input, textarea');
+    if(!field){notify('The game title field is not ready. Try again.',setNotice);return;}
+    const area=root.current?.querySelector?.('.td-workspace');if(area)area.scrollTop=0;
+    // Start observing *before* Steam takes the input into its OSK process.
+    activeInlineKeyboard?.begin();
+    try{field.focus?.({preventScroll:true})}catch{try{field.focus?.()}catch{}}
+    try{field.click?.()}catch{}
+  };
+  const returnLibrary=()=>{
+    activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);
+    setView('library');setNotice(null);restoreTile();
+  };
+  const openSearch=()=>{setEntry(query);enterView('search')};
+  const manualId=()=>{setEntry('');enterView('appid')};
+  const chooseId=(typed=entry)=>{const id=normId(typed);if(!id){notify('Enter a valid positive numeric App ID.',setNotice);return;}
     let game=games.find(g=>g.appid===id);
     if(!game){game={appid:id,name:steamOverview(globalThis.appStore,id)?.display_name||`Steam App ${id}`,installed:false,source:'manual'};
       setGames(previous=>[...previous,game].sort((a,b)=>a.name.localeCompare(b.name)));}
     openGame(game);
   };
   const back=()=>{
+    if(view==='editor' && cleanupPreview){cancelCleanupPreview();return;}
     if(view==='library'){UI.Navigation?.NavigateBack?.();return;}
     if(view==='keyboard'){enterView('editor','edit-name');return;}
     if(view==='resetConfirm'){enterView('settings','setting-restore-all');return;}
@@ -510,7 +1257,10 @@ function Manager(){
     if(view==='search'||view==='appid'||view==='settings'){returnLibrary();return;}
     if(view==='editor')returnLibrary();
   };
-  const save=async(method,...args)=>{if(working)return;setWorking(true);
+  const save=async(method,...args)=>{
+    if(working)return;
+    setCleanupPreview(null);setCleanupUndo(null);
+    setWorking(true);
     try{await call(method,...args);const verified=await refreshState();
       const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]:method==='delete_alias'?!verified.aliases?.[String(args[0])]:verified.enabled===args[0];
       if(!valid)throw Error('Settings readback failed');
@@ -551,9 +1301,17 @@ function Manager(){
   const editorNav=(key,e)=>{
     const d=dir(e);
     if(![9,10,11,12].includes(d))return false;
-    const to=editorDestination(key,d,{canSave:!!draft.trim()&&!working,canRestore:!!aliases[selected]&&!working});
+    const to=editorDestination(key,d,{canSave:!!draft.trim()&&!working,canRestore:!working});
     if(to&&directionTo(root.current,to,e))return true;
+    // Steam sometimes wraps DialogButton with a non-focusable shell. If Decky's
+    // navigation tree was refreshed during rerender, retry on the next UI tick.
+    if(to)focusQuery(root.current,`[data-td-focus="${to}"]`,0);
     // Do not hand the direction to Steam's implicit flat traversal. It can jump rows.
+    halt(e);return true;
+  };
+  const previewNav=(key,e)=>{
+    const d=dir(e),to=cleanupPreviewDestination(key,d);
+    if(to&&directionTo(root.current,to,e))return true;
     halt(e);return true;
   };
   const title=view==='library'?'Library':view==='editor'?'Rename game':view==='settings'?'Settings':view==='resetConfirm'?'Restore original titles':view==='backupConfirm'?'Restore backup':view==='search'?'Search your games':'Find game by App ID';
@@ -588,28 +1346,57 @@ function Manager(){
     rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM NAME'),h('div',{className:'td-rail-label',style:{textAlign:'center'}},'Steam game '+selected),h('div',{className:'td-rail-label',style:{textAlign:'right'}},aliases[selected]?'● Saved override':'Original title'));
     actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'edit-back',nav:e=>editorNav('edit-back',e),onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Edit → Save → Verify in Steam'));
     workspace=h('div',{className:'td-workspace'},h('div',{className:'td-editor'},h('div',null,h('div',{className:'td-editor-art'},h(Cover,{id:selected,title:original}))),
-      h('div',{className:'td-card'},h('div',{className:'td-copy-label'},'ORIGINAL STEAM TITLE'),h('div',{className:'td-title-large'},original||'Unknown game'),
-        h('div',{className:'td-copy-label'},'CUSTOM DISPLAY TITLE'),h('div',{className:'td-preview'},draft||'No title entered'),
+      h('div',{className:'td-card td-game-editor-card'},
+        h('div',{className:'td-copy-label'},'CUSTOM DISPLAY TITLE'),
+        h(InlineGameNameField,{value:draft,setValue:editDraft,
+          onEnter:()=>focusQuery(root.current,'[data-td-focus="edit-save"]',70)}),
+        h('div',{className:'td-editor-original-meta'},'Original Steam title: ',h('strong',null,original||'Unknown game')),
+        cleanupPreview?.appid===selected?h('div',{className:'td-cleanup-preview','data-td-cleanup-preview':'true'},
+          h('div',{className:'td-cleanup-heading'},'Review suggested cleanup · not applied'),
+          h('div',{className:'td-cleanup-comparison'},
+            h('div',null,h('span',{className:'td-cleanup-caption'},'Current draft'),h('div',{className:'td-cleanup-before'},cleanupPreview.before)),
+            h('div',null,h('span',{className:'td-cleanup-caption'},'Suggested title'),h('div',{className:'td-cleanup-after'},cleanupPreview.after))),
+          h(UI.Focusable,{'flow-children':'right',className:'td-cleanup-preview-actions'},
+            h(Btn,{'data-td-focus':'cleanup-keep',nav:e=>previewNav('cleanup-keep',e),onClick:cancelCleanupPreview},'Keep my title'),
+            h(Btn,{'data-td-focus':'cleanup-apply',nav:e=>previewNav('cleanup-apply',e),onClick:applyCleanup},'Apply suggestion'))
+        ):null,
         h(UI.Focusable,{'flow-children':'down',className:'td-editor-actions','data-td-layout':'editor-grid'},
           h(UI.Focusable,{'flow-children':'right',className:'td-editor-action-row','data-td-layout':'editor-top'},
-            h(Btn,{'data-td-focus':'edit-name',nav:e=>editorNav('edit-name',e),onClick:()=>enterView('keyboard','key-0')},'✎ Change name'),
-            h(Btn,{'data-td-focus':'edit-clean',nav:e=>editorNav('edit-clean',e),onClick:()=>{const suggested=cleanTitle(original);if(suggested){setDraft(suggested);notify('Cleanup suggestion ready for review.',setNotice,true)}else notify('No changes needed. Set your own title instead.',setNotice);}},'Suggest cleanup')),
+            h(Btn,{'data-td-focus':'edit-name',nav:e=>editorNav('edit-name',e),onClick:startTitleEdit},'✎ Change name'),
+            h(Btn,{'data-td-focus':'edit-clean',nav:e=>editorNav('edit-clean',e),onClick:suggestCleanup},cleanupUndo?.appid===selected&&draft===cleanupUndo.after?'↶ Undo cleanup':'Suggest cleanup')),
           h(UI.Focusable,{'flow-children':'right',className:'td-editor-action-row','data-td-layout':'editor-bottom'},
-            h(Btn,{'data-td-focus':'edit-save',nav:e=>editorNav('edit-save',e),disabled:working||!draft.trim(),onClick:()=>void save('save_alias',selected,draft.trim())},working?'Saving…':'✓ Save custom title'),
-            h(Btn,{'data-td-focus':'edit-restore',nav:e=>editorNav('edit-restore',e),disabled:working||!aliases[selected],onClick:()=>{setDraft(original);void save('delete_alias',selected)}},'Restore original'))),
+            h(Btn,{'data-td-focus':'edit-save',nav:e=>editorNav('edit-save',e),disabled:working||!draft.trim(),onClick:()=>{activeInlineKeyboard?.close();void save('save_alias',selected,draft.trim())}},working?'Saving…':'✓ Save custom title'),
+            h(Btn,{'data-td-focus':'edit-restore',nav:e=>editorNav('edit-restore',e),disabled:working,onClick:()=>{
+              activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);setDraft(original);
+              if(aliases[selected])void save('delete_alias',selected);
+              else notify('Unsaved edits cleared. Original Steam title restored in the editor.',setNotice,true);
+            }},'Restore original'))),
         h('div',{className:'td-editor-note'},aliases[selected]?`Saved as: ${aliases[selected]}. Changes to visible game titles are active when TitleDeck is enabled.`:
-          'Your new title stays independent of Steam metadata. The Steam title override is already working on the tested Catherine game.'))));
+          'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original clears a draft or saved alias.'))));
     bottom=footer('A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
   }else if(view==='keyboard'||view==='search'||view==='appid'){
-    rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'TYPE'),h('div',{className:'td-rail-label',style:{textAlign:'center'}},view==='keyboard'?'New game title':view==='search'?'Search library':'Steam App ID'),h('div',{className:'td-rail-label',style:{textAlign:'right'}},'A to select'));
-    actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action',onClick:back},'← Back'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'On-screen controller keyboard'));
-    const typing=view==='keyboard'?draft:entry;
-    const setTyping=view==='keyboard'?setDraft:setEntry;
-    workspace=h('div',{className:'td-workspace'},h(Keypad,{value:typing,setValue:setTyping,root:root.current,done:()=>{
-      if(view==='search'){setQuery(entry.trim());enterView('library','tile-0');}
-      else if(view==='appid')chooseId();
-      else enterView('editor','edit-name');}}));
-    bottom=footer('D-pad: move  •  A: type  •  B: go back',view==='search'?'Search the full library':'No Steam overlay keyboard needed');
+    const isTitle=view==='keyboard',isSearch=view==='search';
+    const context=isTitle?'Change display title':isSearch?'Search your game library':'Find game by Steam App ID';
+    rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'STEAM TEXT INPUT'),
+      h('div',{className:'td-rail-label',style:{textAlign:'center'}},context),
+      h('div',{className:'td-rail-label',style:{textAlign:'right'}},'Native keyboard'));
+    actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action',onClick:back},'← Back'),
+      h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Steam keyboard + physical keyboard + paste'));
+    const typing=isTitle?draft:entry;
+    const setTyping=isTitle?setDraft:setEntry;
+    const finish=next=>{
+      setTyping(next);
+      if(isSearch){setQuery(next.trim());enterView('library','tile-0');}
+      else if(view==='appid')chooseId(next);
+      else enterView('editor','edit-name');
+    };
+    workspace=h('div',{className:'td-workspace td-native-workspace'},h('div',{className:'td-card td-native-entry'},
+      h('div',{className:'td-copy-label'},'EDIT USING STEAM'),
+      h('div',{className:'td-title-large'},context),
+      h(NativeTextEntry,{value:typing,setValue:setTyping,done:finish,cancel:back,kind:isTitle?'title':isSearch?'search':'id',
+        placeholder:isTitle?'Enter the name you want to see…':isSearch?'Search by title or App ID…':'Enter a numeric Steam App ID…'}),
+      h('div',{className:'td-native-hint'},'Steam keyboard opens automatically. If needed, select the text field or press STEAM + X. Physical keyboards and paste are supported.')));
+    bottom=footer('A: edit field  •  Enter: accept  •  B: back',isTitle?'Save your new name on the next screen':'Steam native text entry');
   }else if(view==='backupConfirm'){
     const manual=state.manual_backup||{};
     rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'BACKUP'),h('div',{className:'td-rail-label'},`${manual.count||0} stored names`),h('div',{className:'td-rail-label'},'Confirmation required'));
@@ -689,7 +1476,7 @@ function Manager(){
           button('Restore saved backup',()=>{setView('backupConfirm');focusQuery(root.current,'[data-td-focus="backup-cancel"]',90)},{disabled:!manual.available,focus:'setting-backup-restore'}),manual.available?'● Backup available':'○ No backup'),
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Saved names: ${aliasCount}. No Steam artwork or metadata is modified.`,
+        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Saved names: ${aliasCount}. No Steam artwork or metadata is modified.`,
           button('Rescan Steam titles',()=>{adapter?.runNow();notify(`Steam display scan complete. Visible matches: ${adapter?.applied||0}.`,setNotice,true)},{focus:'setting-scan'})),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
@@ -698,7 +1485,8 @@ function Manager(){
       )));
     bottom=footer('B: return to library',`TitleDeck ${PLUGIN_VERSION}`);
   }
-  return h(UI.Focusable,{'data-titledeck-ui':'true',className:'td-root',ref:root,'flow-children':'down',onCancel:e=>{halt(e);back()}},
+  const nativeScreen=view==='keyboard'||view==='search'||view==='appid';
+  return h(UI.Focusable,{'data-titledeck-ui':'true',className:`td-root${nativeScreen?' td-native-screen':''}`,ref:root,'flow-children':'down',onCancel:e=>{halt(e);back()}},
     h('style',null,STYLE),
     h('main',{className:'td-shell','data-td-layout':'manager-shell'},
       h('header',{className:'td-header'},h('div',{className:'td-identity'},h('img',{src:ICON_DATA_URI,className:'td-logo',alt:''}),
