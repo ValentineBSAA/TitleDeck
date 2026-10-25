@@ -78,3 +78,19 @@ This is an instrumentation / detection-quality update; physical Game Info replac
 The physical Deck's Preview 7 capture for Catherine Classic (app 893180) confirmed one valid game container but 0 hard-coded Game Info panels and 0 native description nodes. This rules out an App ID storage problem, but does not tell us whether Steam has a native Game Info description in its current UI state. Preview 8 follows the public Decky Metadata plugin's pattern: locate the GameInfoContainer and GameDescription CSS tokens through the live Decky SteamUI module finder instead of assuming CSS names contain human-readable prefixes. Cache successful lookups and retry missing modules at a bounded interval.
 
 The custom text still only replaces a uniquely matched, verified native description on the correct game page; it will not overwrite arbitrary Steam content or infer a Game Info description from an unrelated element. Quick Access Capture now reports **Live CSS modules resolved/unavailable**, alongside actual native element counts, with fallback to the old selectors. Both the original Below Play mode and Artwork Footer remain unchanged. Native Game Info replacement awaits physical testing.
+
+
+## Preview 9: MetaDeck-informed native description data interception
+
+Research: MetaDeck (`EmuDeck/MetaDeck`, GPL-3.0) uses the Steam `appDetailsStore.GetDescriptions` API and the `strFullDescription`/`strSnippet` fields to drive native Game Info descriptions, rather than depending only on a DOM element. TitleDeck's Preview 9 introduces an independently written, reversible per-instance read-time wrapper around this getter.
+
+- Returns TitleDeck text only when the plugin is enabled, Game Info is selected, the requested app ID has a saved description, and live Steam navigation identifies exactly the same app; conflicting app routes are refused.
+- Returns Steam's original result unchanged for other games, inactive pages, non-Game-Info placement, or disabled TitleDeck.
+- Does **not** write to Steam's persistent app-details cache, change installed files, or change the user's original Steam descriptions.
+- Restores the original property descriptor or inherited getter on unload; does not undo unrelated third-party patches installed after TitleDeck.
+- Exposes native hook counts, total `GetDescriptions` reads, and successful overrides in Steam display diagnostics and in Quick Access Capture.
+- The existing DOM description panel remains as a guarded fallback, and Below Play and Artwork Footer remain available.
+
+**Physical acceptance still required:** Steam may cache descriptions and fail to re-read them until the game page is reopened. Select Game Info, exit to the library, open the game again, then capture the native hook/call/override counters. If Game Info stays unchanged, record those counters; don't presume the data patch succeeded merely because unit tests passed.
+
+This research uses public techniques, not copied MetaDeck code. A future implementation should review interoperability with Decky Metadata and other Game Info plugins on hardware.
