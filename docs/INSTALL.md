@@ -1,34 +1,30 @@
-# Install and update TitleDeck
+# Installing TitleDeck 0.9.0 RC1
 
-> **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
+**Target platform:** physical Valve Steam Deck running **SteamOS Gaming Mode** and Decky Loader. **ROG Ally, Legion Go, other non-Steam Deck SteamOS-like systems, Desktop Mode, Windows, Android and DroidDeck are untested and may not work correctly.** See [Compatibility](COMPATIBILITY.md).
 
-## Release status
+## Download
 
-**0.9.0 RC source is prepared.** The installer **`TitleDeck-0.9.0-RC.zip`** will be available at [Releases](https://github.com/ValentineBSAA/TitleDeck/releases) **after the maintainer uploads it**. Until then, [0.8.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1) remains the older available download.
+The maintainer will publish **`TitleDeck-0.9.0-RC1-SteamDeck.zip`** under tag **`0.9.0-rc.1`**. See [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). **If the RC release is not listed, it has not yet been uploaded on GitHub.** The previous 0.8.1 installer remains available.
 
-## Valve Steam Deck / Gaming Mode
+## Install with Decky Loader
 
 1. Install [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader).
-2. Download the release ZIP matching the version you intend to install.
-3. In Decky's developer settings, choose **Install Plugin from ZIP**; select the TitleDeck plugin ZIP (not the screenshot gallery).
-4. Open **Quick Access → Decky → TitleDeck → Open full library manager**.
-5. Select a game, press Change Name to use Steam's native keyboard, or choose Suggest Cleanup to review a safe suggestion. Then press **Save Custom Title** to persist your intended name.
+2. Download the TitleDeck 0.9.0 RC1 plugin ZIP from GitHub Releases.
+3. In Decky's developer options, use **Install Plugin from ZIP** and choose that file.
+4. In Gaming Mode open **Quick Access → Decky → TitleDeck → Open full library manager**.
+5. Select a game. **Change Name** opens Steam's keyboard; only **Save Custom Title** saves a permanent alias.
+6. **Suggest Cleanup** shows a before/after preview. Choose Apply or Keep, optionally Undo Cleanup, then select Save Custom Title to save.
 
-**Do not remove Decky's existing TitleDeck settings when updating.** Current aliases should remain compatible, but take a manual backup before major updates.
+Make a TitleDeck Settings backup before major upgrades. The installer is designed to preserve existing aliases and backup files. Do not clear Decky's plugin settings when upgrading.
 
-## Edit and undo
+## Undo names and recover
 
-- **Change Name** edits the draft on the regular game editor. Steam's native keyboard opens; a connected keyboard may also work, but cross-device typing has not been broadly tested.
-- **Suggest Cleanup** previews the proposed name. Apply does **not** write a permanent alias. You must separately press Save.
-- **Undo cleanup** is available for the suggestion until further editing.
-- **Restore Original** restores a saved alias or clears an unsaved draft.
-- **Restore All** requires a full review and deliberate confirmation. TitleDeck creates a recovery backup before removing aliases.
+**Restore Original** removes a saved alias for one game (or resets an unsaved draft). **Settings → Restore All** requires a paginated review and deliberate confirmation and writes a recovery snapshot first. Recovery is guarded against newer changes.
 
-## Troubleshooting
+## Native keyboard known issue
 
-- If the editor remains raised after dismissing Steam's keyboard with B, this is a **known intermittent RC issue**. The draft is not saved until Save Custom Title.
-- Lettering baked into game artwork never changes.
-- Some Steam pages, refresh patterns, and CSS Loader themes may not display aliases consistently.
-- Non-Steam Deck environments may fail completely; see [compatibility](COMPATIBILITY.md).
+On a physical Steam Deck, pressing **B** sometimes closes Steam's keyboard but leaves the editing panel raised. If that happens, select **Done editing**. This is a **known intermittent RC1 issue**, not a confirmed fix.
 
-[Verification](VERIFIED_ON_DECK.md) · [Support](../SUPPORT.md).
+Only displayed Steam text is modified. Steam sort identifiers and installed game files are never rewritten, and lettering inside cover artwork never changes.
+
+[Device verification](VERIFIED_ON_DECK.md) · [Release notes](RELEASE_NOTES_0.9.0_RC1.md) · [Support](../SUPPORT.md)

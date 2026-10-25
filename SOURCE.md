@@ -1,35 +1,39 @@
-# TitleDeck source and packaging
+# TitleDeck source and release packaging
 
-**Prepared RC version:** 0.9.0-rc.1. **Status:** awaiting maintainer's GitHub prerelease ZIP upload. The source files currently committed on `main` remain from **0.8.1** until the release is published. The repository includes a checksum-verified [release-source sync workflow](.github/workflows/sync-rc-source.yml) that imports the exact RC source and tests **after** upload and publication. This avoids having mismatched installer/source content.
+**0.9.0 RC1** is intended for a physical Steam Deck in SteamOS Gaming Mode. **ROG Ally, other SteamOS-like PC handhelds, Desktop Mode, Windows and Android/DroidDeck are not verified.**
 
-> **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
+The install ZIP `TitleDeck-0.9.0-RC1-SteamDeck.zip` includes a single root `TitleDeck/` folder with:
 
-## Layout
-
-- `src/index.js` and `dist/index.js`: identical runtime frontend / bundled Decky UI logic.
-- `main.py`: local alias storage, backup and restore, read-only installed-game discovery.
-- `plugin.json`, `package.json`: same RC version.
-- `assets/titledeck-icon.png`, `assets/titledeck-qam.webp`: existing branded artwork.
-- `tests/`: regression checks. Automated tests do not imply physical compatibility.
-- `docs/screenshots/v0.8.1/`: 7 original Steam Deck screenshots, still reused while RC artwork is gathered.
-
-## Local tests
-
-```sh
-node --test tests/frontend.test.cjs
-python3 -m unittest discover -s tests -p test_backend.py
+```text
+TitleDeck/
+  main.py
+  plugin.json
+  package.json
+  src/index.js
+  dist/index.js
+  assets/titledeck-icon.png
+  assets/titledeck-qam.webp
+  tests/frontend.test.cjs
+  tests/release_metadata.test.cjs
+  tests/test_backend.py
+  README.md
+  CHANGELOG.md
+  LICENSE
 ```
 
-The RC ZIP has a single top-level `TitleDeck/` directory. Its `src/index.js` and `dist/index.js` must be byte-for-byte identical to one another **and** to the GitHub RC source snapshot. Each release should document test totals and known device limitations.
+Its plugin, package and frontend versions all equal **`0.9.0-rc.1`**. The source and installed frontend files are byte-identical. The RC ZIP passed **48 frontend and 11 backend tests**, but these tests do not prove universal hardware compatibility.
 
-## Publishing
+## Release source synchronization
 
-The import workflow expects the **exact tag `0.9.0-rc.1`** and the file **`TitleDeck-0.9.0-RC.zip`**. It checks SHA-256, imports only approved source files, runs the tests, and commits the source to `main`. If the ZIP is uploaded *after* publishing the release, run **Actions → Sync TitleDeck RC source after release upload → Run workflow** to trigger it manually.
+The prior **0.8.1** code remains in the public repository until the maintainer publishes tag `0.9.0-rc.1` with the verified ZIP. After publication, the GitHub Actions workflow `.github/workflows/import-090-rc.yml` checks the exact ZIP checksum and imports updated source, tests and manifests, without overwriting the polished repository README or the seven historical 0.8.1 screenshots.
 
-1. Make a backup of aliases, then run all tests and check the ZIP integrity/version.
-2. Mark the GitHub release as **Pre-release** and tag it `0.9.0-rc.1`; attach `TitleDeck-0.9.0-RC.zip`.
-3. Paste the contents of [0.9.0 RC release notes](docs/RELEASE_NOTES_0.9.0-RC.md); do not call it fully stable or fully device accepted.
-4. Confirm the source sync workflow succeeds; preserve the historical 0.8.1 release and its v0.8.1 screenshot gallery.
-5. Verify the first 0.9.0 RC install on a physical Deck before promoting further.
+**Until that import workflow succeeds, GitHub main may still show the older 0.8.1 code.** The RC installer contains the full matching source. If the asset is added after the release is published, the maintainer can manually dispatch the import workflow.
 
-[Verified features](docs/VERIFIED_ON_DECK.md) · [Roadmap](docs/ROADMAP.md).
+## Tests
+
+```sh
+node --test tests/*.test.cjs
+python3 -m unittest discover -s tests -p 'test_backend.py'
+```
+
+Report hardware test results separately. The known intermittent native keyboard dismissal remains unresolved; see [Release notes](docs/RELEASE_NOTES_0.9.0_RC1.md).

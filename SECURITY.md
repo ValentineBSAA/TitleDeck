@@ -1,9 +1,7 @@
-# TitleDeck security
+# Security policy
 
-**Current project stage:** 0.9.0 release candidate. No formal vulnerability bounty or guaranteed security response timeline.
+TitleDeck 0.9.0 RC1 is a Steam Deck Gaming Mode community release candidate. No formal vulnerability bounty or response-time guarantee is offered. **ROG Ally, non-Steam Deck SteamOS-like handhelds, Desktop Mode, Windows and Android/DroidDeck have not been tested.**
 
-> **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
+Never publish passwords, Steam Guard codes, access tokens or personally sensitive device information in GitHub Issues. For security-sensitive concerns, use GitHub's private vulnerability reporting option if enabled, or contact the maintainer privately.
 
-TitleDeck should not request a Steam password or Steam Guard code, modify installed game files, or tamper with Steam canonical metadata. Report suspected security problems privately using GitHub private vulnerability reporting if offered, or contact the maintainer through a private channel. Do not post exploit details or secrets in public GitHub Issues.
-
-For functional bugs use [Issues](https://github.com/ValentineBSAA/TitleDeck/issues/new/choose); for general questions use [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
+TitleDeck should never request Steam credentials or modify game installations or canonical Steam metadata. Non-security problems belong in [Issues](https://github.com/ValentineBSAA/TitleDeck/issues).

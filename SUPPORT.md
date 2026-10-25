@@ -1,29 +1,25 @@
-# Support & known issues
+# TitleDeck support
 
-Questions and suggestions: [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions). Reproducible defects: [GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues/new/choose).
+**Supported test target:** physical Steam Deck, SteamOS Gaming Mode. **ROG Ally, other PC handhelds with SteamOS-like distributions, Desktop Mode, Windows and Android/DroidDeck are untested and may not function correctly.** See [Compatibility](docs/COMPATIBILITY.md).
 
-> **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
+[GitHub Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) for questions and ideas · [GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues) for reproducible bugs.
 
-## Known 0.9.0 RC issue
+## Known 0.9.0 RC1 issue
 
-**Keyboard-close animation may stick.** After opening the native Steam keyboard with Change Name, dismissing it with B **sometimes** leaves the input card in its raised position. This is a known intermittent behavior observed on a real Steam Deck. It is not considered fully resolved in the RC. Saving a title still requires the explicit Save Custom Title action.
+**Pressing B closed the Steam keyboard, but the title field stayed raised.** This intermittent mismatch was reported during physical Steam Deck testing. Use **Done editing** to lower the panel. This issue is open; RC1 does not claim an automatic close fix.
 
 ## Frequently asked questions
 
-**Why doesn't the logo on a game cover change?** TitleDeck modifies supported Steam UI text, not lettering embedded in the artwork.
+**Why is the old title still on the cover image?** TitleDeck changes Steam's visible text, not lettering baked into art.
 
-**Does it change sorting or Steam's canonical name?** No. It maintains local display aliases without modifying game files or underlying sorting metadata.
+**Does renaming change sorting or game files?** No; aliases are stored separately from Steam's canonical metadata and installation files.
 
-**How do I undo?** Use Restore Original on one game, or Settings → Restore All with preview, confirmation and automatic recovery backup. Applying a cleanup suggestion alone does not save the name.
+**Does Suggest Cleanup save immediately?** No. It presents a current/suggested comparison. Choose Apply or Keep; only **Save Custom Title** makes it permanent. Undo Cleanup is available for an applied suggestion.
 
-**Does it survive a restart?** The maintainer verified a Catherine alias survived an actual Steam Deck restart. This does *not* independently establish compatibility with every Steam metadata refresh.
+**What about reverting 200 names?** Restore All presents every saved name in review pages, requires confirmation and creates a recovery backup. Automated long-list testing exists; a physical 200+ name device test remains open.
 
-**Will it work on my ROG Ally, Linux handheld, Windows, Android, or DroidDeck?** **No compatibility guarantee.** Those systems have not been verified or officially supported. TitleDeck is developed and tested for Valve Steam Deck / SteamOS Gaming Mode.
+**Does it survive metadata refresh?** A saved alias survived a Steam Deck restart; this does **not** independently verify every Steam background metadata refresh. The adapter includes a locally tested fast reapplication mechanism.
 
-**Why release candidate?** The core workflow has physical device evidence, but the intermittent keyboard animation and wider Steam UI/theme compatibility remain open.
+**Should it work on ROG Ally or DroidDeck?** No compatibility promise. These platforms have not been verified; keyboard, Decky and controller behavior can differ.
 
-## Good bug reports
-
-Include TitleDeck version, device model (Valve Steam Deck vs other), OS/SteamOS version, Decky version, Steam client branch, theme/CSS Loader info, exact controller sequence, and expected/actual results. Never publish credentials, Steam Guard codes or personal details.
-
-[Installation](docs/INSTALL.md) · [Verification](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md).
+Please include hardware name, operating system, Steam client channel, Decky version, CSS Loader theme, TitleDeck version, steps and screenshots with an Issue. Never post account secrets.
