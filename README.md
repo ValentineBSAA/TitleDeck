@@ -49,7 +49,7 @@ Seven real photos from the creator's Steam Deck. These **older 0.8.1 screenshots
 
 ## Install / update
 
-**0.9.0 RC1 is prepared for maintainer upload.** When published, download `TitleDeck-0.9.0-RC1-SteamDeck.zip` from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases) and install via **Decky Loader → Developer → Install Plugin from ZIP**. If the RC is not listed yet, the prior **0.8.1** public release remains available.
+For **0.9.0 RC1**, download `TitleDeck-0.9.0-RC1-SteamDeck.zip` from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases) and install via **Decky Loader → Developer → Install Plugin from ZIP**. If the RC is not listed yet, the maintainer has not published its ZIP. The prior **0.8.1** public release remains available.
 
 In Gaming Mode, open **Quick Access → Decky → TitleDeck → Open full library manager**. Choose a game, edit using Change Name or review Suggest Cleanup, and explicitly press **Save Custom Title**. Back up your aliases before upgrading.
 

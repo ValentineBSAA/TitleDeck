@@ -28,6 +28,6 @@ Metadata-refresh persistence, every Steam UI surface / CSS Loader theme, 200+ al
 
 ## Release availability
 
-The maintainer is preparing the **0.9.0 RC1** ZIP and will upload it to [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). If tag `0.9.0-rc.1` is not visible yet, the RC download has **not** been published. Existing 0.8.1 remains as an older release.
+The **0.9.0 RC1** ZIP is distributed from [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). If tag `0.9.0-rc.1` is not visible yet, the RC download has **not** been published. Existing 0.8.1 remains as an older release.
 
 Install using Decky Loader's developer **Install Plugin from ZIP** feature. [Installation guide](INSTALL.md) · [Seven historical Steam Deck screenshots](SCREENSHOTS.md) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
