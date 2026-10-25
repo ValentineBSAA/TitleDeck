@@ -1,29 +1,33 @@
-# Source, tests and packaging
+# TitleDeck source and packaging
 
-TitleDeck 0.8.1 is a Decky Loader plugin with a self-contained frontend and Python backend.
+**Source version:** 0.9.0-rc.1. **Status:** prepared release candidate. The maintainer will publish the installer ZIP in a separate GitHub release upload. The previous **0.8.1** prerelease remains preserved as a historical release.
 
-- `src/index.js`: author-maintained frontend source
-- `dist/index.js`: matching installed frontend
-- `main.py`: alias persistence and read-only installed game discovery
-- `plugin.json`, `package.json`: package metadata
-- `assets/`: approved icon and Quick Access artwork
-- `tests/`: frontend and backend regression checks
-- `docs/screenshots/v0.8.1/`: release gallery
+> **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
 
-The [v0.8.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1) is the source of the installable ZIP. The original 0.8.1 release source and seven screenshots were imported after SHA-256 verification on 2026-10-24; the one-time importer was retired after the files were committed. Future code changes are checked by `.github/workflows/validate.yml`.
+## Layout
 
-## Tests
+- `src/index.js` and `dist/index.js`: identical runtime frontend / bundled Decky UI logic.
+- `main.py`: local alias storage, backup and restore, read-only installed-game discovery.
+- `plugin.json`, `package.json`: same RC version.
+- `assets/titledeck-icon.png`, `assets/titledeck-qam.webp`: existing branded artwork.
+- `tests/`: regression checks. Automated tests do not imply physical compatibility.
+- `docs/screenshots/v0.8.1/`: 7 original Steam Deck screenshots, still reused while RC artwork is gathered.
+
+## Local tests
 
 ```sh
 node --test tests/frontend.test.cjs
-python3 -m unittest discover -s tests -p 'test_backend.py'
+python3 -m unittest discover -s tests -p test_backend.py
 ```
 
-The frontend release files are deliberately identical: `src/index.js` and `dist/index.js`. Keep version strings synchronized on future releases. Hardware testing is essential for changes to Steam UI integration or controller focus.
+The RC ZIP has a single top-level `TitleDeck/` directory. Its `src/index.js` and `dist/index.js` must be byte-for-byte identical to one another **and** to the GitHub RC source snapshot. Each release should document test totals and known device limitations.
 
-## Release process
-1. Preserve backwards compatibility for local aliases, backup and recovery.
-2. Verify controller interactions in Gaming Mode.
-3. Run tests and review any changed Steam UI assumptions.
-4. Publish a prerelease until stable acceptance criteria are met.
-5. Link real screenshots and document hardware findings distinctly from local tests.
+## Publishing
+
+1. Make a backup of aliases, then run all tests and check the ZIP integrity/version.
+2. Mark the GitHub release as **Pre-release** and tag it `0.9.0-rc.1`; attach `TitleDeck-0.9.0-RC.zip`.
+3. Paste the contents of [0.9.0 RC release notes](docs/RELEASE_NOTES_0.9.0-RC.md); do not call it fully stable or fully device accepted.
+4. Keep the historical 0.8.1 release and existing v0.8.1 screenshot gallery.
+5. Verify the first 0.9.0 RC install on a physical Deck before promoting further.
+
+[Verified features](docs/VERIFIED_ON_DECK.md) · [Roadmap](docs/ROADMAP.md).

@@ -1,14 +1,18 @@
-## Change summary
+## Summary
 
-Describe the problem this solves and the behavior that changes.
+Describe the TitleDeck behavior and why it matters.
 
-## Quality checklist
+## Validation
 
 - [ ] Frontend tests pass
 - [ ] Backend tests pass
-- [ ] Existing aliases and recovery behavior remain compatible
-- [ ] D-pad directions checked if navigation changed
-- [ ] Version information updated if applicable
-- [ ] Device-tested results distinguished from simulated tests
+- [ ] `src/index.js` = `dist/index.js` and versions match
+- [ ] Existing aliases and backups remain compatible
+- [ ] Cleanup preview/undo and manual Save preserved
+- [ ] D-pad Up/Down/Left/Right tested if UI changed
+- [ ] Physical Steam Deck testing distinguished from simulated checks
+- [ ] Non-Valve platforms never claimed supported without actual verification
 
-**SteamOS / Decky / Theme used for device testing:**
+**Hardware / SteamOS / Decky / theme tested:**
+
+**Unverified behavior and known issues:**

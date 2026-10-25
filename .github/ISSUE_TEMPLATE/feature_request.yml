@@ -1,21 +1,24 @@
 name: Feature request
-description: Suggest a focused improvement
+description: Suggest a focused TitleDeck improvement
 title: "[Feature] "
 labels: []
 body:
+  - type: markdown
+    attributes:
+      value: "Main supported environment: physical Valve Steam Deck with SteamOS Gaming Mode. Requests for ROG Ally, alternative SteamOS, Windows and Android are experimental, not promised."
   - type: textarea
     id: reason
     attributes:
-      label: What problem should TitleDeck solve?
+      label: What title-management problem would this solve?
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
-      label: Proposed behavior
+      label: Desired behavior
     validations:
       required: true
   - type: textarea
     id: compatibility
     attributes:
-      label: Impact on controller navigation, title persistence and backup safety
+      label: Expected impact on Gaming Mode navigation, backup safety, and Steam keyboard

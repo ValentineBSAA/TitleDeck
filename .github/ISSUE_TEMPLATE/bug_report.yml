@@ -1,44 +1,61 @@
 name: Bug report
-description: Report a TitleDeck issue in Steam Deck Gaming Mode
+description: Report a TitleDeck behavior or compatibility problem
 title: "[Bug] "
 labels: []
 body:
   - type: markdown
     attributes:
-      value: "Please do not include passwords, codes, or sensitive account data."
+      value: |
+        **Important:** TitleDeck is built and tested for physical Valve Steam Deck / SteamOS Gaming Mode.
+        ROG Ally, non-Valve SteamOS/SteamOS-like systems, Windows and Android/DroidDeck are unverified and may not work.
+        Avoid passwords, authentication codes, or private account information.
   - type: input
     id: version
     attributes:
       label: TitleDeck version
-      placeholder: "0.8.1"
+      placeholder: "0.9.0-rc.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device being tested
+      options:
+        - Valve Steam Deck (LCD)
+        - Valve Steam Deck (OLED)
+        - ASUS ROG Ally or other Windows handheld (unsupported/untested)
+        - Other SteamOS / SteamOS-like hardware (unsupported/untested)
+        - Windows desktop / Android / DroidDeck (unsupported/untested)
+        - Other
     validations:
       required: true
   - type: input
     id: environment
     attributes:
-      label: SteamOS / Decky / CSS Loader theme
-      placeholder: "Versions and current theme (or none)"
+      label: SteamOS / OS, Decky Loader, Steam client branch and CSS Loader theme
+      placeholder: "Version numbers, Steam beta/stable, theme or none"
     validations:
       required: true
   - type: dropdown
     id: area
     attributes:
-      label: Affected feature
+      label: Feature affected
       options:
-        - Displayed game title
-        - Game library manager
-        - Four-direction controller navigation
-        - Editor / keyboard
-        - Restore All / backups / recovery
-        - Quick Access
+        - Display name persistence / refresh flicker
+        - Native Steam keyboard / B dismissal animation
+        - Four-way controller navigation
+        - Suggest Cleanup / Undo Cleanup
+        - Save / Restore Original / Restore All
+        - Backups and recovery
+        - Full library manager / Quick Access
         - Other
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Reproduction steps
-      description: Include exact D-pad directions and relevant game when applicable.
+      label: Exact reproduction steps
+      description: Include each button pressed, whether Steam keyboard appeared, and what screen was visible.
     validations:
       required: true
   - type: textarea
@@ -56,4 +73,4 @@ body:
   - type: textarea
     id: screenshots
     attributes:
-      label: Screenshots or additional details
+      label: Screenshot/video and extra details (no sensitive data)

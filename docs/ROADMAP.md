@@ -1,20 +1,27 @@
 # TitleDeck roadmap
 
-## Core objective
-A user should be able to rename a Steam game's **displayed title**, have the alias remain available on subsequent sessions, and safely restore original titles without editing Steam's game files or metadata.
+## 0.9.0 RC release focus
 
-## Current prerelease: 0.8.1
-- [x] Save a custom title that appears on Steam Deck.
-- [x] Restore original game name.
-- [x] Survive a Steam Deck restart.
-- [x] Full library browser and editor with gamepad controls.
-- [x] Confirmed shared editor four-direction D-pad controls.
-- [x] Restore All with paginated review and recovery backup.
-- [x] Animated notices and visible version string.
-- [x] Remove unreliable experimental Steam library cover badges.
-- [ ] Independently verify background metadata refresh survival.
-- [ ] Complete cross-theme, cross-SteamOS focus validation.
-- [ ] Validate the 200+ name review on physical hardware.
-- [ ] Collect compatibility results before 1.0.
+The purpose is **reliable, reversible displayed-title customization in Valve Steam Deck Gaming Mode**, not replacing Steam's entire library UI.
 
-Do not trade core reliability for decorative experimental features.
+**Device-tested in earlier builds**
+- [x] Change Catherine Classic to Catherine without modifying Steam game files.
+- [x] Saved alias survives a physical Steam Deck restart.
+- [x] Restore the original visible Steam title.
+- [x] Preview, Apply and explicitly Save the Sims 4 trademark-cleanup suggestion.
+- [x] Native Steam keyboard opens, four-button editor navigates, animated toasts work.
+
+**Accepted but not exhaustively tested**
+- [ ] Correct the intermittent keyboard B-dismiss slide-back state.
+- [ ] Independently verify alias behavior after all relevant Steam background metadata refreshes.
+- [ ] Verify edge navigation and long Restore All review on multiple Steam Deck screen/theme configurations.
+- [ ] Test copying/pasting Unicode and connected keyboards on device.
+- [ ] Confirm first physical device install of the 0.9.0 RC package.
+
+**Out of scope for 0.9.0**
+- Official compatibility promises for ROG Ally, Windows, Android, DroidDeck or non-Valve SteamOS.
+- Editing games, Steam sort metadata or Steam artwork.
+- Removed experimental Steam native-library cover badges.
+- Mandatory Desktop Mode editor.
+
+Use the verified/unverified distinctions in [verification](VERIFIED_ON_DECK.md) and [compatibility](COMPATIBILITY.md). A stable 1.0.0 should follow physical compatibility validation, not just automated checks.
