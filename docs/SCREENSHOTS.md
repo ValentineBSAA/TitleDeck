@@ -12,13 +12,13 @@
 
 | Quick Access | Full library |
 |:---:|:---:|
-| [![Quick Access menu](docs/screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg)](docs/screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg) | [![Full Library Manager](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg)](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg) |
+| [![Quick Access menu](screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg)](screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg) | [![Full Library Manager](screenshots/v0.9.0-rc1/02-full-library-manager.jpeg)](screenshots/v0.9.0-rc1/02-full-library-manager.jpeg) |
 | **01. Decky menu** | **02. Library manager** |
-| [![Custom title editor](docs/screenshots/v0.9.0-rc1/03-game-title-editor.jpeg)](docs/screenshots/v0.9.0-rc1/03-game-title-editor.jpeg) | [![Native Steam keyboard](docs/screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg)](docs/screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg) |
+| [![Custom title editor](screenshots/v0.9.0-rc1/03-game-title-editor.jpeg)](screenshots/v0.9.0-rc1/03-game-title-editor.jpeg) | [![Native Steam keyboard](screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg)](screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg) |
 | **03. Catherine editor** | **04. Native Steam keyboard** |
-| [![Cleanup feedback](docs/screenshots/v0.9.0-rc1/05-cleanup-no-change-feedback.jpeg)](docs/screenshots/v0.9.0-rc1/05-cleanup-no-change-feedback.jpeg) | [![Explicit save confirmation](docs/screenshots/v0.9.0-rc1/06-save-confirmation.jpeg)](docs/screenshots/v0.9.0-rc1/06-save-confirmation.jpeg) |
+| [![Cleanup feedback](screenshots/v0.9.0-rc1/05-cleanup-no-change-feedback.jpeg)](screenshots/v0.9.0-rc1/05-cleanup-no-change-feedback.jpeg) | [![Explicit save confirmation](screenshots/v0.9.0-rc1/06-save-confirmation.jpeg)](screenshots/v0.9.0-rc1/06-save-confirmation.jpeg) |
 | **05. Cleanup feedback** | **06. Save confirmation** |
-| [![Edited title draft](docs/screenshots/v0.9.0-rc1/07-custom-title-draft.jpeg)](docs/screenshots/v0.9.0-rc1/07-custom-title-draft.jpeg) | [![Name displayed in Steam](docs/screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg)](docs/screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg) |
+| [![Edited title draft](screenshots/v0.9.0-rc1/07-custom-title-draft.jpeg)](screenshots/v0.9.0-rc1/07-custom-title-draft.jpeg) | [![Name displayed in Steam](screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg)](screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg) |
 | **07. Unsaved name draft** | **08. Updated name in Steam** |
 
 ## What each image demonstrates
