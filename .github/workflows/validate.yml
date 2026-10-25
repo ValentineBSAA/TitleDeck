@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run frontend tests
-        run: node --test tests/frontend.test.cjs
+        run: node --test tests/*.test.cjs
       - name: Run backend tests
         run: python3 -m unittest discover -s tests -p 'test_backend.py'
       - name: Verify Decky manifest and bundled frontend

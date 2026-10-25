@@ -1,6 +1,6 @@
 # TitleDeck source and packaging
 
-**Source version:** 0.9.0-rc.1. **Status:** prepared release candidate. The maintainer will publish the installer ZIP in a separate GitHub release upload. The previous **0.8.1** prerelease remains preserved as a historical release.
+**Prepared RC version:** 0.9.0-rc.1. **Status:** awaiting maintainer's GitHub prerelease ZIP upload. The source files currently committed on `main` remain from **0.8.1** until the release is published. The repository includes a checksum-verified [release-source sync workflow](.github/workflows/sync-rc-source.yml) that imports the exact RC source and tests **after** upload and publication. This avoids having mismatched installer/source content.
 
 > **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
 
@@ -24,10 +24,12 @@ The RC ZIP has a single top-level `TitleDeck/` directory. Its `src/index.js` and
 
 ## Publishing
 
+The import workflow expects the **exact tag `0.9.0-rc.1`** and the file **`TitleDeck-0.9.0-RC.zip`**. It checks SHA-256, imports only approved source files, runs the tests, and commits the source to `main`. If the ZIP is uploaded *after* publishing the release, run **Actions → Sync TitleDeck RC source after release upload → Run workflow** to trigger it manually.
+
 1. Make a backup of aliases, then run all tests and check the ZIP integrity/version.
 2. Mark the GitHub release as **Pre-release** and tag it `0.9.0-rc.1`; attach `TitleDeck-0.9.0-RC.zip`.
 3. Paste the contents of [0.9.0 RC release notes](docs/RELEASE_NOTES_0.9.0-RC.md); do not call it fully stable or fully device accepted.
-4. Keep the historical 0.8.1 release and existing v0.8.1 screenshot gallery.
+4. Confirm the source sync workflow succeeds; preserve the historical 0.8.1 release and its v0.8.1 screenshot gallery.
 5. Verify the first 0.9.0 RC install on a physical Deck before promoting further.
 
 [Verified features](docs/VERIFIED_ON_DECK.md) · [Roadmap](docs/ROADMAP.md).

@@ -12,7 +12,7 @@
 
 > **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
 
-> **0.9.0 RC source and documentation are prepared.** The **0.9.0 RC installer ZIP is awaiting upload by the maintainer** to [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). Until it appears there, the [older 0.8.1 prerelease](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1) remains the published download. Do not mistake the RC source snapshot for an already-published release.
+> **0.9.0 RC documentation and installer are prepared.** The **0.9.0 RC installer ZIP is awaiting upload by the maintainer** to [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). Until it appears there, the [older 0.8.1 prerelease](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.8.1) remains the published download. **The GitHub source tree will be synchronized to the exact RC ZIP automatically when the maintainer publishes that release.** Until then, the repository's runtime source remains the earlier 0.8.1 snapshot; do not mistake the updated documentation for an already-published installer.
 
 ## Features
 
