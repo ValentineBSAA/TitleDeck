@@ -71,3 +71,10 @@ If Game Info still shows the original text, open that game's **GAME INFO tab fir
 **Why:** Opening the full manager can hide or unmount the Steam game-detail page. Previous diagnostics showed `No visible Steam details container` while the manager was open, which did not identify the Game Info failure. Preview 7 records a game-page observation before navigation, keeps it across a manager visit, and ensures an empty secondary Steam UI document doesn't overwrite the meaningful status from a detected game page.
 
 This is an instrumentation / detection-quality update; physical Game Info replacement still needs acceptance on Steam Deck. Original below-Play description and keyboard flows remain available.
+
+
+## Preview 8: Live Steam Game Info CSS classes
+
+The physical Deck's Preview 7 capture for Catherine Classic (app 893180) confirmed one valid game container but 0 hard-coded Game Info panels and 0 native description nodes. This rules out an App ID storage problem, but does not tell us whether Steam has a native Game Info description in its current UI state. Preview 8 follows the public Decky Metadata plugin's pattern: locate the GameInfoContainer and GameDescription CSS tokens through the live Decky SteamUI module finder instead of assuming CSS names contain human-readable prefixes. Cache successful lookups and retry missing modules at a bounded interval.
+
+The custom text still only replaces a uniquely matched, verified native description on the correct game page; it will not overwrite arbitrary Steam content or infer a Game Info description from an unrelated element. Quick Access Capture now reports **Live CSS modules resolved/unavailable**, alongside actual native element counts, with fallback to the old selectors. Both the original Below Play mode and Artwork Footer remain unchanged. Native Game Info replacement awaits physical testing.
