@@ -1110,6 +1110,8 @@ const STYLE=`
  margin:0!important;padding:0!important;pointer-events:none!important;
 }
 .td-root.td-inline-keyboard-open .td-game-name-field{margin:3px 0 0!important;padding:2px 0!important}
+.td-root .td-description-character-count{font-size:12px;color:#b6cce6;margin:5px 0 2px;line-height:1.3;font-variant-numeric:tabular-nums}
+.td-root.td-inline-keyboard-open .td-description-character-count{font-size:13px;color:#e2edff;margin:4px 2px}
 .td-root.td-inline-keyboard-open .td-inline-keyboard-fallback{
  height:auto!important;max-height:42px!important;opacity:1!important;overflow:visible!important;
  pointer-events:auto!important;margin-top:7px!important;
@@ -1613,9 +1615,9 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
     const begin=()=>{
       requestedAt=Date.now();seenKeyboardStatus=false;domObserved=false;missing=0;
       motion.begin();
-      // Steam's OSK arrives in a different CEF window on physical Decks. Delay
-      // the fallback slightly to coincide with its entrance, not the button click.
-      schedule(()=>{if(motion.requested&&!motion.raised&&!seenKeyboardStatus)show()},260);
+      // A false/stale initial Steam keyboard status is not a confirmed close.
+      // This fallback must not be suppressed by an unrelated "closed" event.
+      schedule(()=>{if(motion.requested&&!motion.raised)show()},260);
     };
     const state=(status)=>{
       const value=keyboardStatusOpen(status);
@@ -1700,7 +1702,7 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
     const onDone=()=>{close();try{field()?.blur?.()}catch{}};
     node.addEventListener?.('titledeck-inline-keyboard-request',onBegin);
     node.addEventListener?.('titledeck-inline-keyboard-done',onDone);
-    activeInlineKeyboard={begin,close,done:onDone};
+    activeInlineKeyboard={begin,show,close,done:onDone};
     return()=>{
       stopped=true;motion.hide();
       if(activeInlineKeyboard?.begin===begin)activeInlineKeyboard=null;
@@ -1722,11 +1724,15 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
   const enter=()=>{sync();activeInlineKeyboard?.close();latest.current.onEnter()};
   const props={value,onChange:change,onEnterKeyPress:enter,autoFocus:false,bShouldAutoFocus:false,
     label,placeholder,maxLength,
-    bShowClearAction:true,'aria-label':label};
+    // Steam adds a clear-text X by default; retain it for title edits but
+    // not for descriptions, where a mistaken A press could erase a long draft.
+    bShowClearAction:fieldKind!=='description','aria-label':label};
   return h('div',{ref:wrap,className:`td-native-field ${fieldKind==='description'?'td-game-description-field':'td-game-name-field'}`,
     'data-td-inline-game-name':fieldKind==='name'?'true':undefined,'data-td-inline-description':fieldKind==='description'?'true':undefined,
     onInputCapture:sync,onPasteCapture:()=>setTimeout(sync,0)},
     UI?.TextField?h(UI.TextField,props):h('input',{...props,type:'text',onKeyDown:e=>{if(e?.key==='Enter'){e.preventDefault?.();enter()}}}),
+    fieldKind==='description'?h('div',{className:'td-description-character-count','data-td-description-count':'true'},
+      value.length+' / '+maxLength+' characters · '+Math.max(0,maxLength-value.length)+' remaining'):null,
     h('div',{className:'td-inline-keyboard-fallback'},
       h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),`[data-td-focus="${latest.current.finishFocus}"]`,50)}},'Done editing')));
 }
@@ -1878,6 +1884,10 @@ function Manager(){
     activeInlineKeyboard?.begin();
     try{field.focus?.({preventScroll:true})}catch{try{field.focus?.()}catch{}}
     try{field.click?.()}catch{}
+    // Steam's OSK is sometimes raised before our 260-ms keyboard signal.
+    // Raise the editor layout at once, after the click has been delivered.
+    // This also avoids the reported need to press Down then Up.
+    activeInlineKeyboard?.show?.();
   };
   const cancelCleanupPreview=()=>{setCleanupPreview(null);focusQuery(root.current,'[data-td-focus="edit-clean"]',45)};
   const applyCleanup=()=>{
@@ -2099,7 +2109,7 @@ function Manager(){
       h(Btn,{className:'td-action','data-td-focus':'description-bottom',nav:e=>descNav('description-bottom',e),onClick:()=>scrollDescriptionWorkspace(root.current,true)},'↓ Bottom'));
     workspace=h('div',{className:'td-workspace','data-td-description-workspace':'true'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto',paddingBottom:28}},
       h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
-      h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck displays this text in its editor and in a separate section on the matching Steam library game page. Original Steam About text and store metadata stay unchanged.'),
+      h('p',{className:'td-editor-note'},'Customize the description displayed locally on the matching Steam game page. Game Info mode follows Steam’s own styling; other placements use separate panels. Original Steam metadata stays unchanged.'),
       h(UI.Focusable,{'flow-children':'down'},h(Btn,{'data-td-focus':'description-open',nav:e=>descNav('description-open',e),onClick:openDescriptionTyping},'⌨ Edit description using Steam keyboard')),
       h('div',{'data-td-focus':'description-input',className:'td-description-native-input',
         onGamepadDirection:e=>descNav('description-input',e)},
@@ -2110,7 +2120,7 @@ function Manager(){
       h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',minHeight:85,
         maxHeight:160,overflowY:'auto',padding:'14px 16px',borderRadius:10,background:'#172234',border:'1px solid #43566e'}},
         descriptionDraft||'Your custom description preview will appear here.'),
-      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · Save and Restore remain in the toolbar above'),
+      h('div',{className:'td-editor-original-meta'},'Hard limit: 4,000 characters · Typical game synopsis: 500–1,000 characters · Save and Restore are in the toolbar above'),
       stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:150,overflowY:'auto',marginTop:15}},'Saved local description: '+stored):null
     ));
     bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
