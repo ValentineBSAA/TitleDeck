@@ -1674,13 +1674,38 @@ let activeInlineKeyboard=null;
 export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180,label='Custom display title',
   placeholder='Enter a game display name…',fieldKind='name',finishFocus='edit-save'}){
   const wrap=R.useRef(null),latest=R.useRef({value,setValue,onEnter,maxLength,finishFocus});
+  const clearedDraft=R.useRef(null),[clearUndoAvailable,setClearUndoAvailable]=R.useState(false);
   latest.current={value,setValue,onEnter,maxLength,finishFocus};
   const sync=()=>{
     const field=wrap.current?.querySelector?.('input,textarea');
     if(typeof field?.value!=='string')return latest.current.value;
     const next=field.value.slice(0,latest.current.maxLength);
-    if(next!==latest.current.value){latest.current.value=next;latest.current.setValue(next)}
+    if(next!==latest.current.value){
+      if(clearedDraft.current!==null){clearedDraft.current=null;setClearUndoAvailable(false)}
+      latest.current.value=next;latest.current.setValue(next);
+    }
     return next;
+  };
+  const applyDraft=next=>{
+    const field=wrap.current?.querySelector?.('input,textarea');
+    if(field&&typeof field.value==='string')field.value=next;
+    latest.current.value=next;
+    latest.current.setValue(next);
+  };
+  const clearOrUndo=()=>{
+    if(fieldKind!=='description')return;
+    if(clearedDraft.current!==null){
+      const previous=clearedDraft.current;
+      clearedDraft.current=null;setClearUndoAvailable(false);
+      applyDraft(previous);
+      return;
+    }
+    const before=sync(); // Capture unsaved Steam keyboard text before clearing.
+    if(!before)return;
+    clearedDraft.current=before;
+    applyDraft('');
+    setClearUndoAvailable(true);
+    // Only the draft changes. Saving or Restore Default remains explicit.
   };
   R.useEffect(()=>{
     const node=wrap.current;if(!node)return;
@@ -1805,6 +1830,9 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
     };
   },[]);
   const change=e=>{const next=textFromNativeEvent(e,latest.current.value).slice(0,latest.current.maxLength);
+    if(next!==latest.current.value&&clearedDraft.current!==null){
+      clearedDraft.current=null;setClearUndoAvailable(false);
+    }
     latest.current.value=next;latest.current.setValue(next)};
   const enter=()=>{sync();activeInlineKeyboard?.close();latest.current.onEnter()};
   const props={value,onChange:change,onEnterKeyPress:enter,autoFocus:false,bShouldAutoFocus:false,
@@ -1819,7 +1847,11 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
     fieldKind==='description'?h('div',{className:'td-description-character-count','data-td-description-count':'true'},
       value.length+' / '+maxLength+' characters · '+Math.max(0,maxLength-value.length)+' remaining'):null,
     h('div',{className:'td-inline-keyboard-fallback'},
-      h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),`[data-td-focus="${latest.current.finishFocus}"]`,50)}},'Done editing')));
+      fieldKind==='description'
+        ?h(Btn,{className:'td-inline-finish','data-td-description-clear':'true',
+          disabled:!clearUndoAvailable&&!value.length,onClick:clearOrUndo},
+          clearUndoAvailable?'↶ Undo clear':'Clear text field')
+        :h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),`[data-td-focus="${latest.current.finishFocus}"]`,50)}},'Done editing')));
 }
 export function libraryMove(index,d,count,columns=5){
   if(!Number.isInteger(index)||index<0||index>=count)return null;
