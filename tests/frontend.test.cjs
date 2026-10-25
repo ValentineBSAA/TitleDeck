@@ -907,15 +907,17 @@ test('native single-screen text field accepts an insertion in the middle of text
 test('custom game descriptions use a reversible, locally saved editor without changing the title grid',async()=>{
  const game={appid:'620',name:'Portal 2'};
  const mock=setupMock({games:[game],selected:'620',view:'description',descriptions:{'620':'An old summary'}});
- const {plugin}=await mock.init();
+ const {plugin,mod}=await mock.init();
  try{
    let tree=walk(mock.render());
-   const field=tree.find(n=>n.type==='textarea'&&n.props['data-td-focus']==='description-input');
-   assert(field,'multiline description editor missing');
+   const field=tree.find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description');
+   assert(field,'Steam-native description TextField component missing');
    assert.equal(field.props.maxLength,4000);
+   assert.equal(field.props.label,'Custom game description');
+   assert(tree.some(n=>n.props['data-td-focus']==='description-open'));
    assert(tree.some(n=>n.props['data-td-focus']==='description-save'));
    assert(tree.some(n=>n.props['data-td-focus']==='description-restore'));
-   field.props.onChange({target:{value:'A revised game description Σ'}});
+   field.props.setValue('A revised game description Σ');
    tree=walk(mock.render());
    const save=tree.find(n=>n.props['data-td-focus']==='description-save');
    assert(!save.props.disabled);
@@ -1006,4 +1008,48 @@ test('native description panel handles unsafe-looking text literally, reverts on
   assert.equal(adapter.runNow(),0,'never infer identity from route alone');
   assert.equal(page.root.children.length,2);
  }finally{adapter.stop()}
+});
+
+test('description keyboard uses the SAME Decky TextField and click path as Change Name',async()=>{
+ const mock=setupMock({games:[{appid:'620',name:'Portal 2'}],selected:'620',view:'description'});
+ const {mod,plugin}=await mock.init();
+ try{
+   const nodes=walk(mock.render());
+   const action=nodes.find(n=>n.props['data-td-focus']==='description-open');
+   const root=nodes.find(n=>n.props.className==='td-root');
+   const fieldComp=nodes.find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description');
+   assert(action&&fieldComp);
+   assert.equal(fieldComp.props.maxLength,4000);
+   let clicks=0,focuses=0;
+   const input={focus(){focuses++},click(){clicks++}};
+   const wrapped={querySelector(sel){return sel==='input, textarea'?input:null}};
+   root.props.ref.current={querySelector(q){
+     if(q==='[data-td-inline-description]')return wrapped;
+     return null;
+   }};
+   action.props.onClick();
+   assert.equal(focuses,1,'description action must focus native Steam input');
+   assert.equal(clicks,1,'description action must click native Steam TextField');
+   globalThis.DFL.TextField='decky-steam-textfield';
+   const rendered=mod.InlineGameNameField(fieldComp.props);
+   const inp=walk(rendered).find(n=>n.type==='decky-steam-textfield');
+   assert(inp,'must use same native Steam TextField as Change Name');
+   assert.equal(inp.props.maxLength,4000);
+   assert.equal(inp.props['aria-label'],'Custom game description');
+   inp.props.onChange({target:{value:'Long custom text Σ'}});
+   assert.equal(walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description').props.value,'Long custom text Σ');
+ }finally{plugin.onDismount();mock.cleanup();}
+});
+test('name editor still uses its original 180-char Steam TextField',async()=>{
+ const mock=setupMock({games:[{appid:'620',name:'Portal 2'}],selected:'620',view:'editor'});
+ const {mod,plugin}=await mock.init();
+ try{
+   const comp=walk(mock.render()).find(n=>n.type===mod.InlineGameNameField);
+   assert(comp,'original name editor remains present');
+   globalThis.DFL.TextField='decky-steam-textfield';
+   const rendered=mod.InlineGameNameField(comp.props);
+   const input=walk(rendered).find(n=>n.type==='decky-steam-textfield');
+   assert.equal(input.props.maxLength,180);
+   assert.equal(input.props.label,'Custom display title');
+ }finally{plugin.onDismount();mock.cleanup();}
 });
