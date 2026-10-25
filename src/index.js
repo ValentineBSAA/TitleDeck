@@ -1386,7 +1386,7 @@ function Manager(){
       const verified=await refreshState();
       if(remove?Boolean(verified.descriptions?.[selected]):verified.descriptions?.[selected]!==content)throw Error('Description readback did not match.');
       setDescriptionDraft(remove?'':content);
-      notify(remove?'Removed your local description override.':'Custom description saved. This preview is local to TitleDeck; Steam game-page display is not yet verified.',setNotice,true);
+      notify(remove?'Removed your local description override.':'Description saved. The game-page panel appears when Steam shows the matching game.',setNotice,true);
     }catch(e){notify('Could not save description: '+String(e?.message||e),setNotice);}
     finally{setWorking(false);}
   };
@@ -1516,7 +1516,7 @@ function Manager(){
       h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Plain text · 4000 characters maximum'));
     workspace=h('div',{className:'td-workspace'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto'}},
       h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
-      h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck stores and displays this text locally. Steam store descriptions and game files remain unchanged. Replacing text on Steam’s actual game-detail page is not yet supported.'),
+      h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck displays this text in its editor and in a separate section on the matching Steam library game page. Original Steam About text and store metadata stay unchanged.'),
       h('textarea',{value:descriptionDraft,maxLength:4000,rows:7,'aria-label':'Custom game description','data-td-focus':'description-input',
         onGamepadDirection:e=>descNav('description-input',e),
         onChange:e=>setDescriptionDraft(String(e?.target?.value??'')),
@@ -1529,7 +1529,7 @@ function Manager(){
         h(Btn,{'data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default')),
       stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',marginTop:15}},'Saved local description: '+stored):null
     ));
-    bottom=footer('A: edit or save  •  B: return to game editor','Descriptions are visible within TitleDeck only');
+    bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
   }else if(view==='keyboard'||view==='search'||view==='appid'){
     const isTitle=view==='keyboard',isSearch=view==='search';
     const context=isTitle?'Change display title':isSearch?'Search your game library':'Find game by Steam App ID';
@@ -1632,8 +1632,8 @@ function Manager(){
           button('Restore saved backup',()=>{setView('backupConfirm');focusQuery(root.current,'[data-td-focus="backup-cancel"]',90)},{disabled:!manual.available,focus:'setting-backup-restore'}),manual.available?'● Backup available':'○ No backup'),
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Saved names: ${aliasCount}. No Steam artwork or metadata is modified.`,
-          button('Rescan Steam titles',()=>{adapter?.runNow();notify(`Steam display scan complete. Visible matches: ${adapter?.applied||0}.`,setNotice,true)},{focus:'setting-scan'})),
+        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
+          button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'})),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
           button('Review Restore All…',startRestoreAll,{disabled:!aliasCount,focus:'setting-restore-all'}),
@@ -1681,12 +1681,13 @@ function SteamDocumentAnchor(){
     if(!doc?.body)return;
     if(steamDocument!==doc){
       steamDocument=doc;
-      adapter?.stop();
+      adapter?.stop();descriptionAdapter?.stop();
       adapter=createTitleAdapter(doc,()=>latestState,()=>doc.defaultView?.appStore||globalThis.appStore,()=>[doc,...discoverDocuments()]);
-      adapter.start();
+      descriptionAdapter=createDescriptionAdapter(doc,()=>latestState,()=>[doc,...discoverDocuments()]);
+      adapter.start();descriptionAdapter.start();
       steamBridgeStatus='Connected to Steam UI document';
     }
-    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
+    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
   },[]);
   return h('span',{ref,style:{display:'none'},'data-titledeck-ui':'true'});
 }
@@ -1699,10 +1700,11 @@ export default function createPlugin(){
  }else{steamBridgeStatus='Steam UI global component API unavailable';}
  // Fallback adapter watches only the plugin document until the real Steam anchor mounts.
  if(!adapter){adapter=createTitleAdapter(globalThis.document,()=>latestState,()=>globalThis.appStore,()=>steamDocument?[steamDocument]:discoverDocuments());adapter.start();}
+ if(!descriptionAdapter){descriptionAdapter=createDescriptionAdapter(globalThis.document,()=>latestState,()=>steamDocument?[steamDocument]:discoverDocuments());descriptionAdapter.start();}
  refreshState().catch(e=>console.warn('[TitleDeck] state load:',e));
  return{name:PLUGIN,titleView:h('span',{style:{display:'flex',alignItems:'center',gap:8}},'TitleDeck',h('span',{className:'td-version-chip',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),content:h(QuickPanel),
    icon:h('img',{src:ICON_DATA_URI,alt:'TitleDeck',style:{width:24,height:24,objectFit:'contain'}}),
-   onDismount(){adapter?.stop();adapter=null;steamDocument=null;
+   onDismount(){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;steamDocument=null;
      try{api.routerHook?.removeGlobalComponent?.(STEAM_DOC_ANCHOR)}catch{}
      try{api.routerHook?.removeRoute?.(ROUTE)}catch{}
      bridge=null;observers.clear();}};
