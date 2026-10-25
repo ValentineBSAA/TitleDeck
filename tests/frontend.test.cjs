@@ -1200,7 +1200,7 @@ test('native Game Info mode replaces visible description but preserves Steam tex
  nativeContainer.appendChild(original);p.visible.appendChild(nativeContainer);
  nativeContainer.querySelectorAll=sel=>sel.includes('GameDescription')?[original]:[];
  const query=p.doc.querySelectorAll;
- p.doc.querySelectorAll=sel=>sel.includes('appdetailsgameinfopanel_Container')?[nativeContainer]:query(sel);
+ p.doc.querySelectorAll=sel=>sel.includes('appdetailsgameinfopanel_Container')?[nativeContainer]:sel.includes('appdetailsgameinfopanel_GameDescription')?[original]:query(sel);
  const state={enabled:true,description_position:'game_info',descriptions:{'893180':'New Catherine custom synopsis'}};
  const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
  try{
