@@ -12,15 +12,19 @@
 
 > **Compatibility warning:** Developed and tested on a **physical Valve Steam Deck in SteamOS Gaming Mode**. **ROG Ally, other PC handhelds running alternative SteamOS-like systems, Steam Desktop Mode, Windows, Android/DroidDeck and other platforms are untested and may not work properly.** Steam UI / CSS Loader themes may also affect behavior. [Full compatibility statement](docs/COMPATIBILITY.md).
 
-## Steam Deck screenshots
+## 0.9.0 RC1 Steam Deck screenshots
 
-Seven real photos from the creator's Steam Deck. These **older 0.8.1 screenshots** are kept as RC1 previews until new RC-specific images are available.
+Eight real screenshots of the current release, captured on the maintainer's Steam Deck. The original seven **0.8.1** screenshots are also preserved in the [gallery](docs/SCREENSHOTS.md).
 
-| | |
+| TitleDeck in Quick Access | Game library manager |
 |:---:|:---:|
-| [![Steam Deck screenshot 1](docs/screenshots/v0.8.1/01-img-9119.jpg)](docs/screenshots/v0.8.1/01-img-9119.jpg) | [![Steam Deck screenshot 2](docs/screenshots/v0.8.1/02-img-9120.jpg)](docs/screenshots/v0.8.1/02-img-9120.jpg) |
+| [![TitleDeck 0.9.0 RC1 Quick Access](docs/screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg)](docs/screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg) | [![TitleDeck 0.9.0 RC1 library manager](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg)](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg) |
+| Native Steam keyboard | Saved custom name in Steam |
+| [![TitleDeck 0.9.0 RC1 native keyboard](docs/screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg)](docs/screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg) | [![Custom title shown inside Steam](docs/screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg)](docs/screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg) |
 
-[**View all seven screenshots**](docs/SCREENSHOTS.md)
+[**View all eight current screenshots and seven older captures**](docs/SCREENSHOTS.md)
+
+The originally uploaded screenshot ZIP was mistakenly labeled `0.9.1`. These images belong to **0.9.0 RC1**; no plugin-version change was made.
 
 ## Features
 

@@ -1,0 +1,85 @@
+name: Import verified TitleDeck 0.9.0 RC1 screenshot gallery
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/import-090-screenshots.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  screenshots:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Locate exactly the uploaded screenshots on the 0.9.0 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/titledeck-screenshots
+          asset_name="$(gh api repos/"$GITHUB_REPOSITORY"/releases/assets/674352010 --jq .name)"
+          case "$asset_name" in
+            TitleDeck.V0.9.1.RC1.screenshots.zip|TitleDeck-0.9.0-RC1-Screenshots.zip) ;;
+            *) echo "Unrecognized screenshot asset name: $asset_name" >&2; exit 1 ;;
+          esac
+          gh release download 0.9.0 --repo "$GITHUB_REPOSITORY" --dir /tmp/titledeck-screenshots --pattern "$asset_name"
+          mv "/tmp/titledeck-screenshots/$asset_name" /tmp/titledeck-screenshots/source.zip
+      - name: Confirm screenshot ZIP and import all eight JPEGs without recompression
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import hashlib
+          archive=Path('/tmp/titledeck-screenshots/source.zip')
+          assert hashlib.sha256(archive.read_bytes()).hexdigest()=='d0efa5dd7dea98dd38b8ebbc69094b11b1598cc7c308e987619102f5b3ec80e2', 'Uploaded gallery ZIP checksum mismatch'
+          names=['01-quick-access-menu.jpeg','02-full-library-manager.jpeg','03-game-title-editor.jpeg',
+          '04-native-steam-keyboard.jpeg','05-cleanup-no-change-feedback.jpeg','06-save-confirmation.jpeg',
+          '07-custom-title-draft.jpeg','08-renamed-title-in-steam-library.jpeg']
+          srcnames=['screenshot.jpeg']+['screenshot '+str(i)+'.jpeg' for i in range(2,9)]
+          checks=[
+          '427d7659c13a9299b9d1359577e031e9857b4645ddea384f762646eadb312a9a',
+          '4bfd134a035e7c60c47404ac54b653012036131dc9327f46d10b6d1b50f050d0',
+          'b0a5fcccd5eb38e1506ed81c6bec7aba2567967e02388ea6bcd00d175f9bfa33',
+          '2c6ce33d174ba70252fb9f91b0433743e12d37b57ff2c9b5d6b9984a203dae',
+          '08297c2295c772fd985307a82e688cab7477c68d4f04c35d11bfed79e5f595c1',
+          '4211e642d39c408e553812c1e15334f9d510581c280f501c0282967e366da29f',
+          'bb82174e4b7fa013a37757b2c6c58a6ec8389de22712239246bd57ac2e0563cc',
+          '95e986bf13d81409d8458b7aa6491f6248c0182691abd4b89c297723bc9f9ae0']
+          with ZipFile(archive) as z:
+            assert z.testzip() is None,'Corrupt screenshot archive'
+            source='TitleDeck V0.9.1 RC1/'
+            srcset={source+x for x in srcnames}
+            assert srcset.issubset(set(z.namelist())), 'Missing screenshots'
+            for i,(old,new) in enumerate(zip(srcnames,names)):
+              content=z.read(source+old)
+              assert hashlib.sha256(content).hexdigest()==checks[i], 'Screenshot bytes changed'
+              assert content.startswith(b'\\xff\\xd8\\xff') and content.endswith(b'\\xff\\xd9'),'Not intact JPEG'
+              target=Path('docs/screenshots/v0.9.0-rc1')/new
+              target.parent.mkdir(parents=True,exist_ok=True)
+              target.write_bytes(content)
+          print('Imported 8 exact original JPEGs to docs/screenshots/v0.9.0-rc1/')
+          PY
+      - name: Commit only screenshots, never plugin code or historical gallery
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots/v0.9.0-rc1/
+          if git diff --cached --quiet; then
+            echo 'Current gallery is already synchronized.'
+          else
+            git commit -m 'Add eight byte-identical 0.9.0 RC1 Steam Deck screenshots'
+            git push origin HEAD:main
+          fi
+      - name: Correct screenshot ZIP label on the existing prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          name="$(gh api repos/"$GITHUB_REPOSITORY"/releases/assets/674352010 --jq .name)"
+          if [ "$name" = 'TitleDeck-0.9.0-RC1-Screenshots.zip' ]; then
+            echo 'Screenshot release asset already correctly named.'
+          else
+            gh api --method PATCH repos/"$GITHUB_REPOSITORY"/releases/assets/674352010 -f name='TitleDeck-0.9.0-RC1-Screenshots.zip' --jq .name
+          fi
