@@ -469,6 +469,18 @@ export function findSteamGameInfoDescription(doc,gameRoot){
       selected:root.className||'native game info'}};
 }
 
+// Full Manager hides Steam's game view. Retain the most recent actual game-page
+// observation so diagnostics remain useful when that manager is open.
+let lastDescriptionGameProbe=null;
+export function getLastDescriptionGameProbe(){return lastDescriptionGameProbe?{...lastDescriptionGameProbe}:null}
+export function formatDescriptionGameProbe(probe=getLastDescriptionGameProbe()){
+  if(!probe)return 'No Game Info capture yet. Open GAME INFO on a game, then select Capture Game Info in TitleDeck Quick Access.';
+  return 'App '+probe.appid+' · '+probe.phase+
+    ' · game containers '+probe.detailContainers+' · info panels '+probe.infoPanels+
+    ' · description nodes '+probe.nativeDescriptions+
+    ' · document '+probe.documentNumber+'/'+probe.documentCount+
+    ' · '+probe.time;
+}
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
   const MARK='data-titledeck-description',owned=new Map(),nativeInfo=new Map(),watchers=[],scrollListeners=[];
   function clearGameInfo(doc){
@@ -636,8 +648,11 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
   function runNow(){
     if(stopped)return 0;checks++;
     const state=getState()||{},descriptions=state.descriptions||{};
-    let applied=0;
-    for(const doc of documents()){
+    let applied=0,realPageSeen=false,issues=[];
+    const docs=documents();
+    let docNo=0;
+    for(const doc of docs){
+      docNo++;
       const id=routeId(doc);
       if(!state.enabled||!Object.keys(descriptions).length){
         clear(doc);clearGameInfo(doc);status=!state.enabled?'Display overrides paused':'No saved descriptions';continue;
@@ -671,16 +686,40 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       // known. Without a route, accept only one unambiguous visible page ID.
       const uniqueIds=[...new Set(matches.map(item=>item.gameId))];
       const match=id?matches.find(item=>item.gameId===id):(uniqueIds.length===1?matches[0]:null);
+      const nativeStats=()=>{
+        let infoPanels=0,nativeDescriptions=0;
+        try{infoPanels=doc.querySelectorAll('[class*="appdetailsgameinfopanel_Container"],[class*="appdetailsgameinfocontainer_AppGameInfoContainer"],[class*="appdetailsgameinfo_Container"]').length}catch{}
+        try{nativeDescriptions=doc.querySelectorAll('[class*="appdetailsgameinfopanel_GameDescription"],[class*="appdetailsgameinfocontainer_GameDescription"]').length}catch{}
+        return {infoPanels,nativeDescriptions};
+      };
+      if(id||match||uniqueIds.length){
+        realPageSeen=true;
+        const stats=nativeStats();
+        lastDescriptionGameProbe={
+          appid:match?.gameId||id||uniqueIds.join(',')||'unconfirmed',
+          phase:match?'Game page identified':'Page route found, game view not confirmed',
+          detailContainers:options.length,...stats,
+          documentNumber:docNo,documentCount:docs.length,
+          time:new Date().toLocaleTimeString()
+        };
+      }
       if(!match?.el?.parentElement){
         clear(doc);clearGameInfo(doc);
-        status=!options.length?'No visible Steam details container':id?'Visible app ID does not match route '+id:'Cannot confirm one visible game page';
+        const issue=!options.length?'No visible Steam details container':id?'Visible app ID does not match route '+id:'Cannot confirm one visible game page';
+        issues.push(issue);
         continue;
       }
       const position=state.description_position==='game_info'?'game_info'
         :state.description_position==='hero_footer'?'hero_footer':'below_play';
       if(position==='game_info'){
         clear(doc);
-        if(drawGameInfo(doc,match.el,match.gameId,descriptions[match.gameId].trim()))applied++;
+        if(drawGameInfo(doc,match.el,match.gameId,descriptions[match.gameId].trim())){
+          applied++;
+          if(lastDescriptionGameProbe?.appid===match.gameId)lastDescriptionGameProbe.phase='Game Info replacement visible';
+        }else{
+          issues.push(status);
+          if(lastDescriptionGameProbe?.appid===match.gameId)lastDescriptionGameProbe.phase=status;
+        }
       }else{
         clearGameInfo(doc);
         if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim(),position)){
@@ -690,6 +729,9 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
         }
       }
     }
+    if(applied)status='Custom description visible ('+applied+' panel'+(applied===1?'':'s')+')';
+    else if(realPageSeen)status=issues[issues.length-1]||'Game page detected, no description shown';
+    else status='Game page not visible while manager is open. Use Quick Access capture on GAME INFO.';
     return applied;
   }
   const schedule=()=>{if(!stopped&&pending===null)pending=setTimeout(()=>{pending=null;runNow()},80)};
