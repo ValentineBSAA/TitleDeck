@@ -1309,3 +1309,39 @@ test('Game Info native CSS-important display overrides are restored exactly',asy
   assert.equal(props.priority,'important','original CSS priority restored');
  }finally{adapter.stop()}
 });
+
+
+test('new Steam Game Info wrapper class works when only description selector is stable',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const wrapper=p.node('div');wrapper.className='appdetailsgameinfo_newAppInfoSection';
+ const native=p.node('p');native.className='appdetailsgameinfopanel_GameDescription_renamed';
+ native.textContent='Original description';
+ wrapper.appendChild(native);p.visible.appendChild(wrapper);
+ const priorQuery=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>
+   sel.includes('appdetailsgameinfopanel_GameDescription')?[native]:
+   sel.includes('appdetailsgameinfocontainer_GameDescription')?[]:
+   priorQuery(sel);
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'User supplied text'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+   const found=m.findSteamGameInfoDescription(p.doc,p.visible);
+   assert.equal(found.nativeDescription,native);
+   assert.equal(adapter.runNow(),1);
+   assert.equal(native.style.display,'none');
+   assert.equal(wrapper.children[0].lastChild.textContent,'User supplied text');
+   state.enabled=false;
+   assert.equal(adapter.runNow(),0);
+   assert.equal(native.style.display,'');
+ }finally{adapter.stop()}
+});
+test('missing Game Info tab reports precise diagnostic without altering Steam page',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'Custom text'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+   assert.equal(adapter.runNow(),0);
+   assert(adapter.status.includes('0 panels, 0 native descriptions'));
+   assert.equal(p.root.children.length,2);
+ }finally{adapter.stop()}
+});
