@@ -1372,9 +1372,8 @@ test('Quick Access offers a Game Info scan without navigating into the full mana
  const mock=setupMock({view:'library'});
  const {plugin}=await mock.init();
  try{
-   const panel=walk(plugin.content);
-   const quick=panel.find(n=>n.type==='panel');
-   assert(quick);
+   const quick=resolveButton(plugin.content);
+   assert.equal(quick.type,'panel');
    const all=walk(quick);
    assert(all.some(n=>n.children?.includes('Capture current Game Info page')));
    assert(all.some(n=>n.children?.includes('Open full library manager')));
