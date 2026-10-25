@@ -958,7 +958,7 @@ function nativeGamePageForDescription(appid='620'){
  const traverse=(n,out=[])=>{out.push(n);for(const child of n.children||[])traverse(child,out);return out};
  doc.createElement=tag=>node(tag);
  doc.getElementsByClassName=()=>[visible];
- doc.querySelectorAll=sel=>sel==='[class*="AppDetailsContainer"]'?[visible]:sel==='[data-titledeck-description]'?
+ doc.querySelectorAll=sel=>sel.includes('[class*="AppDetailsContainer"]')?[visible]:sel==='[data-titledeck-description]'?
     traverse(root).filter(n=>n.getAttribute?.('data-titledeck-description')):[];
  return{doc,root,visible,unrelated,node};
 }
