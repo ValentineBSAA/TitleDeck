@@ -1130,7 +1130,7 @@ test('Artwork Footer follows the Play bar and keeps legacy Below Play selectable
    assert.equal(pane.getAttribute('data-titledeck-description'),'893180');
    assert.equal(pane.getAttribute('data-titledeck-position'),'hero_footer');
    assert(pane.style.cssText.includes('top:592px'));
-   assert.equal(p.root.children.length,2,'Steam's normal content stays untouched in hero mode');
+   assert.equal(p.root.children.length,2,"Steam's normal content stays untouched in hero mode");
    assert.equal(adapter.runNow(),1);
    assert.equal(p.doc.body.children.length,1,'no duplicate overlay');
    state.description_position='below_play';
