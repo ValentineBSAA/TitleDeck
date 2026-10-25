@@ -1,31 +1,19 @@
-# Device and platform compatibility
+# Platform compatibility and support
 
-## Tested target: Valve Steam Deck
+> **Important:** TitleDeck **0.9.0 RC1 was built for and tested on a physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader.** It is not certified for other hardware.
 
-**Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
-
-Steam's Gaming Mode web interface, controller focus, keyboard overlay, and Decky integration are platform-dependent. Even two Valve Steam Decks can behave differently after SteamOS/Decky updates or with different CSS Loader themes. A device-tested feature is **not** a universal compatibility guarantee.
-
-| Environment | Status |
+| Platform | Status |
 | --- | --- |
-| **Valve Steam Deck, SteamOS Gaming Mode** | **Maintainer-tested** for specified features (see [verification](VERIFIED_ON_DECK.md)); 0.9.0 RC build still requires first-install acceptance |
-| Valve Steam Deck, Desktop Mode | Not in supported/tested scope |
-| **ASUS ROG Ally**, other Windows handhelds | **Not tested and not officially supported**; keyboard, display hooks or Decky may fail |
-| Non-Valve devices using SteamOS / forks / SteamOS-like distributions | **Not verified or supported**; behavior may differ |
-| Windows Steam client / Windows desktop | Not tested as a supported target |
-| Android or Windows through DroidDeck or similar wrappers | **Not a physical Steam Deck test**; user reports welcome but no compatibility claim |
-| Custom CSS Loader themes | Some testing with a customized theme; broad theme compatibility not verified |
+| **Valve Steam Deck, SteamOS Gaming Mode** | Primary tested target. Several core behaviors confirmed on actual hardware. |
+| Other Steam Deck client versions / CSS Loader themes | Partially tested; future UI changes may affect behavior. |
+| **ROG Ally, Legion Go, Bazzite or other non-Steam Deck SteamOS-like systems** | **Untested. May not function correctly.** |
+| Steam Desktop Mode, Windows, Linux desktop | **Untested / not an RC1 target.** |
+| Android or DroidDeck | **Untested. Emulator or remote testing is not Steam Deck hardware verification.** |
 
-## Tested vs not tested
+TitleDeck changes visible Steam interface text, not installed game files or Steam metadata. Sorting identities and artwork lettering are unchanged. Controller, keyboard overlay, and Decky callbacks can differ between Steam environments.
 
-Maintainer-observed on a physical Steam Deck: in-game text aliases, Catherine rename/restore, restart persistence, four-button editor navigation, native keyboard opening, Sims 4 cleanup preview/apply/save, toast notifications.
+**Known issue:** Pressing B sometimes dismisses Steam's native keyboard but leaves the TitleDeck editor temporarily raised. The **Done editing** fallback restores the layout. This is **not fixed** in RC1.
 
-Not established: survival of **every** Steam background metadata refresh, identical title replacement on **every** Steam UI location, all controller paths at every viewport, or dependable keyboard B-dismiss slide-down animation.
+**Not independently verified:** full metadata-refresh persistence, every game screen and Steam client revision, every CSS Loader theme, 200+ saved-title confirmation on hardware, or non-Steam Deck platforms.
 
-## What TitleDeck actually changes
-
-TitleDeck stores local display aliases by Steam App ID and attempts to replace supported on-screen Steam text. It does **not** rename installed game files, Steam's canonical database/title, sorting order, or letters embedded in artwork.
-
-## Reporting a compatibility issue
-
-Please open a [bug report](https://github.com/ValentineBSAA/TitleDeck/issues/new/choose), including device model, OS/version, Decky version, Steam client branch, CSS Loader theme, TitleDeck version, and exact reproduction steps. Avoid sharing credentials or personal information.
+[What has been verified on a physical Deck](VERIFIED_ON_DECK.md) · [Report a problem](../SUPPORT.md)
