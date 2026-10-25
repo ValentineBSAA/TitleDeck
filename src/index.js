@@ -22,7 +22,7 @@ const call=(name,...args)=>connect().call(name,...args);
 function acceptState(state){
   if(state && typeof state ==='object') latestState={...latestState,...state};
   observers.forEach(listener=>{try{listener(latestState);}catch{}});
-  adapter?.runNow();
+  adapter?.runNow();descriptionAdapter?.runNow();
   return latestState;
 }
 function useStateSnapshot(){
@@ -136,7 +136,7 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
     if(!el || !el.isConnected)return true;
     // Allow Steam's own game-options dialogs, whose headings can show a title.
     // Keep editable controls, other Decky panels, and unrelated notifications untouched.
-    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-exclude], [contenteditable], [role="textbox"], [role="combobox"], input, textarea, script, style, select, option'))return true;}catch{}
+    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-description], [data-titledeck-exclude], [contenteditable], [role="textbox"], [role="combobox"], input, textarea, script, style, select, option'))return true;}catch{}
     const name=String(el.className||'');
     return /(?:decky|notification|toast|tooltip|chat|friendslist)/i.test(name);
   }
@@ -289,6 +289,92 @@ export function appidFromVisibleGame(el){
     }
   }catch{}
   return '';
+}
+
+
+export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
+  const MARK='data-titledeck-description',owned=new Map(),watchers=[];
+  let stopped=false,ticker=null,pending=null,checks=0,status='Waiting for Steam game page';
+  function documents(){
+    const result=new Set(),add=d=>{if(d?.documentElement&&d.querySelectorAll&&d.createElement)result.add(d)};
+    add(host);try{getDocuments().forEach(add)}catch{}
+    return [...result];
+  }
+  function clear(doc){
+    const old=owned.get(doc);if(old){old.remove?.();owned.delete(doc)}
+    try{for(const el of doc.querySelectorAll('['+MARK+']'))if(el.getAttribute?.(MARK))el.remove?.()}catch{}
+  }
+  function routeId(doc){
+    const path=String(doc.defaultView?.location?.pathname||globalThis.location?.pathname||'');
+    const found=path.match(/\/library\/app\/([1-9][0-9]{0,11})(?:\/|$)/);
+    return found?normId(found[1]):'';
+  }
+  function candidates(doc){
+    const result=new Set(),klass=getClass();
+    if(typeof klass==='string'&&klass.trim())try{for(const el of doc.getElementsByClassName?.(klass)||[])result.add(el)}catch{}
+    try{for(const el of doc.querySelectorAll('[class*="AppDetailsContainer"]'))result.add(el)}catch{}
+    return [...result];
+  }
+  function visible(node){
+    if(!node?.isConnected||node.offsetParent===null)return false;
+    try{const style=node.ownerDocument?.defaultView?.getComputedStyle?.(node);
+      if(style?.display==='none'||style?.visibility==='hidden')return false;}catch{}
+    return true;
+  }
+  function draw(doc,target,id,description){
+    const parent=target.parentElement;if(!parent)return false;
+    let pane=owned.get(doc);
+    if(pane&&!pane.isConnected){owned.delete(doc);pane=null}
+    if(pane?.getAttribute?.(MARK)!==id){clear(doc);pane=null}
+    if(!pane){
+      pane=doc.createElement('section');pane.setAttribute(MARK,id);
+      pane.setAttribute('role','region');pane.setAttribute('aria-label','TitleDeck custom game description');
+      pane.style.cssText='box-sizing:border-box;width:calc(100% - 40px);margin:12px 20px;padding:16px 20px;border-radius:9px;background:#203045;border:1px solid #445b73;color:#ecf3f9;';
+      const heading=doc.createElement('h3');heading.textContent='YOUR GAME DESCRIPTION';
+      heading.style.cssText='margin:0 0 9px;font-size:15px;font-weight:750;color:#afd3f2;';
+      const body=doc.createElement('p');body.setAttribute('data-titledeck-description-text','true');
+      body.style.cssText='margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.5;';
+      pane.appendChild(heading);pane.appendChild(body);
+      try{parent.insertBefore(pane,target)}catch{return false}
+      owned.set(doc,pane);
+    }
+    if(pane.parentElement!==parent||pane.nextSibling!==target)
+      try{parent.insertBefore(pane,target)}catch{return false}
+    const body=pane.querySelector?.('[data-titledeck-description-text]')||pane.lastChild;
+    if(body&&body.textContent!==description)body.textContent=description; // plain text, never HTML.
+    return true;
+  }
+  function runNow(){
+    if(stopped)return 0;checks++;
+    const state=getState()||{},descriptions=state.descriptions||{};
+    let applied=0;
+    for(const doc of documents()){
+      const id=routeId(doc),description=descriptions[id];
+      if(!state.enabled||!id||typeof description!=='string'||!description.trim()){
+        clear(doc);status=!state.enabled?'Display overrides paused':!id?'Not on a game details page':'No saved description';continue;
+      }
+      // URL alone is unsafe during game transitions: confirm React fiber identity.
+      const target=candidates(doc).find(el=>visible(el)&&appidFromVisibleGame(el)===id);
+      if(!target?.parentElement){clear(doc);status='Visible Steam app identity not confirmed';continue}
+      if(draw(doc,target,id,description.trim())){applied++;status='Shown on matching Steam game page'}
+    }
+    return applied;
+  }
+  const schedule=()=>{if(!stopped&&pending===null)pending=setTimeout(()=>{pending=null;runNow()},80)};
+  function start(){
+    runNow();
+    for(const doc of documents())try{
+      const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+      if(typeof Observer!=='function')continue;
+      const watcher=new Observer(schedule);watcher.observe(doc.documentElement,{childList:true,subtree:true});watchers.push(watcher);
+    }catch{}
+    ticker=setInterval(runNow,1800);
+  }
+  function stop(){
+    stopped=true;if(ticker!==null)clearInterval(ticker);if(pending!==null)clearTimeout(pending);
+    watchers.forEach(w=>w.disconnect());for(const doc of documents())clear(doc);
+  }
+  return{start,stop,runNow,get shown(){return owned.size},get checks(){return checks},get status(){return status}};
 }
 
 const STYLE=`
