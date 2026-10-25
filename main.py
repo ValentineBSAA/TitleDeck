@@ -20,6 +20,7 @@ except ImportError:  # local unit tests only
 
 SCHEMA = 1
 MAX_ALIAS = 180
+MAX_DESCRIPTION = 4000
 MAX_ALIAS_ENTRIES = 2000
 APPID = re.compile(r"^[1-9][0-9]{0,11}$")
 QUOTED_FIELD = re.compile(r'"(?P<key>[^"\\]+)"\s+"(?P<value>(?:\\.|[^"\\])*)"')
@@ -50,8 +51,20 @@ def validate_title(value: Any) -> str:
     return value
 
 
+def validate_description(value: Any) -> str:
+    """A locally saved, plain-text game summary. Never interpreted as markup."""
+    if not isinstance(value, str):
+        raise ValueError("Description must be text")
+    value = value.replace("\r\n", "\n").replace("\r", "\n").strip()
+    if not value or len(value) > MAX_DESCRIPTION or any(
+        (ord(ch) < 32 and ch not in "\n\t") or ord(ch) == 127 for ch in value
+    ):
+        raise ValueError("Description must be 1–4000 characters of plain text")
+    return value
+
+
 def blank_state() -> dict[str, Any]:
-    return {"schema": SCHEMA, "enabled": True, "aliases": {}}
+    return {"schema": SCHEMA, "enabled": True, "aliases": {}, "descriptions": {}}
 
 
 def load_state(path: Path | None = None) -> dict[str, Any]:
@@ -67,7 +80,14 @@ def load_state(path: Path | None = None) -> dict[str, Any]:
         raise ValueError("Invalid alias collection")
     for appid, title in record.items():
         aliases[normalize_id(appid)] = validate_title(title)
-    return {"schema": SCHEMA, "enabled": raw.get("enabled") is not False, "aliases": aliases}
+    descriptions: dict[str, str] = {}
+    saved_descriptions = raw.get("descriptions", {})
+    if not isinstance(saved_descriptions, dict) or len(saved_descriptions) > MAX_ALIAS_ENTRIES:
+        raise ValueError("Invalid description collection")
+    for appid, description in saved_descriptions.items():
+        descriptions[normalize_id(appid)] = validate_description(description)
+    return {"schema": SCHEMA, "enabled": raw.get("enabled") is not False,
+            "aliases": aliases, "descriptions": descriptions}
 
 
 def store_state(state: dict[str, Any], path: Path | None = None) -> None:
@@ -187,6 +207,26 @@ class Plugin:
             store_state(state)
             return state
 
+    async def save_description(self, appid: str, description: str) -> dict[str, Any]:
+        appid = normalize_id(appid)
+        description = validate_description(description)
+        async with self._lock:
+            state = load_state()
+            if (appid not in state["descriptions"]
+                    and len(state["descriptions"]) >= MAX_ALIAS_ENTRIES):
+                raise ValueError("Maximum number of descriptions reached")
+            state["descriptions"][appid] = description
+            store_state(state)
+            return state
+
+    async def delete_description(self, appid: str) -> dict[str, Any]:
+        appid = normalize_id(appid)
+        async with self._lock:
+            state = load_state()
+            state["descriptions"].pop(appid, None)
+            store_state(state)
+            return state
+
     async def delete_alias(self, appid: str) -> dict[str, Any]:
         appid = normalize_id(appid)
         async with self._lock:
@@ -269,10 +309,18 @@ class Plugin:
         if not isinstance(incoming, dict) or len(incoming) > MAX_ALIAS_ENTRIES:
             raise ValueError("Invalid alias list")
         additions = {normalize_id(k): validate_title(v) for k, v in incoming.items()}
+        incoming_descriptions = obj.get("descriptions", {})
+        if not isinstance(incoming_descriptions, dict) or len(incoming_descriptions) > MAX_ALIAS_ENTRIES:
+            raise ValueError("Invalid imported descriptions")
+        added_descriptions = {
+            normalize_id(k): validate_description(v) for k, v in incoming_descriptions.items()
+        }
         async with self._lock:
             state = load_state()
             state["aliases"].update(additions)
-            if len(state["aliases"]) > MAX_ALIAS_ENTRIES:
-                raise ValueError("Maximum number of aliases reached")
+            state["descriptions"].update(added_descriptions)
+            if (len(state["aliases"]) > MAX_ALIAS_ENTRIES
+                    or len(state["descriptions"]) > MAX_ALIAS_ENTRIES):
+                raise ValueError("Maximum number of saved customizations reached")
             store_state(state)
             return state
