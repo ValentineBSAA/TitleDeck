@@ -1238,3 +1238,74 @@ test('Game Info mode waits for that tab and never shows its text below Play',asy
    assert(adapter.status.includes('open the GAME INFO tab'));
  }finally{adapter.stop()}
 });
+
+
+test('Game Info can live in a sibling portal outside the nearest AppDetails container',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const shell=p.node('div');shell._root=true;
+ const nativeContainer=p.node('div');nativeContainer.className='appdetailsgameinfopanel_Container_newhash';
+ const desc=p.node('p');desc.className='appdetailsgameinfopanel_GameDescription_newhash';
+ desc.textContent='Original Catherine text';
+ nativeContainer.appendChild(desc);shell.appendChild(nativeContainer);
+ const query=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>
+   sel.includes('appdetailsgameinfopanel_Container')?[nativeContainer]:
+   sel.includes('appdetailsgameinfopanel_GameDescription')?[desc]:query(sel);
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'My new Catherine story'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[] ,()=> 'AppDetailsContainer_test');
+ try{
+   const found=m.findSteamGameInfoDescription(p.doc,p.visible);
+   assert.equal(found.nativeDescription,desc,'find native text even when Game Info mounts in portal');
+   assert.equal(adapter.runNow(),1);
+   assert.equal(desc.style.display,'none');
+   assert.equal(nativeContainer.children[0].lastChild.textContent,'My new Catherine story');
+   state.description_position='below_play';
+   assert.equal(adapter.runNow(),1);
+   assert.equal(desc.style.display,'');
+   assert.equal(nativeContainer.children.length,1);
+ }finally{adapter.stop()}
+});
+test('nested native Game Info wrappers resolve to a single description, not an ambiguous tab',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const outer=p.node('div');outer.className='appdetailsgameinfocontainer_AppGameInfoContainer_x';
+ const inner=p.node('div');inner.className='appdetailsgameinfopanel_Container_x';
+ const desc=p.node('p');desc.className='appdetailsgameinfopanel_GameDescription_x';
+ inner.appendChild(desc);outer.appendChild(inner);p.visible.appendChild(outer);
+ const query=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>
+   sel.includes('appdetailsgameinfocontainer_AppGameInfoContainer')?[outer]:
+   sel.includes('appdetailsgameinfopanel_Container')?[inner]:
+   sel.includes('appdetailsgameinfopanel_GameDescription')?[desc]:query(sel);
+ const found=m.findSteamGameInfoDescription(p.doc,p.visible);
+ assert(found,'nested panel should be discoverable');
+ assert.equal(found.nativeDescription,desc);
+ assert.equal(found.container,inner);
+});
+test('Game Info native CSS-important display overrides are restored exactly',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const box=p.node('div');box.className='appdetailsgameinfopanel_Container_x';
+ const desc=p.node('div');desc.className='appdetailsgameinfopanel_GameDescription_x';
+ const props={display:'block',priority:'important'};
+ desc.style={
+   get display(){return props.display},set display(v){props.display=v},
+   getPropertyValue:k=>k==='display'?props.display:'',
+   getPropertyPriority:k=>k==='display'?props.priority:'',
+   setProperty(k,value,priority){if(k==='display'){props.display=value;props.priority=priority}},
+   removeProperty(k){if(k==='display'){props.display='';props.priority=''}}
+ };
+ box.appendChild(desc);p.visible.appendChild(box);
+ const query=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>
+  sel.includes('appdetailsgameinfopanel_Container')?[box]:
+  sel.includes('appdetailsgameinfopanel_GameDescription')?[desc]:query(sel);
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'Replacement'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(adapter.runNow(),1);
+  assert.equal(props.display,'none');
+  assert.equal(props.priority,'important');
+  state.enabled=false;assert.equal(adapter.runNow(),0);
+  assert.equal(props.display,'block','native display restored');
+  assert.equal(props.priority,'important','original CSS priority restored');
+ }finally{adapter.stop()}
+});
