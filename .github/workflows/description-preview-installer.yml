@@ -42,7 +42,7 @@ jobs:
           import json, shutil, zipfile, hashlib
           from pathlib import Path
 
-          version = "0.9.1-desc-preview.13"
+          version = "0.9.1-desc-preview.14"
           root = Path("preview-staging/TitleDeck")
           root.mkdir(parents=True, exist_ok=True)
           for item in ("main.py","plugin.json","package.json","README.md","CHANGELOG.md","LICENSE"):
@@ -68,15 +68,15 @@ jobs:
 
           assert (root/"src/index.js").read_bytes() == (root/"dist/index.js").read_bytes()
           (root/"TEST_THIS_FIRST.txt").write_text(
-              "TitleDeck custom-description v0.9.1-desc-preview.13 Full Manager artwork and bounded long-description preview fix. NOT stable.\n\n"
+              "TitleDeck custom-description v0.9.1-desc-preview.14 description Clear/Undo button and 1,020-character hard limit. NOT stable.\n\n"
               "Back up your existing TitleDeck names in TitleDeck Settings before installing.\n"
               "This installs OVER your current TitleDeck, not alongside it.\n"
               "Decky Loader -> Settings -> Developer -> Install Plugin from ZIP.\n"
-              "Use the inner TitleDeck-0.9.1-description-preview-13-Decky.zip file.\n"
+              "Use the inner TitleDeck-0.9.1-description-preview-14-Decky.zip file.\n"
               "Open TitleDeck -> Full library manager -> select a game -> Add description.\n"
               "Use Edit description using Steam keyboard. Same native Steam TextField as Change Name.\n"
               "Edit, Save, then open the same game's NORMAL STEAM LIBRARY detail page.\n"
-              "Preview 13: Test Full Manager library and editor cover art (Steam + non-Steam shortcuts) and compact saved-description excerpt for Catherine (1005 characters). TitleDeck now tries Steam's existing /customimages portrait art, /assets library art, then the public CDN. It never downloads or overwrites art. Open and close the editor and verify it stays scrolled to top. Keep native Game Info stability and Restore Default regression checks.\n"
+              "Preview 14: Description keyboard button is now Clear text field (with one-tap Undo clear), NOT Done editing. Test clearing Catherine's 1005-character draft and undoing it before Save, then check 1020-character editing cap (1019/1020/1021). 1005 remains valid. No silent truncation of older >1020 saved descriptions or backups. Retest Full Manager artwork, native Game Info stability and Restore Default.\n"
               "Change games; delete/Restore Default the custom description; verify Steam's original Game Info text returns.\n"
               "TitleDeck Settings -> Custom game description location -> Show inside GAME INFO.\n"
               "If GAME INFO text remains unchanged: STAY on that game's GAME INFO page, open Decky Quick Access > TitleDeck > Capture current Game Info page. Take a screenshot of the App ID, Game Info status, native data hook count, native GetDescriptions call count, overrides served, and Live CSS modules status. Then go to Full Manager > Settings to view last captured game page. Do not rely only on the Current view diagnostic when Full Manager is open.\n"
@@ -90,7 +90,7 @@ jobs:
           )
           out = Path("preview-download")
           out.mkdir(exist_ok=True)
-          archive = out / "TitleDeck-0.9.1-description-preview-13-Decky.zip"
+          archive = out / "TitleDeck-0.9.1-description-preview-14-Decky.zip"
           with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
               for file in sorted(root.rglob("*")):
                   if file.is_file():
@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TitleDeck-description-preview-installer
-          path: preview-download/TitleDeck-0.9.1-description-preview-13-Decky.zip
+          path: preview-download/TitleDeck-0.9.1-description-preview-14-Decky.zip
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
