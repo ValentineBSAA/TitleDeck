@@ -39,6 +39,38 @@ class TitleDeckBackendTests(unittest.TestCase):
             with self.subTest(title=title), self.assertRaises(ValueError):
                 main.validate_title(title)
 
+    def test_game_descriptions_are_local_reversible_and_legacy_compatible(self):
+        legacy = {'schema': 1, 'enabled': True, 'aliases': {'620': 'Portal II'}}
+        main.store_state(legacy)
+        self.assertEqual(main.load_state()['descriptions'], {})
+        self.assertEqual(main.validate_description('First line\r\nSecond line'), 'First line\nSecond line')
+        for bad in ['', ' ' * 4, 'x' * 4001, 'bad\x00text']:
+            with self.subTest(description=repr(bad)), self.assertRaises(ValueError):
+                main.validate_description(bad)
+
+        async def scenario():
+            plugin = main.Plugin()
+            text = 'My own Portal summary\nWith two lines and Σ'
+            await plugin.save_description('620', text)
+            self.assertEqual(main.load_state()['aliases']['620'], 'Portal II')
+            self.assertEqual(main.load_state()['descriptions']['620'], text)
+            backup = await plugin.create_backup()
+            export = await plugin.export_aliases()
+            self.assertEqual(json.loads(export)['descriptions']['620'], text)
+            await plugin.restore_all_titles({'620': 'Portal II'})
+            self.assertEqual(main.load_state()['aliases'], {})
+            self.assertEqual(main.load_state()['descriptions']['620'], text)
+            await plugin.delete_description('620')
+            self.assertEqual(main.load_state()['descriptions'], {})
+            await plugin.import_aliases(export)
+            self.assertEqual(main.load_state()['descriptions']['620'], text)
+            await plugin.delete_description('620')
+            await plugin.restore_backup()
+            self.assertEqual(main.load_state()['descriptions']['620'], text)
+            await plugin.delete_description('620')
+            self.assertEqual(main.load_state()['descriptions'], {})
+        asyncio.run(scenario())
+
     def test_installed_multiple_libraries(self):
         home = self.root / 'home'
         mainlib = home / '.local' / 'share' / 'Steam' / 'steamapps'
