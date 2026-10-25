@@ -20,7 +20,8 @@ except ImportError:  # local unit tests only
 
 SCHEMA = 1
 MAX_ALIAS = 180
-MAX_DESCRIPTION = 4000
+MAX_DESCRIPTION = 1020
+LEGACY_MAX_DESCRIPTION = 4000
 MAX_ALIAS_ENTRIES = 2000
 APPID = re.compile(r"^[1-9][0-9]{0,11}$")
 QUOTED_FIELD = re.compile(r'"(?P<key>[^"\\]+)"\s+"(?P<value>(?:\\.|[^"\\])*)"')
@@ -51,15 +52,20 @@ def validate_title(value: Any) -> str:
     return value
 
 
-def validate_description(value: Any) -> str:
-    """A locally saved, plain-text game summary. Never interpreted as markup."""
+def validate_description(value: Any, *, allow_legacy: bool = False) -> str:
+    """Validate a new synopsis or retain a previously saved longer one.
+
+    Legacy descriptions are read without truncation, so an upgrade cannot
+    corrupt prior TitleDeck settings or backups. All new saves are <=1020.
+    """
     if not isinstance(value, str):
         raise ValueError("Description must be text")
     value = value.replace("\r\n", "\n").replace("\r", "\n").strip()
-    if not value or len(value) > MAX_DESCRIPTION or any(
+    limit = LEGACY_MAX_DESCRIPTION if allow_legacy else MAX_DESCRIPTION
+    if not value or len(value) > limit or any(
         (ord(ch) < 32 and ch not in "\n\t") or ord(ch) == 127 for ch in value
     ):
-        raise ValueError("Description must be 1–4000 characters of plain text")
+        raise ValueError(f"Description must be 1–{limit} characters of plain text")
     return value
 
 
@@ -85,7 +91,7 @@ def load_state(path: Path | None = None) -> dict[str, Any]:
     if not isinstance(saved_descriptions, dict) or len(saved_descriptions) > MAX_ALIAS_ENTRIES:
         raise ValueError("Invalid description collection")
     for appid, description in saved_descriptions.items():
-        descriptions[normalize_id(appid)] = validate_description(description)
+        descriptions[normalize_id(appid)] = validate_description(description, allow_legacy=True)
     position = raw.get("description_position", "below_play")
     if position not in ("below_play", "hero_footer", "game_info") or not isinstance(position, str):
         raise ValueError("Invalid description placement")
@@ -326,7 +332,10 @@ class Plugin:
         if not isinstance(incoming_descriptions, dict) or len(incoming_descriptions) > MAX_ALIAS_ENTRIES:
             raise ValueError("Invalid imported descriptions")
         added_descriptions = {
-            normalize_id(k): validate_description(v) for k, v in incoming_descriptions.items()
+            # Accept existing backups from earlier preview builds without
+            # truncating the user's locally saved text. New saves still cap
+            # descriptions at MAX_DESCRIPTION.
+            normalize_id(k): validate_description(v, allow_legacy=True) for k, v in incoming_descriptions.items()
         }
         position = obj.get("description_position")
         if position is not None and (not isinstance(position, str) or position not in ("below_play", "hero_footer", "game_info")):
