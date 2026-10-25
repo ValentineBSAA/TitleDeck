@@ -1030,13 +1030,14 @@ let activeInlineKeyboard=null;
 // reliably deliver that press or any close event to a Decky route. Since no
 // second screen exists, dismissing the OSK is sufficient to reveal the editor.
 // Only the explicit Save custom title action ever persists an alias.
-export function InlineGameNameField({value,setValue,onEnter=()=>{}}){
-  const wrap=R.useRef(null),latest=R.useRef({value,setValue,onEnter});
-  latest.current={value,setValue,onEnter};
+export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180,label='Custom display title',
+  placeholder='Enter a game display name…',fieldKind='name',finishFocus='edit-save'}){
+  const wrap=R.useRef(null),latest=R.useRef({value,setValue,onEnter,maxLength,finishFocus});
+  latest.current={value,setValue,onEnter,maxLength,finishFocus};
   const sync=()=>{
     const field=wrap.current?.querySelector?.('input,textarea');
     if(typeof field?.value!=='string')return latest.current.value;
-    const next=field.value.slice(0,180);
+    const next=field.value.slice(0,latest.current.maxLength);
     if(next!==latest.current.value){latest.current.value=next;latest.current.setValue(next)}
     return next;
   };
@@ -1162,17 +1163,18 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{}}){
       for(const stop of dispose)try{stop()}catch{}
     };
   },[]);
-  const change=e=>{const next=textFromNativeEvent(e,latest.current.value).slice(0,180);
+  const change=e=>{const next=textFromNativeEvent(e,latest.current.value).slice(0,latest.current.maxLength);
     latest.current.value=next;latest.current.setValue(next)};
   const enter=()=>{sync();activeInlineKeyboard?.close();latest.current.onEnter()};
   const props={value,onChange:change,onEnterKeyPress:enter,autoFocus:false,bShouldAutoFocus:false,
-    label:'Custom display title',placeholder:'Enter a game display name…',maxLength:180,
-    bShowClearAction:true,'aria-label':'Custom display title'};
-  return h('div',{ref:wrap,className:'td-native-field td-game-name-field','data-td-inline-game-name':'true',
+    label,placeholder,maxLength,
+    bShowClearAction:true,'aria-label':label};
+  return h('div',{ref:wrap,className:`td-native-field ${fieldKind==='description'?'td-game-description-field':'td-game-name-field'}`,
+    'data-td-inline-game-name':fieldKind==='name'?'true':undefined,'data-td-inline-description':fieldKind==='description'?'true':undefined,
     onInputCapture:sync,onPasteCapture:()=>setTimeout(sync,0)},
     UI?.TextField?h(UI.TextField,props):h('input',{...props,type:'text',onKeyDown:e=>{if(e?.key==='Enter'){e.preventDefault?.();enter()}}}),
     h('div',{className:'td-inline-keyboard-fallback'},
-      h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),'[data-td-focus="edit-save"]',50)}},'Done editing')));
+      h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),`[data-td-focus="${latest.current.finishFocus}"]`,50)}},'Done editing')));
 }
 export function libraryMove(index,d,count,columns=5){
   if(!Number.isInteger(index)||index<0||index>=count)return null;
@@ -1308,8 +1310,13 @@ function Manager(){
   const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
   const openDescription=()=>{activeInlineKeyboard?.close();setDescriptionDraft(state.descriptions?.[selected]||'');enterView('description','description-open');};
   const openDescriptionTyping=()=>{
-    const field=root.current?.querySelector?.('[data-td-focus="description-input"]');
-    if(!field){notify('Description field not ready. Try again.',setNotice);return}
+    const wrap=root.current?.querySelector?.('[data-td-inline-description]');
+    const field=wrap?.querySelector?.('input, textarea');
+    if(!field){notify('Steam description text field not ready. Try again.',setNotice);return}
+    const area=root.current?.querySelector?.('.td-workspace');if(area)area.scrollTop=0;
+    // Follow the verified Change Name sequence exactly: arm keyboard observer,
+    // focus the Decky native TextField, then dispatch its Steam click handler.
+    activeInlineKeyboard?.begin();
     try{field.focus?.({preventScroll:true})}catch{try{field.focus?.()}catch{}}
     try{field.click?.()}catch{}
   };
@@ -1525,13 +1532,16 @@ function Manager(){
       h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
       h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck displays this text in its editor and in a separate section on the matching Steam library game page. Original Steam About text and store metadata stay unchanged.'),
       h(UI.Focusable,{'flow-children':'down'},h(Btn,{'data-td-focus':'description-open',nav:e=>descNav('description-open',e),onClick:openDescriptionTyping},'⌨ Edit description using Steam keyboard')),
-      h('textarea',{value:descriptionDraft,maxLength:4000,rows:7,'aria-label':'Custom game description','data-td-focus':'description-input',
-        onGamepadDirection:e=>descNav('description-input',e),
-        onChange:e=>setDescriptionDraft(String(e?.target?.value??'')),
-        placeholder:'Write a description of this game…',
-        style:{boxSizing:'border-box',width:'100%',minHeight:190,maxHeight:330,resize:'vertical',borderRadius:12,
-          padding:15,fontSize:17,lineHeight:1.55,color:'#f0f4fa',background:'#182233',border:'2px solid #697b98',fontFamily:'inherit'}}),
-      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · If the keyboard does not open, press STEAM + X · Press Done on the keyboard to return'),
+      h('div',{'data-td-focus':'description-input',className:'td-description-native-input',
+        onGamepadDirection:e=>descNav('description-input',e)},
+        h(InlineGameNameField,{value:descriptionDraft,setValue:setDescriptionDraft,
+          maxLength:4000,label:'Custom game description',
+          placeholder:'Write your custom description…',fieldKind:'description',finishFocus:'description-save',
+          onEnter:()=>focusQuery(root.current,'[data-td-focus="description-save"]',70)})),
+      h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',minHeight:85,
+        padding:'14px 16px',borderRadius:10,background:'#172234',border:'1px solid #43566e'}},
+        descriptionDraft||'Your custom description preview will appear here.'),
+      h('div',{className:'td-editor-original-meta'},descriptionDraft.length+' / 4000 characters · Edit using Steam’s native keyboard · Done editing returns to Save'),
       h(UI.Focusable,{'flow-children':'right',className:'td-editor-action-row',style:{marginTop:14}},
         h(Btn,{'data-td-focus':'description-save',nav:e=>descNav('description-save',e),disabled:working||!descriptionDraft.trim(),onClick:()=>void saveDescription(false)},working?'Saving…':'✓ Save description'),
         h(Btn,{'data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default')),
