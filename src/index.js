@@ -382,8 +382,92 @@ export function findDescriptionPlayBar(doc,target){
   return null;
 }
 
+
+/* The original requester wants the text INSIDE Steam's GAME INFO tab,
+   not merely an extra card below Play. Locate only the selected game's
+   visible native Game Info container, then insert our text beside the
+   existing description without modifying Steam's description markup. */
+export function findSteamGameInfoDescription(doc,gameRoot){
+  if(!doc||!gameRoot)return null;
+  const scope=gameRoot.parentElement||gameRoot;
+  const within=el=>!!el&&(typeof scope.contains==='function'?scope.contains(el):true);
+  const containers=[
+    '[class*="appdetailsgameinfopanel_Container"]',
+    '[class*="appdetailsgameinfo_Container"]',
+    '[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]'
+  ];
+  for(const selector of containers){
+    let list=[];
+    try{list=doc.querySelectorAll(selector)||[]}catch{}
+    for(const root of list){
+      if(!within(root)||!root.isConnected||root.offsetParent===null)continue;
+      const selectors=[
+        '[class*="appdetailsgameinfopanel_GameDescription"]',
+        '[class*="appdetailsgameinfopanel_Description"]',
+        '[class*="appdetailsgameinfocontainer_GameDescription"]'
+      ];
+      for(const descSelector of selectors)try{
+        for(const el of root.querySelectorAll(descSelector)||[]){
+          if(el.isConnected&&el.parentElement)return {container:root,nativeDescription:el};
+        }
+      }catch{}
+      return {container:root,nativeDescription:null};
+    }
+  }
+  return null;
+}
+
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
-  const MARK='data-titledeck-description',owned=new Map(),watchers=[],scrollListeners=[];
+  const MARK='data-titledeck-description',owned=new Map(),nativeInfo=new Map(),watchers=[],scrollListeners=[];
+  function clearGameInfo(doc){
+    const prior=nativeInfo.get(doc);
+    if(!prior)return;
+    try{
+      if(prior.nativeNode?.isConnected&&prior.nativeNode.style?.display==='none')
+        prior.nativeNode.style.display=prior.originalDisplay;
+      prior.panel?.remove?.();
+    }catch{}
+    nativeInfo.delete(doc);
+  }
+  function drawGameInfo(doc,gameRoot,appid,description){
+    const found=findSteamGameInfoDescription(doc,gameRoot);
+    if(!found){
+      clearGameInfo(doc);
+      status='Game Info: open the GAME INFO tab to see your custom description';
+      return false;
+    }
+    const {container,nativeDescription}=found;
+    const parent=nativeDescription?.parentElement||container;
+    if(!parent?.insertBefore)return false;
+    let prior=nativeInfo.get(doc);
+    if(prior&&(prior.appid!==appid||prior.parent!==parent||prior.nativeNode!==nativeDescription
+      ||!prior.panel?.isConnected)){
+      clearGameInfo(doc);prior=null;
+    }
+    if(!prior){
+      const panel=doc.createElement('section');
+      panel.setAttribute('data-titledeck-gameinfo-description',appid);
+      panel.setAttribute('role','region');
+      panel.setAttribute('aria-label','Custom game description from TitleDeck');
+      panel.style.cssText='box-sizing:border-box;width:100%;margin:8px 0 14px;padding:12px 15px;border-radius:7px;background:rgba(26,37,54,.84);border:1px solid rgba(126,151,178,.45);color:#eff6ff;';
+      const heading=doc.createElement('div');
+      heading.textContent='YOUR CUSTOM GAME DESCRIPTION';
+      heading.style.cssText='font-size:12px;font-weight:700;letter-spacing:.035em;color:#c2d8f0;margin-bottom:6px;';
+      const body=doc.createElement('p');
+      body.setAttribute('data-titledeck-gameinfo-text','true');
+      body.style.cssText='margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.5;color:#f1f6ff;';
+      panel.appendChild(heading);panel.appendChild(body);
+      const originalDisplay=nativeDescription?.style?.display??'';
+      try{parent.insertBefore(panel,nativeDescription||parent.firstChild||null)}catch{return false}
+      if(nativeDescription?.style)nativeDescription.style.display='none';
+      prior={appid,parent,nativeNode:nativeDescription,originalDisplay,panel};
+      nativeInfo.set(doc,prior);
+    }
+    const body=prior.panel.querySelector?.('[data-titledeck-gameinfo-text]')||prior.panel.lastChild;
+    if(body&&body.textContent!==description)body.textContent=description;
+    status='Game Info: custom description active for app '+appid;
+    return true;
+  }
   let stopped=false,ticker=null,pending=null,checks=0,status='Waiting for Steam game page';
   function documents(){
     const result=new Set(),add=d=>{if(d?.documentElement&&d.querySelectorAll&&d.createElement)result.add(d)};
@@ -483,7 +567,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     for(const doc of documents()){
       const id=routeId(doc);
       if(!state.enabled||!Object.keys(descriptions).length){
-        clear(doc);status=!state.enabled?'Display overrides paused':'No saved descriptions';continue;
+        clear(doc);clearGameInfo(doc);status=!state.enabled?'Display overrides paused':'No saved descriptions';continue;
       }
       let options=candidates(doc).filter(visible);
       if(id&&!options.length){
@@ -515,15 +599,22 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const uniqueIds=[...new Set(matches.map(item=>item.gameId))];
       const match=id?matches.find(item=>item.gameId===id):(uniqueIds.length===1?matches[0]:null);
       if(!match?.el?.parentElement){
-        clear(doc);
+        clear(doc);clearGameInfo(doc);
         status=!options.length?'No visible Steam details container':id?'Visible app ID does not match route '+id:'Cannot confirm one visible game page';
         continue;
       }
-      const position=state.description_position==='hero_footer'?'hero_footer':'below_play';
-      if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim(),position)){
-        applied++;status='Shown for Steam app '+match.gameId+' ('+position+')';
-      }else if(position==='hero_footer'&&!status.startsWith('Artwork Footer:')){
-        status='Artwork Footer: layout anchor unavailable';
+      const position=state.description_position==='game_info'?'game_info'
+        :state.description_position==='hero_footer'?'hero_footer':'below_play';
+      if(position==='game_info'){
+        clear(doc);
+        if(drawGameInfo(doc,match.el,match.gameId,descriptions[match.gameId].trim()))applied++;
+      }else{
+        clearGameInfo(doc);
+        if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim(),position)){
+          applied++;status='Shown for Steam app '+match.gameId+' ('+position+')';
+        }else if(position==='hero_footer'&&!status.startsWith('Artwork Footer:')){
+          status='Artwork Footer: layout anchor unavailable';
+        }
       }
     }
     return applied;
@@ -544,9 +635,9 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
   }
   function stop(){
     stopped=true;if(ticker!==null)clearInterval(ticker);if(pending!==null)clearTimeout(pending);
-    watchers.forEach(w=>w.disconnect());scrollListeners.forEach(stop=>stop());for(const doc of documents())clear(doc);
+    watchers.forEach(w=>w.disconnect());scrollListeners.forEach(stop=>stop());for(const doc of documents()){clear(doc);clearGameInfo(doc)}
   }
-  return{start,stop,runNow,get shown(){return owned.size},get checks(){return checks},get status(){return status}};
+  return{start,stop,runNow,get shown(){return owned.size+nativeInfo.size},get checks(){return checks},get status(){return status}};
 }
 
 const STYLE=`
