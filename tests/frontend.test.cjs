@@ -1043,6 +1043,10 @@ test('description keyboard uses the SAME Decky TextField and click path as Chang
    assert(inp,'must use same native Steam TextField as Change Name');
    assert.equal(inp.props.maxLength,4000);
    assert.equal(inp.props['aria-label'],'Custom game description');
+   assert.equal(inp.props.bShowClearAction,false,'no X clear icon for long descriptions');
+   const count=walk(rendered).find(n=>n.props['data-td-description-count']==='true');
+   assert(count,'live character counter must be rendered with the editor');
+   assert(count.children.includes('0 / 4000 characters · 4000 remaining'));
    inp.props.onChange({target:{value:'Long custom text Σ'}});
    assert.equal(walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description').props.value,'Long custom text Σ');
  }finally{plugin.onDismount();mock.cleanup();}
@@ -1058,6 +1062,7 @@ test('name editor still uses its original 180-char Steam TextField',async()=>{
    const input=walk(rendered).find(n=>n.type==='decky-steam-textfield');
    assert.equal(input.props.maxLength,180);
    assert.equal(input.props.label,'Custom display title');
+   assert.equal(input.props.bShowClearAction,true,'retain native clear action for short titles');
  }finally{plugin.onDismount();mock.cleanup();}
 });
 
@@ -1588,4 +1593,34 @@ test('Game Info with no native description inherits surrounding Steam styling',a
  assert(panel.style.cssText.includes('color:inherit'));
  assert(panel.style.cssText.includes('background:transparent'));
  assert(!panel.style.cssText.includes('border-radius'));
+});
+
+
+test('native description shows live remaining count and hard-stops at 4000 characters',async()=>{
+ const mock=setupMock({games:[{appid:'893180',name:'Catherine Classic'}],selected:'893180',view:'description'});
+ const {mod,plugin}=await mock.init();
+ try{
+  globalThis.DFL.TextField='decky-steam-textfield';
+  const component=walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description');
+  assert(component);
+  const overlong='a'.repeat(4100);
+  const rendered=mod.InlineGameNameField({...component.props,value:'A'.repeat(3995)});
+  let count=walk(rendered).find(n=>n.props['data-td-description-count']==='true');
+  assert(count.children.includes('3995 / 4000 characters · 5 remaining'));
+  const input=walk(rendered).find(n=>n.type==='decky-steam-textfield');
+  assert.equal(input.props.maxLength,4000);
+  input.props.onChange({target:{value:overlong}});
+  assert.equal(walk(mock.render()).find(n=>n.type===mod.InlineGameNameField&&n.props.fieldKind==='description').props.value.length,4000);
+  count=walk(mod.InlineGameNameField({...component.props,value:'a'.repeat(4000)})).find(n=>n.props['data-td-description-count']==='true');
+  assert(count.children.includes('4000 / 4000 characters · 0 remaining'));
+ }finally{plugin.onDismount();mock.cleanup()}
+});
+test('description layout moves on keyboard request even when no keyboard status is received yet',async()=>{
+ // This Deck OSK intermittency is hardware-specific. Test the regression
+ // contract: description click must request the explicit keyboard-raised
+ // layout, while Change Name keeps its existing successful behavior.
+ const s=fs.readFileSync(path.join(root,'src/index.js'),'utf8');
+ assert(s.includes('activeInlineKeyboard?.show?.();'));
+ assert(s.includes("bShowClearAction:fieldKind!=='description'"));
+ assert(s.includes("fieldKind==='description'?h('div',{className:'td-description-character-count'"));
 });
