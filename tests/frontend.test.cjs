@@ -1566,7 +1566,7 @@ test('Game Info native shell supports plain text, multiline and exact restoratio
   assert.equal(custom.children.length,1);
   assert.equal(custom.lastChild.textContent,unsafe,'escape user text, retain newline');
   assert.equal(custom.lastChild.children.length,0,'markup-like text creates no HTML nodes');
-  assert(!custom.style.cssText.includes('background'));
+  assert(!String(custom.style.cssText||'').includes('background'));
   assert.equal(native.style.display,'none');
   state.descriptions['893180']='Updated without blue box';
   assert.equal(adapter.runNow(),1);
