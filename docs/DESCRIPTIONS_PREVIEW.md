@@ -1,35 +1,43 @@
-# Custom game descriptions: development preview
+# Custom descriptions: native Steam game-page milestone
 
-**Status:** Work in progress, not included in the published 0.9.0 RC1 ZIP.
+**Status: development preview, NOT included in the public 0.9.0 RC1 release ZIP.**
 
-This branch adds an **optional, per-game plain-text description** editor in TitleDeck's Full Library Manager. This does **not yet override Steam's official About/Game Info description** on Steam's game-detail screen. Do not advertise it as completed metadata replacement.
+This branch extends TitleDeck's per-game **description editor** with a reversible custom-description panel in the **native Steam library game-detail page**. Its content comes from TitleDeck's local settings and is shown only if the currently visible Steam React app overview ID agrees with the library route App ID.
 
-## What works at the code level
+**Important distinction:** This introduces a **TitleDeck-owned panel** on the game page. It does **not overwrite** the original Valve About/Game Info text, alter official Steam metadata, or edit game files. Native Game Info text replacement is not claimed. Real-device display and multiline keyboard validation remain open.
 
-- Open a game in TitleDeck and choose **Add description** / **Edit description**.
-- Type or paste up to 4,000 plain-text characters; save explicitly.
-- The text is stored by Steam App ID in TitleDeck's settings, independently of a display-name alias.
-- Return to the editor to review the saved description. Restore default removes only the local description, not the title override.
-- Existing legacy `titledeck.json` settings (with only `aliases`) remain readable.
-- Backup, export, import and backup restoration include custom descriptions.
-- **Restore All Original Titles** removes only custom names. It intentionally preserves custom descriptions.
-- Descriptions are treated as plain text, not HTML or executable markup.
-- No Steam manifests, game files, or Steam store records are modified.
+## Intended user flow
 
-## Not yet working or verified
+1. In TitleDeck → Open full library manager, select a game.
+2. Choose Add description or Edit description.
+3. Enter up to 4,000 plain-text characters and explicitly Save description.
+4. Navigate to that game's normal Steam library detail page.
+5. When the Steam page ID is confirmed, a YOUR GAME DESCRIPTION panel appears above the details content; it is removed upon game change, delete, disabling TitleDeck, or uninstalling.
+6. Restore default in the editor removes only the custom description, not the saved game name.
 
-- Replacing the game's visible **About this game / Game Info** description inside Steam's native game page, as requested on Reddit.
-- Native Steam keyboard behavior for multiline text input on real Deck hardware.
-- Reliably following Steam/SteamOS UI refreshes for description content.
-- Compatibility on Windows, Android/DroidDeck, ROG Ally or non-Steam Deck environments. Community reports are useful, but do not replace validation.
+## Implemented safety design
 
-## Acceptance steps before release
+- Store descriptions by App ID independently of custom game names.
+- Accept old TitleDeck settings without descriptions; include descriptions in manual backup, import, export, recovery.
+- Display via `textContent`, never injected HTML.
+- Read matching App IDs from Steam's visible React `overview` fiber and the `/library/app/:appid` route; fail closed when they differ.
+- Add a single, marked sibling panel. Do not modify Steam's React render output, native About content, game metadata, files, artwork, other Decky plugins, or their DOM elements.
+- Observer plus periodic resync handles route and content changes. On disable or unmount, remove TitleDeck's panel.
+- Diagnostic view reports visible panel count and game identity matching status.
+- Regression tests cover identity mismatches, route changes, duplicate prevention, text-as-text, delete and disable, and existing rename behavior.
 
-1. Confirm original renamed-title workflows still work, including Catherine Classic → Catherine, D-pad navigation, restart persistence and Restore Original.
-2. Test description editor with Steam keyboard, physical keyboard, paste, multiline text, Unicode characters, save, load and delete.
-3. Test backup/import/export/recovery and legacy settings upgrades on a device with existing aliases.
-4. Implement a **scoped, game-ID-specific Steam detail-page presentation** without blindly changing other games' metadata or text, and test across navigations and refreshes.
-5. Verify display reverts immediately when the override is cleared or TitleDeck is disabled, and test coexistence with Decky Metadata / EnhancedGV.
-6. Repeat tests on real Steam Deck, then collect separate Windows/Android reports before expanding the compatibility statement.
+## Remaining release acceptance
 
-The next stage is Steam detail-page integration. This branch deliberately keeps the prerelease version number and published ZIP unchanged.
+- [ ] Verify the panel renders and stays in the correct position on a **physical Steam Deck**, especially with SteamOS updates and CSS Loader.
+- [ ] Verify controller navigation and the native Steam keyboard with **multiline** text on actual hardware.
+- [ ] Verify opening and closing a game detail page repeatedly, game switching and rebuilding the UI.
+- [ ] Verify co-installation with EnhancedGV / Decky Metadata.
+- [ ] Verify aliases, backups and descriptions survive restart and upgrade with a previously populated TitleDeck install.
+- [ ] Decide whether a true *replacement* of the original Steam About section is necessary. Do not promise replacing Valve's text without a stable, tested integration.
+- [ ] Cut a separately versioned test ZIP, only after the above checks, without changing the published 0.9.0 RC1 installer.
+
+## Compatibility
+
+Community reports indicate TitleDeck titles may work on Windows and Android/DroidDeck. That is **not verification of custom descriptions** or of the native Steam panel on those platforms. This milestone targets **Steam Deck Gaming Mode** first.
+
+The released 0.9.0 RC1 remains unchanged, and this functionality stays in the development pull request pending acceptance.
