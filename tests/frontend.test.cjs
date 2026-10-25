@@ -1715,3 +1715,34 @@ test('Restore Default completes removal even if Steam original style restoration
   assert.equal(values.display,'','fallback should recover original visibility');
  }finally{adapter.stop()}
 });
+
+
+test('Restore Default exposes immediate explicit teardown of mounted Game Info pane',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const box=p.node('div'),original=p.node('p');
+ box.className='appdetailsgameinfopanel_Container_x';
+ original.className='appdetailsgameinfopanel_GameDescription_x';
+ original.textContent='Steam original Catherine synopsis';
+ box.appendChild(original);p.visible.appendChild(box);
+ const q=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>sel==='[data-titledeck-gameinfo-description]'?
+   box.children.filter(x=>x.getAttribute?.('data-titledeck-gameinfo-description')):
+   sel.includes('appdetailsgameinfopanel_Container')?[box]:
+   sel.includes('appdetailsgameinfopanel_GameDescription')?box.children.filter(x=>x.className===original.className):
+   q(sel);
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'A'.repeat(1750),'620':'Portal text'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(adapter.runNow(),1);
+  assert.equal(original.style.display,'none');
+  assert.equal(box.children.length,2);
+  // Simulate backend deletion succeeding before the next auto-scan.
+  delete state.descriptions['893180'];
+  adapter.restoreGameInfo('893180');
+  assert.equal(original.style.display,'','restore before waiting for background UI scan');
+  assert.equal(box.children.length,1,'all TitleDeck native-looking clones removed');
+  assert.equal(box.children[0],original);
+  assert.equal(original.textContent,'Steam original Catherine synopsis');
+  assert.equal(adapter.runNow(),0,'later scanner must not re-add removed description');
+ }finally{adapter.stop()}
+});
