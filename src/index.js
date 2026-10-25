@@ -376,7 +376,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
             for(let depth=0;depth<5&&anchor.parentElement;depth++){
               const parent=anchor.parentElement,cls=String(parent.className||'');
               if(/AppDetails(Container|Root)/.test(cls)){anchor=parent;break}
-              if(parent===doc.body||parent===doc.documentElement)break;
+              if(parent===doc.body||parent===doc.documentElement||!parent.parentElement)break;
               anchor=parent;
             }
             options.push(anchor);break;
