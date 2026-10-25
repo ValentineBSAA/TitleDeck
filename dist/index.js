@@ -6,7 +6,7 @@ const h = (...a) => R.createElement(...a);
 const QAM_VERSION_STYLE = {display:'inline-flex',alignItems:'center',fontSize:10,fontWeight:800,color:'#e9eef6',background:'#384257',border:'1px solid #7d8aa5',borderRadius:99,padding:'3px 7px',lineHeight:1};
 const ICON_DATA_URI = 'data:image/webp;base64,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';
 
-let bridge, adapter;
+let bridge, adapter, descriptionAdapter;
 let steamDocument = null;
 let steamBridgeStatus = "Waiting for Steam window";
 const STEAM_ANCHOR = "TitleDeckSteamTextBridge";
@@ -22,7 +22,7 @@ const call=(name,...args)=>connect().call(name,...args);
 function acceptState(state){
   if(state && typeof state ==='object') latestState={...latestState,...state};
   observers.forEach(listener=>{try{listener(latestState);}catch{}});
-  adapter?.runNow();
+  adapter?.runNow();descriptionAdapter?.runNow();
   return latestState;
 }
 function useStateSnapshot(){
@@ -136,7 +136,7 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
     if(!el || !el.isConnected)return true;
     // Allow Steam's own game-options dialogs, whose headings can show a title.
     // Keep editable controls, other Decky panels, and unrelated notifications untouched.
-    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-exclude], [contenteditable], [role="textbox"], [role="combobox"], input, textarea, script, style, select, option'))return true;}catch{}
+    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-description], [data-titledeck-exclude], [contenteditable], [role="textbox"], [role="combobox"], input, textarea, script, style, select, option'))return true;}catch{}
     const name=String(el.className||'');
     return /(?:decky|notification|toast|tooltip|chat|friendslist)/i.test(name);
   }
@@ -276,6 +276,105 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
   function start(){setup();fullScan();heartbeat=setInterval(()=>{setup();fullScan();},2400);}
   function stop(){stopped=true;if(scanTimer!==null)clearTimeout(scanTimer);if(heartbeat!==null)clearInterval(heartbeat);for(const item of observerList)item.watch.disconnect();observerList=[];restore();}
   return{start,stop,runNow,get applied(){return activeCount()},get scans(){return scanned},get fastPasses(){return fastPasses},get docs(){return observerList.length}};
+}
+
+
+export function appidFromVisibleGame(el){
+  try{
+    const key=Object.keys(el||{}).find(k=>k.startsWith('__reactFiber$'));
+    let fiber=key?el[key]:null;
+    for(let i=0;fiber&&i<40;i++,fiber=fiber.return){
+      const ov=fiber.memoizedProps?.overview,id=normId(ov?.appid??ov?.appId??ov?.m_nAppID);
+      if(id)return id;
+    }
+  }catch{}
+  return '';
+}
+
+
+export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer){
+  const MARK='data-titledeck-description',owned=new Map(),watchers=[];
+  let stopped=false,ticker=null,pending=null,checks=0,status='Waiting for Steam game page';
+  function documents(){
+    const result=new Set(),add=d=>{if(d?.documentElement&&d.querySelectorAll&&d.createElement)result.add(d)};
+    add(host);try{getDocuments().forEach(add)}catch{}
+    return [...result];
+  }
+  function clear(doc){
+    const old=owned.get(doc);if(old){old.remove?.();owned.delete(doc)}
+    try{for(const el of doc.querySelectorAll('['+MARK+']'))if(el.getAttribute?.(MARK))el.remove?.()}catch{}
+  }
+  function routeId(doc){
+    const path=String(doc.defaultView?.location?.pathname||globalThis.location?.pathname||'');
+    const found=path.match(/\/library\/app\/([1-9][0-9]{0,11})(?:\/|$)/);
+    return found?normId(found[1]):'';
+  }
+  function candidates(doc){
+    const result=new Set(),klass=getClass();
+    if(typeof klass==='string'&&klass.trim())try{for(const el of doc.getElementsByClassName?.(klass)||[])result.add(el)}catch{}
+    try{for(const el of doc.querySelectorAll('[class*="AppDetailsContainer"]'))result.add(el)}catch{}
+    return [...result];
+  }
+  function visible(node){
+    if(!node?.isConnected||node.offsetParent===null)return false;
+    try{const style=node.ownerDocument?.defaultView?.getComputedStyle?.(node);
+      if(style?.display==='none'||style?.visibility==='hidden')return false;}catch{}
+    return true;
+  }
+  function draw(doc,target,id,description){
+    const parent=target.parentElement;if(!parent)return false;
+    let pane=owned.get(doc);
+    if(pane&&!pane.isConnected){owned.delete(doc);pane=null}
+    if(pane?.getAttribute?.(MARK)!==id){clear(doc);pane=null}
+    if(!pane){
+      pane=doc.createElement('section');pane.setAttribute(MARK,id);
+      pane.setAttribute('role','region');pane.setAttribute('aria-label','TitleDeck custom game description');
+      pane.style.cssText='box-sizing:border-box;width:calc(100% - 40px);margin:12px 20px;padding:16px 20px;border-radius:9px;background:#203045;border:1px solid #445b73;color:#ecf3f9;';
+      const heading=doc.createElement('h3');heading.textContent='YOUR GAME DESCRIPTION';
+      heading.style.cssText='margin:0 0 9px;font-size:15px;font-weight:750;color:#afd3f2;';
+      const body=doc.createElement('p');body.setAttribute('data-titledeck-description-text','true');
+      body.style.cssText='margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.5;';
+      pane.appendChild(heading);pane.appendChild(body);
+      try{parent.insertBefore(pane,target)}catch{return false}
+      owned.set(doc,pane);
+    }
+    if(pane.parentElement!==parent||pane.nextSibling!==target)
+      try{parent.insertBefore(pane,target)}catch{return false}
+    const body=pane.querySelector?.('[data-titledeck-description-text]')||pane.lastChild;
+    if(body&&body.textContent!==description)body.textContent=description; // plain text, never HTML.
+    return true;
+  }
+  function runNow(){
+    if(stopped)return 0;checks++;
+    const state=getState()||{},descriptions=state.descriptions||{};
+    let applied=0;
+    for(const doc of documents()){
+      const id=routeId(doc),description=descriptions[id];
+      if(!state.enabled||!id||typeof description!=='string'||!description.trim()){
+        clear(doc);status=!state.enabled?'Display overrides paused':!id?'Not on a game details page':'No saved description';continue;
+      }
+      // URL alone is unsafe during game transitions: confirm React fiber identity.
+      const target=candidates(doc).find(el=>visible(el)&&appidFromVisibleGame(el)===id);
+      if(!target?.parentElement){clear(doc);status='Visible Steam app identity not confirmed';continue}
+      if(draw(doc,target,id,description.trim())){applied++;status='Shown on matching Steam game page'}
+    }
+    return applied;
+  }
+  const schedule=()=>{if(!stopped&&pending===null)pending=setTimeout(()=>{pending=null;runNow()},80)};
+  function start(){
+    runNow();
+    for(const doc of documents())try{
+      const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+      if(typeof Observer!=='function')continue;
+      const watcher=new Observer(schedule);watcher.observe(doc.documentElement,{childList:true,subtree:true});watchers.push(watcher);
+    }catch{}
+    ticker=setInterval(runNow,1800);
+  }
+  function stop(){
+    stopped=true;if(ticker!==null)clearInterval(ticker);if(pending!==null)clearTimeout(pending);
+    watchers.forEach(w=>w.disconnect());for(const doc of documents())clear(doc);
+  }
+  return{start,stop,runNow,get shown(){return owned.size},get checks(){return checks},get status(){return status}};
 }
 
 const STYLE=`
@@ -1287,7 +1386,7 @@ function Manager(){
       const verified=await refreshState();
       if(remove?Boolean(verified.descriptions?.[selected]):verified.descriptions?.[selected]!==content)throw Error('Description readback did not match.');
       setDescriptionDraft(remove?'':content);
-      notify(remove?'Removed your local description override.':'Custom description saved. This preview is local to TitleDeck; Steam game-page display is not yet verified.',setNotice,true);
+      notify(remove?'Removed your local description override.':'Description saved. The game-page panel appears when Steam shows the matching game.',setNotice,true);
     }catch(e){notify('Could not save description: '+String(e?.message||e),setNotice);}
     finally{setWorking(false);}
   };
@@ -1417,7 +1516,7 @@ function Manager(){
       h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Plain text · 4000 characters maximum'));
     workspace=h('div',{className:'td-workspace'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto'}},
       h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
-      h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck stores and displays this text locally. Steam store descriptions and game files remain unchanged. Replacing text on Steam’s actual game-detail page is not yet supported.'),
+      h('p',{className:'td-editor-note'},'Write your own summary or notes for this game. TitleDeck displays this text in its editor and in a separate section on the matching Steam library game page. Original Steam About text and store metadata stay unchanged.'),
       h('textarea',{value:descriptionDraft,maxLength:4000,rows:7,'aria-label':'Custom game description','data-td-focus':'description-input',
         onGamepadDirection:e=>descNav('description-input',e),
         onChange:e=>setDescriptionDraft(String(e?.target?.value??'')),
@@ -1430,7 +1529,7 @@ function Manager(){
         h(Btn,{'data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default')),
       stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',marginTop:15}},'Saved local description: '+stored):null
     ));
-    bottom=footer('A: edit or save  •  B: return to game editor','Descriptions are visible within TitleDeck only');
+    bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
   }else if(view==='keyboard'||view==='search'||view==='appid'){
     const isTitle=view==='keyboard',isSearch=view==='search';
     const context=isTitle?'Change display title':isSearch?'Search your game library':'Find game by Steam App ID';
@@ -1533,8 +1632,8 @@ function Manager(){
           button('Restore saved backup',()=>{setView('backupConfirm');focusQuery(root.current,'[data-td-focus="backup-cancel"]',90)},{disabled:!manual.available,focus:'setting-backup-restore'}),manual.available?'● Backup available':'○ No backup'),
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Saved names: ${aliasCount}. No Steam artwork or metadata is modified.`,
-          button('Rescan Steam titles',()=>{adapter?.runNow();notify(`Steam display scan complete. Visible matches: ${adapter?.applied||0}.`,setNotice,true)},{focus:'setting-scan'})),
+        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
+          button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'})),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
           button('Review Restore All…',startRestoreAll,{disabled:!aliasCount,focus:'setting-restore-all'}),
@@ -1582,12 +1681,13 @@ function SteamDocumentAnchor(){
     if(!doc?.body)return;
     if(steamDocument!==doc){
       steamDocument=doc;
-      adapter?.stop();
+      adapter?.stop();descriptionAdapter?.stop();
       adapter=createTitleAdapter(doc,()=>latestState,()=>doc.defaultView?.appStore||globalThis.appStore,()=>[doc,...discoverDocuments()]);
-      adapter.start();
+      descriptionAdapter=createDescriptionAdapter(doc,()=>latestState,()=>[doc,...discoverDocuments()]);
+      adapter.start();descriptionAdapter.start();
       steamBridgeStatus='Connected to Steam UI document';
     }
-    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
+    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
   },[]);
   return h('span',{ref,style:{display:'none'},'data-titledeck-ui':'true'});
 }
@@ -1600,10 +1700,11 @@ export default function createPlugin(){
  }else{steamBridgeStatus='Steam UI global component API unavailable';}
  // Fallback adapter watches only the plugin document until the real Steam anchor mounts.
  if(!adapter){adapter=createTitleAdapter(globalThis.document,()=>latestState,()=>globalThis.appStore,()=>steamDocument?[steamDocument]:discoverDocuments());adapter.start();}
+ if(!descriptionAdapter){descriptionAdapter=createDescriptionAdapter(globalThis.document,()=>latestState,()=>steamDocument?[steamDocument]:discoverDocuments());descriptionAdapter.start();}
  refreshState().catch(e=>console.warn('[TitleDeck] state load:',e));
  return{name:PLUGIN,titleView:h('span',{style:{display:'flex',alignItems:'center',gap:8}},'TitleDeck',h('span',{className:'td-version-chip',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),content:h(QuickPanel),
    icon:h('img',{src:ICON_DATA_URI,alt:'TitleDeck',style:{width:24,height:24,objectFit:'contain'}}),
-   onDismount(){adapter?.stop();adapter=null;steamDocument=null;
+   onDismount(){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;steamDocument=null;
      try{api.routerHook?.removeGlobalComponent?.(STEAM_DOC_ANCHOR)}catch{}
      try{api.routerHook?.removeRoute?.(ROUTE)}catch{}
      bridge=null;observers.clear();}};
