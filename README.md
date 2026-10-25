@@ -8,7 +8,7 @@
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
-**TitleDeck** is a controller-first Decky Loader plugin for changing *displayed* Steam game titles in Gaming Mode. Rename `Catherine Classic` to `Catherine`, tidy capitalization, or remove unwanted ™/® symbols while leaving Steam's canonical metadata, sorting configuration, and installed game files untouched.
+**Prepared RC build version: `0.9.0-rc.1`** (prerelease, not yet published as a download).\n\n**TitleDeck** is a controller-first Decky Loader plugin for changing *displayed* Steam game titles in Gaming Mode. Rename `Catherine Classic` to `Catherine`, tidy capitalization, or remove unwanted ™/® symbols while leaving Steam's canonical metadata, sorting configuration, and installed game files untouched.
 
 > **Compatibility warning:** TitleDeck is developed and device-tested on a **physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader**. **ROG Ally, other handheld PCs, third-party SteamOS installations or derivatives, Windows, Android/DroidDeck, and Desktop Mode are not verified or officially supported.** The interface, Decky integration, controller focus, and Steam keyboard may behave differently or fail on those systems.
 
