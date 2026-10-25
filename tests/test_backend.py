@@ -71,6 +71,34 @@ class TitleDeckBackendTests(unittest.TestCase):
             self.assertEqual(main.load_state()['descriptions'], {})
         asyncio.run(scenario())
 
+    def test_description_placement_persists_and_roundtrips_backups(self):
+        self.assertEqual(main.load_state()["description_position"], "below_play")
+
+        async def scenario():
+            plugin = main.Plugin()
+            await plugin.save_description("893180", "My Catherine description")
+            for bad in ("", "hero", "<script>", 1, None, [], {}):
+                with self.subTest(value=bad), self.assertRaises(ValueError):
+                    await plugin.set_description_position(bad)
+            await plugin.set_description_position("hero_footer")
+            self.assertEqual(main.load_state()["description_position"], "hero_footer")
+            await plugin.create_backup()
+            exported = await plugin.export_aliases()
+            self.assertEqual(json.loads(exported)["description_position"], "hero_footer")
+            await plugin.set_description_position("below_play")
+            await plugin.import_aliases(exported)
+            self.assertEqual(main.load_state()["description_position"], "hero_footer")
+            await plugin.set_description_position("below_play")
+            await plugin.restore_backup()
+            self.assertEqual(main.load_state()["description_position"], "hero_footer")
+            self.assertEqual(main.load_state()["descriptions"]["893180"], "My Catherine description")
+            with self.assertRaises(ValueError):
+                await plugin.import_aliases(json.dumps({
+                    "schema": 1, "aliases": {}, "description_position": "dangerous"
+                }))
+            self.assertEqual(main.load_state()["description_position"], "hero_footer")
+        asyncio.run(scenario())
+
     def test_installed_multiple_libraries(self):
         home = self.root / 'home'
         mainlib = home / '.local' / 'share' / 'Steam' / 'steamapps'
