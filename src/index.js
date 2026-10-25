@@ -1526,11 +1526,16 @@ function Manager(){
     setCleanupPreview(null);setCleanupUndo(null);
     setWorking(true);
     try{await call(method,...args);const verified=await refreshState();
-      const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]:method==='delete_alias'?!verified.aliases?.[String(args[0])]:verified.enabled===args[0];
+      const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]
+        :method==='delete_alias'?!verified.aliases?.[String(args[0])]
+        :method==='set_description_position'?verified.description_position===args[0]
+        :verified.enabled===args[0];
       if(!valid)throw Error('Settings readback failed');
-      adapter?.runNow();
+      adapter?.runNow();descriptionAdapter?.runNow();
       notify(method==='save_alias'?`Saved “${args[1]}”. TitleDeck confirmed your alias. Open Steam's game page to check the visible title.`:
-        method==='delete_alias'?'Restored original Steam title.':'Display replacements updated.',setNotice,true);
+        method==='delete_alias'?'Restored original Steam title.'
+        :method==='set_description_position'?`Description placement changed to ${args[0]==='hero_footer'?'Artwork Footer':'Below Play'}.`
+        :'Display replacements updated.',setNotice,true);
     }catch(e){notify('Could not save: '+String(e?.message||e),setNotice);}finally{setWorking(false);}
   };
   const saveDescription=async(remove=false)=>{
