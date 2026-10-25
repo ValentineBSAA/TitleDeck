@@ -112,3 +112,18 @@ Hardware feedback after Preview 10 (Catherine Classic, Steam App ID 893180): the
 Preview 11 turns off `bShowClearAction` **for description input only**, leaving the short-title editor's original control unchanged. After Steam TextField's click, the description editor requests the raised on-screen-keyboard layout immediately; a delayed status callback remains as fallback, and a stale initial closed signal no longer prevents the fallback. A live `used / 4000` count and remaining number appear directly below the native TextField, including while the keyboard editor is raised. The same 4,000-character plain-text hard cap remains in React, the input widget, save validation, the backend, and exports/imports. Existing saved descriptions are not shortened.
 
 Further candidate release QA: hardware confirm keyboard return focus and re-open, long description and newline behavior, saving and restoring for Steam and non-Steam games, backup/import/recovery of descriptions, app ID isolation, changing CSS Loader themes, and checking MetaDeck/other plugin interoperability. Do not mark those as accepted on simulator tests alone.
+
+
+## Preview 12: Blocker fix for Steam Game Info scroll oscillation and Restore Default
+
+Physical report after Preview 11: a longer 500-plus-character custom description triggered repeated up/down motion in Steam's GAME INFO tab, and Restore Original/Default did not recover the view. This is a **release blocker**. Preview 12 changes the behavior as follows:
+
+- Explicitly excludes TitleDeck's native-styled description clone from any native Game Info discovery, even though the clone intentionally uses Steam's own CSS classes.
+- Pins each active description panel to the confirmed Steam original and holds its DOM identity steady across repeated observer/heartbeat scans. Avoids tearing down and reinserting a long content element, which can cause Steam scroll anchoring to oscillate.
+- Removes scroll event-driven rescans for Game Info mode. Artwork Footer retains scroll-aware positioning.
+- Separates restoration of Steam's original display style from removal of the TitleDeck panel, so errors in one operation do not prevent the other.
+- On a successful Restore Default backend deletion, explicitly removes the selected app's currently mounted Game Info panel, without waiting for the heartbeat.
+- Recovers marker-identified orphan TitleDeck panels from previous test versions and unhides their adjacent matching Steam original when it was left hidden. It never deletes unmarked Steam descriptions.
+- Adds regression tests for 150 repeated scans with a 2,800-character description, restore with another game still saved, orphan cleanup, style restoration failure, and immediate Restore Default.
+
+**Hardware verification is still required**: these are code-level fixes based on the observed symptom, not a guarantee that all SteamOS scroll anchoring issues are resolved. Keep this experimental preview out of main until a real Deck can display and restore a long description without jitter. If older transient Steam UI state remains broken, disable TitleDeck and restart Steam/the Deck; do not delete TitleDeck data.
