@@ -22,7 +22,7 @@ The maintainer verified Catherine Classic → Catherine and restored it, custom-
 
 ## Known issue
 
-**Steam keyboard dismissal:** Pressing B to close the native keyboard may occasionally leave the editing field in its raised/keyboard-open layout. It has also been observed to return correctly. The editor stays mounted so the saved alias is not silently changed. This is a UI issue under investigation, not a claim that B reliably triggers a slide-down animation.
+**Intermittent Steam keyboard dismissal:** Pressing B to close the native keyboard may occasionally leave the editing field in its raised/keyboard-open layout. It has also been observed to return correctly. The editor stays mounted so the saved alias is not silently changed. This is a UI issue under investigation, not a claim that B reliably triggers a slide-down animation.
 
 ## Not yet verified
 
