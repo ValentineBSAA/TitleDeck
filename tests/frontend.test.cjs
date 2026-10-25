@@ -9,13 +9,14 @@ let moduleCounter=0;
 async function moduleForTest(){return import('file://'+dist+'?test='+ ++moduleCounter)}
 function walk(n){if(n===undefined||n===null||typeof n!=='object')return[];return[n,...(n.children||[]).flatMap(walk)]}
 function resolveButton(n){return typeof n?.type==='function'?n.type({...n.props,children:n.children}):n}
-function setupMock({games=[],aliases={},descriptions={},view='library',selected='',draft=''}={}){
-  const state={schema:1,enabled:true,aliases,descriptions,games,manual_backup:{available:false,count:0},recovery:{available:false,count:0}};
+function setupMock({games=[],aliases={},descriptions={},description_position='below_play',view='library',selected='',draft=''}={}){
+  const state={schema:1,enabled:true,aliases,descriptions,description_position,games,manual_backup:{available:false,count:0},recovery:{available:false,count:0}};
   let route, hooks=[],cursor=0,refs=[],refCursor=0;
   const api={routerHook:{addRoute(_name,fn){route=fn},removeRoute(){},addGlobalComponent(){},removeGlobalComponent(){}},call:async (name,...args)=>{
     if(name==='snapshot')return state;
     if(name==='save_description'){state.descriptions[String(args[0])]=args[1];return state;}
     if(name==='delete_description'){delete state.descriptions[String(args[0])];return state;}
+    if(name==='set_description_position'){state.description_position=args[0];return state;}
     return null;
   }};
   const R={
@@ -1109,4 +1110,69 @@ test('descriptions remain accessible at short Deck heights with fixed toolbar an
   assert.equal(scroller.scrollTop,950);
   assert.equal(bottom.props.disabled,undefined);
  }finally{plugin.onDismount();mock.cleanup()}
+});
+
+
+test('Artwork Footer follows the Play bar and keeps legacy Below Play selectable',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ p.doc.defaultView.innerWidth=1280;p.doc.defaultView.innerHeight=800;
+ p.doc.body=p.node('body');p.doc.body._root=true;
+ const play=p.node('div');play.getBoundingClientRect=()=>({left:25,top:680,width:1190,height:64,bottom:744});
+ Object.defineProperty(p.visible,'previousElementSibling',{get:()=>play});
+ const state={enabled:true,description_position:'hero_footer',descriptions:{'893180':'Catherine test description'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+   assert.deepEqual(m.heroFooterGeometry(play.getBoundingClientRect(),1280,800),{left:41,top:592,width:1158,height:76});
+   assert.equal(m.findDescriptionPlayBar(p.doc,p.visible),play);
+   assert.equal(adapter.runNow(),1);
+   let pane=p.doc.body.children[0];
+   assert(pane,'description should be reparented to overlay layer');
+   assert.equal(pane.getAttribute('data-titledeck-description'),'893180');
+   assert.equal(pane.getAttribute('data-titledeck-position'),'hero_footer');
+   assert(pane.style.cssText.includes('top:592px'));
+   assert.equal(p.root.children.length,2,'Steam's normal content stays untouched in hero mode');
+   assert.equal(adapter.runNow(),1);
+   assert.equal(p.doc.body.children.length,1,'no duplicate overlay');
+   state.description_position='below_play';
+   assert.equal(adapter.runNow(),1);
+   assert.equal(p.doc.body.children.length,0);
+   assert.equal(p.root.children[0],pane,'same panel moves into old below-Play position');
+   assert.equal(pane.getAttribute('data-titledeck-position'),'below_play');
+   state.description_position='hero_footer';
+   assert.equal(adapter.runNow(),1);
+   assert.equal(p.doc.body.children[0],pane,'return to hero uses same panel');
+   play.getBoundingClientRect=()=>({left:25,top:100,width:1190,height:64,bottom:164});
+   assert.equal(adapter.runNow(),0,'header scrolling away must hide hero overlay');
+   assert.equal(p.doc.body.children.length,0,'no floating overlay over tabs/Steam toolbar');
+   state.description_position='below_play';
+   assert.equal(adapter.runNow(),1,'full panel still works in scrolled view');
+   assert.equal(p.root.children[0].getAttribute('data-titledeck-position'),'below_play');
+ }finally{adapter.stop();}
+});
+test('Art Hero footer geometry rejects missing or implausible Play areas',async()=>{
+ const m=await moduleForTest();
+ assert.equal(m.heroFooterGeometry(null,1280,800),null);
+ assert.equal(m.heroFooterGeometry({left:0,top:75,width:1200},1280,800),null);
+ assert.equal(m.heroFooterGeometry({left:0,top:900,width:1200},1280,800),null);
+ assert.equal(m.heroFooterGeometry({left:0,top:650,width:80},1280,800),null);
+ assert.equal(m.heroFooterGeometry({left:0,top:650,width:1190},1280,800).height,76);
+});
+test('Settings exposes description placement as a persistent reversible choice',async()=>{
+ const mock=setupMock({view:'settings',description_position:'below_play'});
+ const {plugin}=await mock.init();
+ try{
+   let nodes=walk(mock.render());
+   let panel=nodes.find(n=>n.props?.['data-td-setting']==='description-placement');
+   assert(panel);
+   let btn=walk(panel).find(n=>n.props?.['data-td-focus']==='setting-placement');
+   assert(btn);
+   assert(JSON.stringify(btn.children).includes('Artwork Footer'));
+   btn.props.onClick();
+   await new Promise(resolve=>setImmediate(resolve));
+   assert.equal(mock.state.description_position,'hero_footer');
+   nodes=walk(mock.render());
+   panel=nodes.find(n=>n.props?.['data-td-setting']==='description-placement');
+   btn=walk(panel).find(n=>n.props?.['data-td-focus']==='setting-placement');
+   assert(JSON.stringify(btn.children).includes('Below Play'));
+ }finally{plugin.onDismount();mock.cleanup();}
 });
