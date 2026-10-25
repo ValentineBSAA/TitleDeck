@@ -1235,7 +1235,7 @@ test('Game Info mode waits for that tab and never shows its text below Play',asy
  try{
    assert.equal(adapter.runNow(),0);
    assert.equal(p.root.children.length,2);
-   assert(adapter.status.includes('open the GAME INFO tab'));
+   assert(adapter.status.includes('Game Info not located'));
  }finally{adapter.stop()}
 });
 
