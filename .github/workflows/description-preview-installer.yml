@@ -9,6 +9,13 @@ on:
       - "main.py"
       - "tests/**"
       - ".github/workflows/description-preview-installer.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - "dist/**"
+      - "main.py"
+      - "tests/**"
+      - ".github/workflows/description-preview-installer.yml"
   workflow_dispatch:
 
 permissions:
