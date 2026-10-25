@@ -87,7 +87,7 @@ def load_state(path: Path | None = None) -> dict[str, Any]:
     for appid, description in saved_descriptions.items():
         descriptions[normalize_id(appid)] = validate_description(description)
     position = raw.get("description_position", "below_play")
-    if position not in ("below_play", "hero_footer") or not isinstance(position, str):
+    if position not in ("below_play", "hero_footer", "game_info") or not isinstance(position, str):
         raise ValueError("Invalid description placement")
     return {"schema": SCHEMA, "enabled": raw.get("enabled") is not False,
             "aliases": aliases, "descriptions": descriptions, "description_position": position}
@@ -275,7 +275,7 @@ class Plugin:
 
     async def set_description_position(self, position: str) -> dict[str, Any]:
         """Choose a reversible TitleDeck-only placement, without writing Steam or CSS Loader files."""
-        if not isinstance(position, str) or position not in ("below_play", "hero_footer"):
+        if not isinstance(position, str) or position not in ("below_play", "hero_footer", "game_info"):
             raise ValueError("Unsupported description position")
         async with self._lock:
             state = load_state()
@@ -329,7 +329,7 @@ class Plugin:
             normalize_id(k): validate_description(v) for k, v in incoming_descriptions.items()
         }
         position = obj.get("description_position")
-        if position is not None and (not isinstance(position, str) or position not in ("below_play", "hero_footer")):
+        if position is not None and (not isinstance(position, str) or position not in ("below_play", "hero_footer", "game_info")):
             raise ValueError("Unsupported imported description placement")
         async with self._lock:
             state = load_state()
