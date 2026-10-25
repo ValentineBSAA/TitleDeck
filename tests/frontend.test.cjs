@@ -1624,3 +1624,94 @@ test('description layout moves on keyboard request even when no keyboard status 
  assert(s.includes("bShowClearAction:fieldKind!=='description'"));
  assert(s.includes("fieldKind==='description'?h('div',{className:'td-description-character-count'"));
 });
+
+
+test('long Game Info descriptions stay on the SAME native DOM shell across 150 scans',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const box=p.node('div'),native=p.node('p');
+ box.className='appdetailsgameinfopanel_Container_long';
+ native.className='appdetailsgameinfopanel_GameDescription_long';
+ native.textContent='Valve original Catherine description';
+ box.appendChild(native);p.visible.appendChild(box);
+ const query=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>sel==='[data-titledeck-gameinfo-description]'?
+  box.children.filter(n=>n.getAttribute?.('data-titledeck-gameinfo-description')):
+  sel.includes('appdetailsgameinfopanel_Container')?[box]:
+  sel.includes('appdetailsgameinfopanel_GameDescription')?box.children.filter(n=>n.className===native.className):
+  query(sel);
+ const text='A'.repeat(2100)+'\n'+'B'.repeat(700);
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':text,'620':'Another description'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(adapter.runNow(),1);
+  const pane=box.children[0];
+  assert.equal(pane.lastChild.textContent,text);
+  assert.equal(native.style.display,'none');
+  for(let i=0;i<150;i++){
+    assert.equal(adapter.runNow(),1,'native description must remain present in scan '+i);
+    assert.equal(box.children[0],pane,'never recreate native replacement on scroll or observer pass '+i);
+    assert.equal(box.children.length,2,'no duplicate descriptions at scan '+i);
+  }
+  delete state.descriptions['893180'];
+  assert.equal(adapter.runNow(),0,'Restore Default removes this app but retains other descriptions');
+  assert.equal(native.style.display,'','original native description must reappear immediately');
+  assert.equal(box.children.length,1,'only Steam original is left');
+  assert.equal(box.children[0],native);
+  assert.equal(native.textContent,'Valve original Catherine description');
+ }finally{adapter.stop()}
+});
+test('restoring a description cleans up orphan panels left by previous TitleDeck previews',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const box=p.node('div'),orphan=p.node('p'),native=p.node('p');
+ box.className='appdetailsgameinfopanel_Container_x';
+ orphan.className='appdetailsgameinfopanel_GameDescription_x';
+ native.className=orphan.className;
+ orphan.setAttribute('data-titledeck-gameinfo-description','893180');
+ orphan.textContent='A long obsolete TitleDeck clone';
+ native.textContent='Real Steam description';
+ native.style.display='none';
+ box.appendChild(orphan);box.appendChild(native);p.visible.appendChild(box);
+ const q=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>sel==='[data-titledeck-gameinfo-description]'?[orphan].filter(x=>x.isConnected):
+   q(sel);
+ const state={enabled:true,description_position:'game_info',descriptions:{}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+   assert.equal(adapter.runNow(),0);
+   assert.equal(box.children.length,1,'old TitleDeck clone removed');
+   assert.equal(box.children[0],native);
+   assert.equal(native.style.display,'','Steam original visible after orphan recovery');
+   assert.equal(native.textContent,'Real Steam description');
+ }finally{adapter.stop()}
+});
+test('Restore Default completes removal even if Steam original style restoration throws',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const box=p.node('div'),native=p.node('p');
+ box.className='appdetailsgameinfopanel_Container_x';
+ native.className='appdetailsgameinfopanel_GameDescription_x';
+ const values={display:'',blocked:false};
+ native.style={
+  get display(){return values.display},set display(v){values.display=v},
+  getPropertyValue:k=>k==='display'?values.display:'',
+  getPropertyPriority:()=>'',setProperty(k,v){values.display=v},
+  removeProperty(){if(values.blocked)throw Error('Steam style locked');values.display=''}
+ };
+ box.appendChild(native);p.visible.appendChild(box);
+ const q=p.doc.querySelectorAll;
+ p.doc.querySelectorAll=sel=>sel==='[data-titledeck-gameinfo-description]'?
+   box.children.filter(x=>x.getAttribute?.('data-titledeck-gameinfo-description')):
+   sel.includes('appdetailsgameinfopanel_Container')?[box]:
+   sel.includes('appdetailsgameinfopanel_GameDescription')?[native]:q(sel);
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'Test text'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[],()=> 'AppDetailsContainer_test');
+ try{
+  assert.equal(adapter.runNow(),1);
+  assert.equal(values.display,'none');
+  values.blocked=true;
+  delete state.descriptions['893180'];
+  assert.equal(adapter.runNow(),0);
+  assert.equal(box.children.length,1,'cleanup must remove clone despite the style failure');
+  assert.equal(box.children[0],native);
+  assert.equal(values.display,'','fallback should recover original visibility');
+ }finally{adapter.stop()}
+});
