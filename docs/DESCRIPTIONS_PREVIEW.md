@@ -139,3 +139,12 @@ Fixes:
 - Opening a game editor resets its scroll position to the top after focusing the title field. Actual Edit Description and native Game Info text handling remain unchanged.
 
 Automated tests check local artwork candidate priority, non-Steam IDs, safe IDs, fallback order, and bounded previews at 505, 765, 1,005, 2,800, and 4,000 characters. Pending physical Deck acceptance: validate native custom-image URLs load through the Steam document's origin, switching between games preserves artwork and focus, no unexpected scroll, and Restore Default brings the original Game Info text back.
+
+
+## Preview 14: Clear Text and 1,020-character limit
+
+After the physical 1,005-character Game Info acceptance test, the user identified that holding the Deck's keyboard Backspace to erase a 1,000-character draft was too cumbersome. Preview 14 replaces the description-only keyboard dock's **Done editing** button with **Clear text field**. It clears the unsaved text immediately in both the native Steam input and React state, then offers **Undo clear** until further typing. Clearing alone does not erase stored descriptions, touch Steam's native metadata, or change other games. Steam's keyboard completion and the separate Save/Restore toolbar remain intact. The game's *title* editor retains its existing Done Editing behavior.
+
+The user also chose a **1,020-character cap** rather than 4,000. Every new description save and the backend now enforce 1,020 plain-text characters; the UI character counter measures against 1,020. The existing 1,005-character test case is valid. Older descriptions of up to 4,000 characters remain readable, displayed, exportable and restorable from backups with no silent truncation. Users must shorten those legacy drafts to 1,020 before submitting edited text. No automatic migration modifies previously saved descriptions. Importing a pre-cap export is permitted so historical backups remain recoverable. The general editor continues to show a bounded excerpt.
+
+Hardware follow-up: install over Preview 13 without clearing settings; open Catherine's 1,005-character description, tap Clear text field and Undo clear, verify exact text survives; check typed characters 1,019, 1,020, and attempts above; confirm Game Info stays stable, the original-description restoration still works, and artwork improvements persist. Do not merge until hardware tests verify controller focus and Undo.
