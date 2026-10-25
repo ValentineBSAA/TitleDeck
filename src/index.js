@@ -1665,7 +1665,7 @@ function Manager(){
       adapter?.runNow();descriptionAdapter?.runNow();
       notify(method==='save_alias'?`Saved “${args[1]}”. TitleDeck confirmed your alias. Open Steam's game page to check the visible title.`:
         method==='delete_alias'?'Restored original Steam title.'
-        :method==='set_description_position'?`Description placement changed to ${args[0]==='hero_footer'?'Artwork Footer':'Below Play'}.`
+        :method==='set_description_position'?`Description placement changed to ${args[0]==='game_info'?'Game Info':args[0]==='hero_footer'?'Artwork Footer':'Below Play'}.`
         :'Display replacements updated.',setNotice,true);
     }catch(e){notify('Could not save: '+String(e?.message||e),setNotice);}finally{setWorking(false);}
   };
@@ -1908,7 +1908,7 @@ function Manager(){
     actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'settings-back',nav:e=>{if(dir(e)===10)return directionTo(root.current,'setting-0',e);if(dir(e)===9)return directionTo(root.current,'close',e);halt(e);return true;},onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Aliases & recovery'));
     const settingPanel=(id,title,desc,action,extra='',wide=false)=>h('section',{className:`td-setting-panel ${wide?'td-panel-wide':''}`,'data-td-setting':id},
       h('h3',null,title),h('p',null,desc),extra?h('div',{className:'td-mini-state'},extra):null,action);
-    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],['setting-placement','setting-scan'],['setting-restore-all']];
+    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],['setting-placement-info','setting-scan'],['setting-placement-hero'],['setting-placement-below'],['setting-restore-all']];
     const settingsDirection=(key,e)=>{
       const d=dir(e),coord=settingsGrid.flatMap((r,y)=>r.map((v,x)=>({v,y,x}))).find(x=>x.v===key);
       if(!coord)return false;
@@ -1936,12 +1936,18 @@ function Manager(){
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
         settingPanel('description-placement','Custom game description location',
-          'Choose where your custom description appears on the Steam game page. Artwork Footer uses the unused strip above Play (works with Art Hero-style layouts); Below Play keeps the current full-size panel.',
-          button(state.description_position==='hero_footer'?'Use Below Play (full panel)':'Use Artwork Footer (above Play)',
-            ()=>void save('set_description_position',state.description_position==='hero_footer'?'below_play':'hero_footer'),
-            {focus:'setting-placement'}),
-          state.description_position==='hero_footer'?'● Artwork Footer selected · compact two-line preview':'● Below Play selected · full description'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Description placement: ${state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
+          'Game Info replaces the visible description inside Steam’s GAME INFO tab. Artwork Footer uses the strip above Play. Below Play keeps the full-width panel. All three preserve your original Steam metadata.',
+          h('div',{className:'td-card-buttonrow',style:{display:'grid',gridTemplateColumns:'1fr',gap:6}},
+            button(state.description_position==='game_info'?'✓ Game Info (selected)':'Show inside GAME INFO',
+              ()=>void save('set_description_position','game_info'),{focus:'setting-placement-info'}),
+            button(state.description_position==='hero_footer'?'✓ Artwork Footer (selected)':'Show in Artwork Footer',
+              ()=>void save('set_description_position','hero_footer'),{focus:'setting-placement-hero'}),
+            button(state.description_position==='below_play'?'✓ Below Play (selected)':'Show Below Play',
+              ()=>void save('set_description_position','below_play'),{focus:'setting-placement-below'})),
+          state.description_position==='game_info'?'● Game Info selected · open Steam’s GAME INFO tab'
+            :state.description_position==='hero_footer'?'● Artwork Footer selected · compact preview above Play'
+            :'● Below Play selected · full description panel'),
+        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Description status: ${descriptionAdapter?.status||'not ready'}. Description placement: ${state.description_position==='game_info'?'Game Info':state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
           button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'})),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
