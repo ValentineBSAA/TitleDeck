@@ -1,3 +1,17 @@
+## Next milestone: Native Steam game-page descriptions (development branch)
+
+**In progress. Not released in 0.9.0 RC1.** Per-game description editing, local persistence and a route-plus-visible-App-ID-gated panel in the actual Steam library details view are implemented on [draft PR #3](https://github.com/ValentineBSAA/TitleDeck/pull/3).
+
+- [x] Local per-game description editor, explicit save/restore, backup and migration
+- [x] Native Steam game-page **custom panel** with app identity guards and cleanup
+- [x] Automated tests for route mismatches, deletion, disabled state and malicious-looking text
+- [ ] Physical Steam Deck native game-page rendering and keyboard acceptance
+- [ ] Test against other Decky metadata plugins and Steam UI updates
+- [ ] Determine if the user wants full Valve About text replacement in addition to the TitleDeck panel
+- [ ] Publish a separately versioned beta after acceptance tests
+
+[Development and scope details](DESCRIPTIONS_PREVIEW.md)
+
 # TitleDeck roadmap
 
 **Current milestone: 0.9.0 RC1, Steam Deck Gaming Mode.** Release scope is reliability of displayed-title aliases, not cross-platform expansion.
