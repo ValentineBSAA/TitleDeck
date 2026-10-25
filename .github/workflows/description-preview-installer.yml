@@ -1,0 +1,99 @@
+name: TitleDeck description preview installer
+on:
+  push:
+    branches:
+      - feature/game-descriptions-20261025
+    paths:
+      - "src/**"
+      - "dist/**"
+      - "main.py"
+      - "tests/**"
+      - ".github/workflows/description-preview-installer.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify existing and new tests
+        run: |
+          node --test tests/*.test.cjs
+          python3 -m unittest discover -s tests -p 'test_backend.py'
+      - name: Assemble isolated development preview ZIP
+        run: |
+          python3 - <<'PY'
+          import json, shutil, zipfile, hashlib
+          from pathlib import Path
+
+          version = "0.9.1-desc-preview.1"
+          root = Path("preview-staging/TitleDeck")
+          root.mkdir(parents=True, exist_ok=True)
+          for item in ("main.py","plugin.json","package.json","README.md","CHANGELOG.md","LICENSE"):
+              shutil.copy2(item, root / item)
+          for directory in ("src","dist","assets","docs","tests"):
+              shutil.copytree(directory, root / directory)
+
+          for filename in ("plugin.json","package.json"):
+              file = root / filename
+              data = json.loads(file.read_text(encoding="utf-8"))
+              data["version"] = version
+              if filename == "plugin.json":
+                  data["description"] = "TitleDeck description preview: hardware-testing build, not stable"
+              file.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+          before = "PLUGIN_VERSION = '0.9.0-rc.1'"
+          after = "PLUGIN_VERSION = '" + version + "'"
+          for filename in ("src/index.js","dist/index.js"):
+              file = root / filename
+              content = file.read_text(encoding="utf-8")
+              assert content.count(before) == 1, "version marker unexpected in " + filename
+              file.write_text(content.replace(before, after), encoding="utf-8")
+
+          assert (root/"src/index.js").read_bytes() == (root/"dist/index.js").read_bytes()
+          (root/"TEST_THIS_FIRST.txt").write_text(
+              "TitleDeck custom-description hardware test preview. NOT stable.\n\n"
+              "Back up your existing TitleDeck names in TitleDeck Settings before installing.\n"
+              "This installs OVER your current TitleDeck, not alongside it.\n"
+              "Decky Loader -> Settings -> Developer -> Install Plugin from ZIP.\n"
+              "Use the inner TitleDeck-0.9.1-description-preview-Decky.zip file.\n"
+              "Open TitleDeck -> Full library manager -> select a game -> Add description.\n"
+              "Edit, Save, then open the same game's NORMAL STEAM LIBRARY detail page.\n"
+              "Look for YOUR GAME DESCRIPTION. The original About text is not replaced.\n"
+              "Change games; delete the description; verify the custom panel disappears.\n"
+              "Use STEAM+X if the Steam keyboard does not appear automatically.\n"
+              "If anything breaks, reinstall the public 0.9.0 RC1 from GitHub Releases.\n"
+              "Do NOT wipe TitleDeck's settings folder when uninstalling/updating.\n",
+              encoding="utf-8"
+          )
+          out = Path("preview-download")
+          out.mkdir(exist_ok=True)
+          archive = out / "TitleDeck-0.9.1-description-preview-Decky.zip"
+          with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+              for file in sorted(root.rglob("*")):
+                  if file.is_file():
+                      z.write(file, file.relative_to(root.parent).as_posix())
+          with zipfile.ZipFile(archive) as z:
+              assert z.testzip() is None, "archive corrupt"
+              for expected in ("TitleDeck/main.py","TitleDeck/plugin.json","TitleDeck/dist/index.js"):
+                  assert expected in z.namelist(), expected
+          print("Preview installer:", archive)
+          print("SHA256:", hashlib.sha256(archive.read_bytes()).hexdigest())
+          PY
+      - name: Upload preview installer for manual hardware testing
+        uses: actions/upload-artifact@v4
+        with:
+          name: TitleDeck-description-preview-installer
+          path: preview-download/TitleDeck-0.9.1-description-preview-Decky.zip
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
