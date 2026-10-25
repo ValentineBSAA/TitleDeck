@@ -56,7 +56,7 @@ jobs:
             for i,(old,new) in enumerate(zip(srcnames,names)):
               content=z.read(source+old)
               assert hashlib.sha256(content).hexdigest()==checks[i], 'Screenshot bytes changed'
-              assert content.startswith(b'\\xff\\xd8\\xff') and content.endswith(b'\\xff\\xd9'),'Not intact JPEG'
+              assert content.startswith(bytes([255, 216, 255])) and content.endswith(bytes([255, 217])),'Not intact JPEG'
               target=Path('docs/screenshots/v0.9.0-rc1')/new
               target.parent.mkdir(parents=True,exist_ok=True)
               target.write_bytes(content)
