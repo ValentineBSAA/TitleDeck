@@ -316,31 +316,69 @@ export function heroFooterGeometry(rect,viewportWidth,viewportHeight){
   return{left,top,width,height};
 }
 export function findDescriptionPlayBar(doc,target){
-  const selectors=[
+  const plausible=node=>{
+    if(!node?.getBoundingClientRect||!node.isConnected||node.offsetParent===null)return false;
+    const rect=node.getBoundingClientRect();
+    const height=rect?.height||((rect?.bottom||0)-(rect?.top||0));
+    return Number.isFinite(rect?.top)&&height>=32&&height<=180&&rect.width>=180;
+  };
+  const selectors=[];
+  // Native Steam Deck Gaming Mode uses basicAppDetailsSectionStylerClasses,
+  // NOT the desktop-only appdetailsplaysection_PlayBar name. These class
+  // exports survive changes to Steam's minified class hashes.
+  for(const token of [
+    UI?.basicAppDetailsSectionStylerClasses?.PlaySection,
+    UI?.playSectionClasses?.PlayBar,
+    UI?.playSectionClasses?.Container,
+    UI?.basicAppDetailsSectionStylerClasses?.PlayBar
+  ]){
+    if(typeof token==='string'){
+      for(const cls of token.split(/\s+/).filter(x=>/^[A-Za-z0-9_-]+$/.test(x))){
+        if(cls&&doc.getElementsByClassName)try{
+          const nodes=doc.getElementsByClassName(cls);
+          for(const node of nodes)if(plausible(node))return node;
+        }catch{}
+      }
+    }
+  }
+  // Different module names in Desktop Steam, Big Picture and SteamOS.
+  selectors.push(
+    '[class*="basicappdetailssection_PlaySection"]',
+    '[class*="basicappdetailssectionstyler_PlaySection"]',
     '[class*="appdetailsplaysection_PlayBar"]',
     '[class*="appdetailsplaysection_PlaySection"]',
     '[class*="appdetailsplaysection_Container"]',
-    '[class*="appdetailsplaysection_PlayArea"]'
-  ];
-  const plausible=node=>{
-    if(!node?.getBoundingClientRect||!node.isConnected)return false;
-    const rect=node.getBoundingClientRect();
-    const height=rect?.height||((rect?.bottom||0)-(rect?.top||0));
-    return height>=32&&height<=160&&rect.width>=180;
-  };
-  // Prefer the official Play bar. Do not select arbitrary CSS Loader art layers.
+    '[class*="appdetailsplaysection_PlayArea"]',
+    '[class*="appdetails_PlaySection"]'
+  );
   for(const sel of selectors)try{
-    const nodes=doc.querySelectorAll(sel);
-    for(const node of nodes){
-      if(!plausible(node))continue;
-      if(node.offsetParent===null)continue;
-      return node;
-    }
+    for(const node of doc.querySelectorAll(sel))if(plausible(node))return node;
   }catch{}
-  // On Steam versions without module names, the game details content is
-  // normally the Play bar's next sibling.
-  const near=target?.previousElementSibling;
-  if(plausible(near)&&near.offsetParent!==null)return near;
+  // The real Play section can be the immediate previous sibling of the
+  // details container. Also check one wrapper above for themed layouts.
+  for(const el of [target?.previousElementSibling,target?.parentElement?.previousElementSibling]){
+    if(plausible(el))return el;
+  }
+  // Last-resort: use Decky's Play-button class, but only inside the current
+  // game's visible details tree; never base a position on unrelated buttons.
+  const buttonTokens=[
+    UI?.appActionButtonClasses?.PlayButton,
+    UI?.appActionButtonClasses?.PlayButtonContainer
+  ].filter(x=>typeof x==='string');
+  for(const token of buttonTokens){
+    const cls=token.split(/\s+/).find(x=>/^[A-Za-z0-9_-]+$/.test(x));
+    if(!cls)continue;
+    for(const node of doc.getElementsByClassName?.(cls)||[]){
+      if(!node?.isConnected)continue;
+      let parent=node;
+      for(let depth=0;parent&&depth<7;depth++,parent=parent.parentElement){
+        if(plausible(parent)&&parent.getBoundingClientRect().width>=300){
+          if(target?.parentElement?.contains?.(parent)||parent.parentElement?.contains?.(target))
+            return parent;
+        }
+      }
+    }
+  }
   return null;
 }
 
@@ -395,12 +433,14 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
     const rect=playBar?.getBoundingClientRect?.();
     const box=preferHero?heroFooterGeometry(rect,win?.innerWidth||doc.documentElement?.clientWidth,
       win?.innerHeight||doc.documentElement?.clientHeight):null;
-    if(preferHero&&playBar&&!box){
-      // Scrolling into the activity section should not leave a floating
-      // description across Steam's tabs, buttons or global navigation.
-      pane.remove?.();owned.delete(doc);return false;
+    if(preferHero&&!box){
+      // Do not silently show Below Play when Artwork Footer is selected.
+      // That made the old build appear unchanged to the user.
+      pane.remove?.();owned.delete(doc);
+      status=playBar?'Artwork Footer: Play bar out of view or no safe gap':'Artwork Footer: Steam Deck Play bar not found';
+      return false;
     }
-    const layout=preferHero&&box?'hero_footer':'below_play';
+    const layout=preferHero?'hero_footer':'below_play';
     if(layout==='hero_footer'){
       if(!doc.body?.appendChild)return false;
       if(pane.parentElement!==doc.body)doc.body.appendChild(pane);
@@ -482,8 +522,8 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const position=state.description_position==='hero_footer'?'hero_footer':'below_play';
       if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim(),position)){
         applied++;status='Shown for Steam app '+match.gameId+' ('+position+')';
-      }else if(position==='hero_footer'){
-        status='Artwork footer unavailable or scrolled out of view';
+      }else if(position==='hero_footer'&&!status.startsWith('Artwork Footer:')){
+        status='Artwork Footer: layout anchor unavailable';
       }
     }
     return applied;
