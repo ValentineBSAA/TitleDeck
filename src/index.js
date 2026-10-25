@@ -1,5 +1,6 @@
 /** TitleDeck 0.9.0 RC: compact controller-first game library, editable aliases, conservative Steam title overlay. */
 const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '0.9.0-rc.1', ROUTE = '/titledeck/manager';
+export const DESCRIPTION_LIMIT = 1020;
 const R = globalThis.SP_REACT;
 const UI = globalThis.DFL;
 const h = (...a) => R.createElement(...a);
@@ -1679,6 +1680,9 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
   const sync=()=>{
     const field=wrap.current?.querySelector?.('input,textarea');
     if(typeof field?.value!=='string')return latest.current.value;
+    // A legacy saved synopsis can exceed today's cap. Polling the Steam
+    // keyboard must never truncate an unchanged legacy description.
+    if(field.value===latest.current.value)return latest.current.value;
     const next=field.value.slice(0,latest.current.maxLength);
     if(next!==latest.current.value){
       if(clearedDraft.current!==null){clearedDraft.current=null;setClearUndoAvailable(false)}
@@ -1845,7 +1849,10 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
     onInputCapture:sync,onPasteCapture:()=>setTimeout(sync,0)},
     UI?.TextField?h(UI.TextField,props):h('input',{...props,type:'text',onKeyDown:e=>{if(e?.key==='Enter'){e.preventDefault?.();enter()}}}),
     fieldKind==='description'?h('div',{className:'td-description-character-count','data-td-description-count':'true'},
-      value.length+' / '+maxLength+' characters · '+Math.max(0,maxLength-value.length)+' remaining'):null,
+      value.length+' / '+DESCRIPTION_LIMIT+' characters · '+
+      (value.length>DESCRIPTION_LIMIT
+        ?'Existing description exceeds new limit; shorten before saving'
+        :Math.max(0,DESCRIPTION_LIMIT-value.length)+' remaining')):null,
     h('div',{className:'td-inline-keyboard-fallback'},
       fieldKind==='description'
         ?h(Btn,{className:'td-inline-finish','data-td-description-clear':'true',
@@ -2083,8 +2090,8 @@ function Manager(){
   const saveDescription=async(remove=false)=>{
     if(working)return;
     const content=descriptionDraft.replace(/\r\n?/g,'\n').trim();
-    if(!remove&&(!content||content.length>4000||/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(content))){
-      notify('Description must be 1–4000 plain-text characters.',setNotice);return;
+    if(!remove&&(!content||content.length>DESCRIPTION_LIMIT||/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(content))){
+      notify('Description must be 1–'+DESCRIPTION_LIMIT+' plain-text characters.',setNotice);return;
     }
     setWorking(true);
     try{
@@ -2207,7 +2214,7 @@ function Manager(){
           'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original clears a draft or saved alias.'),
         state.descriptions?.[selected]?h('div',{className:'td-editor-note td-saved-description-preview','data-td-saved-description-preview':'true'},
           h('div',{className:'td-saved-description-heading'},
-            'Saved description · '+savedDescriptionPreview(state.descriptions[selected]).length+' / 4000 characters'),
+            'Saved description · '+savedDescriptionPreview(state.descriptions[selected]).length+' / '+DESCRIPTION_LIMIT+' characters'),
           h('div',{className:'td-saved-description-excerpt'},
             savedDescriptionPreview(state.descriptions[selected]).excerpt),
           h('div',{className:'td-saved-description-hint'},
@@ -2244,13 +2251,13 @@ function Manager(){
       h('div',{'data-td-focus':'description-input',className:'td-description-native-input',
         onGamepadDirection:e=>descNav('description-input',e)},
         h(InlineGameNameField,{value:descriptionDraft,setValue:setDescriptionDraft,
-          maxLength:4000,label:'Custom game description',
+          maxLength:DESCRIPTION_LIMIT,label:'Custom game description',
           placeholder:'Write your custom description…',fieldKind:'description',finishFocus:'description-save',
           onEnter:()=>focusQuery(root.current,'[data-td-focus="description-save"]',70)})),
       h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',minHeight:85,
         maxHeight:160,overflowY:'auto',padding:'14px 16px',borderRadius:10,background:'#172234',border:'1px solid #43566e'}},
         descriptionDraft||'Your custom description preview will appear here.'),
-      h('div',{className:'td-editor-original-meta'},'Hard limit: 4,000 characters · Typical game synopsis: 500–1,000 characters · Save and Restore are in the toolbar above'),
+      h('div',{className:'td-editor-original-meta'},'Limit: 1,020 characters · Existing longer descriptions are preserved but must be shortened before saving edits · Save and Restore are above'),
       stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:150,overflowY:'auto',marginTop:15}},'Saved local description: '+stored):null
     ));
     bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
