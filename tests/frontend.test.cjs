@@ -1345,3 +1345,38 @@ test('missing Game Info tab reports precise diagnostic without altering Steam pa
    assert.equal(p.root.children.length,2);
  }finally{adapter.stop()}
 });
+
+
+test('Game Info scan retains last real game-page finding after opening a manager without the Steam page',async()=>{
+ const m=await moduleForTest(),p=nativeGamePageForDescription('893180');
+ const second={documentElement:{},querySelectorAll:()=>[],createElement:()=>({}),defaultView:{location:{pathname:'/titledeck/manager'}}};
+ const state={enabled:true,description_position:'game_info',descriptions:{'893180':'My test description'}};
+ const adapter=m.createDescriptionAdapter(p.doc,()=>state,()=>[second],()=> 'AppDetailsContainer_test');
+ try{
+   assert.equal(adapter.runNow(),0,'Game Info tab is not available in the test fixture');
+   const last=m.getLastDescriptionGameProbe();
+   assert.equal(last.appid,'893180');
+   assert.equal(last.detailContainers,1);
+   assert.equal(last.documentCount,2);
+   assert(last.phase.includes('Game Info'),'probe must describe the real tab failure');
+   assert(adapter.status.includes('Game Info not located'),'a later blank document cannot erase actual failure');
+   p.doc.defaultView.location.pathname='/titledeck/manager';
+   p.visible.remove();
+   adapter.runNow();
+   assert(adapter.status.includes('Game page not visible'),'manager does not contain game page');
+   assert.equal(m.getLastDescriptionGameProbe().appid,'893180','last observed game remains in diagnostics');
+   assert(m.formatDescriptionGameProbe().includes('App 893180'));
+ }finally{adapter.stop()}
+});
+test('Quick Access offers a Game Info scan without navigating into the full manager',async()=>{
+ const mock=setupMock({view:'library'});
+ const {plugin}=await mock.init();
+ try{
+   const panel=walk(plugin.content);
+   const quick=panel.find(n=>n.type==='panel');
+   assert(quick);
+   const all=walk(quick);
+   assert(all.some(n=>n.children?.includes('Capture current Game Info page')));
+   assert(all.some(n=>n.children?.includes('Open full library manager')));
+ }finally{plugin.onDismount();mock.cleanup()}
+});
