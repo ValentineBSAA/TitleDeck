@@ -1,0 +1,32 @@
+name: TitleDeck source tests
+on:
+  push:
+    branches:
+      - feature/game-descriptions-20261025
+  pull_request:
+    paths:
+      - "main.py"
+      - "src/**"
+      - "dist/**"
+      - "tests/**"
+      - "package.json"
+      - ".github/workflows/titledeck-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Frontend tests
+        run: node --test tests/*.test.cjs
+      - name: Backend tests
+        run: python3 -m unittest discover -s tests -p test_backend.py
