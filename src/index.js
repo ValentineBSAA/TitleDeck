@@ -1016,6 +1016,10 @@ const STYLE=`
 .td-game-artbox{width:100%;position:relative;aspect-ratio:600/850;min-height:0;max-height:185px;overflow:hidden;border-radius:7px;background:#2e3542}.td-art{width:100%;height:100%;object-fit:cover;display:block;background:#232935}.td-art-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#303440;color:#f4c2c9;font-size:35px;font-weight:850}.td-game-copy{display:flex;flex-direction:column;gap:3px;min-width:0;min-height:42px}.td-game-title{font-size:13px;font-weight:750;line-height:1.24;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}.td-game-sub{font-size:10px;color:#aeb5c0;line-height:1.15;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.td-game-mark{position:absolute;top:13px;right:13px;font-weight:800;font-size:9px;letter-spacing:.02em;border-radius:6px;padding:4px 6px;color:#fff;background:#9b4059;border:1px solid #d97889}
 .td-bottom{justify-content:space-between;color:#b7bec9;font-size:11px;gap:8px;padding:4px 13px}.td-bottom strong{color:#ecf0f5;font-size:11px}.td-status{color:#b4bac5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.td-message{position:absolute;bottom:46px;left:18px;right:18px;z-index:6;max-width:860px;margin:auto;background:#33262e;color:#f6c9d1;border:1px solid #905363;border-radius:11px;box-shadow:0 10px 25px #0009;padding:10px 14px;font-size:12px;pointer-events:none}.td-message.success{background:#23362f;color:#c4edd8;border-color:#527e66}
 .td-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center;color:#aeb6c3;padding:65px 18px}.td-empty h2{font-size:20px;color:#faf8f8;margin:0}.td-empty p{margin:0;max-width:480px}
+.td-saved-description-preview{max-height:138px;overflow:hidden;margin-top:10px!important;padding:10px 12px;border:1px solid #434e60;border-radius:8px;background:#1c2532;}
+.td-saved-description-heading{font-size:12px;font-weight:750;color:#e5edf8;margin-bottom:6px}
+.td-saved-description-excerpt{color:#bdcbdc;font-size:12px;line-height:1.4;overflow:hidden;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;max-height:52px}
+.td-saved-description-hint{font-size:10px;color:#aab9cc;margin-top:6px;line-height:1.3}
 .td-editor{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:190px minmax(0,1fr);gap:19px;padding:8px}.td-editor-art{width:190px;height:280px;object-fit:cover;border-radius:11px;background:#31353e;border:1px solid #4a4d57}.td-card{background:#252a33;border:1px solid #444c5b;border-radius:13px;padding:16px;min-width:0}.td-copy-label{color:#aeb6c2;font-size:11px;font-weight:750;letter-spacing:.075em}.td-title-large{font-size:23px;font-weight:800;line-height:1.25;overflow-wrap:anywhere;margin:6px 0 15px}.td-preview{background:#161a20;border:1px solid #595f6b;border-radius:9px;padding:12px 15px;margin:8px 0 14px;font-size:20px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}.td-editor-actions{display:flex;flex-direction:column;gap:8px;min-width:0}.td-editor-action-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}.td-editor-actions button.td-btn{min-height:44px!important}.td-editor-note{color:#b9c0cd;font-size:11px;line-height:1.4;margin-top:12px}.td-editor-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px}.td-small{font-size:12px;color:#c5cad1}.td-settings{max-width:820px;margin:auto;padding:15px}.td-setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #414752}.td-setting-row .td-btn{flex-shrink:0}
 .td-native-entry{max-width:840px;margin:12px auto;padding:14px 18px;display:flex;flex-direction:column;gap:15px}.td-native-entry .td-title-large{margin:4px 0}.td-native-field{width:100%;padding:6px 0}.td-native-field input,.td-native-field textarea{display:block!important;width:100%!important;min-width:0!important;min-height:49px!important;font-size:21px!important;font-weight:650!important;line-height:1.3!important;background:#151d29!important;color:#f7f9fc!important;border:2px solid #71839a!important;border-radius:9px!important;padding:9px 13px!important;box-sizing:border-box!important}.td-native-field input:focus,.td-native-field textarea:focus{outline:2px solid #efa578!important;outline-offset:1px!important}.td-native-entry .td-native-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.td-native-entry .td-editor-note{line-height:1.5}.td-native-hint{color:#d5dce9;font-size:13px;line-height:1.55}.td-native-entry .td-title-large{overflow-wrap:anywhere}@media(max-width:600px){.td-native-entry{padding:8px}.td-native-entry .td-native-buttons{gap:6px}.td-native-field input{font-size:17px!important}}
 
@@ -1327,11 +1331,37 @@ function Toast({notice}){
       h('span',{className:'td-toast-label'},notice.text)),
     h('div',{className:'td-toast-track','aria-hidden':'true'},h('div',{className:'td-toast-bar'})));
 }
+/** Prefer covers that Steam already has (including SteamGridDB custom art).
+ *  In Steam's Gaming Mode CEF, /customimages and /assets are native paths.
+ *  The public Steam CDN is a final fallback, never the only art source.
+ *  A missing user-customized image must not mutate Steam's artwork files. */
+export function coverSources(appid){
+  const id=normId(appid);
+  if(!id)return[];
+  return [
+    `/customimages/${id}p.png`,
+    `/customimages/${id}p.jpg`,
+    `/customimages/${id}p.webp`,
+    `/assets/${id}/library_600x900.jpg`,
+    `/assets/${id}/library_600x900.png`,
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.jpg`,
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.png`
+  ];
+}
+export function savedDescriptionPreview(text,limit=210){
+  const full=String(text||''),flat=full.replace(/\s+/g,' ').trim();
+  const max=Math.min(300,Math.max(80,Number(limit)||210));
+  return{length:Array.from(full).length,excerpt:flat.length>max?flat.slice(0,max).trimEnd()+'…':flat,
+    truncated:flat.length>max};
+}
 function Cover({id,title,className=''}){
-  const [broken,setBroken]=R.useState(false);
-  R.useEffect(()=>setBroken(false),[id]);
-  if(broken||Number(id)>4294967295)return h('div',{className:`td-art-fallback ${className}`},title?.trim()?.slice(0,2)?.toUpperCase()||'G');
-  return h('img',{className:`td-art ${className}`,loading:'lazy',alt:'',src:`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.jpg`,onError:()=>setBroken(true)});
+  const sources=R.useMemo(()=>coverSources(id),[id]);
+  const [index,setIndex]=R.useState(0);
+  R.useEffect(()=>setIndex(0),[id]);
+  if(!sources.length||index>=sources.length)
+    return h('div',{className:`td-art-fallback ${className}`},title?.trim()?.slice(0,2)?.toUpperCase()||'G');
+  return h('img',{key:`${id}-${index}`,className:`td-art ${className}`,loading:'lazy',alt:'',
+    src:sources[index],onError:()=>setIndex(i=>Math.min(i+1,sources.length))});
 }
 // Native Steam/Decky text entry. Never insert a custom alphabetic controller keypad.
 // Steam's overlay Paste can update the *DOM input value* without a React change event.
@@ -1921,6 +1951,9 @@ function Manager(){
     setLastTile(g.appid);setSelected(g.appid);setDraft(aliases[g.appid]||g.name);
     setDescriptionDraft(state.descriptions?.[g.appid]||'');
     enterView('editor','edit-name');
+    // When returning from a long library list, don't inherit the old
+    // scroll position or jump to the bottom of a description preview.
+    setTimeout(()=>{const area=root.current?.querySelector?.('.td-workspace');if(area)area.scrollTop=0},145);
   };
   const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
   const openDescription=()=>{
@@ -2140,7 +2173,13 @@ function Manager(){
             }},'Restore original'))),
         h('div',{className:'td-editor-note'},aliases[selected]?`Saved as: ${aliases[selected]}. Changes to visible game titles are active when TitleDeck is enabled.`:
           'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original clears a draft or saved alias.'),
-        state.descriptions?.[selected]?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',marginTop:10}},'Saved game description: '+state.descriptions[selected]):null)));
+        state.descriptions?.[selected]?h('div',{className:'td-editor-note td-saved-description-preview','data-td-saved-description-preview':'true'},
+          h('div',{className:'td-saved-description-heading'},
+            'Saved description · '+savedDescriptionPreview(state.descriptions[selected]).length+' / 4000 characters'),
+          h('div',{className:'td-saved-description-excerpt'},
+            savedDescriptionPreview(state.descriptions[selected]).excerpt),
+          h('div',{className:'td-saved-description-hint'},
+            'Full text is preserved. Select Edit description above to view or change it.')):null)));
     bottom=footer('A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
   }else if(view==='description'){
     const stored=state.descriptions?.[selected]||'';
