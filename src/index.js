@@ -387,7 +387,11 @@ export function findDescriptionPlayBar(doc,target){
    not merely an extra card below Play. Locate only the selected game's
    visible native Game Info container, then insert our text beside the
    existing description without modifying Steam's description markup. */
+const steamInfoClassCache=new WeakMap();
 export function resolveLiveSteamGameInfoClasses(ui=UI){
+  if(!ui||typeof ui!=='object')return null;
+  const cached=steamInfoClassCache.get(ui);
+  if(cached&&(cached.classes||Date.now()-cached.checked<12000))return cached.classes;
   // Decky Metadata confirms that Steam's GameInfoContainer and
   // GameDescription are exported in separate live SteamUI CSS modules.
   // Never enumerate Steam store data or execute untrusted module factories.
@@ -417,7 +421,9 @@ export function resolveLiveSteamGameInfoClasses(ui=UI){
   if(!owner||!description)return null;
   const token=x=>typeof x==='string'&&/^[A-Za-z_-][A-Za-z0-9_-]{0,140}$/.test(x)?x:null;
   const ownerName=token(owner.GameInfoContainer),descriptionName=token(description.GameDescription);
-  return ownerName&&descriptionName?{owner:ownerName,description:descriptionName}:null;
+  const classes=ownerName&&descriptionName?{owner:ownerName,description:descriptionName}:null;
+  steamInfoClassCache.set(ui,{classes,checked:Date.now()});
+  return classes;
 }
 
 export function findSteamGameInfoDescription(doc,gameRoot){
@@ -520,6 +526,7 @@ export function formatDescriptionGameProbe(probe=getLastDescriptionGameProbe()){
     ' · game containers '+probe.detailContainers+' · info panels '+probe.infoPanels+
     ' · description nodes '+probe.nativeDescriptions+
     ' · document '+probe.documentNumber+'/'+probe.documentCount+
+    ' · Live CSS modules '+(probe.moduleStatus||'unknown')+
     ' · CSS clues '+(probe.cssHints||'none')+
     ' · '+probe.time;
 }
@@ -729,9 +736,17 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
       const uniqueIds=[...new Set(matches.map(item=>item.gameId))];
       const match=id?matches.find(item=>item.gameId===id):(uniqueIds.length===1?matches[0]:null);
       const nativeStats=()=>{
-        let infoPanels=0,nativeDescriptions=0,cssHints='';
-        try{infoPanels=doc.querySelectorAll('[class*="appdetailsgameinfopanel_Container"],[class*="appdetailsgameinfocontainer_AppGameInfoContainer"],[class*="appdetailsgameinfo_Container"]').length}catch{}
-        try{nativeDescriptions=doc.querySelectorAll('[class*="appdetailsgameinfopanel_GameDescription"],[class*="appdetailsgameinfocontainer_GameDescription"]').length}catch{}
+        let infoPanels=0,nativeDescriptions=0,cssHints='',moduleStatus='unavailable';
+        const live=resolveLiveSteamGameInfoClasses();
+        if(live){
+          moduleStatus='resolved';
+          try{
+            infoPanels=doc.getElementsByClassName?.(live.owner)?.length||0;
+            nativeDescriptions=doc.getElementsByClassName?.(live.description)?.length||0;
+          }catch{}
+        }
+        try{infoPanels=Math.max(infoPanels,doc.querySelectorAll('[class*="appdetailsgameinfopanel_Container"],[class*="appdetailsgameinfocontainer_AppGameInfoContainer"],[class*="appdetailsgameinfo_Container"]').length)}catch{}
+        try{nativeDescriptions=Math.max(nativeDescriptions,doc.querySelectorAll('[class*="appdetailsgameinfopanel_GameDescription"],[class*="appdetailsgameinfocontainer_GameDescription"]').length)}catch{}
         try{
           const nodes=doc.querySelectorAll('[class*="gameinfo"],[class*="GameInfo"],[class*="GameDescription"]');
           const clues=new Set();
@@ -744,7 +759,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
           }
           cssHints=[...clues].join(', ');
         }catch{}
-        return {infoPanels,nativeDescriptions,cssHints};
+        return {infoPanels,nativeDescriptions,cssHints,moduleStatus};
       };
       if(id||match||uniqueIds.length){
         realPageSeen=true;
