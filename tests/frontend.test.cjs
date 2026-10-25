@@ -941,7 +941,13 @@ function nativeGamePageForDescription(appid='620'){
    get nextSibling(){const a=this.parentElement?.children||[];return a[a.indexOf(this)+1]||null},
    get lastChild(){return this.children[this.children.length-1]||null},
    setAttribute(k,v){this.attrs[k]=String(v)},getAttribute(k){return this.attrs[k]??null},
-   appendChild(child){child.parentElement=this;this.children.push(child);return child},
+   appendChild(child){
+    if(child.parentElement){
+      const old=child.parentElement.children,index=old.indexOf(child);
+      if(index>=0)old.splice(index,1);
+    }
+    child.parentElement=this;this.children.push(child);return child
+   },
    insertBefore(child,before){
     if(child.parentElement){const old=child.parentElement.children;const at=old.indexOf(child);if(at>=0)old.splice(at,1)}
     const i=this.children.indexOf(before);if(i<0)throw Error('missing child');
