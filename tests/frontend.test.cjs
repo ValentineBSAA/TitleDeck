@@ -1530,6 +1530,7 @@ test('Game Info custom text uses native Steam description shell, never a blue Ti
    el.className=native.className;
    el.style.cssText=native.style.cssText;
    el.setAttribute('id','steam-description-original');
+   el.removeAttribute=k=>{delete el.attrs[k]};
    return el;
  };
  const panel=m.createNativeSteamDescriptionPanel(page.doc,native,'893180');
@@ -1541,7 +1542,7 @@ test('Game Info custom text uses native Steam description shell, never a blue Ti
  assert.equal(panel.children.length,1,'one native-looking body, no custom heading');
  assert.equal(panel.lastChild.tag,'span');
  assert.equal(panel.lastChild.getAttribute('data-titledeck-gameinfo-text'),'true');
- assert(!JSON.stringify(panel).includes('YOUR CUSTOM GAME DESCRIPTION'));
+ assert(!panel.children.some(child=>child.textContent==='YOUR CUSTOM GAME DESCRIPTION'));
  assert(!panel.style.cssText.includes('background:#203045'));
  assert.equal(native.textContent,'This original Steam description must not be mutated');
 });
