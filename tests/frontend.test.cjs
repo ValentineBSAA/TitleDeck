@@ -38,7 +38,7 @@ function setupMock({games=[],aliases={},view='library',selected='',draft=''}={})
 test('source and packaged frontend match; approved logo/version consistent',()=>{
  assert.equal(source,fs.readFileSync(dist,'utf8'));
  const p=JSON.parse(fs.readFileSync(path.join(root,'plugin.json'))),pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json')));
- assert.equal(p.version,'0.9.2-beta.1');assert.equal(pkg.version,'0.9.2-beta.1');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
+ assert.equal(p.version,'0.9.2');assert.equal(pkg.version,'0.9.2');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
  assert(source.includes('QAM_VERSION_STYLE')&&source.includes('td-version-chip'));
 });
 test('retired Steam-card badges have no injected adapter and no settings control',async()=>{
