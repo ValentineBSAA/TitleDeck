@@ -1,13 +1,13 @@
-# Install TitleDeck v0.9.2 Beta 1
+# Install TitleDeck 0.9.2 stable
 
-**Release:** [0.9.2-beta.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1) · **File:** `TitleDeck-0.9.2-Beta1-Decky.zip` · **Status:** Public pre-release.
+**Release:** [0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2) · **File:** `TitleDeck-0.9.2.zip` · **Status:** Public stable release.
 
 **Supported test target:** Valve Steam Deck running SteamOS Gaming Mode with Decky Loader. ROG Ally, Legion Go, other non-Valve SteamOS-like systems, Steam Desktop Mode, Windows, Android/DroidDeck are **unverified**. [Full compatibility statement](COMPATIBILITY.md).
 
 ## Installation
 
 1. In TitleDeck Settings, make a backup of existing customizations before upgrading.
-2. Download the **plugin installer ZIP**, not the separately offered screenshot ZIP, from the latest beta release.
+2. Download the **plugin installer ZIP**, not the separately offered screenshot ZIP, from the current stable release.
 3. In SteamOS Gaming Mode open **Decky Loader → Settings → Developer → Install Plugin from ZIP**.
 4. Select the downloaded installer ZIP and install it directly. **Do not extract or re-zip it.**
 5. Open **Quick Access → Decky → TitleDeck → Open full library manager**.
@@ -35,4 +35,4 @@ There is **no hard description character limit**. At **1,247 characters**, Title
 - Third-party CSS Loader themes and future Steam UI changes may disrupt title/description presentation.
 - Steam metadata, installed game files, sort identities and baked-in cover art text remain untouched.
 
-[Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1) · [Release notes](RELEASE_NOTES_0.9.2_BETA1.md) · [Device verification](VERIFIED_ON_DECK.md) · [Support](../SUPPORT.md).
+[Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2) · [Release notes](RELEASE_NOTES_0.9.2.md) · [Device verification](VERIFIED_ON_DECK.md) · [Support](../SUPPORT.md).
