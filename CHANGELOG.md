@@ -1,5 +1,13 @@
 # TitleDeck changelog
 
+## 0.9.2 — Stable (2026-10-26)
+
+- Promoted the established Beta 1 behavior to stable 0.9.2 without intending new runtime features.
+- Updated the displayed version, repository manifests, release download instructions and Direct Updater naming.
+- Continued to document existing Steam Deck hardware acceptance separately from automated tests.
+- Retained the beta-era screenshots as historical captures instead of changing their version badges.
+- Further hardware acceptance for the exact stable ZIP, GTM coexistence and large bulk restores remains open.
+
 ## 0.9.2-beta.1 — Published Steam Deck beta (2026-10-25)
 
 - Introduced locally editable game descriptions appearing in the actual Steam **Game Info tab** next to Community, with native-looking text.
