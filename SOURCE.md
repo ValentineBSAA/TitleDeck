@@ -3,7 +3,7 @@
 ## Current release
 
 - **Stable:** [0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2), installer `TitleDeck-0.9.2.zip`.
-- **Historical beta:** [0.9.2-beta.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2), original installer checksum `f1b9e4d915c8b1b13ac34c3b620cdd19770b01f9790636f0108b8c691f0a1812`.
+- **Historical beta:** [0.9.2-beta.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1), original installer checksum `f1b9e4d915c8b1b13ac34c3b620cdd19770b01f9790636f0108b8c691f0a1812`.
 - **Historical RC:** [0.9.0](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0).
 
 The 0.9.2 stable release promotes the accepted beta-era features without intentional changes to title editing, descriptions, or restoration. The repository's plugin manifests and frontend version now identify **0.9.2**, and the editable `src/index.js` and bundled `dist/index.js` must remain identical.
