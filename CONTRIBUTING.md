@@ -10,7 +10,7 @@ TitleDeck targets **Steam Deck Gaming Mode** and reversible, local **title and G
 - Preserve safe title cleanup behavior for Unicode Greek Σ, Roman numerals, mixed-case words and trademarks.
 - Test controller Left/Right/Up/Down focus, Steam keyboard behavior, title/description saves, backup and recovery.
 - Do not alter installed games, original Steam metadata, sorting identities or artwork text.
-- Work against the synchronized **0.9.2 Beta 1** source on `main`; keep `src/index.js` and `dist/index.js` byte-identical. Distinguish test-suite results from on-device acceptance. [Verified source provenance](SOURCE.md).
+- Work against the synchronized **0.9.2 stable** source on `main`; keep `src/index.js` and `dist/index.js` byte-identical. Distinguish test-suite results from on-device acceptance. [Verified source provenance](SOURCE.md).
 - Report GTM coexistence results and the intermittent B-dismissal behavior candidly rather than declaring them solved.
 
-[Release notes](docs/RELEASE_NOTES_0.9.2_BETA1.md) · [Physical verification](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md).
+[Release notes](docs/RELEASE_NOTES_0.9.2.md) · [Physical verification](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md).
