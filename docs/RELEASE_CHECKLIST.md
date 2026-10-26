@@ -15,7 +15,8 @@
 ## Outstanding checks
 
 - [ ] Physically install and verify the exact published stable ZIP on Steam Deck Gaming Mode, including saved settings migration.
-- [ ] Verify stable release ZIP checksum and runtime-byte parity with repository code.
+- [x] Verify stable release ZIP SHA-256 (`28fdbfc6f2d15f991bf98c7dc471d19be3142cd84269a9bba60d1147b420efdb`) and synchronize plugin metadata, backend and frontend files with the published installer using GitHub Actions.
+- [x] Re-run repository frontend, backend and manifest tests after synchronization.
 - [ ] Test GTM 3.6.9 coexistence and a wider range of CSS Loader themes.
 - [ ] Finish physical tests of keyboard dismissal, cold-start artwork and 200+ game bulk restoration.
 - [ ] Continue regression testing after SteamOS updates.
