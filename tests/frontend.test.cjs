@@ -38,7 +38,7 @@ function setupMock({games=[],aliases={},view='library',selected='',draft=''}={})
 test('source and packaged frontend match; approved logo/version consistent',()=>{
  assert.equal(source,fs.readFileSync(dist,'utf8'));
  const p=JSON.parse(fs.readFileSync(path.join(root,'plugin.json'))),pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json')));
- assert.equal(p.version,'0.9.0-rc.1');assert.equal(pkg.version,'0.9.0-rc.1');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
+ assert.equal(p.version,'0.9.2-beta.1');assert.equal(pkg.version,'0.9.2-beta.1');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
  assert(source.includes('QAM_VERSION_STYLE')&&source.includes('td-version-chip'));
 });
 test('retired Steam-card badges have no injected adapter and no settings control',async()=>{
@@ -572,7 +572,7 @@ test('Steam Keyboard.RegisterForStatus closes the OSK and exits title editing af
  const initialR=globalThis.SP_REACT,initialDFL=globalThis.DFL,initialSteam=globalThis.SteamClient;
  let effect,cleanup,statusCallback=null,unregistered=0,fieldValue='Catherine';
  const timers=[],transitions=[],dismissed=[];
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useEffect:fn=>{effect=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useState:initial=>[initial,()=>{}],useEffect:fn=>{effect=fn}};
  globalThis.DFL={TextField:'textfield',Focusable:'focusable'};
  const keyboard={RegisterForStatus(fn){assert.equal(this,keyboard,'status method needs correct Steam receiver');statusCallback=fn;return{unregister(){unregistered++}}}};
  globalThis.SteamClient={Keyboard:keyboard,Input:{}};
@@ -634,7 +634,7 @@ test('controller state B bit triggers keyboard close and cancels edit when Steam
  const oldR=globalThis.SP_REACT,oldUI=globalThis.DFL,oldSteam=globalThis.SteamClient;
  let effect,cleanup,stateChange,unregistered=0,hides=0;
  const timers=[],states=[],dismisses=[];
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useEffect:fn=>{effect=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useState:initial=>[initial,()=>{}],useEffect:fn=>{effect=fn}};
  globalThis.DFL={TextField:'textfield',Focusable:'focusable'};
  const inputApi={RegisterForControllerStateChanges(cb){assert.equal(this,inputApi);stateChange=cb;return{unregister(){unregistered++}}}};
  globalThis.SteamClient={Keyboard:{Hide(){hides++}},Input:inputApi};
@@ -700,7 +700,7 @@ test('separate keyboard dismissal requires no callback to expose Save/Restore ag
 test('single-screen game name field syncs Steam paste without a React onChange',async()=>{
  const originalR=globalThis.SP_REACT,originalDFL=globalThis.DFL;
  let effect,cleanup,syncTick;let typed='Catherine';const updates=[];
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children:children.flat()}),useRef:v=>({current:v}),useEffect:fn=>{effect=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children:children.flat()}),useRef:v=>({current:v}),useState:initial=>[initial,()=>{}],useEffect:fn=>{effect=fn}};
  globalThis.DFL={TextField:'steam-field'};
  const {InlineGameNameField}=await moduleForTest();
  try{
@@ -749,7 +749,7 @@ test('single-screen title field rises on OSK appearance and falls on Steam statu
  const doc={defaultView:win,documentElement:{clientWidth:960,clientHeight:544},querySelectorAll(){return visible?[overlay]:[]},activeElement:field,body:{}};
  const wrap={ownerDocument:doc,closest(){return root},querySelector(){return field},contains(el){return el===field},
   addEventListener(n,fn){listeners[n]=fn},removeEventListener(n){delete listeners[n]}};
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useEffect:fn=>{effect=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useState:initial=>[initial,()=>{}],useEffect:fn=>{effect=fn}};
  globalThis.DFL={TextField:'steam-field',DialogButton:'button',Focusable:'focusable'};
  globalThis.SteamClient={Keyboard:{RegisterForStatus(fn){statusCallback=fn;return{unregister(){}}}}};
  try{
@@ -856,6 +856,7 @@ test('manual input invalidates cleanup undo and Restore original clears an unsav
    nodes=all();assert.equal(find(nodes,'edit-clean').children[0],'Suggest cleanup');
    assert.equal(find(nodes,'edit-restore').props.disabled,false);
    resolveButton(find(nodes,'edit-restore')).props.onClick();
+   await new Promise(resolve=>setImmediate(resolve)); // 0.9.2 checks restored backend state asynchronously
    nodes=all();assert.equal(nodes.find(n=>n.type?.name==='InlineGameNameField').props.value,'Portal 2');
    assert.equal(Object.keys(mock.state.aliases).length,0,'local restore must not create a backend alias');
  }finally{plugin.onDismount();mock.cleanup()}
@@ -884,7 +885,7 @@ test('cleanup preview B returns safely to editor and D-pad moves between Keep / 
 test('native single-screen text field accepts an insertion in the middle of text without losing Σ',async()=>{
  const oldR=globalThis.SP_REACT,oldDFL=globalThis.DFL;
  let eff,dispose,winTick,current='Ninja Gaiden Σ2';const changes=[];
- globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useEffect:fn=>{eff=fn}};
+ globalThis.SP_REACT={createElement:(type,props,...children)=>({type,props:props||{},children}),useRef:v=>({current:v}),useState:initial=>[initial,()=>{}],useEffect:fn=>{eff=fn}};
  globalThis.DFL={TextField:'native-steam-text-field',Focusable:'focusable',DialogButton:'button'};
  const {InlineGameNameField}=await moduleForTest();
  try{
