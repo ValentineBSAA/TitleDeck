@@ -1,30 +1,38 @@
-# Installing TitleDeck 0.9.0 RC1
+# Install TitleDeck v0.9.2 Beta 1
 
-**Target platform:** physical Valve Steam Deck running **SteamOS Gaming Mode** and Decky Loader. **ROG Ally, Legion Go, other non-Steam Deck SteamOS-like systems, Desktop Mode, Windows, Android and DroidDeck are untested and may not work correctly.** See [Compatibility](COMPATIBILITY.md).
+**Release:** [0.9.2-beta.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1) · **File:** `TitleDeck-0.9.2-Beta1-Decky.zip` · **Status:** Public pre-release.
 
-## Download
+**Supported test target:** Valve Steam Deck running SteamOS Gaming Mode with Decky Loader. ROG Ally, Legion Go, other non-Valve SteamOS-like systems, Steam Desktop Mode, Windows, Android/DroidDeck are **unverified**. [Full compatibility statement](COMPATIBILITY.md).
 
-The RC1 installer is **`TitleDeck-0.9.0-RC1-SteamDeck.zip`** under GitHub release tag **`0.9.0`** (internal version **`0.9.0-rc.1`**). See [Releases](https://github.com/ValentineBSAA/TitleDeck/releases). **The RC1 prerelease is published with its matching ZIP.** The previous 0.8.1 installer remains available.
+## Installation
 
-## Install with Decky Loader
+1. In TitleDeck Settings, make a backup of existing customizations before upgrading.
+2. Download the **plugin installer ZIP**, not the separately offered screenshot ZIP, from the latest beta release.
+3. In SteamOS Gaming Mode open **Decky Loader → Settings → Developer → Install Plugin from ZIP**.
+4. Select the downloaded installer ZIP and install it directly. **Do not extract or re-zip it.**
+5. Open **Quick Access → Decky → TitleDeck → Open full library manager**.
 
-1. Install [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader).
-2. Download the TitleDeck 0.9.0 RC1 plugin ZIP from GitHub Releases.
-3. In Decky's developer options, use **Install Plugin from ZIP** and choose that file.
-4. In Gaming Mode open **Quick Access → Decky → TitleDeck → Open full library manager**.
-5. Select a game. **Change Name** opens Steam's keyboard; only **Save Custom Title** saves a permanent alias.
-6. **Suggest Cleanup** shows a before/after preview. Choose Apply or Keep, optionally Undo Cleanup, then select Save Custom Title to save.
+New users get Game Info as the default description placement. Existing users keep their chosen placement. Existing name and description overrides should be retained on upgrade.
 
-Make a TitleDeck Settings backup before major upgrades. The installer is designed to preserve existing aliases and backup files. Do not clear Decky's plugin settings when upgrading.
+## Customize a title or description
 
-## Undo names and recover
+- Select a game or app in Full Library Manager.
+- **Change Name** opens the Steam keyboard. Review **Suggest Cleanup** if desired, then explicitly select **Save Custom Title**.
+- Use the custom-description editor to type text with Steam's keyboard, then explicitly **Save description**.
+- On the selected game's Steam page, open **Game Info** (beside Community) to see the custom text. On the tested physical Steam Deck, rapid switching between those tabs works without the old several-second delay.
+- **Restore Original Game** resets that game's custom title **and** custom description. **Restore Steam Description** resets only its description.
+- Bulk Restore All has confirmation and recovery safeguards; a full 200+ game hardware acceptance test remains open.
 
-**Restore Original** removes a saved alias for one game (or resets an unsaved draft). **Settings → Restore All** requires a paginated review and deliberate confirmation and writes a recovery snapshot first. Recovery is guarded against newer changes.
+## Description-length advisory
 
-## Native keyboard known issue
+There is **no hard description character limit**. At **1,247 characters**, TitleDeck shows a yellow warning that additional text can cause excessive scrolling, wrapping, or unusual Steam layout behavior. Saving remains possible beyond that point. This is a **warning threshold, not an endorsed maximum or compatibility guarantee**.
 
-On a physical Steam Deck, pressing **B** sometimes closes Steam's keyboard but leaves the editing panel raised. If that happens, select **Done editing**. This is a **known intermittent RC1 issue**, not a confirmed fix.
+## Known issues and limitations
 
-Only displayed Steam text is modified. Steam sort identifiers and installed game files are never rewritten, and lettering inside cover artwork never changes.
+- Cover artwork may need a brief load following Steam restart; missing art uses fallbacks.
+- Pressing B to close Steam's keyboard may intermittently leave the title editor raised; use **Done editing** if available.
+- Full compatibility with Game Theme Music 3.6.9 in the Decky Plugin Store has **not** been definitively hardware-accepted.
+- Third-party CSS Loader themes and future Steam UI changes may disrupt title/description presentation.
+- Steam metadata, installed game files, sort identities and baked-in cover art text remain untouched.
 
-[Device verification](VERIFIED_ON_DECK.md) · [Release notes](RELEASE_NOTES_0.9.0_RC1.md) · [Support](../SUPPORT.md)
+[Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1) · [Release notes](RELEASE_NOTES_0.9.2_BETA1.md) · [Device verification](VERIFIED_ON_DECK.md) · [Support](../SUPPORT.md).

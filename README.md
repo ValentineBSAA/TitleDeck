@@ -1,68 +1,71 @@
-<p align="center"><img src="assets/titledeck-icon.png" width="128" alt="TitleDeck"></p>
+<p align="center"><img src="assets/titledeck-icon.png" width="128" alt="TitleDeck logo"></p>
 <h1 align="center">TitleDeck</h1>
-<p align="center"><strong>Your library. Your names.</strong></p>
+<p align="center"><strong>Your library. Your names. Your descriptions.</strong></p>
 <p align="center">
-<img alt="Version" src="https://img.shields.io/badge/version-0.9.0%20RC1-orange">
-<img alt="Status" src="https://img.shields.io/badge/status-release%20candidate-yellow">
-<img alt="Platform" src="https://img.shields.io/badge/target-Steam%20Deck-blue">
-<a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
+  <a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1"><img alt="Beta version" src="https://img.shields.io/badge/version-0.9.2%20Beta%201-orange"></a>
+  <img alt="Release status" src="https://img.shields.io/badge/status-public%20beta-yellow">
+  <img alt="Tested platform" src="https://img.shields.io/badge/tested-Steam%20Deck-blue">
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
 
-**TitleDeck** is a Decky Loader plugin for customizing **displayed Steam game titles** while leaving your installed games, sorting metadata and artwork unchanged.
+**TitleDeck** is a Decky Loader plugin for customizing the **displayed names and descriptions** of Steam games and applications in SteamOS Gaming Mode. Overrides are local, reversible and separate from the original Steam metadata and installed game files.
 
-> **Compatibility warning:** Developed and tested on a **physical Valve Steam Deck in SteamOS Gaming Mode**. **ROG Ally, other PC handhelds running alternative SteamOS-like systems, Steam Desktop Mode, Windows, Android/DroidDeck and other platforms are untested and may not work properly.** Steam UI / CSS Loader themes may also affect behavior. [Full compatibility statement](docs/COMPATIBILITY.md).
+**[Download TitleDeck v0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)** · [Install instructions](docs/INSTALL.md) · [Release notes](docs/RELEASE_NOTES_0.9.2_BETA1.md)
 
-## 0.9.0 RC1 Steam Deck screenshots
+> **Compatibility:** Developed and tested on a **physical Steam Deck** in **SteamOS Gaming Mode**. ROG Ally, other non-Valve handhelds, Desktop Mode, Windows, Android/DroidDeck and many CSS Loader themes are **unverified** and may not work correctly. Steam updates can change the UI. [Compatibility details](docs/COMPATIBILITY.md).
 
-Eight real screenshots of the current release, captured on the maintainer's Steam Deck. The original seven **0.8.1** screenshots are also preserved in the [gallery](docs/SCREENSHOTS.md).
+## Screenshots: 0.9.2 Beta 1
 
-| TitleDeck in Quick Access | Game library manager |
+These screenshots were captured on a physical Steam Deck with a customized Steam visual theme.
+
+| Clean Quick Access menu with beta version | Custom description in Steam Game Info |
 |:---:|:---:|
-| [![TitleDeck 0.9.0 RC1 Quick Access](docs/screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg)](docs/screenshots/v0.9.0-rc1/01-quick-access-menu.jpeg) | [![TitleDeck 0.9.0 RC1 library manager](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg)](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg) |
-| Native Steam keyboard | Saved custom name in Steam |
-| [![TitleDeck 0.9.0 RC1 native keyboard](docs/screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg)](docs/screenshots/v0.9.0-rc1/04-native-steam-keyboard.jpeg) | [![Custom title shown inside Steam](docs/screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg)](docs/screenshots/v0.9.0-rc1/08-renamed-title-in-steam-library.jpeg) |
+| [![TitleDeck 0.9.2 Beta 1 Quick Access](docs/screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg)](docs/screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg) | [![Catherine custom description in the real Game Info tab](docs/screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg)](docs/screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg) |
+| Long description, lower section | Full Library Manager (earlier RC1 UI capture) |
+| [![End of long Catherine game description](docs/screenshots/v0.9.2-beta1/03-long-description-end.jpeg)](docs/screenshots/v0.9.2-beta1/03-long-description-end.jpeg) | [![Full Library Manager from RC1](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg)](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg) |
 
-[**View all eight current screenshots and seven older captures**](docs/SCREENSHOTS.md)
-
-The originally uploaded screenshot ZIP was mistakenly labeled `0.9.1`. These images belong to **0.9.0 RC1**; no plugin-version change was made.
+[**View all seven selected feature screenshots and earlier release history**](docs/SCREENSHOTS.md).
 
 ## Features
 
-- Customize displayed Steam game names per App ID without changing the game's underlying sorting identity.
-- Controller-first full game library manager with artwork, search and filters.
-- Native Steam text input and physical-keyboard / paste support.
-- **Suggest Cleanup** for unwanted trademark marks and capitalization, with original-versus-suggested preview, Apply, Keep and Undo.
-- **Explicit Save Custom Title:** suggestions and keyboard edits never silently persist.
-- Restore an individual name, or review and restore all with backup/recovery safeguards.
-- Animated in-manager notices, clear D-pad highlights and version indicator.
+- **Custom Game Info descriptions:** edit a game's locally displayed description using Steam's keyboard. The replacement appears in the actual **Game Info** tab beside Community, not just in a TitleDeck pop-up.
+- **Smooth tab switching:** the maintainer confirmed rapid Community ↔ Game Info switching with the custom description remaining visible in the tested Steam Deck preview.
+- **Full-game Restore Original:** clear a game's custom name and description together, or restore only its description while keeping a custom name.
+- **No hard description limit:** a **yellow, non-blocking advisory at 1,247 characters** warns of possible extra scrolling and layout oddities. Longer descriptions are allowed at the user's discretion.
+- **Reversible title renaming:** customize displayed game names without rewriting original Steam game files, sorting identifiers or artwork.
+- **Suggest Cleanup:** reviewed before/after title cleanup, explicit Save, and Undo, including the previously tested Sims 4 cleanup path.
+- **Full Library Manager:** game/app browsing, artwork fallbacks with remembered cover sources, controller navigation, and filtering of Proton, Steam Linux Runtime and anti-cheat runtimes.
+- **Backups and recovery:** individual restores plus review/confirmation safeguards for bulk operations.
+- **Clean Quick Access:** developer timing capture and diagnostic counters are hidden during normal use.
+
+**Community credit:** The original name-customization idea grew from a Steam Deck community request, including u/TacoOfGod. Special thanks to **u/All-Stars64** for specifically asking for descriptions **inside the Game Info tab next to Community**. The *Catherine Classic* screenshots demonstrate that requested feature. These acknowledgments credit feature ideas, not source-code authorship.
 
 ## Device-verification summary
 
-| Feature | Evidence |
+| Tested behavior | Evidence |
 | --- | --- |
-| Rename Catherine Classic to Catherine and restore original | **Verified on physical Steam Deck** |
-| Custom name survives Steam Deck restart | **Verified on physical Steam Deck** |
-| The Sims 4 trademark cleanup review → Apply → Save | **Verified on physical Steam Deck** |
-| Editor D-pad controls; Steam keyboard opening and readable input | **Verified on physical Steam Deck** |
-| Timed notification / highlight improvements | **Verified on physical Steam Deck** |
-| Closing Steam keyboard with B always restores layout | **Known intermittent issue** |
-| 200+ name review, recovery edge cases, Steam background metadata refresh | **Not fully verified on hardware** |
-| ROG Ally, other non-Deck SteamOS-like systems, Desktop Mode, Windows, Android | **Untested** |
+| Catherine Classic rename, title restore, restart persistence | Confirmed on physical Steam Deck during prior release testing |
+| Custom description in the actual Game Info tab | Confirmed with Catherine Classic |
+| Rapid Community / Game Info switching without the earlier 1–7 second delay | Confirmed in Preview 23; preserved in Preview 24 / beta runtime |
+| Restore Original returns title and description to defaults | Confirmed in recent on-device testing |
+| Long description beyond 1,247 characters and yellow warning | Confirmed on device; long-text presentation is not guaranteed to stay tidy |
+| Game/app filtering and Full Manager cover fallback | Reported working on Deck; artwork can still take a few seconds after cold start |
+| Beta 1 version badge in Quick Access | Captured on physical Steam Deck |
+| GTM 3.6.9 compatibility, exhaustive CSS Loader themes, 200+ restores | **Not fully verified** |
 
-[**Full hardware test matrix**](docs/VERIFIED_ON_DECK.md)
+The Steam keyboard can intermittently dismiss with B while the title editor remains raised. Use **Done editing** where applicable. [Full acceptance table](docs/VERIFIED_ON_DECK.md).
 
 ## Install / update
 
-For **0.9.0 RC1**, download `TitleDeck-0.9.0-RC1-SteamDeck.zip` from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases) and install via **Decky Loader → Developer → Install Plugin from ZIP**. The release is published under tag **`0.9.0`**; the plugin version inside the ZIP is **`0.9.0-rc.1`**. The previous **0.8.1** release is preserved.
+1. Back up existing TitleDeck settings.
+2. Download **TitleDeck-0.9.2-Beta1-Decky.zip** from the [0.9.2 Beta 1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1).
+3. On the Deck, open **Decky Loader → Settings → Developer → Install Plugin from ZIP**. Select the complete installer ZIP; **do not extract it**.
+4. Open **Quick Access → Decky → TitleDeck → Open full library manager**.
 
-In Gaming Mode, open **Quick Access → Decky → TitleDeck → Open full library manager**. Choose a game, edit using Change Name or review Suggest Cleanup, and explicitly press **Save Custom Title**. Back up your aliases before upgrading.
+New installations default to Game Info description placement; saved placement preferences are preserved on upgrades. The earlier [0.9.0 RC1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0) remains available.
 
-**Known keyboard behavior:** Steam may consume a B press without telling TitleDeck that its native keyboard closed; the editing area can stay raised. Use **Done editing** when that happens. The RC does not claim this is fixed.
+## Source, security and support
 
-[Installation instructions](docs/INSTALL.md) · [0.9.0 RC1 release notes](docs/RELEASE_NOTES_0.9.0_RC1.md) · [Roadmap](docs/ROADMAP.md)
+**Source-version note:** This repository's historical `main` frontend/backend source and tests still reflect the 0.9.0 RC1 baseline. The published **0.9.2 Beta 1 installer** is the authoritative beta runtime; do not assume the current source tree is byte-identical to that beta package. [Source and provenance details](SOURCE.md).
 
-## Open source and community
-
-The 0.9.0 RC1 ZIP contains its matching frontend, backend and tests. The repository's `main.py`, `src/`, `dist/`, manifests and tests have been synchronized **byte-for-byte** with the checksum-verified, published RC1 installer. The public README and seven historical screenshots are preserved. [Source details](SOURCE.md).
-
-[GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Support](SUPPORT.md). MIT licensed. Independent from Valve, Steam, Decky and game publishers.
+[Changelog](CHANGELOG.md) · [Screenshots](docs/SCREENSHOTS.md) · [GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Support](SUPPORT.md). MIT licensed. Independent of Valve, Steam, Decky Loader and game publishers.

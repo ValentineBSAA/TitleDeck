@@ -1,19 +1,26 @@
-# TitleDeck 0.9.0 RC1: published release verification
+# TitleDeck v0.9.2 Beta 1: Public release checklist
 
-**The RC1 is already published.** The correct release tag is **`0.9.0`**, and the plugin version inside the ZIP is **`0.9.0-rc.1`**.
+**Release:** [TitleDeck 0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)  
+**Tag:** `0.9.2-beta.1`  
+**Release status:** Published as **pre-release**, not final stable  
+**Plugin installer:** `TitleDeck-0.9.2-Beta1-Decky.zip`
 
-[View published RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0) · [Release notes](RELEASE_NOTES_0.9.0_RC1.md) · [Verified features](VERIFIED_ON_DECK.md)
+## Completed
 
-- [x] Correct maintainer ZIP uploaded: `TitleDeck-0.9.0-RC1-SteamDeck.zip`
-- [x] GitHub release marked **prerelease**, not stable
-- [x] SHA-256 verified: `6bf8467b3637334ee21b3e50302be5d9ea15880ab80dbc27f190438bbc415c73`
-- [x] RC source, tests and artwork matched the published ZIP
-- [x] Public README, seven original 0.8.1 screenshots and compatibility warnings retained
-- [x] 48 frontend and 11 backend tests passed on the published ZIP
-- [x] Kept old 0.8.1 release accessible
+- [x] Published beta as a distinct GitHub release, preserving the older [0.9.0 RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0).
+- [x] Installer release-asset SHA-256 matches the locally packaged beta: `f1b9e4d915c8b1b13ac34c3b620cdd19770b01f9790636f0108b8c691f0a1812`.
+- [x] Updated screenshot archive SHA-256 matches upload: `d10bc897f1c932537fc95e64689dbb6a516b1d73c466fe5bd7cd4a2afb1bedef`.
+- [x] Three new beta screenshots imported as separate files, including accurate version badge and Game Info top/bottom views.
+- [x] Retained four feature-specific RC1 screenshots; retired four redundant or superseded images; preserved historical 0.8.1 archive.
+- [x] Restated accepted hardware results with outstanding limitations.
+- [x] Reported final beta tests: **107 JavaScript + 17 Python = 124** passed before publication.
 
-**Known issue:** The Steam keyboard sometimes dismisses with B without lowering the title editor. The Done editing control remains the workaround.
+## Still outstanding
 
-**Platform notice:** Only physical Valve Steam Deck Gaming Mode has been tested by the maintainer. ROG Ally, other SteamOS-like handhelds, Desktop Mode, Windows, and Android/DroidDeck are unverified.
+- [ ] Confirm GTM 3.6.9 / Plugin Store interaction with the exact beta.
+- [ ] Exhaustively test keyboard dismiss, cold-start artwork, 200+ entry recovery and multiple themes.
+- [ ] Synchronize editable repo source and tests to beta runtime; current repo source remains historical 0.9.0 RC1 baseline.
 
-No replacement ZIP or code modifications are required for this synchronization.
+The screenshots ZIP attached to the release is optional artwork evidence, **not** the Decky installer. Avoid confusing the two.
+
+[Documentation](../README.md) · [Install guide](INSTALL.md) · [Screenshots](SCREENSHOTS.md) · [Provenance](../SOURCE.md).

@@ -1,25 +1,29 @@
-# TitleDeck support
+# TitleDeck support: 0.9.2 Beta 1
 
-**Supported test target:** physical Steam Deck, SteamOS Gaming Mode. **ROG Ally, other PC handhelds with SteamOS-like distributions, Desktop Mode, Windows and Android/DroidDeck are untested and may not function correctly.** See [Compatibility](docs/COMPATIBILITY.md).
+**Primary tested device:** Valve Steam Deck, SteamOS Gaming Mode, Decky Loader. ROG Ally, alternate SteamOS-like handhelds, Steam Desktop Mode, Windows and Android/DroidDeck are unverified.
 
-[GitHub Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) for questions and ideas · [GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues) for reproducible bugs.
-
-## Known 0.9.0 RC1 issue
-
-**Pressing B closed the Steam keyboard, but the title field stayed raised.** This intermittent mismatch was reported during physical Steam Deck testing. Use **Done editing** to lower the panel. This issue is open; RC1 does not claim an automatic close fix.
+[Report a bug](https://github.com/ValentineBSAA/TitleDeck/issues) · [Ask questions in Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Latest beta release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)
 
 ## Frequently asked questions
 
-**Why is the old title still on the cover image?** TitleDeck changes Steam's visible text, not lettering baked into art.
+**What is new in 0.9.2?** You can write a custom game description that appears directly in Steam's Game Info tab, alongside the earlier display-name editing.
 
-**Does renaming change sorting or game files?** No; aliases are stored separately from Steam's canonical metadata and installation files.
+**Does Restore Original remove my description too?** Yes. **Restore Original Game** resets both this game's custom title and description. Use **Restore Steam Description** to remove only the description and retain a custom title.
 
-**Does Suggest Cleanup save immediately?** No. It presents a current/suggested comparison. Choose Apply or Keep; only **Save Custom Title** makes it permanent. Undo Cleanup is available for an applied suggestion.
+**Does 1,247 characters prevent saving?** No. It triggers a yellow warning about scrolling and layout. There is no hard description length cap.
 
-**What about reverting 200 names?** Restore All presents every saved name in review pages, requires confirmation and creates a recovery backup. Automated long-list testing exists; a physical 200+ name device test remains open.
+**Why is the old title still on cover artwork?** TitleDeck changes Steam's displayed text, not lettering baked into the cover.
 
-**Does it survive metadata refresh?** A saved alias survived a Steam Deck restart; this does **not** independently verify every Steam background metadata refresh. The adapter includes a locally tested fast reapplication mechanism.
+**Does cleanup save automatically?** No. Suggest Cleanup lets you preview and apply a draft, then explicitly Save Custom Title. The Sims 4 cleanup scenario was tested on hardware in earlier releases.
 
-**Should it work on ROG Ally or DroidDeck?** No compatibility promise. These platforms have not been verified; keyboard, Decky and controller behavior can differ.
+**Why are a few covers missing immediately after restart?** Steam and TitleDeck may need time to load artwork. Fall back to a placeholder when no matching cover is available.
 
-Please include hardware name, operating system, Steam client channel, Decky version, CSS Loader theme, TitleDeck version, steps and screenshots with an Issue. Never post account secrets.
+**Does it work with Game Theme Music (GTM)?** Compatibility work reduced broad background scanning, but **GTM 3.6.9 in the Plugin Store has not yet passed a final hardware coexistence test**. Report precise steps if music stops or playback changes.
+
+**Does pressing B always dismiss the keyboard cleanly?** No. The native Steam keyboard can close while TitleDeck's editor stays raised. **Done editing** remains the workaround.
+
+**Can I restore 200+ aliases?** Bulk Restore All has confirmation and backup/recovery safeguards. An exhaustive physical 200+ case is not yet accepted.
+
+**Will it work on ROG Ally or DroidDeck?** Those platforms are not verified or guaranteed.
+
+When reporting an issue, include Steam Deck model, SteamOS/Steam client channel, Decky Loader version, TitleDeck version, CSS Loader theme, affected game App ID (if helpful), reproduction steps and safe screenshots. Do not share passwords or Steam Guard codes.

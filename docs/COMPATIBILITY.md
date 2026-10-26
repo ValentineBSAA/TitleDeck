@@ -1,19 +1,25 @@
-# Platform compatibility and support
+# Compatibility and support
 
-> **Important:** TitleDeck **0.9.0 RC1 was built for and tested on a physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader.** It is not certified for other hardware.
+**Current public version:** [TitleDeck 0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1). This is a **public pre-release**, primarily tested on a physical Steam Deck in SteamOS Gaming Mode.
 
-| Platform | Status |
+| Platform / setup | Current evidence |
 | --- | --- |
-| **Valve Steam Deck, SteamOS Gaming Mode** | Primary tested target. Several core behaviors confirmed on actual hardware. |
-| Other Steam Deck client versions / CSS Loader themes | Partially tested; future UI changes may affect behavior. |
-| **ROG Ally, Legion Go, Bazzite or other non-Steam Deck SteamOS-like systems** | **Untested. May not function correctly.** |
-| Steam Desktop Mode, Windows, Linux desktop | **Untested / not an RC1 target.** |
-| Android or DroidDeck | **Untested. Emulator or remote testing is not Steam Deck hardware verification.** |
+| **Valve Steam Deck, SteamOS Gaming Mode, Decky Loader** | Primary tested environment; title aliases, native Game Info description and restoration tested on device |
+| Steam Deck with other Steam client releases or CSS Loader themes | **Partially tested / unverified**; CSS and UI changes may affect integrations |
+| Game Theme Music 3.6.9 on Deck, especially the Plugin Store | **Not fully verified**; previous intermittent playback reports require a separate check |
+| ROG Ally, Legion Go, Bazzite, non-Steam Deck SteamOS-like systems | **Untested and not guaranteed** |
+| Steam Desktop Mode, Windows, desktop Linux | **Untested and not a release target** |
+| Android / DroidDeck | **Untested and not supported by a hardware compatibility claim** |
 
-TitleDeck changes visible Steam interface text, not installed game files or Steam metadata. Sorting identities and artwork lettering are unchanged. Controller, keyboard overlay, and Decky callbacks can differ between Steam environments.
+## Known behavior
 
-**Known issue:** Pressing B sometimes dismisses Steam's native keyboard but leaves the TitleDeck editor temporarily raised. The **Done editing** fallback restores the layout. This is **not fixed** in RC1.
+- Descriptions beyond **1,247 characters** are allowed, but a yellow warning appears. Very long content can scroll or lay out unusually.
+- After a Steam restart, Full Library Manager artwork may take a few seconds to populate. Missing art receives a fallback.
+- Dismissing Steam's native keyboard with B can occasionally leave the name editor raised. Use **Done editing** where applicable.
+- Future Steam UI updates can change internal views and require TitleDeck updates.
+- The Steam-native looking Game Info integration is a local replacement, not a permanent rewrite of Valve's official data.
+- Bulk restoration of hundreds of overrides, unusual app types, third-party plugin combinations and all CSS Loader themes remain incompletely verified.
 
-**Not independently verified:** full metadata-refresh persistence, every game screen and Steam client revision, every CSS Loader theme, 200+ saved-title confirmation on hardware, or non-Steam Deck platforms.
+**Data safety:** TitleDeck modifies local display overrides, not underlying game installation files, canonical metadata, sorting IDs or artwork lettering.
 
-[What has been verified on a physical Deck](VERIFIED_ON_DECK.md) · [Report a problem](../SUPPORT.md)
+[Physical-device tests](VERIFIED_ON_DECK.md) · [Report issues](../SUPPORT.md).

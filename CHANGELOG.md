@@ -1,4 +1,23 @@
-# 0.9.0 RC1 — Steam Deck release candidate (2026-10-24)
+# TitleDeck changelog
+
+## 0.9.2-beta.1 — Published Steam Deck beta (2026-10-25)
+
+- Introduced locally editable game descriptions appearing in the actual Steam **Game Info tab** next to Community, with native-looking text.
+- Confirmed rapid Game Info/Community switching on physical Deck after the Preview 23 rendering fix; eliminated the previously observed 1–7-second delay.
+- Restore Original Game now resets **both** custom title and description; description-only restore also supported.
+- Removed the hard description limit; a yellow non-blocking warning appears at **1,247 characters** about possible extra scrolling and layout irregularities.
+- Improved Full Library Manager artwork fallback/persistent source caching; filtered Proton, Steam Linux Runtime, anti-cheat runtimes and other utility entries.
+- Hid the developer timing capture from normal Quick Access; retained cleanup, native Steam keyboard, controller support and backup/recovery.
+- Added clearly versioned public-beta screenshots of the 0.9.2 Quick Access menu and Catherine's custom Game Info description.
+- **Community:** Thanks to u/All-Stars64 for the Game Info description request and u/TacoOfGod for the original name-customization inspiration.
+- **Verification:** Preview 23/24 core Game Info behavior accepted on physical Deck; 107 frontend and 17 backend tests reported passing for beta build. GTM 3.6.9 co-installation, large bulk restores and all CSS Loader themes remain unverified. Steam keyboard B dismissal may intermittently leave editor raised; Done editing remains a workaround.
+- **Source notice:** GitHub's editable main-branch source and tests still match the historical 0.9.0 RC1 baseline rather than the published beta runtime. See [SOURCE.md](SOURCE.md).
+
+---
+
+## Earlier releases (historical record)
+
+### 0.9.0 RC1 — Steam Deck release candidate (2026-10-24)
 
 **Target:** physical Steam Deck in Gaming Mode with Decky Loader. This is a **release candidate, not a stable general-purpose release**. ROG Ally, other handheld PCs, unofficial/non-Steam Deck SteamOS distributions, Windows, Android/DroidDeck and Desktop Mode have not been verified and may not work properly. Future Steam UI / CSS Loader changes may break display replacement.
 
