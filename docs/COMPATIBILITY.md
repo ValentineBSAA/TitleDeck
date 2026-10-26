@@ -1,6 +1,6 @@
 # Compatibility and support
 
-**Current public version:** [TitleDeck 0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1). This is a **public pre-release**, primarily tested on a physical Steam Deck in SteamOS Gaming Mode.
+**Current public version:** [TitleDeck 0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2). This is a **stable release**, primarily tested on a physical Steam Deck in SteamOS Gaming Mode.
 
 | Platform / setup | Current evidence |
 | --- | --- |
