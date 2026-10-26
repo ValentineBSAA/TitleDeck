@@ -1,12 +1,12 @@
 # TitleDeck screenshot gallery
 
-**Latest public release:** [v0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1) (pre-release).
+**Latest public release:** [v0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2) (stable). The featured images were captured during Beta 1 and keep their original version badges.
 
 The three current-beta images were imported **without cropping or recompression** from the maintainer's revised screenshot ZIP (original SHA-256 `d10bc897f1c932537fc95e64689dbb6a516b1d73c466fe5bd7cd4a2afb1bedef`). The release offers a separate [curated three-image screenshot ZIP](https://github.com/ValentineBSAA/TitleDeck/releases/download/0.9.2-beta.1/TitleDeck-0.9.2-Beta1-Screenshots.zip), assembled from these unchanged JPEGs. The curated ZIP is **not** the original uploaded archive, and neither ZIP installs the plugin.
 
 > These are **physical Steam Deck Gaming Mode** screenshots using a customized Steam/CSS Loader visual theme. Steam's own compatibility labels visible in a screenshot are not TitleDeck's platform-certification claims.
 
-[Back to README](../README.md) · [Latest beta download](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)
+[Back to README](../README.md) · [Latest stable download](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2)
 
 ## 0.9.2 Beta 1: new screenshots
 
