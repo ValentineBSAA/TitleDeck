@@ -1,8 +1,8 @@
-# TitleDeck support: 0.9.2 Beta 1
+# TitleDeck support: 0.9.2 stable
 
 **Primary tested device:** Valve Steam Deck, SteamOS Gaming Mode, Decky Loader. ROG Ally, alternate SteamOS-like handhelds, Steam Desktop Mode, Windows and Android/DroidDeck are unverified.
 
-[Report a bug](https://github.com/ValentineBSAA/TitleDeck/issues) · [Ask questions in Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Latest beta release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)
+[Report a bug](https://github.com/ValentineBSAA/TitleDeck/issues) · [Ask questions in Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Stable release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2)
 
 ## Frequently asked questions
 
