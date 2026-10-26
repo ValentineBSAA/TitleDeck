@@ -1,16 +1,22 @@
-/** TitleDeck 0.9.0 RC: compact controller-first game library, editable aliases, conservative Steam title overlay. */
-const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '0.9.0-rc.1', ROUTE = '/titledeck/manager';
+/** TitleDeck 0.9.2 Beta 1: local title and native-looking Game Info description customization. */
+const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '0.9.2-beta.1', ROUTE = '/titledeck/manager';
+export const DESCRIPTION_WARNING_THRESHOLD = 1247;
+// Private developer opt-in. Normal users never see scan controls or timing logs;
+// the bounded timing recorder remains available for future Steam UI regressions.
+export function developerDiagnosticsEnabled(){
+  return globalThis.__TITLEDECK_DEV_DIAGNOSTICS__ === true;
+}
 const R = globalThis.SP_REACT;
 const UI = globalThis.DFL;
 const h = (...a) => R.createElement(...a);
 const QAM_VERSION_STYLE = {display:'inline-flex',alignItems:'center',fontSize:10,fontWeight:800,color:'#e9eef6',background:'#384257',border:'1px solid #7d8aa5',borderRadius:99,padding:'3px 7px',lineHeight:1};
 const ICON_DATA_URI = 'data:image/webp;base64,UklGRqgKAABXRUJQVlA4IJwKAABQMwCdASqAAIAAPkUejEUioaEjppFLcHAIiUAZMBYKe/suZu678Oc32cXtq/c+ub/HetD7mfcG/T7+99VfzFfsP+0nu1eir7APgA/WbrafQA/Xn00/ZD/an9t/aFugnLcezmce+/35z8m/27/3fRbvFP51/b+Grm08mv6P/s+OTuTf8N+W/POUAPyl/pftV+Rv/c81v1N/2fcS/mP9Q/2/9t/eXvd+jMWitoTb3LX8trScgmTAZ6CNlXK/+NCqJ35IwjVVvadTm2R6vGVi1mUhHBmgbhz44HQML+P5CnnN5+O+4Ld+mzwCzq+sqhCENxixFwDz+map/LCUWU9epBI1TVSNBFWhBxFVbFLf881BHhpB4A1YKYBSRBIzlEnshJ/9TsNN1wJdCv6DML4XO9G2GqKj/c8MeSFW05HIoOhCmfARXgUUXF+w0b2/Z2bfwQQIiWYLZ9aozbymVP85xfpIMXDuoQwm6UO67ATLfXM+iP8i19bTSV6ie7W0/hVaBQgj4Q44HpyDHmtpPKOCdnAeT/aU3EY9m5pyWTriLlt9Gx24AAD+/1Z7NthDTb37UFPLoTt4wc6i9FM5jSvpHtRfewnQyAuN1wRErY6dy/zKIZbraw6NEQiosdt8dHKKIDoKJP8sINxIf71gphfbMg95t8M36NhaFndX8fsu2/83OWL85izQtfu2kPaFurTSP8kaL6vuTjNQrzuQ3I4U4DRqk3ysoIMNvgBKhzL0wEx/aHBfPUJM6jEqxK/4JEz2xVi8IgvMVlB0kXxSWxBg/s76AW02eaWGP1Xa0XYBCGf/kJlR/BmvW2XVMMdhnO+X+Zugaah9VwJHW1yqA1il9MWKQl2qlwIF69+7GH3Qld7Dt/7UgE+bAdNQXTr5Ro+G91IWYzWf9eZKyGIQoub50d15Y+/JdGlx+0bubtSRLB69N+uc2EnyfWupxFlE8leNo+b+IawppKXucZJQbWyny5RhivERow/Mbqrko9lbn5EeB9dH/RZkyvp67K2/FEmBAQrdCcgXzZBrKF74tHvNALynOK0brZ+BQatNrXRqH5xYQVOEeze2exsT5NVRPOBr69e9dfHkwKsZQsR98F8ldBpi8bsEQO1BaXzii/7m+cEp2S4RLgIDUc/iMbsISQKYc+hdoyDqhx/mrXoZrp1ea3iLaJmvxi6b0+qO5hMLv7q6MMu9ZNH9/hPB3islFno3aijnM/cvU9/7QTxOcP00fO2HkNYsDJ6eJ4CiIs0Hd2+m8ax/ABbJz1S3ZPTFX8JfAnJdtM81vtfaVDTWVTFyv/R5jilNcM/Dt/zmDiZU4/C4ehWFUBCa9LHdNWqwujB6Yw6WrYsH12u/3aqZr7cK5i++vAMc2jTgqi9fbzguGDYQ6e+BR5RyTIHRsL3pWy2T7C3kOtqkS7CUOJFJQkvxuiYN3/HwUPBDIw6c0UTaSBILNKQcHkiMY7P5RVCCR1rpwJ0qWC4gTGf+PuK4+FBWCIQYX7fs6N+ffSAxivW7sXNIM0ufe7Sn7/rPm+VFBHAJr3/qNfJjcKxRFd6lP87CwaxM+5hRgWSgbNANXvYDIIZt2xWk1xiKop3nYJ+SOAq73AtZn+/K9HvxOa67+sJq4z/BXRgUXeoKHOnhunQqCbMVHlhd0nZWEYcnAjTRIl6oN+jBynSN9KGzkcEJzhIIq+8q4C2AW1dQidlTYrRJcGIhv1HhHZjMJLWmhdyoJg0M/qrWf6/qoFFGzrbwN57NWv75bT62mP6hfko+QAkI73iQtyc0bVHD5T15lfJjaMUPvok9N/v/l0jnE3LXnSXgARpS5PyBHxZ4zuw3dajC28fmYCh/IyIS0ApGxKZoLo1NaWtcwZWg/rU/At2bPMLfj737PZbDJgnQ6Niep//PPfx7Xw6rir4riCIkA4wN+AaPrkzZcpW2vSQTKPnlNFnFO+e1vecnyJACKPLQEIyYQCHjy9LLalhUSTIn/94YgYvbKKzcYBTnQWGQ99c1DVU2B/NKbZx2eovAX8qPQVoXuYP6W66/PQu2wzouNMIZt82EtK8SXmYuohklNRKyU/3yfkrdiK2mbPqCgzg8VYQP2HevHZB6bwUT7GKGyQuLOtLRetK+a6BkAu+tTHBdOCPkVL66FBZea/iTalvLZ0Yr1SnpcCTP9WXlZviV/4sWL8EPrablCcxfSk9hmO+tfstM9tYD0yhY+ZwtoJuq3EbQ7fB9/tuCWQwXyZx7UMB7SjiuA7MMHSXSD42h8Dlz//rRI/OY8mG9ZZN80Kqu8DAI63Ai8sk23PwsX7tS5at9tmntPhA/bZ9qmjlSExflHhqWGGGJPChDhXMk2zYcf5lyRY/TrLC42pY52sppoBdETZbIE1WoCwPw74Cln/yZMh/yTHjh1xr/Wsxlyad33sSVQABiLbeQ5b/UdKxer1jvhoRGQ/4uEzmbC/1QpX8H/6n2T4Cz3hBUIf/+vaUF6z+X6TyBk3ZLiK2irO4oQqj3cwPL1MCY9OF0RShQO9tfezl5VFiTc5/GQxran4D0jDGvhgmaDCfhWB5/38TwynEeKQ8U8cKguN75fkWlS4R1td51nP5d12rEWL603V/52gqXc5NRwpsyZc2arhhKnsekIF7/OZAPY8F4iJfxR7tvSwqGcyv0oqrSoJuYOOO/Ucr9JEZYQp7QkC+ZlWRfnYCxGk2U99S6mNUDRWMoyAB5fcDUzw0QfLkXw+Y5PJXX+aBdqyM0CBtOH67g+KkQGNLYv6Uqf4T4DfmMK5IBdM6+phTVMmUB3LInI6lkfA6yAgOnVcC2gVTj8VH8zjA33HZRWor19WFEkbwnC+kCU00J0KoHKSA1WWVPok+IIZ+vjNEZhiYFA4X2pLyb1Q9339zmZ/uld1pvufjchS3D6UfOGfORWnXy/IgxJLHueFxneG8x53iFnikn+L8lQEnEzl3KZLvexFlLk6YK2A9uQiUXZJ7H3qujz1qkQR6xFz5mHCngS3/wsRop89Hrj1jo/a96GSh3Ys32aRiUbLDD3HDffU9kZ1Lx6WFdCLtnByBbDrxEdn4ghcTcH703uf6XUZmQgx5xbf/3NbTxj/NScrpc39G2oGyuxG45RmaAqt8RwAPJf77K9n28n/wbIy/r6TZTpOeFPFCy9A/QZMXuv/kFYyl3nDaR/zzRMqjZFz9TgJURuiVh9YLDrAPPTL7RtW0GMjZPxKocVmmvjY6W21hIXGR9hfiPLQpJxfQokmvet+AjIP+I9y9dDNsG8wCZwLwAmQHPzKNseiKaj189lxe/W00FWR/6Xu/6X0CdOnQXMXDz3qlZC3KmDk1Gh5n4jx3Xncl05xM3OTARujPjyu2ScQ1ioBJELZayD/nm2wdWpxtDbJJh7wLci9AH9KejL8My0U7cAiKLvK1fbAekqlfSQn/0Sp0LDxuOYnlzKRsBkKHPHW/Evnwqw2U4mQv9FgA88VuzJNzzlgTUuX1zg3G9Lx3VCFo8O5NjJhif3MSOovstVaRxKe+ksC0KxyAgNORHtgTvMCxRmvJ80VwTHcfI6DvbHEe0UwV/4fpEtl++xcC3taG8tG7Yt9r8EHcnJgQOwj8jhL0ItgZJQDnbO2OUC8ZvI3AfRnKSE7M2mnhJl4AA';
 
-let bridge, adapter;
+let bridge, adapter, descriptionAdapter, gameInfoDataAdapter;
 let steamDocument = null;
 let steamBridgeStatus = "Waiting for Steam window";
 const STEAM_ANCHOR = "TitleDeckSteamTextBridge";
-let latestState = { schema:1, enabled:true, aliases:{}, games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
+let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, description_position:'game_info', games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
 const observers = new Set();
 function connect() {
   if (bridge) return bridge;
@@ -20,9 +26,19 @@ function connect() {
 }
 const call=(name,...args)=>connect().call(name,...args);
 function acceptState(state){
-  if(state && typeof state ==='object') latestState={...latestState,...state};
+  const before=latestState;
+  if(state && typeof state ==='object'){
+    if(state.cover_cache&&typeof state.cover_cache==='object')hydrateCoverResolutionCache(state.cover_cache);
+    latestState={...latestState,...state};
+  }
   observers.forEach(listener=>{try{listener(latestState);}catch{}});
-  adapter?.runNow();
+  const aliasesChanged=before.enabled!==latestState.enabled||
+    JSON.stringify(before.aliases||{})!==JSON.stringify(latestState.aliases||{});
+  const descriptionsChanged=before.enabled!==latestState.enabled||
+    before.description_position!==latestState.description_position||
+    JSON.stringify(before.descriptions||{})!==JSON.stringify(latestState.descriptions||{});
+  if(aliasesChanged)adapter?.runNow();
+  if(descriptionsChanged)descriptionAdapter?.runNow();
   return latestState;
 }
 function useStateSnapshot(){
@@ -69,6 +85,38 @@ function normId(value){const s=String(value??'').trim();return /^[1-9]\d{0,11}$/
 function steamOverview(store,id){
   try{return store?.GetAppOverviewByAppID?.(Number(id))||store?.GetAppOverviewByGameID?.(String(id))||null;}catch{return null;}
 }
+// Games and user-added apps belong in Full Library Manager, but Steam's own
+// compatibility layers and shared runtimes do not. Use narrowly anchored
+// labels plus authoritative IDs, never a blanket /proton|runtime/ substring
+// that could hide a real game with those words in its title.
+const STEAM_COMPONENT_IDS=new Set([
+  '228980',  // Steamworks Common Redistributables
+  '1070560', // Steam Linux Runtime
+  '1391110', // Steam Linux Runtime (soldier)
+  '1628350', // Steam Linux Runtime (sniper)
+  '1826330', // Proton EasyAntiCheat Runtime
+  '1161040', // Proton BattlEye Runtime
+  '1493710', // Proton Experimental
+  '2180100', // Proton Hotfix
+  '2805730', // Proton 9.0
+  '2348590', // Proton 8.0
+  '1887720', // Proton 7.0
+  '1420170', // Proton 5.13
+  '1113280', // Proton 4.2
+  '1054830', // Proton 4.11
+  '961940',  // Proton 3.16
+  '858280'   // Proton 3.7
+]);
+export function isSteamUtility(appid,title,appType){
+  const id=normId(appid),name=String(title||'').trim();
+  if(STEAM_COMPONENT_IDS.has(id))return true;
+  if(/^(?:proton(?:\s+(?:\d+(?:\.\d+)*(?:[-.][\w.]+)?|experimental|hotfix|next))?|proton\s+(?:easy\s*anti[- ]?cheat|battleye)\s+runtime|steam\s+linux\s+runtime(?:\s*\([^)]*\))?|steamworks\s+common\s+redistributables|steam\s+runtime|steam\s+controller\s+configurations)$/i.test(name))return true;
+  const type=Number(appType);
+  // Steam app_type=4 is Tool. Without other metadata, do not classify
+  // ambiguous numeric types as utilities; keep legitimate applications.
+  if(appType!==undefined&&appType!==null&&appType!==''&&Number.isFinite(type)&&type===4)return true;
+  return false;
+}
 export function collectSteamGames(store, local=[], extras=[]) {
   const games = new Map();
   function add(input,source='steam') {
@@ -76,8 +124,10 @@ export function collectSteamGames(store, local=[], extras=[]) {
     const title=String(input?.display_name??input?.displayName??input?.name??input?.app_name??input?.title??'').trim();
     if(!id||!title||title.length>180||/[\r\n]/.test(title))return;
     const type=input?.app_type??input?.type;
-    // Keep games and shortcuts, discard only clearly identified Steam tools and media.
-    if(typeof type==='number' && ![0,1,1073741824].includes(type) && source!=='manifest') return;
+    // Apply to BOTH installed manifests and Steam's live inventory.
+    if(isSteamUtility(id,title,type))return;
+    // Include games, apps, demos and shortcuts; exclude known non-game categories.
+    if(typeof type==='number' && ![0,1,2,8,1073741824].includes(type) && source!=='manifest')return;
     const installed=source==='manifest'||Boolean(input?.installed||input?.is_installed||input?.local_per_client_data?.installed);
     const existing=games.get(id);
     if(!existing)games.set(id,{appid:id,name:title,installed,source});
@@ -105,7 +155,7 @@ export function collectSteamGames(store, local=[], extras=[]) {
       if(overview)add({...overview,appid:x.appid,installed:x.installed},'steam');
     }
   }
-  return [...games.values()].sort((a,b)=>a.name.localeCompare(b.name)||Number(a.appid)-Number(b.appid));
+  return [...games.values()].filter(g=>!isSteamUtility(g.appid,g.name)).sort((a,b)=>a.name.localeCompare(b.name)||Number(a.appid)-Number(b.appid));
 }
 
 // TitleDeck title overlay: refresh text *during Steam's mutation microtask*, before
@@ -115,6 +165,7 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
   let stopped=false, scanTimer=null, heartbeat=null, observerList=[], scanned=0, fastPasses=0;
   const changed=new Map();
   const MAX_NODES=9000, MAX_MUTATION_NODES=3500;
+  function hasAliases(){const state=getState()||{};return state.enabled===true&&Object.keys(state.aliases||{}).length>0;}
   function restore(){
     for(const [node,saved] of changed){
       try{if(node.isConnected && node.nodeValue===saved.alias)node.nodeValue=saved.original;}catch{}
@@ -136,7 +187,7 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
     if(!el || !el.isConnected)return true;
     // Allow Steam's own game-options dialogs, whose headings can show a title.
     // Keep editable controls, other Decky panels, and unrelated notifications untouched.
-    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-exclude], [contenteditable], [role="textbox"], [role="combobox"], input, textarea, script, style, select, option'))return true;}catch{}
+    try{if(el.closest?.('[data-titledeck-ui], [data-titledeck-description], [data-titledeck-exclude], [class*="decky" i], [class*="PluginStore" i], [id*="decky" i], [contenteditable], [role="textbox"], [role="combobox"], input, textarea, script, style, select, option'))return true;}catch{}
     const name=String(el.className||'');
     return /(?:decky|notification|toast|tooltip|chat|friendslist)/i.test(name);
   }
@@ -205,6 +256,7 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
   }
   function fullScan(){
     if(stopped)return 0;
+    if(!hasAliases()){restore();return 0;}
     const mapping=titleMap();
     if(!mapping.size){restore();return 0;}
     reconcileExisting(mapping);
@@ -228,7 +280,7 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
     scanTimer=setTimeout(()=>{scanTimer=null;setup();fullScan();},delay);
   }
   function consumeMutations(records,doc){
-    if(stopped)return;
+    if(stopped||!hasAliases())return;
     const mapping=titleMap();
     if(!mapping.size){if(changed.size)restore();return;}
     fastPasses++;
@@ -260,7 +312,7 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
     if(overflow)scheduleFullScan(36);
   }
   function setup(){
-    if(stopped)return;
+    if(stopped||!hasAliases())return;
     for(const doc of docs()){
       if(observerList.some(entry=>entry.doc===doc))continue;
       const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
@@ -272,13 +324,1069 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
       }catch{}
     }
   }
-  function runNow(){if(stopped)return 0;setup();return fullScan();}
-  function start(){setup();fullScan();heartbeat=setInterval(()=>{setup();fullScan();},2400);}
+  function runNow(){if(stopped)return 0;if(!hasAliases()){restore();return 0;}setup();return fullScan();}
+  function start(){setup();fullScan();heartbeat=setInterval(()=>{if(hasAliases()){setup();fullScan();}},12000);}
   function stop(){stopped=true;if(scanTimer!==null)clearTimeout(scanTimer);if(heartbeat!==null)clearInterval(heartbeat);for(const item of observerList)item.watch.disconnect();observerList=[];restore();}
   return{start,stop,runNow,get applied(){return activeCount()},get scans(){return scanned},get fastPasses(){return fastPasses},get docs(){return observerList.length}};
 }
 
+
+export function appidFromVisibleGame(el){
+  try{
+    const key=Object.keys(el||{}).find(k=>k.startsWith('__reactFiber$'));
+    let fiber=key?el[key]:null;
+    for(let i=0;fiber&&i<40;i++,fiber=fiber.return){
+      const ov=fiber.memoizedProps?.overview||fiber.pendingProps?.overview,id=normId(ov?.appid??ov?.appId??ov?.m_gameid??ov?.m_nAppID);
+      if(id)return id;
+    }
+  }catch{}
+  return '';
+}
+
+
+
+/** Local, reversible read-time Game Info description override.
+    MetaDeck demonstrated that Game Info reads GetDescriptions, even when no
+    stable Game Info DOM node exists. We never write to Steam's cache. */
+export function currentSteamGameAppId(context){
+  const locations=[
+    context?.Router?.WindowStore?.GamepadUIMainWindowInstance?.m_history?.location,
+    context?.SteamUIStore?.m_WindowStore?.GamepadUIMainWindowInstance?.m_history?.location,
+    context?.SteamUIStore?.m_WindowStore?.MainWindowInstance?.m_history?.location,
+    context?.location
+  ];
+  for(const loc of locations){
+    if(!loc)continue;
+    const full=[loc.pathname,loc.search,loc.hash].filter(Boolean).join('');
+    const found=full.match(/\/(?:routes\/)?library\/(?:app|details)\/([1-9]\d{0,11})(?:[/?#&]|$)/i);
+    if(found)return normId(found[1]);
+  }
+  return '';
+}
+/** Read Valve's untouched description on demand. Never patch the shared
+ * Steam GetDescriptions function. Other Decky plugins must see native data. */
+export function createGameInfoDataAdapter(_getState,getContexts=()=>[globalThis]){
+  let calls=0,stopped=false;
+  function getOriginalDescription(appid){
+    const id=normId(appid);
+    if(!id||stopped)return '';
+    const contexts=new Set();
+    try{for(const ctx of getContexts()||[])if(ctx)contexts.add(ctx)}catch{}
+    for(const ctx of contexts){
+      const store=ctx?.appDetailsStore;
+      if(typeof store?.GetDescriptions!=='function')continue;
+      try{
+        calls++;
+        const original=store.GetDescriptions(Number(id));
+        const value=original?.strFullDescription||original?.strSnippet;
+        if(typeof value==='string'&&value.trim())return value;
+      }catch{}
+    }
+    return '';
+  }
+  return{start(){stopped=false},stop(){stopped=true},runNow(){},getOriginalDescription,
+    get status(){return 'Native Steam descriptions untouched'},get hookedStores(){return 0},
+    get calls(){return calls},get overrides(){return 0}};
+}
+
+export function steamLibraryRouteId(location){
+  try{
+    const route=[location?.pathname,location?.search,location?.hash].filter(Boolean).join('');
+    const found=route.match(/\/library\/app\/([1-9][0-9]{0,11})(?:[/?#&]|$)/);
+    return found?normId(found[1]):'';
+  }catch{return ''}
+}
+
+/* Art Hero and other CSS Loader themes change artwork height. Anchor the
+   optional overlay to Steam's actual Play-bar rectangle, never to a guessed
+   fixed screen Y coordinate or to the artwork's internal React children. */
+export function heroFooterGeometry(rect,viewportWidth,viewportHeight){
+  if(!rect||!Number.isFinite(rect.top)||!Number.isFinite(rect.left)||!Number.isFinite(rect.width))return null;
+  const w=Number(viewportWidth)||0,h=Number(viewportHeight)||0;
+  if(w<300||h<250||rect.width<180||rect.width>w*1.5)return null;
+  const height=76,margin=12,top=Math.round(rect.top-height-margin);
+  // If the header or Play bar has scrolled out of view, remove this overlay.
+  if(top<68||rect.top>h+70)return null;
+  const left=Math.max(8,Math.round(rect.left+16));
+  const width=Math.min(w-left-8,Math.round(rect.width-32));
+  if(width<150)return null;
+  return{left,top,width,height};
+}
+export function findDescriptionPlayBar(doc,target){
+  const plausible=node=>{
+    if(!node?.getBoundingClientRect||!node.isConnected||node.offsetParent===null)return false;
+    const rect=node.getBoundingClientRect();
+    const height=rect?.height||((rect?.bottom||0)-(rect?.top||0));
+    return Number.isFinite(rect?.top)&&height>=32&&height<=180&&rect.width>=180;
+  };
+  const selectors=[];
+  // Native Steam Deck Gaming Mode uses basicAppDetailsSectionStylerClasses,
+  // NOT the desktop-only appdetailsplaysection_PlayBar name. These class
+  // exports survive changes to Steam's minified class hashes.
+  for(const token of [
+    UI?.basicAppDetailsSectionStylerClasses?.PlaySection,
+    UI?.playSectionClasses?.PlayBar,
+    UI?.playSectionClasses?.Container,
+    UI?.basicAppDetailsSectionStylerClasses?.PlayBar
+  ]){
+    if(typeof token==='string'){
+      for(const cls of token.split(/\s+/).filter(x=>/^[A-Za-z0-9_-]+$/.test(x))){
+        if(cls&&doc.getElementsByClassName)try{
+          const nodes=doc.getElementsByClassName(cls);
+          for(const node of nodes)if(plausible(node))return node;
+        }catch{}
+      }
+    }
+  }
+  // Different module names in Desktop Steam, Big Picture and SteamOS.
+  selectors.push(
+    '[class*="basicappdetailssection_PlaySection"]',
+    '[class*="basicappdetailssectionstyler_PlaySection"]',
+    '[class*="appdetailsplaysection_PlayBar"]',
+    '[class*="appdetailsplaysection_PlaySection"]',
+    '[class*="appdetailsplaysection_Container"]',
+    '[class*="appdetailsplaysection_PlayArea"]',
+    '[class*="appdetails_PlaySection"]'
+  );
+  for(const sel of selectors)try{
+    for(const node of doc.querySelectorAll(sel))if(plausible(node))return node;
+  }catch{}
+  // The real Play section can be the immediate previous sibling of the
+  // details container. Also check one wrapper above for themed layouts.
+  for(const el of [target?.previousElementSibling,target?.parentElement?.previousElementSibling]){
+    if(plausible(el))return el;
+  }
+  // Last-resort: use Decky's Play-button class, but only inside the current
+  // game's visible details tree; never base a position on unrelated buttons.
+  const buttonTokens=[
+    UI?.appActionButtonClasses?.PlayButton,
+    UI?.appActionButtonClasses?.PlayButtonContainer
+  ].filter(x=>typeof x==='string');
+  for(const token of buttonTokens){
+    const cls=token.split(/\s+/).find(x=>/^[A-Za-z0-9_-]+$/.test(x));
+    if(!cls)continue;
+    for(const node of doc.getElementsByClassName?.(cls)||[]){
+      if(!node?.isConnected)continue;
+      let parent=node;
+      for(let depth=0;parent&&depth<7;depth++,parent=parent.parentElement){
+        if(plausible(parent)&&parent.getBoundingClientRect().width>=300){
+          if(target?.parentElement?.contains?.(parent)||parent.parentElement?.contains?.(target))
+            return parent;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+
+/* The original requester wants the text INSIDE Steam's GAME INFO tab,
+   not merely an extra card below Play. Locate only the selected game's
+   visible native Game Info container, then insert our text beside the
+   existing description without modifying Steam's description markup. */
+const steamInfoClassCache=new WeakMap();
+export function resolveLiveSteamGameInfoClasses(ui=UI){
+  if(!ui||typeof ui!=='object')return null;
+  const cached=steamInfoClassCache.get(ui);
+  if(cached&&(cached.classes||Date.now()-cached.checked<12000))return cached.classes;
+  // Decky Metadata confirms that Steam's GameInfoContainer and
+  // GameDescription are exported in separate live SteamUI CSS modules.
+  // Never enumerate Steam store data or execute untrusted module factories.
+  const finder=ui?.findModuleChild;
+  if(typeof finder!=='function')return null;
+  const inspect=(mod,kind)=>{
+    const match=obj=>obj&&typeof obj==='object'&&!Array.isArray(obj)&&
+      (kind==='owner'
+        ?typeof obj.GameInfoContainer==='string'&&typeof obj.GameInfoQuickLinks==='string'
+        :typeof obj.GameDescription==='string'&&typeof obj.DescriptionStatsCtn==='string');
+    if(match(mod))return mod;
+    if(!mod||typeof mod!=='object')return null;
+    try{
+      for(const entry of Object.values(mod)){
+        if(match(entry))return entry;
+      }
+    }catch{}
+    return null;
+  };
+  const find=kind=>{
+    try{
+      const found=finder(mod=>inspect(mod,kind)||undefined);
+      return inspect(found,kind);
+    }catch{return null}
+  };
+  const owner=find('owner'),description=find('description');
+  if(!owner||!description)return null;
+  const token=x=>typeof x==='string'&&/^[A-Za-z_-][A-Za-z0-9_-]{0,140}$/.test(x)?x:null;
+  const ownerName=token(owner.GameInfoContainer),descriptionName=token(description.GameDescription);
+  const classes=ownerName&&descriptionName?{owner:ownerName,description:descriptionName}:null;
+  steamInfoClassCache.set(ui,{classes,checked:Date.now()});
+  return classes;
+}
+
+export function findSteamGameInfoDescription(doc,gameRoot){
+  // This is called ONLY after runNow() confirms the Steam game's app ID.
+  // Game Info may be a sibling of the AppDetailsContainer or a portal, so
+  // searching just gameRoot.parentElement silently fails on real SteamOS.
+  if(!doc||!gameRoot||!appidFromVisibleGame(gameRoot))return null;
+  const page=gameRoot.closest?.('[class*="AppDetailsRoot"]')
+    ||gameRoot.closest?.('[class*="AppDetailsContainer"]')||gameRoot.parentElement||gameRoot;
+  const contains=(parent,child)=>{
+    if(!parent||!child)return false;
+    if(parent===child||parent.contains?.(child))return true;
+    let node=child;
+    for(let i=0;node&&i<35;i++,node=node.parentElement)if(node===parent)return true;
+    return false;
+  };
+  const within=el=>contains(page,el)||contains(gameRoot,el);
+  const visible=el=>{
+    if(!el?.isConnected)return false;
+    // Do not reject the native description itself if TitleDeck hid it.
+    try{
+      if(el.offsetParent===null)return false;
+      const style=el.ownerDocument?.defaultView?.getComputedStyle?.(el);
+      return style?.display!=='none'&&style?.visibility!=='hidden';
+    }catch{return true}
+  };
+  const descriptionSelectors=[
+    '[class*="appdetailsgameinfopanel_GameDescription"]',
+    '[class*="appdetailsgameinfopanel_Description"]',
+    '[class*="appdetailsgameinfocontainer_GameDescription"]',
+    '[class*="appdetailsgameinfocontainer_Description"]'
+  ];
+  const containerSelectors=[
+    '[class*="appdetailsgameinfopanel_Container"]',
+    '[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]',
+    '[class*="appdetailsgameinfo_Container"]'
+  ];
+  const isTitleDeckOwned=el=>{
+    // Native shells intentionally carry the *same* Steam GameDescription CSS
+    // classes as the real element. Without explicit exclusion, a live class
+    // query selects our clone first and every scan tears down/rebuilds the
+    // description. Long text makes that repeated rebuild visibly scroll-jump.
+    for(let node=el,depth=0;node&&depth<35;node=node.parentElement,depth++){
+      if(node.getAttribute?.('data-titledeck-gameinfo-description')!==null&&
+         node.getAttribute?.('data-titledeck-gameinfo-description')!==undefined)return true;
+    }
+    return false;
+  };
+  const findAll=selectors=>{
+    const result=new Set();
+    for(const selector of selectors)try{
+      for(const el of doc.querySelectorAll(selector)||[])if(el&&!isTitleDeckOwned(el))result.add(el);
+    }catch{}
+    return [...result];
+  };
+  // Live Decky module class tokens are preferred over hard-coded hash/name
+  // fragments; real Steam Deck builds do not necessarily include those names.
+  const resolved=resolveLiveSteamGameInfoClasses();
+  const byClass=name=>{
+    if(!name)return[];
+    try{return Array.from(doc.getElementsByClassName?.(name)||[]).filter(el=>!isTitleDeckOwned(el))}
+    catch{return[]}
+  };
+  const containers=[...new Set([...findAll(containerSelectors),...byClass(resolved?.owner)])].filter(visible);
+  const allDescriptions=[...new Set([...findAll(descriptionSelectors),...byClass(resolved?.description)])]
+    .filter(el=>el.isConnected&&el.parentElement);
+  const descriptions=allDescriptions.filter(el=>containers.some(parent=>contains(parent,el)));
+  if(!descriptions.length&&allDescriptions.length===1){
+    // Newer Steam builds can rename only the wrapping panel, leaving the
+    // native GameDescription selector intact. A single description-bearing
+    // parent with a native appdetailsgameinfo ancestor is sufficient here,
+    // because the caller already confirmed the page's unique app ID.
+    const native=allDescriptions[0];
+    let ancestor=native.parentElement;
+    let recognized=false;
+    for(let i=0;ancestor&&i<8;i++,ancestor=ancestor.parentElement){
+      if(/appdetailsgameinfo/i.test(String(ancestor.className||''))){recognized=true;break}
+    }
+    if(recognized&&visible(native.parentElement))
+      return {container:native.parentElement,nativeDescription:native,
+        diagnostic:{containers:0,scoped:0,descriptions:1,selected:'native-description-parent'}};
+  }
+  // An original description hidden by TitleDeck must remain discoverable.
+  // Prefer the current AppDetails page. If Game Info was rendered in a portal,
+  // ONLY a single visible Game Info panel in the whole document is eligible.
+  const eligible=containers.filter(el=>!el.closest?.('[aria-hidden="true"]'));
+  const scoped=eligible.filter(within);
+  let group=scoped.length?scoped:eligible;
+  // Game Info has nested wrappers, not multiple game tabs. Prefer a unique
+  // innermost visible panel containing the actual native description.
+  const withDesc=group.filter(el=>descriptions.some(child=>contains(el,child)));
+  if(withDesc.length)group=withDesc;
+  const inner=group.filter(el=>!group.some(other=>other!==el&&contains(el,other)));
+  if(inner.length)group=inner;
+  const root=group.length===1?group[0]:null;
+  if(!root)return null; // refuse genuinely ambiguous active Game Info tabs
+  const matching=descriptions.filter(el=>contains(root,el));
+  const nativeDescription=matching.find(el=>/GameDescription/.test(String(el.className||'')))||matching[0]||null;
+  return {container:root,nativeDescription,
+    diagnostic:{containers:containers.length,scoped:scoped.length,descriptions:descriptions.length,
+      selected:root.className||'native game info'}};
+}
+
+// Full Manager hides Steam's game view. Retain the most recent actual game-page
+// observation so diagnostics remain useful when that manager is open.
+let lastDescriptionGameProbe=null;
+export function getLastDescriptionGameProbe(){return lastDescriptionGameProbe?{...lastDescriptionGameProbe}:null}
+export function formatDescriptionGameProbe(probe=getLastDescriptionGameProbe()){
+  if(!probe)return 'No Game Info capture yet. Open GAME INFO on a game, then select Capture Game Info in TitleDeck Quick Access.';
+  return 'App '+probe.appid+' · '+probe.phase+
+    ' · game containers '+probe.detailContainers+' · info panels '+probe.infoPanels+
+    ' · description nodes '+probe.nativeDescriptions+
+    ' · document '+probe.documentNumber+'/'+probe.documentCount+
+    ' · Live CSS modules '+(probe.moduleStatus||'unknown')+
+    ' · CSS clues '+(probe.cssHints||'none')+
+    ' · '+probe.time;
+}
+/** Render custom Game Info as native Steam body text.
+ *  We clone only the native description element's shell (no Steam children or
+ *  text), retaining its CSS module classes and font/layout inheritance. The
+ *  separate TitleDeck blue card is reserved for Below Play/Artwork Footer.
+ *  All user text goes through textContent, never HTML or markdown injection. */
+export function createNativeSteamDescriptionPanel(doc,nativeDescription,appid){
+  let panel=null;
+  if(nativeDescription?.cloneNode)try{panel=nativeDescription.cloneNode(false)}catch{}
+  if(!panel){
+    const tag=String(nativeDescription?.tagName||'div').toLowerCase();
+    panel=doc.createElement(/^(?:div|section|p|article|span)$/.test(tag)?tag:'div');
+    if(nativeDescription?.className&&typeof nativeDescription.className==='string')
+      panel.className=nativeDescription.className;
+  }
+  // A cloned native id must never collide with Steam's existing element.
+  try{panel.removeAttribute?.('id')}catch{}
+  panel.setAttribute('data-titledeck-gameinfo-description',appid);
+  panel.setAttribute('aria-label','Game description');
+  if(!nativeDescription){
+    // Some games have no native description. Inherit the surrounding Steam
+    // Game Info typography with no plugin-colored background or heading.
+    panel.style.cssText='font:inherit;color:inherit;background:transparent;border:0;margin:0;padding:0;';
+  }
+  const body=doc.createElement('span');
+  body.setAttribute('data-titledeck-gameinfo-text','true');
+  body.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;';
+  panel.appendChild(body);
+  return panel;
+}
+
+/** Steam Game Info is remounted when switching tabs. Apply an active custom
+ * description in the same microtask as the relevant DOM insertion, before
+ * the browser paints Valve's original text. Do not react to unrelated Steam,
+ * GTM, Decky Store, or TitleDeck's own panel mutations. */
+export function isSteamGameInfoMutation(records){
+  const nativeClass=/(?:appdetailsgameinfo|GameInfoContainer|GameDescription|DescriptionStatsCtn)/i;
+  // Steam's CSS modules can export opaque hashes that contain NONE of these
+  // readable names. The previous filter silently ignored those mutations.
+  const liveClasses=resolveLiveSteamGameInfoClasses();
+  const liveTokens=new Set([liveClasses?.owner,liveClasses?.description].filter(Boolean));
+  const isSteamInfoClass=classes=>nativeClass.test(String(classes||''))||
+    String(classes||'').split(/\s+/).some(token=>liveTokens.has(token));
+  const owned=node=>{
+    try{return !!node?.closest?.('[data-titledeck-ui], [data-titledeck-gameinfo-description], [data-titledeck-description]')||
+      node?.getAttribute?.('data-titledeck-gameinfo-description')!=null}catch{return false}
+  };
+  const related=node=>{
+    if(!node)return false;
+    if(node.nodeType===3)node=node.parentElement;
+    if(!node||owned(node))return false;
+    let current=node;
+    for(let i=0;i<7&&current;i++,current=current.parentElement){
+      if(owned(current))return false;
+      if(isSteamInfoClass(typeof current.className==='string'?current.className:''))return true;
+    }
+    // Some Steam versions mount an entire Game Info subtree at once, and
+    // the inserted wrapper itself has only a generic AppDetails class.
+    // Query only that new subtree, never the whole Steam document.
+    try{if(/AppDetails/.test(String(node.className||''))&&node.querySelector?.(
+      '[class*="appdetailsgameinfo" i], [class*="GameDescription"], [class*="GameInfoContainer"]'))return true}catch{}
+    return false;
+  };
+  for(const record of records||[]){
+    // Steam can switch tabs by changing an existing panel's visibility rather
+    // than adding children. Catch that before the next paint as well.
+    if(record.type==='attributes'){
+      if(['class','style','hidden','aria-hidden'].includes(record.attributeName)&&
+         record.target?.getAttribute?.('data-titledeck-native-original')!=='true'&&
+         related(record.target))return true;
+      continue;
+    }
+    if(record.type==='characterData'){
+      if(related(record.target))return true;
+      continue;
+    }
+    if(record.type!=='childList')continue;
+    // TextDeck's own clone is inserted next to the native node. Ignore its
+    // insertion to prevent observer-driven redundant full-page scans.
+    const added=Array.from(record.addedNodes||[]);
+    if(!added.length)continue;
+    if(added.some(node=>related(node)))return true;
+    // Steam may mount an anonymous portal wrapper with native Game Info
+    // grandchildren. Query ONLY the inserted subtree, not the document.
+    if(added.some(node=>{
+      if(owned(node)||!/^(?:1|undefined)$/.test(String(node?.nodeType)))return false;
+      try{return !!node.querySelector?.(
+        '[class*="appdetailsgameinfopanel_GameDescription"],'+
+        '[class*="appdetailsgameinfocontainer_GameDescription"],'+
+        '[class*="appdetailsgameinfopanel_Container"]')||
+        (liveTokens.size&&node.querySelector?.([...liveTokens].map(x=>'[class~="'+x+'"]') .join(',')))}catch{return false}
+    }))return true;
+    if(related(record.target)&&added.some(node=>!owned(node)))return true;
+  }
+  return false;
+}
+
+export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer,getSteamOriginal=()=> ''){
+  const MARK='data-titledeck-description',owned=new Map(),nativeInfo=new Map(),watchers=[],scrollListeners=[];
+  // Warm native-styled clones and verified active game roots remain local to a
+  // document and are invalidated on game changes and Restore Original.
+  const verifiedRoot=new Map(),warmPanels=new Map();
+  // Bounded, on-device Game Info timing diagnostics. Never record saved
+  // descriptions, game names, keyboard input, or other plugin contents.
+  const timingEvents=[],observedDocs=new Set();
+  let tabSwitchAt=0,lastTimingText='',lastTimingAt=0,mutationBatches=0,verifiedEvents=0;
+  function markTiming(kind,detail=''){
+    const now=Date.now();
+    const clean=String(detail).replace(/[^a-zA-Z0-9 .:_+-]/g,' ').slice(0,76);
+    const label=kind+(clean?' '+clean:'');
+    if(label===lastTimingText&&now-lastTimingAt<300)return;
+    lastTimingText=label;lastTimingAt=now;
+    timingEvents.push({time:now,delta:tabSwitchAt?now-tabSwitchAt:null,label});
+    if(timingEvents.length>25)timingEvents.splice(0,timingEvents.length-25);
+  }
+  function markTabClick(event){
+    let el=event?.target;
+    if(el?.nodeType===3)el=el.parentElement;
+    if(el?.closest?.('[data-titledeck-ui], [class*="decky" i], [class*="PluginStore" i]'))return;
+    for(let i=0;el&&i<8;i++,el=el.parentElement){
+      const label=String(el.getAttribute?.('aria-label')||el.textContent||'').replace(/\s+/g,' ').trim();
+      if(/^(?:game info|community)$/i.test(label)&&
+        /^(?:button|div|a|span)$/i.test(String(el.tagName||''))){
+        tabSwitchAt=Date.now();markTiming('tab selected',label);
+        const doc=el.ownerDocument;
+        const state=getState()||{};
+        if(doc&&routeId(doc)&&state.enabled&&state.description_position==='game_info'){
+          // React commits following the input event; re-check only the
+          // verified game root once, never poll or scan the whole page.
+          setTimeout(()=>{if(!stopped)applyVerifiedGameInfo(doc,getState()||{})},0);
+        }
+        break;
+      }
+    }
+  }
+  function timingReport(){
+    const elapsed=tabSwitchAt?Date.now()-tabSwitchAt:null;
+    const head='TitleDeck developer Game Info timing | watched documents '+observedDocs.size+
+      ' | adapter checks '+checks+' | last tab '+(elapsed===null?'not detected':elapsed+'ms ago')+
+      ' | visible panels '+nativeInfo.size+' | mutations '+mutationBatches+' | verified events '+verifiedEvents;
+    const lines=timingEvents.slice(-12).map(e=>
+      (e.delta===null?'[startup]':'['+(e.delta>=0?'+':'')+e.delta+'ms]')+' '+e.label);
+    return head+(lines.length?'\n'+lines.join('\n'):'\nNo timing events yet. Switch Game Info / Community twice.');
+  }
+  function removeOldBlankGuard(doc){
+    // Preview 19 left a body-wide visibility rule until a delayed re-render.
+    // Remove only TitleDeck's own guard, even on hot upgrade.
+    try{doc?.body?.removeAttribute?.('data-titledeck-gameinfo-active')}catch{}
+    try{for(const style of doc?.querySelectorAll?.('[data-titledeck-gameinfo-guard]')||[])style.remove?.()}catch{}
+  }
+  const comparable=x=>String(x||'').replace(/\s+/g,' ').trim();
+  function repairSteamRestore(doc,id,original,previous){
+    if(!id||!original||!previous||comparable(original)===comparable(previous))return false;
+    if(routeId(doc)!==id)return false; // Never repair a different game's page.
+    const options=candidates(doc).filter(visible);
+    const matched=options.find(el=>appidFromVisibleGame(el)===id);
+    if(!matched)return false;
+    const found=findSteamGameInfoDescription(doc,matched);
+    const native=found?.nativeDescription;
+    if(!native||native.getAttribute?.('data-titledeck-gameinfo-description'))return false;
+    if(comparable(native.textContent)!==comparable(previous))return false;
+    // One-time repair of legacy cached text, not an ongoing React rewrite.
+    native.textContent=original;
+    return true;
+  }
+  function clearGameInfo(doc,keepWarm=false){
+    const prior=nativeInfo.get(doc);
+    if(!prior){if(!keepWarm)warmPanels.delete(doc);return;}
+    if(keepWarm&&prior.panel)warmPanels.set(doc,{appid:prior.appid,panel:prior.panel});
+    else warmPanels.delete(doc);
+    // A failure restoring one style must not prevent removing the clone.
+    const native=prior.nativeNode,style=native?.style;
+    if(style)try{
+      if(prior.originalDisplayProperty!==null&&typeof style.setProperty==='function'){
+        if(prior.originalDisplayProperty)style.setProperty('display',prior.originalDisplayProperty,prior.originalDisplayPriority||'');
+        else style.removeProperty('display');
+      }else if(style.display==='none')style.display=prior.originalDisplay;
+    }catch{
+      try{if(style.display==='none')style.display=''}catch{}
+    }
+    try{native?.removeAttribute?.('data-titledeck-native-original')}catch{}
+    try{prior.panel?.remove?.()}catch{}
+    nativeInfo.delete(doc);
+  }
+  function recoverGameInfoOrphans(doc){
+    // Older previews could leave a clone behind on the game page. Cleanup is
+    // constrained to TitleDeck-marked panels, never generic Steam elements.
+    const retained=nativeInfo.get(doc)?.panel;
+    let orphans=[];
+    try{orphans=[...(doc.querySelectorAll?.('[data-titledeck-gameinfo-description]')||[])]}catch{}
+    for(const panel of orphans){
+      if(panel===retained)continue;
+      const native=panel.nextSibling;
+      if(native&&native.style){
+        const marked=native.getAttribute?.('data-titledeck-native-original')==='true';
+        const sameClass=typeof panel.className==='string'&&!!panel.className&&
+          panel.className===native.className;
+        if(marked||sameClass){
+          try{
+            if(native.style.display==='none'){
+              if(typeof native.style.removeProperty==='function')native.style.removeProperty('display');
+              else native.style.display='';
+            }
+            native.removeAttribute?.('data-titledeck-native-original');
+          }catch{}
+        }
+      }
+      try{panel.remove?.()}catch{}
+    }
+  }
+  function drawGameInfo(doc,gameRoot,appid,description,located=null){
+    // On a stable game page the existing Steam native node is the source of
+    // truth. Never re-identify the original from a DOM containing our styled
+    // clone, even if Steam's live class finder changes the match order.
+    let prior=nativeInfo.get(doc);
+    if(prior&&(prior.appid!==appid||!prior.parent?.isConnected||
+      !prior.nativeNode?.isConnected||!prior.panel?.isConnected)){
+      // Keep the existing filled clone across *this same game's* tab remount;
+      // drop it on a route change or explicit Restore Original.
+      const sameApp=prior.appid===appid;
+      clearGameInfo(doc,sameApp);prior=null;
+    }
+    const found=prior?{container:prior.parent,nativeDescription:prior.nativeNode}
+      :located||findSteamGameInfoDescription(doc,gameRoot);
+    if(!found){
+      clearGameInfo(doc);
+      let panelCount=0,descCount=0;
+      try{
+        panelCount=doc.querySelectorAll('[class*="appdetailsgameinfopanel_Container"],[class*="appdetailsgameinfocontainer_AppGameInfoContainer"]').length;
+        descCount=doc.querySelectorAll('[class*="appdetailsgameinfopanel_GameDescription"],[class*="appdetailsgameinfocontainer_GameDescription"]').length;
+      }catch{}
+      status='Game Info not located: '+panelCount+' panels, '+descCount+
+        ' native descriptions. Open GAME INFO, then use Rescan Steam UI.';
+      return false;
+    }
+    const {container,nativeDescription}=found;
+    const parent=nativeDescription?.parentElement||container;
+    if(!parent?.insertBefore)return false;
+    if(!prior){
+      const warmed=warmPanels.get(doc);
+      const panel=warmed?.appid===appid&&warmed.panel? warmed.panel:
+        createNativeSteamDescriptionPanel(doc,nativeDescription,appid);
+      warmPanels.delete(doc);
+      if(warmed?.appid===appid&&nativeDescription?.className&&
+        typeof nativeDescription.className==='string')panel.className=nativeDescription.className;
+      // Populate BEFORE the panel is connected or Steam's original text hidden.
+      const body=panel.querySelector?.('[data-titledeck-gameinfo-text]')||panel.lastChild;
+      if(body&&body.textContent!==description)body.textContent=description;
+      const style=nativeDescription?.style;
+      const originalDisplay=style?.display??'';
+      const originalDisplayProperty=typeof style?.getPropertyValue==='function'?style.getPropertyValue('display'):null;
+      const originalDisplayPriority=typeof style?.getPropertyPriority==='function'?style.getPropertyPriority('display'):'';
+      try{parent.insertBefore(panel,nativeDescription||parent.firstChild||null)}catch{return false}
+      try{nativeDescription?.setAttribute?.('data-titledeck-native-original','true')}catch{}
+      if(style){
+        if(typeof style.setProperty==='function')style.setProperty('display','none','important');
+        else style.display='none';
+      }
+      prior={appid,parent,nativeNode:nativeDescription,originalDisplay,originalDisplayProperty,originalDisplayPriority,panel};
+      nativeInfo.set(doc,prior);
+    }
+    if(prior.nativeNode?.style&&typeof prior.nativeNode.style.getPropertyValue==='function'&&
+       prior.nativeNode.style.getPropertyValue('display')!=='none'){
+      prior.nativeNode.style.setProperty('display','none','important');
+    }
+    const body=prior.panel.querySelector?.('[data-titledeck-gameinfo-text]')||prior.panel.lastChild;
+    if(body&&body.textContent!==description)body.textContent=description;
+    status='Game Info: native-styled description active for app '+appid;
+    return true;
+  }
+  let stopped=false,ticker=null,pending=null,checks=0,status='Waiting for Steam game page';
+  let cleanedInitialDocs=false;
+  function documents(){
+    const result=new Set(),add=d=>{if(d?.documentElement&&d.querySelectorAll&&d.createElement)result.add(d)};
+    add(host);try{getDocuments().forEach(add)}catch{}
+    return [...result];
+  }
+  function clear(doc){
+    const old=owned.get(doc);if(old){old.remove?.();owned.delete(doc)}
+    try{for(const el of doc.querySelectorAll('['+MARK+']'))if(el.getAttribute?.(MARK))el.remove?.()}catch{}
+  }
+  function routeId(doc){
+    // Steam often uses a hash route. Only reading pathname made preview.2
+    // silently remove saved descriptions even on the correct game page.
+    return steamLibraryRouteId(doc.defaultView?.location)||steamLibraryRouteId(globalThis.location);
+  }
+  function candidates(doc){
+    const result=new Set(),klass=getClass();
+    if(typeof klass==='string'&&klass.trim())try{for(const el of doc.getElementsByClassName?.(klass)||[])result.add(el)}catch{}
+    try{for(const el of doc.querySelectorAll('[class*="AppDetailsContainer"],[class*="AppDetailsRoot"]'))result.add(el)}catch{}
+    return [...result];
+  }
+  function visible(node){
+    if(!node?.isConnected||node.offsetParent===null)return false;
+    try{const style=node.ownerDocument?.defaultView?.getComputedStyle?.(node);
+      if(style?.display==='none'||style?.visibility==='hidden')return false;}catch{}
+    return true;
+  }
+  function draw(doc,target,id,description,position='below_play') {
+    const parent=target.parentElement;if(!parent)return false;
+    let pane=owned.get(doc);
+    if(pane&&!pane.isConnected){owned.delete(doc);pane=null}
+    if(pane?.getAttribute?.(MARK)!==id){clear(doc);pane=null}
+    if(!pane){
+      pane=doc.createElement('section');pane.setAttribute(MARK,id);
+      pane.setAttribute('role','region');pane.setAttribute('aria-label','TitleDeck custom game description');
+      pane.style.cssText='box-sizing:border-box;width:calc(100% - 40px);margin:12px 20px;padding:16px 20px;border-radius:9px;background:#203045;border:1px solid #445b73;color:#ecf3f9;';
+      const heading=doc.createElement('h3');heading.textContent='YOUR GAME DESCRIPTION';
+      heading.style.cssText='margin:0 0 9px;font-size:15px;font-weight:750;color:#afd3f2;';
+      const body=doc.createElement('p');body.setAttribute('data-titledeck-description-text','true');
+      body.style.cssText='margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.5;';
+      pane.appendChild(heading);pane.appendChild(body);
+      owned.set(doc,pane);
+    }
+    const preferHero=position==='hero_footer';
+    const playBar=preferHero?findDescriptionPlayBar(doc,target):null;
+    const win=doc.defaultView;
+    const rect=playBar?.getBoundingClientRect?.();
+    const box=preferHero?heroFooterGeometry(rect,win?.innerWidth||doc.documentElement?.clientWidth,
+      win?.innerHeight||doc.documentElement?.clientHeight):null;
+    if(preferHero&&!box){
+      // Do not silently show Below Play when Artwork Footer is selected.
+      // That made the old build appear unchanged to the user.
+      pane.remove?.();owned.delete(doc);
+      status=playBar?'Artwork Footer: Play bar out of view or no safe gap':'Artwork Footer: Steam Deck Play bar not found';
+      return false;
+    }
+    const layout=preferHero?'hero_footer':'below_play';
+    if(layout==='hero_footer'){
+      if(!doc.body?.appendChild)return false;
+      if(pane.parentElement!==doc.body)doc.body.appendChild(pane);
+      const key=[box.left,box.top,box.width,box.height].join(':');
+      if(pane._titledeckLayoutKey!==key||pane._titledeckMode!=='hero_footer'){
+        pane._titledeckLayoutKey=key;pane._titledeckMode='hero_footer';
+        pane.style.cssText='box-sizing:border-box;position:fixed;left:'+box.left+'px;top:'+box.top+'px;width:'+box.width+'px;height:'+box.height+
+          'px;z-index:50;overflow:hidden;pointer-events:none;margin:0;padding:9px 16px;border-radius:8px;background:rgba(16,22,34,.82);border:1px solid rgba(119,149,179,.65);color:#f2f7fe;box-shadow:0 2px 15px rgba(0,0,0,.27);';
+      }
+    }else{
+      if(pane.parentElement!==parent||pane.nextSibling!==target)
+        try{parent.insertBefore(pane,target)}catch{return false}
+      if(pane._titledeckMode!=='below_play'){
+        pane._titledeckMode='below_play';pane._titledeckLayoutKey='';
+        pane.style.cssText='box-sizing:border-box;width:calc(100% - 40px);margin:12px 20px;padding:16px 20px;border-radius:9px;background:#203045;border:1px solid #445b73;color:#ecf3f9;';
+      }
+    }
+    if(pane.getAttribute?.('data-titledeck-position')!==layout)pane.setAttribute?.('data-titledeck-position',layout);
+    const heading=pane.querySelector?.('h3')||pane.children?.[0];
+    if(heading&&heading._titledeckHeadingMode!==layout){
+      heading._titledeckHeadingMode=layout;
+      heading.style.cssText=layout==='hero_footer'
+        ?'margin:0 0 4px;font-size:12px;font-weight:750;color:#b8d7f0;letter-spacing:.035em;'
+        :'margin:0 0 9px;font-size:15px;font-weight:750;color:#afd3f2;';
+    }
+    const body=pane.querySelector?.('[data-titledeck-description-text]')||pane.lastChild;
+    if(body){
+      if(body.textContent!==description)body.textContent=description; // Plain text only.
+      const textStyle=layout==='hero_footer'
+        ?'margin:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.4;'
+        :'margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.5;';
+      if(body._titledeckTextMode!==layout){body.style.cssText=textStyle;body._titledeckTextMode=layout}
+    }
+    return true;
+  }
+  const nativeDescriptionSelector='[class*="appdetailsgameinfopanel_GameDescription"],'+
+    '[class*="appdetailsgameinfocontainer_GameDescription"]';
+  function isOwnedNode(node){
+    for(let cur=node,i=0;cur&&i<10;cur=cur.parentElement,i++)
+      if(cur.getAttribute?.('data-titledeck-gameinfo-description')!=null||
+         cur.getAttribute?.('data-titledeck-ui')!=null)return true;
+    return false;
+  }
+  function nativeInMutation(records){
+    const classToken=resolveLiveSteamGameInfoClasses()?.description||'';
+    const match=node=>{
+      if(!node||node.nodeType===3||isOwnedNode(node)||!node.isConnected)return false;
+      const cls=String(node.className||'');
+      return /appdetailsgameinfopanel_GameDescription|appdetailsgameinfocontainer_GameDescription/.test(cls)||
+        (!!classToken&&cls.split(/\s+/).includes(classToken));
+    };
+    // Inspect only the changed Steam subtree, never the full Decky page.
+    const scan=root=>{
+      if(!root||isOwnedNode(root))return null;
+      if(match(root))return root;
+      try{
+        const matches=root.querySelectorAll?.(nativeDescriptionSelector)||[];
+        for(let i=0;i<Math.min(matches.length,20);i++)if(match(matches[i]))return matches[i];
+        if(classToken){const live=root.getElementsByClassName?.(classToken)||[];
+          for(let i=0;i<Math.min(live.length,20);i++)if(match(live[i]))return live[i]}
+      }catch{}
+      // Small fallback for the test DOM and builds without querySelectorAll.
+      const pending=[...(root.children||[])];let visited=0;
+      while(pending.length&&visited++<100){const el=pending.shift();
+        if(match(el))return el;
+        if(!isOwnedNode(el))pending.push(...(el.children||[]));
+      }
+      return null;
+    };
+    for(const rec of records||[]){
+      for(const n of rec.addedNodes||[]){const found=scan(n);if(found)return found}
+      const found=scan(rec.target?.nodeType===3?rec.target.parentElement:rec.target);
+      if(found)return found;
+    }
+    return null;
+  }
+  // MetaDeck's route-scoped metadata work is a useful model: identify the
+  // active Steam game, do not rely on an old DOM container staying mounted.
+  // This adapter deliberately leaves Steam's shared GetDescriptions and app
+  // cache untouched to avoid competing with MetaDeck, GTM, and Valve.
+  function rootContainingNative(doc,native,id){
+    if(!native?.isConnected||!id)return null;
+    const within=(root,child)=>{
+      for(let cur=child,hops=0;cur&&hops++<36;cur=cur.parentElement)
+        if(cur===root)return true;
+      return false;
+    };
+    const known=verifiedRoot.get(doc);
+    if(known?.appid===id&&known.root?.isConnected&&
+       within(known.root,native)&&appidFromVisibleGame(known.root)===id)
+      return known.root;
+    // React replaces the whole game view on some Steam builds. Find the new
+    // owner in the SAME inserted subtree, before the mutation is painted.
+    // Do not require offsetParent: Steam may not have revealed the new tab yet.
+    let matched=null;
+    for(let el=native.parentElement,depth=0;el&&depth++<30;el=el.parentElement){
+      if(el===doc.body||el===doc.documentElement)break;
+      const cls=String(el.className||'');
+      if(/AppDetails(?:Container|Root|Page)/.test(cls)&&
+         appidFromVisibleGame(el)===id){matched=el;break;}
+    }
+    // Some CSS Loader themes rename AppDetails classes. A React overview on
+    // an actual ancestor is acceptable, but never accept the route alone.
+    if(!matched){
+      for(let el=native.parentElement,depth=0;el&&depth++<30;el=el.parentElement){
+        if(el===doc.body||el===doc.documentElement)break;
+        const keys=Object.keys(el||{});
+        if(keys.some(k=>k.startsWith('__reactFiber$'))&&appidFromVisibleGame(el)===id){
+          matched=el;break;
+        }
+      }
+    }
+    // Some Steam layouts attach the overview only to the Game Info React
+    // fiber. Its parent chain still establishes identity for the active app.
+    // This is stronger evidence than a matching URL on its own.
+    if(!matched&&appidFromVisibleGame(native)===id){
+      for(let el=native.parentElement,depth=0;el&&depth++<30;el=el.parentElement){
+        if(/AppDetails(?:Container|Root|Page)/.test(String(el.className||''))){
+          matched=el;break;
+        }
+        if(el===doc.body||el===doc.documentElement)break;
+      }
+      if(!matched)matched=native.parentElement;
+    }
+    if(!matched)return null;
+    verifiedRoot.set(doc,{appid:id,root:matched});
+    return matched;
+  }
+  // On real SteamOS the native tab may mount under a generic React wrapper
+  // whose CSS class is completely opaque. Follow the already VERIFIED game
+  // root as an alternate fast signal. This is not a full-document poll.
+  function mutationInsideVerifiedGame(doc,records,id){
+    const known=verifiedRoot.get(doc);
+    if(!known||known.appid!==id||!known.root?.isConnected||
+       appidFromVisibleGame(known.root)!==id)return false;
+    const root=known.root;
+    const within=node=>{
+      for(let n=node,depth=0;n&&depth++<36;n=n.parentElement){
+        if(n===root)return true;
+        if(n.getAttribute?.('data-titledeck-ui')!=null||
+           n.getAttribute?.('data-titledeck-gameinfo-description')!=null)return false;
+      }
+      return false;
+    };
+    return (records||[]).some(record=>{
+      const target=record.target?.nodeType===3?record.target.parentElement:record.target;
+      if(!target||isOwnedNode(target)||target.getAttribute?.('data-titledeck-native-original')==='true')return false;
+      if(within(target))return true;
+      if(record.type==='childList')return Array.from(record.addedNodes||[]).some(n=>
+        !isOwnedNode(n)&&(within(n)||n?.contains?.(root)));
+      return false;
+    });
+  }
+  function applyVerifiedGameInfo(doc,state){
+    const id=routeId(doc),text=state?.descriptions?.[id];
+    const verified=verifiedRoot.get(doc);
+    if(!id||!text||!verified||verified.appid!==id||!verified.root?.isConnected||
+       appidFromVisibleGame(verified.root)!==id)return false;
+    // This search only runs on a VERIFIED active game page after a relevant
+    // mutation; it never enumerates Steam's full game library or Decky UI.
+    const found=findSteamGameInfoDescription(doc,verified.root);
+    if(!found?.nativeDescription)return false;
+    if(drawGameInfo(doc,verified.root,id,String(text).trim(),found)){
+      markTiming('FAST verified game render',id);
+      return true;
+    }
+    return false;
+  }
+  function applyGameInfoMutation(doc,records,state){
+    if(state?.description_position!=='game_info'||!state.enabled)return false;
+    const id=routeId(doc),text=state.descriptions?.[id];
+    if(!id||!text){markTiming('fast rejected','no active saved description');return false;}
+    const native=nativeInMutation(records);
+    if(!native?.parentElement){markTiming('fast rejected','native description not found');return false;}
+    // Root identity is recovered from THIS native node, not a previous tab.
+    // A route match without a matching React overview must fail closed.
+    const root=rootContainingNative(doc,native,id);
+    if(!root){markTiming('fast rejected','React game identity unconfirmed '+id);return false;}
+    const result=drawGameInfo(doc,root,id,String(text).trim(),
+      {container:native.parentElement,nativeDescription:native});
+    if(result){status='Game Info: description inserted synchronously for app '+id;markTiming('FAST description ready',id)}
+    else markTiming('fast rejected','render failed '+id);
+    return result;
+  }
+  function runNow(trigger='manual'){
+    if(stopped)return 0;checks++;
+    const state=getState()||{},descriptions=state.descriptions||{};
+    const active=state.enabled===true&&Object.keys(descriptions).length>0;
+    if(!active&&cleanedInitialDocs&&!owned.size&&!nativeInfo.size)return 0;
+    let applied=0,realPageSeen=false,issues=[];
+    const docs=documents();
+    let docNo=0;
+    for(const doc of docs){
+      docNo++;
+      // Orphan cleanup matters on initial hot-upgrade; repeating a broad
+      // query on every Steam/Decky mutation costs time and moves focus.
+      if(!cleanedInitialDocs)recoverGameInfoOrphans(doc);
+      const id=routeId(doc);
+      if(!state.enabled||!Object.keys(descriptions).length){
+        verifiedRoot.delete(doc);
+        clear(doc);clearGameInfo(doc);status=!state.enabled?'Display overrides paused':'No saved descriptions';continue;
+      }
+      let options=candidates(doc).filter(visible);
+      if(id&&!options.length){
+        // Decky style-token exports and Valve's hashed classes may differ.
+        // Only attempt a bounded fiber lookup on an actual game-details route.
+        try{
+          const all=doc.querySelectorAll('div');
+          const limit=Math.min(all.length,3200);
+          for(let i=0;i<limit;i++){
+            const el=all[i];
+            if(!visible(el)||appidFromVisibleGame(el)!==id)continue;
+            // Select a reasonably large parent so we add a panel to the
+            // game page rather than inside its title/play-button text.
+            let anchor=el;
+            for(let depth=0;depth<5&&anchor.parentElement;depth++){
+              const parent=anchor.parentElement,cls=String(parent.className||'');
+              if(/AppDetails(Container|Root)/.test(cls)){anchor=parent;break}
+              if(parent===doc.body||parent===doc.documentElement||!parent.parentElement)break;
+              anchor=parent;
+            }
+            options.push(anchor);break;
+          }
+        }catch{}
+      }
+      const matches=options.map(el=>({el,gameId:appidFromVisibleGame(el)}))
+        .filter(item=>item.gameId&&typeof descriptions[item.gameId]==='string'&&descriptions[item.gameId].trim());
+      // Route and visible Steam React overview must agree when a route is
+      // known. Without a route, accept only one unambiguous visible page ID.
+      const uniqueIds=[...new Set(matches.map(item=>item.gameId))];
+      const match=id?matches.find(item=>item.gameId===id):(uniqueIds.length===1?matches[0]:null);
+      const nativeStats=()=>{
+        let infoPanels=0,nativeDescriptions=0,cssHints='',moduleStatus='unavailable';
+        const live=resolveLiveSteamGameInfoClasses();
+        if(live){
+          moduleStatus='resolved';
+          try{
+            infoPanels=doc.getElementsByClassName?.(live.owner)?.length||0;
+            nativeDescriptions=doc.getElementsByClassName?.(live.description)?.length||0;
+          }catch{}
+        }
+        try{infoPanels=Math.max(infoPanels,doc.querySelectorAll('[class*="appdetailsgameinfopanel_Container"],[class*="appdetailsgameinfocontainer_AppGameInfoContainer"],[class*="appdetailsgameinfo_Container"]').length)}catch{}
+        try{nativeDescriptions=Math.max(nativeDescriptions,doc.querySelectorAll('[class*="appdetailsgameinfopanel_GameDescription"],[class*="appdetailsgameinfocontainer_GameDescription"]').length)}catch{}
+        try{
+          const nodes=doc.querySelectorAll('[class*="gameinfo"],[class*="GameInfo"],[class*="GameDescription"]');
+          const clues=new Set();
+          for(let i=0;i<Math.min(100,nodes.length)&&clues.size<3;i++){
+            const names=String(nodes[i]?.className||'').split(/\s+/);
+            for(const cls of names){
+              if(/gameinfo|GameDescription/i.test(cls)&&/^[A-Za-z0-9_-]{4,110}$/.test(cls))clues.add(cls.slice(0,75));
+              if(clues.size>=3)break;
+            }
+          }
+          cssHints=[...clues].join(', ');
+        }catch{}
+        return {infoPanels,nativeDescriptions,cssHints,moduleStatus};
+      };
+      if(id||match||uniqueIds.length){
+        realPageSeen=true;
+        const stats=nativeStats();
+        lastDescriptionGameProbe={
+          appid:match?.gameId||id||uniqueIds.join(',')||'unconfirmed',
+          phase:match?'Game page identified':'Page route found, game view not confirmed',
+          detailContainers:options.length,...stats,
+          documentNumber:docNo,documentCount:docs.length,
+          time:new Date().toLocaleTimeString()
+        };
+      }
+      if(!match?.el?.parentElement){
+        verifiedRoot.delete(doc);
+        clear(doc);clearGameInfo(doc);
+        const issue=!options.length?'No visible Steam details container':id?'Visible app ID does not match route '+id:'Cannot confirm one visible game page';
+        // A second empty Steam/Decky document is not evidence about the
+        // actual game page and must never override the useful Game Info result.
+        if(id||uniqueIds.length)issues.push(issue);
+        continue;
+      }
+      const position=state.description_position==='game_info'?'game_info'
+        :state.description_position==='hero_footer'?'hero_footer':'below_play';
+      verifiedRoot.set(doc,{appid:match.gameId,root:match.el});
+      if(position==='game_info'){
+        // Keep Steam's original visible until the populated clone is ready.
+        clear(doc);
+        if(drawGameInfo(doc,match.el,match.gameId,descriptions[match.gameId].trim())){
+          applied++;
+          if(lastDescriptionGameProbe?.appid===match.gameId)lastDescriptionGameProbe.phase='Game Info replacement visible';
+        }else{
+          issues.push(status);
+          if(lastDescriptionGameProbe?.appid===match.gameId)lastDescriptionGameProbe.phase=status;
+        }
+      }else{
+        
+        clearGameInfo(doc);
+        if(draw(doc,match.el,match.gameId,descriptions[match.gameId].trim(),position)){
+          applied++;status='Shown for Steam app '+match.gameId+' ('+position+')';
+        }else if(position==='hero_footer'&&!status.startsWith('Artwork Footer:')){
+          status='Artwork Footer: layout anchor unavailable';
+        }
+      }
+    }
+    cleanedInitialDocs=true;
+    if(applied){status='Custom description visible ('+applied+' panel'+(applied===1?'':'s')+')';markTiming('SCAN description ready',trigger)}
+    else if(realPageSeen)status=issues[issues.length-1]||'Game page detected, no description shown';
+    else status='Game page not visible while manager is open. Use Quick Access capture on GAME INFO.';
+    return applied;
+  }
+  const schedule=()=>{
+    if(stopped||pending!==null)return;
+    const state=getState()||{};
+    if((!state.enabled||!Object.keys(state.descriptions||{}).length)&&!owned.size&&!nativeInfo.size)return;
+    pending=setTimeout(()=>{pending=null;runNow('delayed')},300);
+  };
+  function start(){
+    for(const doc of documents())removeOldBlankGuard(doc);
+    runNow('startup');
+    for(const doc of documents())try{
+      const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+      if(typeof Observer!=='function')continue;
+      observedDocs.add(doc);
+      markTiming('watcher attached','doc '+observedDocs.size);
+      doc.addEventListener?.('click',markTabClick,true);
+      // Controller navigation may select tabs through focus rather than a
+      // mouse click. Capture focus without looking inside Decky/GTM panels.
+      doc.addEventListener?.('focusin',markTabClick,true);
+      scrollListeners.push(()=>{
+        doc.removeEventListener?.('click',markTabClick,true);
+        doc.removeEventListener?.('focusin',markTabClick,true);
+      });
+      const watcher=new Observer(records=>{
+        mutationBatches++;
+        // Decky/GTM/Plugin Store changes are not a reason to scan Steam.
+        if(records?.length&&records.every(r=>{
+          const el=r.target?.nodeType===3?r.target.parentElement:r.target;
+          try{return !!el?.closest?.('[data-titledeck-ui], [class*="decky" i], [class*="PluginStore" i], [id*="decky" i]')}catch{return false}
+        }))return;
+        const state=getState()||{};
+        if(state.description_position==='game_info'){
+          const id=routeId(doc);
+          if(!state.enabled||!id||!state.descriptions?.[id]){
+            // Cross-game navigation must never wait for the periodic scan to
+            // remove a previous app's custom description.
+            if(nativeInfo.has(doc)||warmPanels.has(doc)){
+              clearGameInfo(doc);warmPanels.delete(doc);verifiedRoot.delete(doc);
+            }
+            return;
+          }
+          // Some Steam builds remount the entire AppDetails view. Its
+          // generic parent may not contain the familiar GameInfo class when
+          // Steam queues the first observer delivery. Inspect only inserted
+          // AppDetails subtrees, never all documents or Decky plugin panels.
+          const newGameView=records?.some(r=>r.type==='childList'&&
+            Array.from(r.addedNodes||[]).some(n=>n?.nodeType===1&&
+              /AppDetails/i.test(String(n.className||''))&&!isOwnedNode(n)));
+          const explicit=isSteamGameInfoMutation(records)||newGameView;
+          const verified=mutationInsideVerifiedGame(doc,records,id);
+          if(verified)verifiedEvents++;
+          if(explicit||verified){
+            markTiming(explicit?'gameinfo mutation':'verified root mutation',
+              'doc '+(Array.from(observedDocs).indexOf(doc)+1));
+            // Try Steam's native descriptor in changed subtrees, THEN the
+            // verified active page. A generic hashed wrapper must not leave
+            // us waiting for the four-second fallback.
+            if(!(explicit&&applyGameInfoMutation(doc,records,state))&&
+               !applyVerifiedGameInfo(doc,state)){
+              schedule();
+            }
+          }
+          // The existing low-frequency ticker is a fallback for older Steam
+          // layouts whose class names cannot be recognized. Avoid scheduling
+          // a full traversal for every unrelated Decky, audio, or UI event.
+          return;
+        }
+        schedule();
+      });watcher.observe(doc.documentElement,{childList:true,subtree:true,attributes:true,characterData:true,attributeFilter:['class','style','hidden','aria-hidden']});watchers.push(watcher);
+      // Native Game Info needs no scroll-driven DOM updates; these can
+      // interfere with Steam's own scroll anchoring for long descriptions.
+      const reposition=()=>{if(getState()?.description_position==='hero_footer')schedule()};
+      doc.addEventListener?.('scroll',reposition,true);
+      doc.defaultView?.addEventListener?.('resize',reposition);
+      scrollListeners.push(()=>{doc.removeEventListener?.('scroll',reposition,true);doc.defaultView?.removeEventListener?.('resize',reposition)});
+    }catch{}
+    // Rare safety net; normal tab changes use the targeted observer above.
+    ticker=setInterval(()=>runNow('4s fallback'),4000);
+  }
+  function restoreGameInfo(appid='',previousText=''){
+    const target=appid?normId(appid):'';
+    for(const [doc,warm] of warmPanels)if(!target||warm.appid===target)warmPanels.delete(doc);
+    const previous=String(previousText||'').trim();
+    let original=target?String(getSteamOriginal(target)||'').trim():'';
+    if(target&&!original){
+      for(const doc of documents()){
+        const prior=nativeInfo.get(doc);
+        const saved=prior?.appid===target?prior.nativeNode?.textContent:'';
+        if(saved&&comparable(saved)!==comparable(previous)){
+          original=String(saved).trim();break;
+        }
+      }
+    }
+    for(const doc of documents()){
+      const prior=nativeInfo.get(doc);
+      if(prior&&(!target||prior.appid===target))clearGameInfo(doc);
+      
+      recoverGameInfoOrphans(doc);
+      if(target&&previous&&original)repairSteamRestore(doc,target,original,previous);
+    }
+  }
+  function stop(){
+    stopped=true;if(ticker!==null)clearInterval(ticker);if(pending!==null)clearTimeout(pending);
+    watchers.forEach(w=>w.disconnect());scrollListeners.forEach(stop=>stop());for(const doc of documents()){clear(doc);clearGameInfo(doc);removeOldBlankGuard(doc);recoverGameInfoOrphans(doc)}
+    verifiedRoot.clear();warmPanels.clear();observedDocs.clear();
+  }
+  return{start,stop,runNow,restoreGameInfo,timingReport,get shown(){return owned.size+nativeInfo.size},get checks(){return checks},get status(){return status}};
+}
+
 const STYLE=`
+/* Keep title and description restoration distinct on short Steam Deck screens. */
+.td-root .td-title-editor-toolbar .td-action{width:auto!important;flex:0 1 auto!important;min-width:0!important;white-space:normal!important;line-height:1.1!important}
+/* Short-screen description editor: accessible fixed actions and genuine page scrolling. */
+.td-root .td-description-toolbar{display:grid!important;grid-template-columns:1.15fr 1.1fr 1fr .7fr!important;min-width:0!important;gap:6px!important}
+.td-root .td-description-toolbar .td-action{width:100%!important;min-width:0!important;white-space:normal!important;line-height:1.1!important}
+.td-root [data-td-description-workspace]{overflow-y:auto!important;overscroll-behavior-y:contain!important;padding-bottom:92px!important;scroll-padding-bottom:80px!important;min-height:0!important;}
+.td-root [data-td-description-workspace] .td-game-editor-card{max-height:none!important;overflow:visible!important;min-height:max-content!important}
 /* Review uses six names per page, paginated through the entire alias collection. */
 .td-root .td-review-workspace{overflow:hidden!important;min-height:0;display:flex;flex-direction:column}
 .td-root .td-review-panel{max-width:850px;width:100%;height:100%;min-height:0;padding:12px 18px;margin:0 auto!important;display:flex;flex-direction:column;gap:5px;overflow:hidden}
@@ -310,9 +1418,13 @@ const STYLE=`
 .td-root button.td-tab,.td-root .td-tab{width:100%!important;height:32px!important;padding:4px 8px!important;font-size:13px!important;font-weight:700!important}.td-root button.td-action,.td-root .td-action{width:100%!important;height:33px!important;min-height:33px!important;padding:4px 8px!important;font-size:12px!important;font-weight:700!important;white-space:nowrap!important}.td-root .td-close{min-width:80px!important}
 .td-root button.td-game,.td-root .td-game{width:100%!important;min-height:0!important;height:auto!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:start!important;gap:7px!important;text-align:left!important;padding:8px!important;background:linear-gradient(160deg,#2b303a,#1b2028)!important;border:1px solid #424854!important;border-radius:11px!important;position:relative;overflow:hidden!important}
 .td-root button.td-game.gpfocus,.td-root button.td-game:focus-visible{border-color:#f3bb9a!important;outline:3px solid #f3bb9a!important;outline-offset:1px!important;background:#39303a!important}
-.td-game-artbox{width:100%;position:relative;aspect-ratio:600/850;min-height:0;max-height:185px;overflow:hidden;border-radius:7px;background:#2e3542}.td-art{width:100%;height:100%;object-fit:cover;display:block;background:#232935}.td-art-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#303440;color:#f4c2c9;font-size:35px;font-weight:850}.td-game-copy{display:flex;flex-direction:column;gap:3px;min-width:0;min-height:42px}.td-game-title{font-size:13px;font-weight:750;line-height:1.24;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}.td-game-sub{font-size:10px;color:#aeb5c0;line-height:1.15;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.td-game-mark{position:absolute;top:13px;right:13px;font-weight:800;font-size:9px;letter-spacing:.02em;border-radius:6px;padding:4px 6px;color:#fff;background:#9b4059;border:1px solid #d97889}
+.td-game-artbox{width:100%;position:relative;aspect-ratio:600/850;min-height:0;max-height:185px;overflow:hidden;border-radius:7px;background:#2e3542}.td-art{width:100%;height:100%;object-fit:cover;display:block;background:#232935}.td-art-pending{position:absolute;inset:0;z-index:0}.td-art{position:relative}.td-art-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#303440;color:#f4c2c9;font-size:35px;font-weight:850}.td-game-copy{display:flex;flex-direction:column;gap:3px;min-width:0;min-height:42px}.td-game-title{font-size:13px;font-weight:750;line-height:1.24;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}.td-game-sub{font-size:10px;color:#aeb5c0;line-height:1.15;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.td-game-mark{position:absolute;top:13px;right:13px;font-weight:800;font-size:9px;letter-spacing:.02em;border-radius:6px;padding:4px 6px;color:#fff;background:#9b4059;border:1px solid #d97889}
 .td-bottom{justify-content:space-between;color:#b7bec9;font-size:11px;gap:8px;padding:4px 13px}.td-bottom strong{color:#ecf0f5;font-size:11px}.td-status{color:#b4bac5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.td-message{position:absolute;bottom:46px;left:18px;right:18px;z-index:6;max-width:860px;margin:auto;background:#33262e;color:#f6c9d1;border:1px solid #905363;border-radius:11px;box-shadow:0 10px 25px #0009;padding:10px 14px;font-size:12px;pointer-events:none}.td-message.success{background:#23362f;color:#c4edd8;border-color:#527e66}
 .td-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center;color:#aeb6c3;padding:65px 18px}.td-empty h2{font-size:20px;color:#faf8f8;margin:0}.td-empty p{margin:0;max-width:480px}
+.td-saved-description-preview{max-height:138px;overflow:hidden;margin-top:10px!important;padding:10px 12px;border:1px solid #434e60;border-radius:8px;background:#1c2532;}
+.td-saved-description-heading{font-size:12px;font-weight:750;color:#e5edf8;margin-bottom:6px}
+.td-saved-description-excerpt{color:#bdcbdc;font-size:12px;line-height:1.4;overflow:hidden;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;max-height:52px}
+.td-saved-description-hint{font-size:10px;color:#aab9cc;margin-top:6px;line-height:1.3}
 .td-editor{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:190px minmax(0,1fr);gap:19px;padding:8px}.td-editor-art{width:190px;height:280px;object-fit:cover;border-radius:11px;background:#31353e;border:1px solid #4a4d57}.td-card{background:#252a33;border:1px solid #444c5b;border-radius:13px;padding:16px;min-width:0}.td-copy-label{color:#aeb6c2;font-size:11px;font-weight:750;letter-spacing:.075em}.td-title-large{font-size:23px;font-weight:800;line-height:1.25;overflow-wrap:anywhere;margin:6px 0 15px}.td-preview{background:#161a20;border:1px solid #595f6b;border-radius:9px;padding:12px 15px;margin:8px 0 14px;font-size:20px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}.td-editor-actions{display:flex;flex-direction:column;gap:8px;min-width:0}.td-editor-action-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}.td-editor-actions button.td-btn{min-height:44px!important}.td-editor-note{color:#b9c0cd;font-size:11px;line-height:1.4;margin-top:12px}.td-editor-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px}.td-small{font-size:12px;color:#c5cad1}.td-settings{max-width:820px;margin:auto;padding:15px}.td-setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #414752}.td-setting-row .td-btn{flex-shrink:0}
 .td-native-entry{max-width:840px;margin:12px auto;padding:14px 18px;display:flex;flex-direction:column;gap:15px}.td-native-entry .td-title-large{margin:4px 0}.td-native-field{width:100%;padding:6px 0}.td-native-field input,.td-native-field textarea{display:block!important;width:100%!important;min-width:0!important;min-height:49px!important;font-size:21px!important;font-weight:650!important;line-height:1.3!important;background:#151d29!important;color:#f7f9fc!important;border:2px solid #71839a!important;border-radius:9px!important;padding:9px 13px!important;box-sizing:border-box!important}.td-native-field input:focus,.td-native-field textarea:focus{outline:2px solid #efa578!important;outline-offset:1px!important}.td-native-entry .td-native-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.td-native-entry .td-editor-note{line-height:1.5}.td-native-hint{color:#d5dce9;font-size:13px;line-height:1.55}.td-native-entry .td-title-large{overflow-wrap:anywhere}@media(max-width:600px){.td-native-entry{padding:8px}.td-native-entry .td-native-buttons{gap:6px}.td-native-field input{font-size:17px!important}}
 
@@ -462,6 +1574,10 @@ const STYLE=`
  margin:0!important;padding:0!important;pointer-events:none!important;
 }
 .td-root.td-inline-keyboard-open .td-game-name-field{margin:3px 0 0!important;padding:2px 0!important}
+.td-root .td-description-character-count{font-size:12px;color:#b6cce6;margin:5px 0 2px;line-height:1.3;font-variant-numeric:tabular-nums}
+/* TitleDeck description warning: advisory only; saving remains enabled. */
+.td-description-character-count.td-description-warning{color:#ffda67!important;background:#48390d!important;border:1px solid #b58b28!important;border-radius:8px;padding:8px 10px;font-weight:750}
+.td-root.td-inline-keyboard-open .td-description-character-count{font-size:13px;color:#e2edff;margin:4px 2px}
 .td-root.td-inline-keyboard-open .td-inline-keyboard-fallback{
  height:auto!important;max-height:42px!important;opacity:1!important;overflow:visible!important;
  pointer-events:auto!important;margin-top:7px!important;
@@ -559,6 +1675,11 @@ function focusNode(el){
   try{el.focus?.({preventScroll:true});el.scrollIntoView?.({block:'nearest'});return el.ownerDocument?.activeElement===el;}catch{return false;}
 }
 function focusQuery(root,selector,delay=0){setTimeout(()=>{try{focusNode(root?.querySelector(selector));}catch{}},delay);}
+export function scrollDescriptionWorkspace(root,bottom=true){
+  const scroller=root?.querySelector?.('[data-td-description-workspace]');
+  if(!scroller)return false;
+  try{scroller.scrollTop=bottom?scroller.scrollHeight:0;return true}catch{return false}
+}
 function directionTo(root,next,e){const node=root?.querySelector?.(`[data-td-focus="${next}"]`);if(node && focusNode(node)){halt(e);return true;}return false;}
 export function gridDestination(index,d,length,width=5) {
   if(!Number.isInteger(index)||index<0||index>=length)return null;
@@ -617,11 +1738,101 @@ function Toast({notice}){
       h('span',{className:'td-toast-label'},notice.text)),
     h('div',{className:'td-toast-track','aria-hidden':'true'},h('div',{className:'td-toast-bar'})));
 }
-function Cover({id,title,className=''}){
-  const [broken,setBroken]=R.useState(false);
-  R.useEffect(()=>setBroken(false),[id]);
-  if(broken||Number(id)>4294967295)return h('div',{className:`td-art-fallback ${className}`},title?.trim()?.slice(0,2)?.toUpperCase()||'G');
-  return h('img',{className:`td-art ${className}`,loading:'lazy',alt:'',src:`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.jpg`,onError:()=>setBroken(true)});
+/** Prefer covers that Steam already has (including SteamGridDB custom art).
+ *  In Steam's Gaming Mode CEF, /customimages and /assets are native paths.
+ *  The public Steam CDN is a final fallback, never the only art source.
+ *  A missing user-customized image must not mutate Steam's artwork files. */
+export function coverSources(appid){
+  const id=normId(appid);
+  if(!id)return[];
+  return [
+    `/customimages/${id}p.png`,
+    `/customimages/${id}p.jpg`,
+    `/customimages/${id}p.webp`,
+    `/assets/${id}/library_600x900.jpg`,
+    `/assets/${id}/library_600x900.png`,
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.jpg`,
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.png`
+  ];
+}
+export function savedDescriptionPreview(text,limit=210){
+  const full=String(text||''),flat=full.replace(/\s+/g,' ').trim();
+  const max=Math.min(300,Math.max(80,Number(limit)||210));
+  return{length:Array.from(full).length,excerpt:flat.length>max?flat.slice(0,max).trimEnd()+'…':flat,
+    truncated:flat.length>max};
+}
+// Resolve artwork once, persist only successful source indices in TitleDeck's
+// private settings, and hydrate before rendering tiles on the next Deck start.
+// Failed candidates are remembered within a session, never embedded as URLs.
+const coverResolutionCache=new Map();
+const COVER_CACHE_MAX=1200, COVER_CACHE_TTL=30*24*60*60*1000;
+let coverPersistTimer=null,coverWriteRevision=0;
+export function hydrateCoverResolutionCache(snapshot){
+  if(!snapshot||typeof snapshot!=='object')return;
+  for(const [id,index] of Object.entries(snapshot)){
+    if(!normId(id)||!Number.isInteger(index)||index<0||index>=coverSources(id).length)continue;
+    const old=coverResolutionCache.get(id);
+    if(!old||!old.loaded)coverResolutionCache.set(id,{index,loaded:true,time:Date.now()});
+  }
+  while(coverResolutionCache.size>COVER_CACHE_MAX)coverResolutionCache.delete(coverResolutionCache.keys().next().value);
+}
+function successfulCoverIndices(){
+  const cache={};for(const [id,entry] of coverResolutionCache)if(entry.loaded)cache[id]=entry.index;
+  return cache;
+}
+function scheduleCoverPersistence(){
+  if(coverPersistTimer!==null)return;
+  const revision=coverWriteRevision;
+  coverPersistTimer=setTimeout(()=>{
+    coverPersistTimer=null;
+    if(revision!==coverWriteRevision)return;
+    // The backend writes an atomic independent JSON cache. Never block cover
+    // loading if the Decky bridge is temporarily disconnected at startup.
+    void call('save_cover_cache',successfulCoverIndices()).catch(()=>{});
+  },850);
+}
+export function cachedCoverStartIndex(appid){
+  const id=normId(appid),entry=coverResolutionCache.get(id);
+  if(!entry)return 0;
+  if(Date.now()-entry.time>COVER_CACHE_TTL){coverResolutionCache.delete(id);return 0;}
+  coverResolutionCache.delete(id);coverResolutionCache.set(id,entry);
+  return entry.index;
+}
+export function rememberCoverResolution(appid,index,loaded=false){
+  const id=normId(appid),sources=coverSources(id);
+  if(!id||!Number.isInteger(index)||index<0||index>=sources.length)return;
+  const existing=coverResolutionCache.get(id);
+  if(existing?.loaded&&!loaded&&existing.index!==index)return;
+  const next=loaded?index:Math.min(index+1,sources.length);
+  if(existing?.loaded===Boolean(loaded)&&existing.index===next)return;
+  coverResolutionCache.delete(id);
+  coverResolutionCache.set(id,{index:next,loaded:Boolean(loaded),time:Date.now()});
+  while(coverResolutionCache.size>COVER_CACHE_MAX)coverResolutionCache.delete(coverResolutionCache.keys().next().value);
+  if(loaded)scheduleCoverPersistence();
+}
+export function resetCoverResolutionCache(){
+  coverWriteRevision++;
+  if(coverPersistTimer!==null){clearTimeout(coverPersistTimer);coverPersistTimer=null}
+  coverResolutionCache.clear();
+}
+function Cover({id,title,className='',priority=false}){
+  const sources=coverSources(id);
+  const [candidate,setCandidate]=R.useState(()=>({id,index:cachedCoverStartIndex(id)}));
+  const [loadedKey,setLoadedKey]=R.useState('');
+  const index=candidate.id===id?candidate.index:cachedCoverStartIndex(id);
+  const key=`${id}-${index}`;
+  const ready=loadedKey===key;
+  const initials=title?.trim()?.slice(0,2)?.toUpperCase()||'G';
+  if(!sources.length||index>=sources.length)
+    return h('div',{className:`td-art-fallback ${className}`},initials);
+  // Keep a meaningful fallback visible until the browser has decoded artwork.
+  // The cover remains in its reserved rectangle; no blank image flicker.
+  return h(R.Fragment,null,
+    !ready?h('div',{className:'td-art-fallback td-art-pending','aria-hidden':'true'},initials):null,
+    h('img',{key,className:`td-art ${className}`,
+      style:ready?null:{opacity:0},loading:priority?'eager':'lazy',decoding:'async',alt:'',src:sources[index],
+      onLoad:()=>{rememberCoverResolution(id,index,true);setLoadedKey(key)},
+      onError:()=>{rememberCoverResolution(id,index,false);setLoadedKey('');setCandidate({id,index:Math.min(index+1,sources.length)})}}));
 }
 // Native Steam/Decky text entry. Never insert a custom alphabetic controller keypad.
 // Steam's overlay Paste can update the *DOM input value* without a React change event.
@@ -931,15 +2142,47 @@ let activeInlineKeyboard=null;
 // reliably deliver that press or any close event to a Decky route. Since no
 // second screen exists, dismissing the OSK is sufficient to reveal the editor.
 // Only the explicit Save custom title action ever persists an alias.
-export function InlineGameNameField({value,setValue,onEnter=()=>{}}){
-  const wrap=R.useRef(null),latest=R.useRef({value,setValue,onEnter});
-  latest.current={value,setValue,onEnter};
+export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180,label='Custom display title',
+  placeholder='Enter a game display name…',fieldKind='name',finishFocus='edit-save'}){
+  // Title fields remain at 180; descriptions have no artificial maxLength.
+  maxLength=fieldKind==='description'?undefined:maxLength;
+  const wrap=R.useRef(null),latest=R.useRef({value,setValue,onEnter,maxLength,finishFocus});
+  const clearedDraft=R.useRef(null),[clearUndoAvailable,setClearUndoAvailable]=R.useState(false);
+  latest.current={value,setValue,onEnter,maxLength,finishFocus};
   const sync=()=>{
     const field=wrap.current?.querySelector?.('input,textarea');
     if(typeof field?.value!=='string')return latest.current.value;
-    const next=field.value.slice(0,180);
-    if(next!==latest.current.value){latest.current.value=next;latest.current.setValue(next)}
+    // A legacy saved synopsis can exceed today's cap. Polling the Steam
+    // keyboard must never truncate an unchanged legacy description.
+    if(field.value===latest.current.value)return latest.current.value;
+    const max=latest.current.maxLength;
+    const next=Number.isFinite(max)&&max>0?field.value.slice(0,max):field.value;
+    if(next!==latest.current.value){
+      if(clearedDraft.current!==null){clearedDraft.current=null;setClearUndoAvailable(false)}
+      latest.current.value=next;latest.current.setValue(next);
+    }
     return next;
+  };
+  const applyDraft=next=>{
+    const field=wrap.current?.querySelector?.('input,textarea');
+    if(field&&typeof field.value==='string')field.value=next;
+    latest.current.value=next;
+    latest.current.setValue(next);
+  };
+  const clearOrUndo=()=>{
+    if(fieldKind!=='description')return;
+    if(clearedDraft.current!==null){
+      const previous=clearedDraft.current;
+      clearedDraft.current=null;setClearUndoAvailable(false);
+      applyDraft(previous);
+      return;
+    }
+    const before=sync(); // Capture unsaved Steam keyboard text before clearing.
+    if(!before)return;
+    clearedDraft.current=before;
+    applyDraft('');
+    setClearUndoAvailable(true);
+    // Only the draft changes. Saving or Restore Default remains explicit.
   };
   R.useEffect(()=>{
     const node=wrap.current;if(!node)return;
@@ -959,9 +2202,9 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{}}){
     const begin=()=>{
       requestedAt=Date.now();seenKeyboardStatus=false;domObserved=false;missing=0;
       motion.begin();
-      // Steam's OSK arrives in a different CEF window on physical Decks. Delay
-      // the fallback slightly to coincide with its entrance, not the button click.
-      schedule(()=>{if(motion.requested&&!motion.raised&&!seenKeyboardStatus)show()},260);
+      // A false/stale initial Steam keyboard status is not a confirmed close.
+      // This fallback must not be suppressed by an unrelated "closed" event.
+      schedule(()=>{if(motion.requested&&!motion.raised)show()},260);
     };
     const state=(status)=>{
       const value=keyboardStatusOpen(status);
@@ -1046,7 +2289,7 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{}}){
     const onDone=()=>{close();try{field()?.blur?.()}catch{}};
     node.addEventListener?.('titledeck-inline-keyboard-request',onBegin);
     node.addEventListener?.('titledeck-inline-keyboard-done',onDone);
-    activeInlineKeyboard={begin,close,done:onDone};
+    activeInlineKeyboard={begin,show,close,done:onDone};
     return()=>{
       stopped=true;motion.hide();
       if(activeInlineKeyboard?.begin===begin)activeInlineKeyboard=null;
@@ -1063,17 +2306,33 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{}}){
       for(const stop of dispose)try{stop()}catch{}
     };
   },[]);
-  const change=e=>{const next=textFromNativeEvent(e,latest.current.value).slice(0,180);
+  const change=e=>{const text=textFromNativeEvent(e,latest.current.value),max=latest.current.maxLength;
+    const next=Number.isFinite(max)&&max>0?text.slice(0,max):text;
+    if(next!==latest.current.value&&clearedDraft.current!==null){
+      clearedDraft.current=null;setClearUndoAvailable(false);
+    }
     latest.current.value=next;latest.current.setValue(next)};
   const enter=()=>{sync();activeInlineKeyboard?.close();latest.current.onEnter()};
   const props={value,onChange:change,onEnterKeyPress:enter,autoFocus:false,bShouldAutoFocus:false,
-    label:'Custom display title',placeholder:'Enter a game display name…',maxLength:180,
-    bShowClearAction:true,'aria-label':'Custom display title'};
-  return h('div',{ref:wrap,className:'td-native-field td-game-name-field','data-td-inline-game-name':'true',
+    label,placeholder,maxLength,
+    // Steam adds a clear-text X by default; retain it for title edits but
+    // not for descriptions, where a mistaken A press could erase a long draft.
+    bShowClearAction:fieldKind!=='description','aria-label':label};
+  return h('div',{ref:wrap,className:`td-native-field ${fieldKind==='description'?'td-game-description-field':'td-game-name-field'}`,
+    'data-td-inline-game-name':fieldKind==='name'?'true':undefined,'data-td-inline-description':fieldKind==='description'?'true':undefined,
     onInputCapture:sync,onPasteCapture:()=>setTimeout(sync,0)},
     UI?.TextField?h(UI.TextField,props):h('input',{...props,type:'text',onKeyDown:e=>{if(e?.key==='Enter'){e.preventDefault?.();enter()}}}),
+    fieldKind==='description'?h('div',{className:'td-description-character-count'+(Array.from(value).length>=DESCRIPTION_WARNING_THRESHOLD?' td-description-warning':''),
+      'data-td-description-count':'true',role:Array.from(value).length>=DESCRIPTION_WARNING_THRESHOLD?'status':undefined},
+      Array.from(value).length+' characters · '+(Array.from(value).length>=DESCRIPTION_WARNING_THRESHOLD
+        ?'⚠ Longer descriptions (1,247+ characters) may cause Steam Game Info to scroll or behave unexpectedly. You can still save your text.'
+        :'No character limit')):null,
     h('div',{className:'td-inline-keyboard-fallback'},
-      h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),'[data-td-focus="edit-save"]',50)}},'Done editing')));
+      fieldKind==='description'
+        ?h(Btn,{className:'td-inline-finish','data-td-description-clear':'true',
+          disabled:!clearUndoAvailable&&!value.length,onClick:clearOrUndo},
+          clearUndoAvailable?'↶ Undo clear':'Clear text field')
+        :h(Btn,{className:'td-inline-finish',onClick:()=>{activeInlineKeyboard?.done();focusQuery(wrap.current?.closest?.('.td-root'),`[data-td-focus="${latest.current.finishFocus}"]`,50)}},'Done editing')));
 }
 export function libraryMove(index,d,count,columns=5){
   if(!Number.isInteger(index)||index<0||index>=count)return null;
@@ -1122,17 +2381,20 @@ export function topMove(key,d,scope='all'){
 }
 // Editor focus works for every game. A missing or disabled action is never a destination.
 // Button IDs describe a stable 2 x 2 layout, independent of Steam's default focus order.
-export function editorDestination(key,d,{canSave=true,canRestore=true}={}){
+export function editorDestination(key,d,{canSave=true,canRestore=true,canRestoreDescription=false}={}){
   if(![9,10,11,12].includes(d))return null;
   const active={
     'close':{10:'edit-back'},
-    'edit-back':{9:'close',10:'edit-name'},
+    'edit-back':{9:'close',10:'edit-name',12:'edit-description'},
+    'edit-description':{11:'edit-back',12:'edit-description-restore',10:'edit-name'},
+    'edit-description-restore':{11:'edit-description',10:'edit-restore'},
     'edit-name':{9:'edit-back',12:'edit-clean',10:'edit-save'},
     'edit-clean':{9:'edit-back',11:'edit-name',10:'edit-restore'},
     'edit-save':{9:'edit-name',12:'edit-restore'},
     'edit-restore':{9:'edit-clean',11:'edit-save'}
   };
   let to=active[key]?.[d]||null;
+  if(to==='edit-description-restore'&&!canRestoreDescription)to=null;
   if(to==='edit-save'&&!canSave)to=d===10&&key==='edit-name'&&canRestore?'edit-restore':null;
   if(to==='edit-restore'&&!canRestore)to=d===10&&key==='edit-clean'&&canSave?'edit-save':null;
   return to;
@@ -1149,6 +2411,7 @@ function Manager(){
   const [selected,setSelected]=R.useState(''),[draft,setDraft]=R.useState(''),[notice,setNotice]=R.useState(null),[working,setWorking]=R.useState(false);
   const [entry,setEntry]=R.useState(''),[lastTile,setLastTile]=R.useState(''),[catalogBusy,setCatalogBusy]=R.useState(false);
   const [renderCols,setRenderCols]=R.useState(4);
+  const [descriptionDraft,setDescriptionDraft]=R.useState('');
   R.useEffect(()=>{
     const shell=root.current,win=shell?.ownerDocument?.defaultView;
     if(!shell)return;
@@ -1178,7 +2441,11 @@ function Manager(){
 
   const aliases=state.aliases||{};
   const remoteGames=R.useRef([]);
-  const fullLibrary=R.useCallback(async()=>{
+  const fullLibrary=R.useCallback(async({refreshArtwork=false}={})=>{
+    if(refreshArtwork){
+      resetCoverResolutionCache();
+      try{await call('save_cover_cache',{})}catch{}
+    }
     setCatalogBusy(true);
     try{
       const snapshot=await refreshState();
@@ -1201,9 +2468,34 @@ function Manager(){
   const openGame=g=>{
     activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);
     setLastTile(g.appid);setSelected(g.appid);setDraft(aliases[g.appid]||g.name);
+    setDescriptionDraft(state.descriptions?.[g.appid]||'');
     enterView('editor','edit-name');
+    // When returning from a long library list, don't inherit the old
+    // scroll position or jump to the bottom of a description preview.
+    setTimeout(()=>{const area=root.current?.querySelector?.('.td-workspace');if(area)area.scrollTop=0},145);
   };
   const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
+  const openDescription=()=>{
+    activeInlineKeyboard?.close();
+    setDescriptionDraft(state.descriptions?.[selected]||'');
+    enterView('description','description-open');
+    setTimeout(()=>scrollDescriptionWorkspace(root.current,false),110);
+  };
+  const openDescriptionTyping=()=>{
+    const wrap=root.current?.querySelector?.('[data-td-inline-description]');
+    const field=wrap?.querySelector?.('input, textarea');
+    if(!field){notify('Steam description text field not ready. Try again.',setNotice);return}
+    const area=root.current?.querySelector?.('.td-workspace');if(area)area.scrollTop=0;
+    // Follow the verified Change Name sequence exactly: arm keyboard observer,
+    // focus the Decky native TextField, then dispatch its Steam click handler.
+    activeInlineKeyboard?.begin();
+    try{field.focus?.({preventScroll:true})}catch{try{field.focus?.()}catch{}}
+    try{field.click?.()}catch{}
+    // Steam's OSK is sometimes raised before our 260-ms keyboard signal.
+    // Raise the editor layout at once, after the click has been delivered.
+    // This also avoids the reported need to press Down then Up.
+    activeInlineKeyboard?.show?.();
+  };
   const cancelCleanupPreview=()=>{setCleanupPreview(null);focusQuery(root.current,'[data-td-focus="edit-clean"]',45)};
   const applyCleanup=()=>{
     if(!cleanupPreview||cleanupPreview.appid!==selected)return;
@@ -1255,6 +2547,7 @@ function Manager(){
     if(view==='resetConfirm'){enterView('settings','setting-restore-all');return;}
     if(view==='backupConfirm'){enterView('settings','setting-backup-restore');return;}
     if(view==='search'||view==='appid'||view==='settings'){returnLibrary();return;}
+    if(view==='description'){enterView('editor','edit-description');return;}
     if(view==='editor')returnLibrary();
   };
   const save=async(method,...args)=>{
@@ -1262,12 +2555,56 @@ function Manager(){
     setCleanupPreview(null);setCleanupUndo(null);
     setWorking(true);
     try{await call(method,...args);const verified=await refreshState();
-      const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]:method==='delete_alias'?!verified.aliases?.[String(args[0])]:verified.enabled===args[0];
+      const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]
+        :method==='delete_alias'?!verified.aliases?.[String(args[0])]
+        :method==='set_description_position'?verified.description_position===args[0]
+        :verified.enabled===args[0];
       if(!valid)throw Error('Settings readback failed');
-      adapter?.runNow();
       notify(method==='save_alias'?`Saved “${args[1]}”. TitleDeck confirmed your alias. Open Steam's game page to check the visible title.`:
-        method==='delete_alias'?'Restored original Steam title.':'Display replacements updated.',setNotice,true);
+        method==='delete_alias'?'Restored original Steam title.'
+        :method==='set_description_position'?`Description placement changed to ${args[0]==='game_info'?'Game Info':args[0]==='hero_footer'?'Artwork Footer':'Below Play'}.`
+        :'Display replacements updated.',setNotice,true);
     }catch(e){notify('Could not save: '+String(e?.message||e),setNotice);}finally{setWorking(false);}
+  };
+  const saveDescription=async(remove=false)=>{
+    if(working)return;
+    const content=descriptionDraft.replace(/\r\n?/g,'\n').trim();
+    if(!remove&&(!content||/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(content))){
+      notify('Description must contain plain text without control characters.',setNotice);return;
+    }
+    setWorking(true);
+    try{
+      if(remove){
+        await call('delete_description',selected);
+        // Remove the TitleDeck-owned Game Info element immediately. Never
+        // repeatedly rewrite Steam's React text during subsequent scans.
+        descriptionAdapter?.restoreGameInfo?.(selected,state.descriptions?.[selected]||'');
+      }else await call('save_description',selected,content);
+      const verified=await refreshState();
+      if(remove?Boolean(verified.descriptions?.[selected]):verified.descriptions?.[selected]!==content)throw Error('Description readback did not match.');
+      setDescriptionDraft(remove?'':content);
+      notify(remove?'Removed your local description override.':'Description saved. The game-page panel appears when Steam shows the matching game.',setNotice,true);
+    }catch(e){notify('Could not save description: '+String(e?.message||e),setNotice);}
+    finally{setWorking(false);}
+  };
+  const restoreOriginalGame=async()=>{
+    if(working||!selected)return;
+    const target=selected,previous=state.descriptions?.[target]||'';
+    activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);
+    setWorking(true);
+    try{
+      await call('restore_original_game',target);
+      const verified=await refreshState();
+      if(verified.aliases?.[target]||verified.descriptions?.[target])
+        throw Error('Original game state was not restored in saved settings.');
+      // The shared snapshot already triggers both display adapters. Explicitly
+      // dismantle the active Game Info shell before the next Steam paint.
+      descriptionAdapter?.restoreGameInfo?.(target,previous);
+      adapter?.runNow();
+      setDraft(original);setDescriptionDraft('');
+      notify('Restored original game state: Steam title and description. Unsaved edits cleared.',setNotice,true);
+    }catch(e){notify('Could not restore original game state: '+String(e?.message||e),setNotice);}
+    finally{setWorking(false)}
   };
   const restoreAll=async()=>{
     if(working)return;
@@ -1301,7 +2638,7 @@ function Manager(){
   const editorNav=(key,e)=>{
     const d=dir(e);
     if(![9,10,11,12].includes(d))return false;
-    const to=editorDestination(key,d,{canSave:!!draft.trim()&&!working,canRestore:!working});
+    const to=editorDestination(key,d,{canSave:!!draft.trim()&&!working,canRestore:!working,canRestoreDescription:!!state.descriptions?.[selected]&&!working});
     if(to&&directionTo(root.current,to,e))return true;
     // Steam sometimes wraps DialogButton with a non-focusable shell. If Decky's
     // navigation tree was refreshed during rerender, retry on the next UI tick.
@@ -1314,8 +2651,8 @@ function Manager(){
     if(to&&directionTo(root.current,to,e))return true;
     halt(e);return true;
   };
-  const title=view==='library'?'Library':view==='editor'?'Rename game':view==='settings'?'Settings':view==='resetConfirm'?'Restore original titles':view==='backupConfirm'?'Restore backup':view==='search'?'Search your games':'Find game by App ID';
-  const summary=view==='library'?`${games.length} games  ·  ${installedCount} installed  ·  ${Object.keys(aliases).length} renamed`:'Custom display titles, saved locally';
+  const title=view==='description'?'Edit game description':view==='library'?'Library':view==='editor'?'Rename game':view==='settings'?'Settings':view==='resetConfirm'?'Restore original titles':view==='backupConfirm'?'Restore backup':view==='search'?'Search your games':'Find game by App ID';
+  const summary=view==='library'?`${games.length} games  ·  ${installedCount} installed  ·  ${Object.keys(aliases).length} renamed`:view==='description'?'Local custom descriptions · original Steam data preserved':'Custom display titles, saved locally';
   const changeFilter=k=>{setScope(k);setQuery('');focusQuery(root.current,'[data-td-focus="tile-0"]',65);};
   const showMessage=h(Toast,{notice});
   const footer=(primary,secondary)=>h('div',{className:'td-bottom'},h('span',{className:'td-status'},primary),h('strong',null,secondary));
@@ -1325,7 +2662,7 @@ function Manager(){
       ...[['all','All games'],['installed','Installed'],['renamed','Renamed']].map(([k,label])=>h(Btn,{key:k,className:'td-tab',kind:scope===k?'selected':'',
         'data-td-focus':`filter-${k}`,nav:e=>navHeader(`filter-${k}`,e),onClick:()=>changeFilter(k)},label)));
     actions=h(UI.Focusable,{'flow-children':'right',className:'td-actions','data-td-layout':'tool-row'},
-      ...[['tool-search',query?`Search: ${query}`:'⌕ Search library',openSearch],['tool-id','App ID',manualId],['tool-refresh',catalogBusy?'Scanning…':'↻ Refresh',()=>void fullLibrary().then(()=>notify('Game list refreshed.',setNotice,true)).catch(e=>notify(String(e),setNotice))],['tool-settings','⚙ Settings',()=>enterView('settings','setting-0')]].map(([key,label,click])=>h(Btn,{key,className:'td-action','data-td-focus':key,
+      ...[['tool-search',query?`Search: ${query}`:'⌕ Search library',openSearch],['tool-id','App ID',manualId],['tool-refresh',catalogBusy?'Scanning…':'↻ Refresh',()=>void fullLibrary({refreshArtwork:true}).then(()=>notify('Game list and artwork sources refreshed.',setNotice,true)).catch(e=>notify(String(e),setNotice))],['tool-settings','⚙ Settings',()=>enterView('settings','setting-0')]].map(([key,label,click])=>h(Btn,{key,className:'td-action','data-td-focus':key,
         nav:e=>navHeader(key,e),onClick:click,disabled:catalogBusy&&key==='tool-refresh'},label)),
       h('span',{className:'td-results'},`${filtered.length} shown`));
     workspace=h('div',{className:'td-workspace','data-td-scroll':'library'},
@@ -1336,7 +2673,7 @@ function Manager(){
           ...row.map((game,col)=>{const index=rowIndex*renderCols+col;return h(Btn,{
             key:game.appid,className:'td-game','data-td-game':game.appid,'data-td-focus':`tile-${index}`,
             nav:e=>navTile(index,e),onClick:()=>openGame(game),onFocus:()=>setLastTile(game.appid),onGamepadFocus:()=>setLastTile(game.appid)},
-            h('div',{className:'td-game-artbox'},h(Cover,{id:game.appid,title:game.name}),aliases[game.appid]?h('span',{className:'td-game-mark'},'RENAMED'):null),
+            h('div',{className:'td-game-artbox'},h(Cover,{id:game.appid,title:game.name,priority:index<24}),aliases[game.appid]?h('span',{className:'td-game-mark'},'RENAMED'):null),
             h('div',{className:'td-game-copy'},h('div',{className:'td-game-title'},aliases[game.appid]||game.name),
               h('div',{className:'td-game-sub'},aliases[game.appid]?game.name:game.installed?'● Installed':`App ${game.appid}`)));}))))
        :h('div',{className:'td-empty'},h('h2',null,query?'No matching games':'No games in this category'),h('p',null,query?'Open Search to try a different title or App ID.':'Refresh the library or choose All games.'),
@@ -1344,7 +2681,10 @@ function Manager(){
     bottom=footer('D-pad: browse   •   A: rename   •   B: back   •   Search and filters above',`${filtered.length} titles`);
   }else if(view==='editor'){
     rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM NAME'),h('div',{className:'td-rail-label',style:{textAlign:'center'}},'Steam game '+selected),h('div',{className:'td-rail-label',style:{textAlign:'right'}},aliases[selected]?'● Saved override':'Original title'));
-    actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'edit-back',nav:e=>editorNav('edit-back',e),onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Edit → Save → Verify in Steam'));
+    actions=h('div',{className:'td-actions td-title-editor-toolbar',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'edit-back',nav:e=>editorNav('edit-back',e),onClick:returnLibrary},'← All games'),h(Btn,{className:'td-action','data-td-focus':'edit-description',nav:e=>editorNav('edit-description',e),onClick:openDescription},state.descriptions?.[selected]?'✎ Edit description ●':'✎ Add description'),
+      state.descriptions?.[selected]?h(Btn,{className:'td-action','data-td-focus':'edit-description-restore',nav:e=>editorNav('edit-description-restore',e),disabled:working,
+        onClick:()=>{activeInlineKeyboard?.close();void saveDescription(true)}},'↶ Restore Steam description'):null,
+      h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Edit → Save → Verify in Steam'));
     workspace=h('div',{className:'td-workspace'},h('div',{className:'td-editor'},h('div',null,h('div',{className:'td-editor-art'},h(Cover,{id:selected,title:original}))),
       h('div',{className:'td-card td-game-editor-card'},
         h('div',{className:'td-copy-label'},'CUSTOM DISPLAY TITLE'),
@@ -1366,14 +2706,59 @@ function Manager(){
             h(Btn,{'data-td-focus':'edit-clean',nav:e=>editorNav('edit-clean',e),onClick:suggestCleanup},cleanupUndo?.appid===selected&&draft===cleanupUndo.after?'↶ Undo cleanup':'Suggest cleanup')),
           h(UI.Focusable,{'flow-children':'right',className:'td-editor-action-row','data-td-layout':'editor-bottom'},
             h(Btn,{'data-td-focus':'edit-save',nav:e=>editorNav('edit-save',e),disabled:working||!draft.trim(),onClick:()=>{activeInlineKeyboard?.close();void save('save_alias',selected,draft.trim())}},working?'Saving…':'✓ Save custom title'),
-            h(Btn,{'data-td-focus':'edit-restore',nav:e=>editorNav('edit-restore',e),disabled:working,onClick:()=>{
-              activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);setDraft(original);
-              if(aliases[selected])void save('delete_alias',selected);
-              else notify('Unsaved edits cleared. Original Steam title restored in the editor.',setNotice,true);
-            }},'Restore original'))),
-        h('div',{className:'td-editor-note'},aliases[selected]?`Saved as: ${aliases[selected]}. Changes to visible game titles are active when TitleDeck is enabled.`:
-          'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original clears a draft or saved alias.'))));
+            h(Btn,{'data-td-focus':'edit-restore',nav:e=>editorNav('edit-restore',e),disabled:working,
+              onClick:()=>void restoreOriginalGame()},'↶ Restore original game'))),
+        h('div',{className:'td-editor-note'},aliases[selected]?`Saved as: ${aliases[selected]}. Changes to visible game titles are active when TitleDeck is enabled. Restore original game also removes any saved description.`:
+          'Change name opens Steam’s keyboard. Suggest cleanup previews a change before applying it, with Undo available afterward. Restore original game clears both title and description overrides.'),
+        state.descriptions?.[selected]?h('div',{className:'td-editor-note td-saved-description-preview','data-td-saved-description-preview':'true'},
+          h('div',{className:'td-saved-description-heading'},
+            'Saved description · '+savedDescriptionPreview(state.descriptions[selected]).length+' characters'),
+          h('div',{className:'td-saved-description-excerpt'},
+            savedDescriptionPreview(state.descriptions[selected]).excerpt),
+          h('div',{className:'td-saved-description-hint'},
+            'Full text is preserved. Use Edit description or Restore Steam description above.')):null)));
     bottom=footer('A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
+  }else if(view==='description'){
+    const stored=state.descriptions?.[selected]||'';
+    const descNav=(key,e)=>{
+      const d=dir(e),dest={
+        'description-back':{10:'description-open',12:'description-save'},
+        'description-open':{9:'description-back',10:'description-input',12:'description-save'},
+        'description-input':{9:'description-open',10:'description-save'},
+        'description-save':{9:'description-open',12:'description-restore',11:'description-back'},
+        'description-restore':{11:'description-save',12:'description-bottom',9:'description-open'},
+        'description-bottom':{11:'description-restore',10:'description-open'}
+      }[key]?.[d];
+      if(dest&&directionTo(root.current,dest,e))return true;
+      halt(e);return true;
+    };
+    rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM DESCRIPTION'),
+      h('div',{className:'td-rail-label'},'Steam game '+selected),
+      h('div',{className:'td-rail-label'},stored?'● Locally saved':'○ No override'));
+    // Save and Restore stay visible in the fixed toolbar. On short-screen Deck
+    // resolutions the previous buttons were clipped below a nested focus view.
+    actions=h('div',{className:'td-actions td-description-toolbar',style:{display:'flex'}},
+      h(Btn,{className:'td-action','data-td-focus':'description-back',nav:e=>descNav('description-back',e),onClick:()=>enterView('editor','edit-description')},'← Game editor'),
+      h(Btn,{className:'td-action','data-td-focus':'description-save',nav:e=>descNav('description-save',e),disabled:working||!descriptionDraft.trim(),onClick:()=>void saveDescription(false)},working?'Saving…':'✓ Save description'),
+      h(Btn,{className:'td-action','data-td-focus':'description-restore',nav:e=>descNav('description-restore',e),disabled:working||(!stored&&!descriptionDraft.trim()),onClick:()=>void saveDescription(true)},'Restore default'),
+      h(Btn,{className:'td-action','data-td-focus':'description-bottom',nav:e=>descNav('description-bottom',e),onClick:()=>scrollDescriptionWorkspace(root.current,true)},'↓ Bottom'));
+    workspace=h('div',{className:'td-workspace','data-td-description-workspace':'true'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto',paddingBottom:28}},
+      h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
+      h('p',{className:'td-editor-note'},'Customize the description displayed locally on the matching Steam game page. Game Info mode follows Steam’s own styling; other placements use separate panels. Original Steam metadata stays unchanged.'),
+      h(UI.Focusable,{'flow-children':'down'},h(Btn,{'data-td-focus':'description-open',nav:e=>descNav('description-open',e),onClick:openDescriptionTyping},'⌨ Edit description using Steam keyboard')),
+      h('div',{'data-td-focus':'description-input',className:'td-description-native-input',
+        onGamepadDirection:e=>descNav('description-input',e)},
+        h(InlineGameNameField,{value:descriptionDraft,setValue:setDescriptionDraft,
+          label:'Custom game description',
+          placeholder:'Write your custom description…',fieldKind:'description',finishFocus:'description-save',
+          onEnter:()=>focusQuery(root.current,'[data-td-focus="description-save"]',70)})),
+      h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',minHeight:85,
+        maxHeight:160,overflowY:'auto',padding:'14px 16px',borderRadius:10,background:'#172234',border:'1px solid #43566e'}},
+        descriptionDraft||'Your custom description preview will appear here.'),
+      h('div',{className:'td-editor-original-meta'},'No description character limit · At 1,247 characters a yellow Steam scrolling warning appears; saving remains available · Save and Restore are above'),
+      stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:150,overflowY:'auto',marginTop:15}},'Saved local description: '+stored):null
+    ));
+    bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
   }else if(view==='keyboard'||view==='search'||view==='appid'){
     const isTitle=view==='keyboard',isSearch=view==='search';
     const context=isTitle?'Change display title':isSearch?'Search your game library':'Find game by Steam App ID';
@@ -1449,7 +2834,7 @@ function Manager(){
     actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'settings-back',nav:e=>{if(dir(e)===10)return directionTo(root.current,'setting-0',e);if(dir(e)===9)return directionTo(root.current,'close',e);halt(e);return true;},onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Aliases & recovery'));
     const settingPanel=(id,title,desc,action,extra='',wide=false)=>h('section',{className:`td-setting-panel ${wide?'td-panel-wide':''}`,'data-td-setting':id},
       h('h3',null,title),h('p',null,desc),extra?h('div',{className:'td-mini-state'},extra):null,action);
-    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],['setting-scan'],['setting-restore-all']];
+    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],developerDiagnosticsEnabled()?['setting-placement-info','setting-scan']:['setting-placement-info'],['setting-placement-hero'],['setting-placement-below'],['setting-restore-all']];
     const settingsDirection=(key,e)=>{
       const d=dir(e),coord=settingsGrid.flatMap((r,y)=>r.map((v,x)=>({v,y,x}))).find(x=>x.v===key);
       if(!coord)return false;
@@ -1466,7 +2851,7 @@ function Manager(){
     const safeCall=async(name,success)=>{if(working)return;setWorking(true);try{const result=await call(name);await refreshState();adapter?.runNow();notify(success(result),setNotice,true);}catch(e){notify(`Could not ${name.replaceAll('_',' ')}: ${String(e?.message||e)}.`,setNotice);}finally{setWorking(false)}};
     workspace=h('div',{className:'td-workspace','data-td-scroll':'settings'},h('div',{className:'td-settings'},
       h('h2',{className:'td-title-large'},'Settings'),
-      h('p',{className:'td-settings-intro'},'Make your library yours. Every name stays in TitleDeck, never in Steam game files. Your existing changes remain safe.'),
+      h('p',{className:'td-settings-intro'},'Make your library yours. Custom titles and descriptions stay local to TitleDeck; original Steam metadata remains unchanged.'),
       h('div',{className:'td-settings-grid'},
         settingPanel('overrides','Display title replacement','Keep your custom titles active throughout supported Steam screens.',
           button(state.enabled?'Pause replacements':'Enable replacements',()=>void save('set_enabled',!state.enabled),{focus:'setting-0'}),state.enabled?'● Enabled':'○ Paused'),
@@ -1476,8 +2861,20 @@ function Manager(){
           button('Restore saved backup',()=>{setView('backupConfirm');focusQuery(root.current,'[data-td-focus="backup-cancel"]',90)},{disabled:!manual.available,focus:'setting-backup-restore'}),manual.available?'● Backup available':'○ No backup'),
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
-        settingPanel('diagnostics','Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Saved names: ${aliasCount}. No Steam artwork or metadata is modified.`,
-          button('Rescan Steam titles',()=>{adapter?.runNow();notify(`Steam display scan complete. Visible matches: ${adapter?.applied||0}.`,setNotice,true)},{focus:'setting-scan'})),
+        settingPanel('description-placement','Custom game description location',
+          'Game Info replaces the visible description inside Steam’s GAME INFO tab. Artwork Footer uses the strip above Play. Below Play keeps the full-width panel. All three preserve your original Steam metadata.',
+          h('div',{className:'td-card-buttonrow',style:{display:'grid',gridTemplateColumns:'1fr',gap:6}},
+            button(state.description_position==='game_info'?'✓ Game Info (selected)':'Show inside GAME INFO',
+              ()=>void save('set_description_position','game_info'),{focus:'setting-placement-info'}),
+            button(state.description_position==='hero_footer'?'✓ Artwork Footer (selected)':'Show in Artwork Footer',
+              ()=>void save('set_description_position','hero_footer'),{focus:'setting-placement-hero'}),
+            button(state.description_position==='below_play'?'✓ Below Play (selected)':'Show Below Play',
+              ()=>void save('set_description_position','below_play'),{focus:'setting-placement-below'})),
+          state.description_position==='game_info'?'● Game Info selected · open Steam’s GAME INFO tab'
+            :state.description_position==='hero_footer'?'● Artwork Footer selected · compact preview above Play'
+            :'● Below Play selected · full description panel'),
+        ...(developerDiagnosticsEnabled()?[settingPanel('diagnostics','Developer: Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Current view: ${descriptionAdapter?.status||'not ready'}. Last captured Steam game page: ${formatDescriptionGameProbe()}. Native Game Info data: ${gameInfoDataAdapter?.status||'not connected'}; hooks ${gameInfoDataAdapter?.hookedStores||0}, overrides ${gameInfoDataAdapter?.overrides||0}. Description placement: ${state.description_position==='game_info'?'Game Info':state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
+          button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'}))]:[]),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
           button('Review Restore All…',startRestoreAll,{disabled:!aliasCount,focus:'setting-restore-all'}),
@@ -1492,15 +2889,22 @@ function Manager(){
       h('header',{className:'td-header'},h('div',{className:'td-identity'},h('img',{src:ICON_DATA_URI,className:'td-logo',alt:''}),
         h('div',{style:{minWidth:0}},h('div',{className:'td-heading'},'TitleDeck ',h('span',{className:'td-version-chip'},`v${PLUGIN_VERSION}`),' · ',title),h('div',{className:'td-sub'},summary))),
         h('div',{className:'td-header-tools'},h('span',{className:'td-pill'},`${Object.keys(aliases).length} renamed`),
-          h(Btn,{className:'td-close','data-td-focus':'close',nav:e=>view==='editor'?editorNav('close',e):navHeader('close',e),onClick:back},view==='library'?'✕ Close':'← Back'))),
+          h(Btn,{className:'td-close','data-td-focus':'close',nav:e=>view==='editor'?editorNav('close',e):view==='description'?null:navHeader('close',e),onClick:back},view==='library'?'✕ Close':'← Back'))),
       rail,actions,workspace,bottom,showMessage));
 }
 function QuickPanel(){
- const data=useStateSnapshot(),[error,setError]=R.useState('');
+ const data=useStateSnapshot(),[error,setError]=R.useState(''),[capture,setCapture]=R.useState('');
  const open=()=>{try{UI.Navigation.CloseSideMenus?.();UI.Navigation.Navigate(ROUTE);}catch(e){setError(String(e));}};
+ const scan=()=>{try{setCapture(descriptionAdapter?.timingReport?.()||'Game Info adapter not connected')}
+   catch(e){setCapture('Game Info scan error: '+String(e?.message||e))}};
  return h(UI.PanelSection,{title:'TitleDeck'},h('div',{'data-titledeck-ui':'true'},
-   h('div',{style:{display:'flex',alignItems:'center',gap:9,padding:'6px 0'}},h('img',{src:ICON_DATA_URI,style:{width:42,height:42,borderRadius:9}}),h('div',null,h('div',{style:{display:'flex',alignItems:'center',gap:7}},h('strong',null,'TitleDeck'),h('span',{className:'td-qam-version',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),h('div',{style:{fontSize:12,opacity:.7}},`${Object.keys(data.aliases||{}).length} custom names`))),
+   h('div',{style:{display:'flex',alignItems:'center',gap:9,padding:'6px 0'}},h('img',{src:ICON_DATA_URI,style:{width:42,height:42,borderRadius:9}}),h('div',null,h('div',{style:{display:'flex',alignItems:'center',gap:7}},h('strong',null,'TitleDeck'),h('span',{className:'td-qam-version',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),h('div',{style:{fontSize:12,opacity:.7}},Object.keys(data.descriptions||{}).length?`${Object.keys(data.aliases||{}).length} names · ${Object.keys(data.descriptions||{}).length} descriptions`:`${Object.keys(data.aliases||{}).length} custom names`))),
    h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:open,layout:'below'},'Open full library manager')),
+   ...(developerDiagnosticsEnabled()?[
+     h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:scan,layout:'below'},'Capture Game Info timing')),
+     h('div',{style:{fontSize:11,opacity:.84,lineHeight:1.4,padding:'6px 4px',whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:250,overflowY:'auto'}},
+       capture||'Developer timing capture. Switch Community / Game Info twice, then tap Capture.')
+   ]:[]),
    error?h('div',null,error):null));
 }
 function discoverDocuments(){
@@ -1525,12 +2929,14 @@ function SteamDocumentAnchor(){
     if(!doc?.body)return;
     if(steamDocument!==doc){
       steamDocument=doc;
-      adapter?.stop();
+      adapter?.stop();descriptionAdapter?.stop();gameInfoDataAdapter?.stop();
       adapter=createTitleAdapter(doc,()=>latestState,()=>doc.defaultView?.appStore||globalThis.appStore,()=>[doc,...discoverDocuments()]);
-      adapter.start();
+      descriptionAdapter=createDescriptionAdapter(doc,()=>latestState,()=>[doc,...discoverDocuments()],undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');
+      gameInfoDataAdapter=createGameInfoDataAdapter(()=>latestState,()=>[globalThis,doc.defaultView,...discoverDocuments().map(d=>d.defaultView)]);
+      adapter.start();descriptionAdapter.start();gameInfoDataAdapter.start();
       steamBridgeStatus='Connected to Steam UI document';
     }
-    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
+    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
   },[]);
   return h('span',{ref,style:{display:'none'},'data-titledeck-ui':'true'});
 }
@@ -1543,10 +2949,12 @@ export default function createPlugin(){
  }else{steamBridgeStatus='Steam UI global component API unavailable';}
  // Fallback adapter watches only the plugin document until the real Steam anchor mounts.
  if(!adapter){adapter=createTitleAdapter(globalThis.document,()=>latestState,()=>globalThis.appStore,()=>steamDocument?[steamDocument]:discoverDocuments());adapter.start();}
+ if(!descriptionAdapter){descriptionAdapter=createDescriptionAdapter(globalThis.document,()=>latestState,()=>steamDocument?[steamDocument]:discoverDocuments(),undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');descriptionAdapter.start();}
+ if(!gameInfoDataAdapter){gameInfoDataAdapter=createGameInfoDataAdapter(()=>latestState,()=>[globalThis,steamDocument?.defaultView,...discoverDocuments().map(d=>d.defaultView)]);gameInfoDataAdapter.start();}
  refreshState().catch(e=>console.warn('[TitleDeck] state load:',e));
  return{name:PLUGIN,titleView:h('span',{style:{display:'flex',alignItems:'center',gap:8}},'TitleDeck',h('span',{className:'td-version-chip',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),content:h(QuickPanel),
    icon:h('img',{src:ICON_DATA_URI,alt:'TitleDeck',style:{width:24,height:24,objectFit:'contain'}}),
-   onDismount(){adapter?.stop();adapter=null;steamDocument=null;
+   onDismount(){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;
      try{api.routerHook?.removeGlobalComponent?.(STEAM_DOC_ANCHOR)}catch{}
      try{api.routerHook?.removeRoute?.(ROUTE)}catch{}
      bridge=null;observers.clear();}};

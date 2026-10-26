@@ -20,6 +20,7 @@ except ImportError:  # local unit tests only
 
 SCHEMA = 1
 MAX_ALIAS = 180
+DESCRIPTION_WARNING_THRESHOLD = 1247
 MAX_ALIAS_ENTRIES = 2000
 APPID = re.compile(r"^[1-9][0-9]{0,11}$")
 QUOTED_FIELD = re.compile(r'"(?P<key>[^"\\]+)"\s+"(?P<value>(?:\\.|[^"\\])*)"')
@@ -50,8 +51,24 @@ def validate_title(value: Any) -> str:
     return value
 
 
+def validate_description(value: Any, *, allow_legacy: bool = False) -> str:
+    """Validate plain text without an arbitrary character cap.
+
+    Steam UI may be less stable with long synopses; the frontend gives a
+    yellow warning starting at 1,247 characters but users can still save.
+    """
+    if not isinstance(value, str):
+        raise ValueError("Description must be text")
+    value = value.replace("\r\n", "\n").replace("\r", "\n").strip()
+    if not value or any(
+        (ord(ch) < 32 and ch not in "\n\t") or ord(ch) == 127 for ch in value
+    ):
+        raise ValueError("Description must contain non-empty plain text without control characters")
+    return value
+
+
 def blank_state() -> dict[str, Any]:
-    return {"schema": SCHEMA, "enabled": True, "aliases": {}}
+    return {"schema": SCHEMA, "enabled": True, "aliases": {}, "descriptions": {}, "description_position": "game_info"}
 
 
 def load_state(path: Path | None = None) -> dict[str, Any]:
@@ -67,7 +84,17 @@ def load_state(path: Path | None = None) -> dict[str, Any]:
         raise ValueError("Invalid alias collection")
     for appid, title in record.items():
         aliases[normalize_id(appid)] = validate_title(title)
-    return {"schema": SCHEMA, "enabled": raw.get("enabled") is not False, "aliases": aliases}
+    descriptions: dict[str, str] = {}
+    saved_descriptions = raw.get("descriptions", {})
+    if not isinstance(saved_descriptions, dict) or len(saved_descriptions) > MAX_ALIAS_ENTRIES:
+        raise ValueError("Invalid description collection")
+    for appid, description in saved_descriptions.items():
+        descriptions[normalize_id(appid)] = validate_description(description, allow_legacy=True)
+    position = raw.get("description_position", "below_play")
+    if position not in ("below_play", "hero_footer", "game_info") or not isinstance(position, str):
+        raise ValueError("Invalid description placement")
+    return {"schema": SCHEMA, "enabled": raw.get("enabled") is not False,
+            "aliases": aliases, "descriptions": descriptions, "description_position": position}
 
 
 def store_state(state: dict[str, Any], path: Path | None = None) -> None:
@@ -150,18 +177,49 @@ def find_installed_games(home: Path | None = None) -> list[dict[str, str]]:
     return sorted(games.values(), key=lambda g: (g["name"].casefold(), int(g["appid"])))[:5000]
 
 
+# TitleDeck-owned artwork resolution hints. This file contains numeric App IDs
+# and source indices only, not downloaded images or Steam metadata.
+COVER_CACHE_SIZE = 1200
+
+
+def cover_cache_path() -> Path:
+    return settings_path().with_name("titledeck.artwork-cache.json")
+
+
+def validate_cover_cache(value: Any) -> dict[str, int]:
+    if not isinstance(value, dict) or len(value) > COVER_CACHE_SIZE:
+        raise ValueError("Invalid artwork cache")
+    result: dict[str, int] = {}
+    for appid, index in value.items():
+        ident = normalize_id(appid)
+        if isinstance(index, bool) or not isinstance(index, int) or not 0 <= index <= 6:
+            raise ValueError("Invalid artwork source index")
+        result[ident] = index
+    return result
+
+
+def load_cover_cache() -> dict[str, int]:
+    try:
+        path = cover_cache_path()
+        if not path.is_file() or path.stat().st_size > 50_000:
+            return {}
+        return validate_cover_cache(json.loads(path.read_text(encoding="utf-8")))
+    except (OSError, ValueError, json.JSONDecodeError):
+        return {}
+
+
 class Plugin:
     def __init__(self) -> None:
         self._lock = asyncio.Lock()
 
     async def _main(self) -> None:
         if decky is not None:
-            decky.logger.info("TitleDeck prototype backend started (read-only Steam access)")
+            decky.logger.info("TitleDeck beta backend started (read-only Steam access)")
 
     async def snapshot(self) -> dict[str, Any]:
         state = load_state()
         games = find_installed_games()
-        return {**state, "games": games, "status": "Steam files are never modified",
+        return {**state, "games": games, "cover_cache": load_cover_cache(), "status": "Steam files are never modified",
                 "recovery": self._backup_status("titledeck.before_restore_all.json"),
                 "manual_backup": self._backup_status("titledeck.backup.json")}
 
@@ -176,6 +234,12 @@ class Plugin:
         except (OSError, ValueError, json.JSONDecodeError) as error:
             return {"available": False, "count": 0, "error": str(error)}
 
+    async def save_cover_cache(self, sources: dict[str, int]) -> dict[str, Any]:
+        entries = validate_cover_cache(sources)
+        async with self._lock:
+            store_state(entries, cover_cache_path())
+        return {"saved": len(entries)}
+
     async def save_alias(self, appid: str, title: str) -> dict[str, Any]:
         appid = normalize_id(appid)
         title = validate_title(title)
@@ -186,6 +250,42 @@ class Plugin:
             state["aliases"][appid] = title
             store_state(state)
             return state
+
+    async def save_description(self, appid: str, description: str) -> dict[str, Any]:
+        appid = normalize_id(appid)
+        description = validate_description(description)
+        async with self._lock:
+            state = load_state()
+            if (appid not in state["descriptions"]
+                    and len(state["descriptions"]) >= MAX_ALIAS_ENTRIES):
+                raise ValueError("Maximum number of descriptions reached")
+            state["descriptions"][appid] = description
+            store_state(state)
+            return state
+
+    async def delete_description(self, appid: str) -> dict[str, Any]:
+        appid = normalize_id(appid)
+        async with self._lock:
+            state = load_state()
+            state["descriptions"].pop(appid, None)
+            store_state(state)
+            return state
+
+    async def restore_original_game(self, appid: str) -> dict[str, Any]:
+        """Reset *all* TitleDeck overrides for this game in one atomic write.
+
+        This deliberately does not modify Valve metadata, installed game files,
+        another game's customizations, or the user's manual backup.
+        """
+        appid = normalize_id(appid)
+        async with self._lock:
+            state = load_state()
+            had_title = state["aliases"].pop(appid, None) is not None
+            had_description = state["descriptions"].pop(appid, None) is not None
+            if had_title or had_description:
+                store_state(state)
+            return {**state, "restored_title": had_title,
+                    "restored_description": had_description}
 
     async def delete_alias(self, appid: str) -> dict[str, Any]:
         appid = normalize_id(appid)
@@ -230,6 +330,16 @@ class Plugin:
             store_state(current)
             return {**current, "recovered_count": len(previous["aliases"])}
 
+    async def set_description_position(self, position: str) -> dict[str, Any]:
+        """Choose a reversible TitleDeck-only placement, without writing Steam or CSS Loader files."""
+        if not isinstance(position, str) or position not in ("below_play", "hero_footer", "game_info"):
+            raise ValueError("Unsupported description position")
+        async with self._lock:
+            state = load_state()
+            state["description_position"] = position
+            store_state(state)
+            return state
+
     async def set_enabled(self, enabled: bool) -> dict[str, Any]:
         if not isinstance(enabled, bool):
             raise ValueError("Enabled must be true or false")
@@ -269,10 +379,26 @@ class Plugin:
         if not isinstance(incoming, dict) or len(incoming) > MAX_ALIAS_ENTRIES:
             raise ValueError("Invalid alias list")
         additions = {normalize_id(k): validate_title(v) for k, v in incoming.items()}
+        incoming_descriptions = obj.get("descriptions", {})
+        if not isinstance(incoming_descriptions, dict) or len(incoming_descriptions) > MAX_ALIAS_ENTRIES:
+            raise ValueError("Invalid imported descriptions")
+        added_descriptions = {
+            # Accept existing backups from earlier preview builds without
+            # truncating the user's locally saved text. New saves still cap
+            # descriptions without a per-description length cap.
+            normalize_id(k): validate_description(v, allow_legacy=True) for k, v in incoming_descriptions.items()
+        }
+        position = obj.get("description_position")
+        if position is not None and (not isinstance(position, str) or position not in ("below_play", "hero_footer", "game_info")):
+            raise ValueError("Unsupported imported description placement")
         async with self._lock:
             state = load_state()
             state["aliases"].update(additions)
-            if len(state["aliases"]) > MAX_ALIAS_ENTRIES:
-                raise ValueError("Maximum number of aliases reached")
+            state["descriptions"].update(added_descriptions)
+            if position is not None:
+                state["description_position"] = position
+            if (len(state["aliases"]) > MAX_ALIAS_ENTRIES
+                    or len(state["descriptions"]) > MAX_ALIAS_ENTRIES):
+                raise ValueError("Maximum number of saved customizations reached")
             store_state(state)
             return state
