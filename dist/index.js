@@ -1,4 +1,4 @@
-/** TitleDeck 0.9.2 Beta 1: local title and native-looking Game Info description customization. */
+/** TitleDeck 0.9.2: local title and native-looking Game Info description customization. */
 const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '0.9.2', ROUTE = '/titledeck/manager';
 export const DESCRIPTION_WARNING_THRESHOLD = 1247;
 // Private developer opt-in. Normal users never see scan controls or timing logs;

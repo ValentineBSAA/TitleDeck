@@ -19,7 +19,7 @@ class DocsAndReleaseTests(unittest.TestCase):
         src = (ROOT / "src/index.js").read_bytes()
         self.assertEqual(src, (ROOT / "dist/index.js").read_bytes())
         self.assertEqual(hashlib.sha256(src).hexdigest(),
-                         "804b0e3437ac5b194d00102e0e5a390ac50bf92471599d2001892b7b7f970ed1")
+                         "91c813bb32d100408d48869b02b91256ed5ab92b5883c904c507d7505642f855")
 
     def test_internal_markdown_links(self):
         broken = []
