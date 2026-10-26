@@ -8,7 +8,7 @@
 
 The 0.9.2 stable release promotes the accepted beta-era features without intentional changes to title editing, descriptions, or restoration. The repository's plugin manifests and frontend version now identify **0.9.2**, and the editable `src/index.js` and bundled `dist/index.js` must remain identical.
 
-**Testing claims have boundaries.** Physical Steam Deck reports establish title editing, persistence and Game Info interactions for earlier builds. Automated checks test repository code, not every SteamOS configuration. The published 0.9.2 stable ZIP still needs separate on-device installation verification. For evidence see [hardware testing](docs/VERIFIED_ON_DECK.md) and [compatibility](docs/COMPATIBILITY.md).
+**Testing claims have boundaries.** Physical Steam Deck reports establish title editing, persistence and Game Info interactions for earlier builds. Automated checks test repository code, not every SteamOS configuration. The published 0.9.2 stable ZIP's SHA-256 and byte-for-byte parity of plugin.json, package.json, main.py and dist/index.js with the repository have been verified by GitHub Actions. An independent physical Steam Deck stable-install acceptance test is still needed. For evidence see [hardware testing](docs/VERIFIED_ON_DECK.md) and [compatibility](docs/COMPATIBILITY.md).
 
 ## Screenshot provenance
 
