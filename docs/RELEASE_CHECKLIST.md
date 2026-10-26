@@ -1,27 +1,25 @@
-# TitleDeck v0.9.2 Beta 1: Public release checklist
+# TitleDeck 0.9.2 stable release checklist
 
-**Release:** [TitleDeck 0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)  
-**Tag:** `0.9.2-beta.1`  
-**Release status:** Published as **pre-release**, not final stable  
-**Plugin installer:** `TitleDeck-0.9.2-Beta1-Decky.zip`
+**Public stable release:** [0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2)  
+**Tag and manifest version:** `0.9.2`  
+**Installer:** `TitleDeck-0.9.2.zip`
 
 ## Completed
 
-- [x] Published beta as a distinct GitHub release, preserving the older [0.9.0 RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0).
-- [x] Installer release-asset SHA-256 matches the locally packaged beta: `f1b9e4d915c8b1b13ac34c3b620cdd19770b01f9790636f0108b8c691f0a1812`.
-- [x] Updated screenshot archive SHA-256 matches upload: `d10bc897f1c932537fc95e64689dbb6a516b1d73c466fe5bd7cd4a2afb1bedef`.
-- [x] Three new beta screenshots imported as separate files, including accurate version badge and Game Info top/bottom views.
-- [x] Retained four feature-specific RC1 screenshots; retired four redundant or superseded images; preserved historical 0.8.1 archive.
-- [x] Restated accepted hardware results with outstanding limitations.
-- [x] Reported final beta tests: **107 JavaScript + 17 Python = 124** passed before publication.
+- [x] Publish stable GitHub release as a separate version from Beta 1.
+- [x] Align repository manifests, frontend version, README and installation links.
+- [x] Retain the beta and RC1 as historical prereleases.
+- [x] Retain original hardware screenshots with accurate historical beta badges.
+- [x] Document the physical-device tests and unverified configurations separately.
 
-## Still outstanding
+## Outstanding checks
 
-- [ ] Confirm GTM 3.6.9 / Plugin Store interaction with the exact beta.
-- [ ] Exhaustively test keyboard dismiss, cold-start artwork, 200+ entry recovery and multiple themes.
-- [x] Synchronize editable frontend, backend and manifests with the checksummed 0.9.2 beta runtime; source and distributable frontend are byte-identical.
-- [ ] Complete an end-to-end on-device smoke test of every workflow using the published ZIP.
+- [ ] Physically install and verify the exact published stable ZIP on Steam Deck Gaming Mode, including saved settings migration.
+- [ ] Verify stable release ZIP checksum and runtime-byte parity with repository code.
+- [ ] Test GTM 3.6.9 coexistence and a wider range of CSS Loader themes.
+- [ ] Finish physical tests of keyboard dismissal, cold-start artwork and 200+ game bulk restoration.
+- [ ] Continue regression testing after SteamOS updates.
 
-The optional **curated screenshot ZIP** is assembled from the three current beta gallery JPEGs. It is **not** the Decky installer, and its ZIP checksum is distinct from the original maintainer-provided archive.
+**Important:** Historic Beta 1 development test results (107 JavaScript and 17 Python) are not proof that every workflow in the stable ZIP passed a new physical-device test.
 
-[Documentation](../README.md) · [Install guide](INSTALL.md) · [Screenshots](SCREENSHOTS.md) · [Provenance](../SOURCE.md).
+[Stable notes](RELEASE_NOTES_0.9.2.md) · [Hardware evidence](VERIFIED_ON_DECK.md).
