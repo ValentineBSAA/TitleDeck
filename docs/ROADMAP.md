@@ -22,7 +22,8 @@
 - [ ] Run bulk Restore All / backup recovery on 200+ real aliases.
 - [ ] Test additional SteamOS versions, CSS Loader themes and uncommon games/non-Steam apps.
 - [ ] Independently validate Steam background metadata refresh behavior, not just restarts.
-- [ ] Align the repository's editable source/tests with the published beta runtime and document verified source parity. Until then, the beta ZIP is authoritative. See [Source status](../SOURCE.md).
+- [x] Synchronize `main.py`, plugin manifests and `src/index.js` / `dist/index.js` with the checksummed published beta; document runtime/source parity. [Source verification](../SOURCE.md).
+- [ ] Continue exercising repository regression checks and independent real-Deck beta smoke tests as SteamOS evolves.
 - [ ] Collect community testing before deciding whether a 1.0 stable release is justified.
 
 **Out of scope without new testing:** ROG Ally, Windows, Android/DroidDeck, Desktop Mode and unsupported SteamOS-like handheld configurations.

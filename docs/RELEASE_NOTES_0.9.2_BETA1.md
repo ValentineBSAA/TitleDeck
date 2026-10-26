@@ -56,4 +56,4 @@ Download the **plugin ZIP** from the pre-release assets, back up TitleDeck setti
 
 [Installation guide](INSTALL.md) · [Beta acceptance details](VERIFIED_ON_DECK.md) · [Screenshots](SCREENSHOTS.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues).
 
-**Source provenance:** The currently checked-in editable source tree still matches the historical RC1 baseline; the beta release ZIP is the authoritative distributable runtime. [Read source status](../SOURCE.md).
+**Source provenance:** The repository's frontend, backend and plugin manifests are synchronized with the checksummed 0.9.2 Beta 1 release runtime. The published ZIP remains the official installer and the repository supplies the editable source and tests. [Verified source status](../SOURCE.md).

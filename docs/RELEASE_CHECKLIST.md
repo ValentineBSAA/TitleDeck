@@ -19,8 +19,9 @@
 
 - [ ] Confirm GTM 3.6.9 / Plugin Store interaction with the exact beta.
 - [ ] Exhaustively test keyboard dismiss, cold-start artwork, 200+ entry recovery and multiple themes.
-- [ ] Synchronize editable repo source and tests to beta runtime; current repo source remains historical 0.9.0 RC1 baseline.
+- [x] Synchronize editable frontend, backend and manifests with the checksummed 0.9.2 beta runtime; source and distributable frontend are byte-identical.
+- [ ] Complete an end-to-end on-device smoke test of every workflow using the published ZIP.
 
-The screenshots ZIP attached to the release is optional artwork evidence, **not** the Decky installer. Avoid confusing the two.
+The optional **curated screenshot ZIP** is assembled from the three current beta gallery JPEGs. It is **not** the Decky installer, and its ZIP checksum is distinct from the original maintainer-provided archive.
 
 [Documentation](../README.md) · [Install guide](INSTALL.md) · [Screenshots](SCREENSHOTS.md) · [Provenance](../SOURCE.md).

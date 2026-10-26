@@ -66,6 +66,6 @@ New installations default to Game Info description placement; saved placement pr
 
 ## Source, security and support
 
-**Source-version note:** This repository's historical `main` frontend/backend source and tests still reflect the 0.9.0 RC1 baseline. The published **0.9.2 Beta 1 installer** is the authoritative beta runtime; do not assume the current source tree is byte-identical to that beta package. [Source and provenance details](SOURCE.md).
+**Verified source parity:** The repository's current `main.py`, `plugin.json`, `package.json` and `src/index.js` / `dist/index.js` are synchronized with the published **0.9.2 Beta 1 runtime**. The installer remains the official download; the repository additionally contains development tests. [Release checksum and provenance](SOURCE.md).
 
 [Changelog](CHANGELOG.md) · [Screenshots](docs/SCREENSHOTS.md) · [GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Support](SUPPORT.md). MIT licensed. Independent of Valve, Steam, Decky Loader and game publishers.

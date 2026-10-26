@@ -11,7 +11,7 @@
 - Added clearly versioned public-beta screenshots of the 0.9.2 Quick Access menu and Catherine's custom Game Info description.
 - **Community:** Thanks to u/All-Stars64 for the Game Info description request and u/TacoOfGod for the original name-customization inspiration.
 - **Verification:** Preview 23/24 core Game Info behavior accepted on physical Deck; 107 frontend and 17 backend tests reported passing for beta build. GTM 3.6.9 co-installation, large bulk restores and all CSS Loader themes remain unverified. Steam keyboard B dismissal may intermittently leave editor raised; Done editing remains a workaround.
-- **Source notice:** GitHub's editable main-branch source and tests still match the historical 0.9.0 RC1 baseline rather than the published beta runtime. See [SOURCE.md](SOURCE.md).
+- **Source integrity:** The beta runtime, manifests, and editable frontend source have been synchronized from the SHA-256-verified published installer. The source tree also carries regression tests; see [SOURCE.md](SOURCE.md).
 
 ---
 

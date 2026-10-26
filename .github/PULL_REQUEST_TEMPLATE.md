@@ -6,7 +6,9 @@ Explain the issue and effect of this change.
 
 - [ ] Frontend Node tests passed
 - [ ] Python backend tests passed
-- [ ] Existing aliases, backups, safe Restore All and explicit save preserved
+- [ ] Existing aliases, custom descriptions, backups, safe Restore All, and explicit save preserved
+- [ ] Restore Original Game clears BOTH title and description; Restore Steam Description only description
+- [ ] Game Info ↔ Community tab switching and 1,247-character warning unaffected
 - [ ] Real Steam Deck Gaming Mode results separated from simulated results
 - [ ] Device/OS, Decky, Steam client channel, CSS Loader theme documented
 - [ ] Controller D-pad / keyboard behavior tested when changed
