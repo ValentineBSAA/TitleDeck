@@ -19,7 +19,7 @@ class DocsAndReleaseTests(unittest.TestCase):
         src = (ROOT / "src/index.js").read_bytes()
         self.assertEqual(src, (ROOT / "dist/index.js").read_bytes())
         self.assertEqual(hashlib.sha256(src).hexdigest(),
-                         "2a735efe47df5e35c72d26420bf485f718cc1ab7bd0a7f4063e171686025bf7c")
+                         "804b0e3437ac5b194d00102e0e5a390ac50bf92471599d2001892b7b7f970ed1")
 
     def test_internal_markdown_links(self):
         broken = []
@@ -33,7 +33,7 @@ class DocsAndReleaseTests(unittest.TestCase):
                     broken.append(str(doc.relative_to(ROOT)) + ": " + uri)
         self.assertEqual(broken, [])
 
-    def test_beta_docs_and_gallery(self):
+    def test_stable_docs_and_historical_gallery(self):
         for path in ["README.md", "SOURCE.md", "CONTRIBUTING.md",
                      "docs/ROADMAP.md", "docs/RELEASE_NOTES_0.9.2.md"]:
             txt = (ROOT / path).read_text(encoding="utf-8")
