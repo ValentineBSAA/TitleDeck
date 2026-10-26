@@ -1,6 +1,6 @@
 # TitleDeck roadmap
 
-**Current public milestone: 0.9.2 Beta 1**, available as a GitHub pre-release. The immediate goal is compatibility and reliability, not adding more experimental features.
+**Current public milestone: 0.9.2 stable**, published as a GitHub release. Continued compatibility testing remains important. The immediate goal is compatibility and reliability, not adding more experimental features.
 
 ## Accepted milestones
 
@@ -12,7 +12,7 @@
 - [x] Non-blocking 1,247-character long-description warning, without a hard limit.
 - [x] Cleaner game/app list excluding compatibility runtimes and improved cover handling.
 - [x] Remove timing diagnostics from normal Quick Access.
-- [x] Release v0.9.2 Beta 1 as a GitHub pre-release with updated beta screenshots.
+- [x] Publish historical 0.9.2 Beta 1 with hardware screenshots and promote to 0.9.2 stable.
 
 ## Still to verify / improve
 
@@ -23,9 +23,9 @@
 - [ ] Test additional SteamOS versions, CSS Loader themes and uncommon games/non-Steam apps.
 - [ ] Independently validate Steam background metadata refresh behavior, not just restarts.
 - [x] Synchronize `main.py`, plugin manifests and `src/index.js` / `dist/index.js` with the checksummed published beta; document runtime/source parity. [Source verification](../SOURCE.md).
-- [ ] Continue exercising repository regression checks and independent real-Deck beta smoke tests as SteamOS evolves.
-- [ ] Collect community testing before deciding whether a 1.0 stable release is justified.
+- [ ] Continue exercising repository regression checks and independent real-Deck stable-release smoke tests as SteamOS evolves.
+- [ ] Collect community testing before planning future 1.0 milestones.
 
 **Out of scope without new testing:** ROG Ally, Windows, Android/DroidDeck, Desktop Mode and unsupported SteamOS-like handheld configurations.
 
-[Verification](VERIFIED_ON_DECK.md) · [Release notes](RELEASE_NOTES_0.9.2_BETA1.md).
+[Verification](VERIFIED_ON_DECK.md) · [Release notes](RELEASE_NOTES_0.9.2.md).
