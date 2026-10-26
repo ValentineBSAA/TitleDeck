@@ -9,6 +9,12 @@ on:
       - 'tests/**'
       - 'plugin.json'
       - 'package.json'
+      - 'README.md'
+      - 'SOURCE.md'
+      - 'CHANGELOG.md'
+      - 'CONTRIBUTING.md'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
       - '.github/workflows/validate.yml'
   pull_request:
     paths:
@@ -18,6 +24,12 @@ on:
       - 'tests/**'
       - 'plugin.json'
       - 'package.json'
+      - 'README.md'
+      - 'SOURCE.md'
+      - 'CHANGELOG.md'
+      - 'CONTRIBUTING.md'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
       - '.github/workflows/validate.yml'
 permissions:
   contents: read
@@ -36,7 +48,7 @@ jobs:
       - name: Frontend tests
         run: node --test tests/*.test.cjs
       - name: Backend tests
-        run: python3 -m unittest discover -s tests -p 'test_backend.py'
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Check Decky version and bundle
         run: |
           python3 - <<'PY'
