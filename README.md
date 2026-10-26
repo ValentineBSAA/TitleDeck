@@ -2,23 +2,23 @@
 <h1 align="center">TitleDeck</h1>
 <p align="center"><strong>Your library. Your names. Your descriptions.</strong></p>
 <p align="center">
-  <a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1"><img alt="Beta version" src="https://img.shields.io/badge/version-0.9.2%20Beta%201-orange"></a>
-  <img alt="Release status" src="https://img.shields.io/badge/status-public%20beta-yellow">
+  <a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2"><img alt="Stable version" src="https://img.shields.io/badge/version-0.9.2-blue"></a>
+  <img alt="Release status" src="https://img.shields.io/badge/status-stable-brightgreen">
   <img alt="Tested platform" src="https://img.shields.io/badge/tested-Steam%20Deck-blue">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
 
 **TitleDeck** is a Decky Loader plugin for customizing the **displayed names and descriptions** of Steam games and applications in SteamOS Gaming Mode. Overrides are local, reversible and separate from the original Steam metadata and installed game files.
 
-**[Download TitleDeck v0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)** · [Install instructions](docs/INSTALL.md) · [Release notes](docs/RELEASE_NOTES_0.9.2_BETA1.md)
+**[Download TitleDeck v0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2)** · [Install instructions](docs/INSTALL.md) · [Release notes](docs/RELEASE_NOTES_0.9.2.md)
 
 > **Compatibility:** Developed and tested on a **physical Steam Deck** in **SteamOS Gaming Mode**. ROG Ally, other non-Valve handhelds, Desktop Mode, Windows, Android/DroidDeck and many CSS Loader themes are **unverified** and may not work correctly. Steam updates can change the UI. [Compatibility details](docs/COMPATIBILITY.md).
 
-## Screenshots: 0.9.2 Beta 1
+## Feature screenshots (captured during 0.9.2 Beta 1)
 
 These screenshots were captured on a physical Steam Deck with a customized Steam visual theme.
 
-| Clean Quick Access menu with beta version | Custom description in Steam Game Info |
+| Quick Access captured during Beta 1 | Custom description in Steam Game Info |
 |:---:|:---:|
 | [![TitleDeck 0.9.2 Beta 1 Quick Access](docs/screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg)](docs/screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg) | [![Catherine custom description in the real Game Info tab](docs/screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg)](docs/screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg) |
 | Long description, lower section | Full Library Manager (earlier RC1 UI capture) |
@@ -58,7 +58,7 @@ The Steam keyboard can intermittently dismiss with B while the title editor rema
 ## Install / update
 
 1. Back up existing TitleDeck settings.
-2. Download **TitleDeck-0.9.2-Beta1-Decky.zip** from the [0.9.2 Beta 1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1).
+2. Download **TitleDeck-0.9.2.zip** from the [0.9.2 Beta 1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2).
 3. On the Deck, open **Decky Loader → Settings → Developer → Install Plugin from ZIP**. Select the complete installer ZIP; **do not extract it**.
 4. Open **Quick Access → Decky → TitleDeck → Open full library manager**.
 
@@ -66,6 +66,6 @@ New installations default to Game Info description placement; saved placement pr
 
 ## Source, security and support
 
-**Verified source parity:** The repository's current `main.py`, `plugin.json`, `package.json` and `src/index.js` / `dist/index.js` are synchronized with the published **0.9.2 Beta 1 runtime**. The installer remains the official download; the repository additionally contains development tests. [Release checksum and provenance](SOURCE.md).
+**Source and release history:** The repository's current `main.py`, `plugin.json`, `package.json` and `src/index.js` / `dist/index.js` are updated for the **0.9.2 stable source**; the published stable ZIP should be verified independently. The installer remains the official download; the repository additionally contains development tests. [Release checksum and provenance](SOURCE.md).
 
 [Changelog](CHANGELOG.md) · [Screenshots](docs/SCREENSHOTS.md) · [GitHub Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Support](SUPPORT.md). MIT licensed. Independent of Valve, Steam, Decky Loader and game publishers.
