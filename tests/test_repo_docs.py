@@ -11,10 +11,10 @@ LINK = re.compile(r'!?\[[^\]]*\]\(([^)]+)\)')
 
 
 class DocsAndReleaseTests(unittest.TestCase):
-    def test_current_beta_version_and_runtime_sha(self):
+    def test_current_stable_version_and_runtime_sha(self):
         plugin = json.loads((ROOT / "plugin.json").read_text(encoding="utf-8"))
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
-        self.assertEqual(plugin["version"], "0.9.2-beta.1")
+        self.assertEqual(plugin["version"], "0.9.2")
         self.assertEqual(package["version"], plugin["version"])
         src = (ROOT / "src/index.js").read_bytes()
         self.assertEqual(src, (ROOT / "dist/index.js").read_bytes())
@@ -35,7 +35,7 @@ class DocsAndReleaseTests(unittest.TestCase):
 
     def test_beta_docs_and_gallery(self):
         for path in ["README.md", "SOURCE.md", "CONTRIBUTING.md",
-                     "docs/ROADMAP.md", "docs/RELEASE_NOTES_0.9.2_BETA1.md"]:
+                     "docs/ROADMAP.md", "docs/RELEASE_NOTES_0.9.2.md"]:
             txt = (ROOT / path).read_text(encoding="utf-8")
             self.assertNotIn("still reflect the 0.9.0 RC1 baseline", txt)
             self.assertNotIn("still matches the historical RC1 baseline", txt)
