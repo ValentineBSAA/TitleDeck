@@ -12,6 +12,6 @@
     "description": "Customize Steam Deck game titles and locally displayed game descriptions, with safe restoration and controller-friendly editing.",
     "image": "assets/titledeck-icon.png"
   },
-  "version": "0.9.2-beta.1",
-  "description": "TitleDeck 0.9.2 Beta 1: customize game titles and native-looking Game Info descriptions."
+  "version": "0.9.2",
+  "description": "TitleDeck 0.9.2 Stable: customize game titles and native-looking Game Info descriptions."
 }
