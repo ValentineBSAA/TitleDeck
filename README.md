@@ -10,6 +10,9 @@
 
 **TitleDeck** is a Decky Loader plugin for customizing the **displayed names and descriptions** of Steam games and applications in SteamOS Gaming Mode. Overrides are local, reversible and separate from the original Steam metadata and installed game files.
 
+> [!WARNING]
+> **Known issue | TitleDeck 0.9.2 Stable and 0.9.2 Beta 1:** Custom descriptions inside Steam's **Game Info** tab are **not working reliably** for **Steam and non-Steam games/apps**. Earlier successful tests do not reflect the latest Steam Deck results. The description feature should be considered **experimental** until a fix is verified; previously tested title-renaming features are not part of this reported issue. I apologize for promoting beta description code to stable before its issues were fully resolved. I'm working on a fix and additional features, and will take a few days to test before posting another update. **No fixed release is available yet.** [Follow known bug #6](https://github.com/ValentineBSAA/TitleDeck/issues/6).
+
 **[Download TitleDeck v0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2)** · [Install instructions](docs/INSTALL.md) · [Release notes](docs/RELEASE_NOTES_0.9.2.md)
 
 > **Compatibility:** Developed and tested on a **physical Steam Deck** in **SteamOS Gaming Mode**. ROG Ally, other non-Valve handhelds, Desktop Mode, Windows, Android/DroidDeck and many CSS Loader themes are **unverified** and may not work correctly. Steam updates can change the UI. [Compatibility details](docs/COMPATIBILITY.md).
@@ -28,8 +31,8 @@ These screenshots were captured on a physical Steam Deck with a customized Steam
 
 ## Features
 
-- **Custom Game Info descriptions:** edit a game's locally displayed description using Steam's keyboard. The replacement appears in the actual **Game Info** tab beside Community, not just in a TitleDeck pop-up.
-- **Smooth tab switching:** the maintainer confirmed rapid Community ↔ Game Info switching with the custom description remaining visible in the tested Steam Deck preview.
+- **Custom Game Info descriptions (currently experimental):** intended to replace locally displayed text in the real **Game Info** tab; **known unreliable for Steam and non-Steam entries in 0.9.2**. See [known bug #6](https://github.com/ValentineBSAA/TitleDeck/issues/6).
+- **Community ↔ Game Info switching:** previously improved in Steam Deck preview testing; newer reports of description/display regressions supersede that acceptance.
 - **Full-game Restore Original:** clear a game's custom name and description together, or restore only its description while keeping a custom name.
 - **No hard description limit:** a **yellow, non-blocking advisory at 1,247 characters** warns of possible extra scrolling and layout oddities. Longer descriptions are allowed at the user's discretion.
 - **Reversible title renaming:** customize displayed game names without rewriting original Steam game files, sorting identifiers or artwork.
@@ -45,8 +48,8 @@ These screenshots were captured on a physical Steam Deck with a customized Steam
 | Tested behavior | Evidence |
 | --- | --- |
 | Catherine Classic rename, title restore, restart persistence | Confirmed on physical Steam Deck during prior release testing |
-| Custom description in the actual Game Info tab | Confirmed with Catherine Classic |
-| Rapid Community / Game Info switching without the earlier 1–7 second delay | Confirmed in Preview 23; preserved in Preview 24 / beta runtime |
+| Custom description in the actual Game Info tab | **Known regression:** earlier Catherine Classic success does not hold reliably for Steam and non-Steam entries |
+| Rapid Community / Game Info switching without the earlier 1–7 second delay | Historical Preview 23/24 result; later Game Info regressions reported; **not currently accepted as fixed** |
 | Restore Original returns title and description to defaults | Confirmed in recent on-device testing |
 | Long description beyond 1,247 characters and yellow warning | Confirmed on device; long-text presentation is not guaranteed to stay tidy |
 | Game/app filtering and Full Manager cover fallback | Reported working on Deck; artwork can still take a few seconds after cold start |
