@@ -4,6 +4,9 @@
 
 TitleDeck 0.9.2 promotes the previously tested Beta 1 feature set to a stable release for Valve Steam Deck running SteamOS Gaming Mode and Decky Loader.
 
+> [!WARNING]
+> **October 27, 2026 | Known regression in 0.9.2 Stable and the preceding 0.9.2 Beta 1:** Custom descriptions in Steam's **Game Info** tab are **not working reliably for Steam and non-Steam games/apps**. Earlier preview confirmations were premature as a statement of ongoing reliability. Treat this feature as **experimental** until a fix is verified. I apologize that the beta description integration was promoted to stable before its remaining issues were resolved. I am working on a fix and additional features, and will spend a few days on development/testing before another update. There is **no verified fix or release date yet**. [Track the issue](https://github.com/ValentineBSAA/TitleDeck/issues/6).
+
 ## Features
 
 - Rename displayed Steam game titles locally without modifying installed files or Steam's original metadata.
@@ -29,7 +32,7 @@ Download **`TitleDeck-0.9.2.zip`** from the [stable release](https://github.com/
 
 ## Testing and limitations
 
-The maintainer accepted renaming, restoration, cleanup and persistence in previous physical Steam Deck tests, plus native Game Info rendering and rapid tab switching during beta testing. The stable package is promoted from those accepted features, but an independent stable-ZIP hardware acceptance test is not yet documented.
+The maintainer accepted renaming, restoration, cleanup and persistence in previous physical Steam Deck tests, plus native Game Info rendering and rapid tab switching during beta testing. **Update (October 27): New Steam Deck reports contradict the earlier description/Game Info acceptance for Steam and non-Steam games; the description behavior is no longer considered verified working.** The stable package is promoted from those accepted features, but an independent stable-ZIP hardware acceptance test is not yet documented.
 
 The earlier beta development run reported 107 JavaScript and 17 Python test passes. Current repository CI should be reported separately. Known limitations include occasional Steam keyboard dismissal positioning, and incomplete acceptance for GTM coexistence, many CSS Loader themes, very large bulk restoration sessions and non-Valve hardware.
 
