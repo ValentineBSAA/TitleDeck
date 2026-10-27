@@ -1,5 +1,8 @@
 # TitleDeck 0.9.2: Physical device verification (beta-era evidence)
 
+> [!WARNING]
+> **October 27, 2026 testing correction:** Custom descriptions inside Steam's Game Info tab are **not currently verified working** for either **Steam games** or **non-Steam games/apps**, including on **0.9.2 Stable and 0.9.2 Beta 1**. The accepted Preview 23/24 description and switching checks documented below were valid historical observations but have been **superseded by later reports of failures**. No corrected release has been verified. [Known bug #6](https://github.com/ValentineBSAA/TitleDeck/issues/6).
+
 **Reference platform:** real Valve Steam Deck, SteamOS Gaming Mode, Decky Loader. Evidence is separated between **accepted hardware tests**, **screenshots**, and **automated-only** results.
 
 | Feature | Status | Evidence / limitation |
@@ -8,8 +11,8 @@
 | Title alias survives restart | **Hardware accepted** | Steam Deck restart test from earlier release |
 | The Sims 4 / Sims 4 cleanup review, Apply, explicit Save | **Hardware accepted** | Earlier RC1 device testing |
 | Steam keyboard and controller D-pad editor | **Hardware accepted (basic)** | Opened keyboard, used editor and controller directions |
-| Game Info custom description | **Hardware accepted** | Catherine Game Info screenshots and user testing |
-| Rapid Community ↔ Game Info switching | **Hardware accepted** | Preview 23 accepted after previous 1–7-second delays; same renderer preserved in Preview 24 / 0.9.2 beta runtime |
+| Game Info custom description | **REGRESSED / NOT CURRENTLY ACCEPTED** | Historical Catherine screenshots and tests; newer Steam and non-Steam Game Info failures reported |
+| Rapid Community ↔ Game Info switching | **REGRESSION REPORTED** | Earlier Preview 23 acceptance is historical; latest description/Game Info display behavior needs renewed hardware verification |
 | Restore Original Game clears title and description | **Hardware accepted** | Explicit confirmation after Preview 19 onward |
 | Over-1,247-character description warning | **Hardware accepted** | Yellow warning visible at 1,409 characters, non-blocking |
 | Long custom text displayed in native Game Info | **Hardware observed** | 0.9.2 gallery includes upper and lower long-description segments |
