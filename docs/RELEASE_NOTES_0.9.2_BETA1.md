@@ -5,6 +5,9 @@
 **Intended device:** Valve Steam Deck, SteamOS Gaming Mode, Decky Loader  
 **Not a final stable release.**
 
+> [!WARNING]
+> **October 27, 2026 | Subsequent known regression:** The custom **Game Info** description feature introduced in **0.9.2 Beta 1** and promoted to **0.9.2 Stable** is **not working reliably** on Steam Deck for **Steam and non-Steam games/apps**. The successful Preview 23/24 tests below are historical, **not a current reliability guarantee**. The feature is experimental while a fix is developed. I apologize for the premature stable promotion and earlier confusion. A bug fix and additional improvements are in development; another update will follow after further testing, **not on a guaranteed date**. [Track the known issue](https://github.com/ValentineBSAA/TitleDeck/issues/6).
+
 ## What changed
 
 ### Custom Steam Game Info descriptions
@@ -29,7 +32,7 @@ There is **no hard custom-description character limit**. A yellow **non-blocking
 
 Thank you to **u/TacoOfGod** for the original display-name customization inspiration, and to **u/All-Stars64** for specifically requesting description edits in the actual **Game Info** tab alongside Community. The maintainer's *Catherine Classic* stress-test screenshots acknowledge this request. These are acknowledgments of feature suggestions, not assertions of code contributions.
 
-## Verified on physical Steam Deck
+## Earlier physical Steam Deck tests (historical; superseded for Game Info reliability)
 
 - Game title renaming/restoring and restart persistence from earlier accepted TitleDeck releases.
 - Custom description displayed in Catherine's Steam Game Info.
