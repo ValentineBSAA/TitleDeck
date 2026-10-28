@@ -20,6 +20,6 @@
 
 ## Known limitation carried forward
 
-Steam's actual **Game Info** custom description area may still not scroll with the right stick for Steam or non-Steam games. **Issue #8** remains open. This preview does not claim to fix that separate behavior.
+In Steam's actual **Game Info** tab, custom descriptions **scroll with an external controller's right stick** for Steam and non-Steam games, but **do not scroll with the Steam Deck's built-in right stick**. **Issue #8** tracks the built-in-input problem; this badge-only preview does not attempt to fix it.
 
 [Stable 1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8) · [Known issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)
