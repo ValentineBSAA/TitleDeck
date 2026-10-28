@@ -50,7 +50,7 @@ function setupMock({games=[],aliases={},descriptions={},description_position='be
 test('source and packaged frontend match; approved logo/version consistent',()=>{
  assert.equal(source,fs.readFileSync(dist,'utf8'));
  const p=JSON.parse(fs.readFileSync(path.join(root,'plugin.json'))),pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json')));
- assert.equal(p.version,'1.1.8');assert.equal(pkg.version,'1.1.8');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
+ assert.equal(p.version,'1.1.9');assert.equal(pkg.version,'1.1.9');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
  assert(source.includes('QAM_VERSION_STYLE')&&source.includes('td-version-chip'));
 });
 test('retired Steam-card badges have no injected adapter and no settings control',async()=>{
@@ -3232,7 +3232,7 @@ test('1.0.4 no inert Top button, palette remains selectable and title metadata u
  assert.match(source,/focusNode\(tile\)/);
  assert.match(source,/grid-template-columns:minmax\(0,1fr\)!important/);
  assert.match(source,/TITLEDECK_COLOR_SWATCHES/);
- assert.match(source,/PLUGIN_VERSION = '1.1.8'/);
+ assert.match(source,/PLUGIN_VERSION = '1.1.9'/);
 });
 
 test('1.0.4 Steam scroll-to-top cleanup can reach an outer UI document with no library route',async()=>{
@@ -3746,7 +3746,7 @@ test('1.1.5 controller diagnostic snapshots only bounded input-state fields',asy
  const m=await moduleForTest();
  const report=m.titleDeckControllerDiagnostic();
  assert.equal(report.format,'titledeck-controller-v1');
- assert.equal(report.version,'1.1.8');
+ assert.equal(report.version,'1.1.9');
  assert(Array.isArray(report.events));
  assert(report.events.length<=64);
  assert(!JSON.stringify(report).includes('titledeck.json'));

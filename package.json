@@ -1,8 +1,8 @@
 {
   "name": "titledeck",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "private": true,
-  "description": "TitleDeck 1.1.8: public-ready controller-protected Full Library Manager with right-stick editor scrolling, verified Jurassic World Evolution 3 artwork, full-bleed tile backgrounds and hidden developer diagnostics.",
+  "description": "TitleDeck 1.1.9 preview: RENAMED badge now overlays blurred artwork tiles; retains all 1.1.8 features. Physical Deck verification pending.",
   "type": "module",
   "license": "MIT",
   "author": "Valentine",

@@ -1,5 +1,5 @@
 /** TitleDeck 1.0.7 private candidate: hardware-verified descriptions, reversible non-Steam layout and controller-first manager. */
-const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.1.8', ROUTE = '/titledeck/manager';
+const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.1.9', ROUTE = '/titledeck/manager';
 // Private developer opt-in. Normal users never see scan controls or timing logs;
 // the bounded timing recorder remains available for future Steam UI regressions.
 export function developerDiagnosticsEnabled(){
@@ -2655,6 +2655,12 @@ const STYLE=`
  background:transparent!important;max-width:100%!important;max-height:100%!important
 }
 .td-root .td-game-artbox .td-art-pending{z-index:0!important}
+/* 1.1.9: RENAMED stays above the sharp cover (z=2) and blurred backdrop (z=1).
+ * Scope this to Full Library Manager; do not affect Game Info art. */
+.td-root .td-game-artbox > .td-game-mark{
+ position:absolute!important;z-index:3!important;pointer-events:none!important;
+}
+
 /* Keep title and description restoration distinct on short Steam Deck screens. */
 .td-root .td-title-editor-toolbar .td-action{width:auto!important;flex:0 1 auto!important;min-width:0!important;white-space:normal!important;line-height:1.1!important}
 /* Short-screen description editor: accessible fixed actions and genuine page scrolling. */
