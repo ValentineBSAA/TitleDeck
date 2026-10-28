@@ -1,8 +1,8 @@
-# TitleDeck: complete feature reference (including 1.2.1 beta additions)
+# TitleDeck 1.2.1: complete feature reference
 
-[Home](../README.md) · [Step-by-step beginner guide](BEGINNER_GUIDE.md) · [Gallery](SCREENSHOTS.md) · [Latest stable release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
+[Home](../README.md) · [Step-by-step beginner guide](BEGINNER_GUIDE.md) · [Gallery](SCREENSHOTS.md) · [Latest stable release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1)
 
-## New workflow in privately tested 1.2.1 Beta
+## New in published TitleDeck 1.2.1 Stable
 
 - On a game in Steam's library, press **Options (☰)**, then choose **Edit with TitleDeck**. The selected Steam or non-Steam game's own editor opens immediately; you do not have to search the manager or wait for its full artwork grid.
 - In **Full Library Manager → Settings → Game Options menu placement**, choose **After Developer** (the default) or **Before Properties**. When a non-Steam shortcut has Properties only within its Manage submenu, the second placement falls back to the end of top-level actions, above Cancel where shown.
@@ -11,7 +11,7 @@
 - The original game logos/artwork inside Steam's menu are **not renamed**. Your original game files and Steam metadata stay unchanged.
 - If the menu is rebuilt by Steam or a theme, the shortcut depends on Steam's internal UI and may not be available.
 
-[1.2.1 stable release preparation](RELEASE_NOTES_1.2.1.md) · [Physical testing record](VERIFIED_ON_DECK.md). The **stable installer is prepared but not yet published** as a GitHub release.
+[1.2.1 stable release notes](RELEASE_NOTES_1.2.1.md) · [Physical testing record](VERIFIED_ON_DECK.md). The **stable installer is published** and available from the GitHub release linked above.
 
 ## Custom game names
 - Edit a displayed title with Steam's keyboard; save explicitly.
@@ -26,7 +26,7 @@
 - Restore a single original description without necessarily deleting the custom name; full original-game restoration available.
 - No enforced historical yellow-warning threshold.
 - Physically verified saved descriptions persist through a Steam Deck reboot.
-- **Known 1.1.8 limitation:** the **built-in Steam Deck right stick** does not scroll Steam or non-Steam **Game Info descriptions**, although an **external controller's right stick works** for both. The Settings toggle does not establish built-in-input support. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+- **Known limitation (also present in 1.2.1):** the **built-in Steam Deck right stick** does not scroll Steam or non-Steam **Game Info descriptions**, although an **external controller's right stick works** for both. The Settings toggle does not establish built-in-input support. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
 ## Full Library Manager
 - Artwork cards, green Installed badges, and **All games / Installed / Renamed** filters.
