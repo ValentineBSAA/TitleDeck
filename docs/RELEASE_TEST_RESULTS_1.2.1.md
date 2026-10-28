@@ -38,7 +38,7 @@ These are user-reported device tests, not remote automated hardware instrumentat
 - [ ] Synchronize GitHub repo `main.py`, `src/index.js`, `dist/index.js`, `plugin.json`, `package.json` and appropriate regression tests with **these exact stable ZIP bytes**. **Currently main still has 1.1.9 runtime source.**
 - [ ] Run GitHub Actions CI against that synchronized commit; **no green GitHub CI run for 1.2.1 is claimed here**.
 - [x] Publish stable GitHub release **1.2.1** with ZIP asset. Asset size matches the locally built ZIP.
-- [ ] Independently compare the downloaded release asset SHA-256 with the local checksum.
+- [x] Download the published ZIP via GitHub Actions and confirm exact SHA-256 `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb` ([workflow run](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787369311)).
 - [x] Update README stable-download badge and installation links to the published 1.2.1 release.
 
 **Known issue:** The Steam Deck built-in right stick does not scroll Game Info custom descriptions for Steam/non-Steam titles, while an external controller's right stick does. See [issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
