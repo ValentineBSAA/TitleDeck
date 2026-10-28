@@ -18,11 +18,12 @@ test('0.9.2 stable release metadata matches the packaged runtime', () => {
   assert(src.includes('0.9.2'));
 });
 
-test('stable release docs disclose hardware limits and long description advisory', () => {
+test('public and candidate docs distinguish versions, hardware limits, and open scrolling issue', () => {
   const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
   const changelog = fs.readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8');
-  for (const item of ['physical Steam Deck', 'ROG Ally', 'Android/DroidDeck', 'Game Info', '1,247']) {
+  for (const item of ['physical Steam Deck', 'ROG Ally', 'Android/DroidDeck', 'Game Info', '1.1.8', '0.9.2']) {
     assert(readme.includes(item), item);
-    assert(changelog.includes(item), item);
   }
+  assert(readme.includes('right-stick scrolling'));
+  assert(changelog.includes('1,247'), 'historical description threshold retained in changelog');
 });
