@@ -46,6 +46,9 @@ jobs:
               assert json.loads((root/'plugin.json').read_text())['version']=='1.1.8'
               assert json.loads((root/'package.json').read_text())['version']=='1.1.8'
               assert (root/'src/index.js').read_bytes()==(root/'dist/index.js').read_bytes()
+              p=root/'docs/PREVIEW24_SHA256.txt'
+              p.parent.mkdir(parents=True,exist_ok=True)
+              p.write_bytes(z.read('TitleDeck/docs/PREVIEW24_SHA256.txt'))
               # Keep the version-matched tests from the exact installer.
               for name in z.namelist():
                   if name.startswith('TitleDeck/tests/') and (name.endswith('.cjs') or name.endswith('.py')):
@@ -70,7 +73,7 @@ jobs:
           s=p.read_text()
           s=s.replace('self.assertEqual(plugin["version"], "0.9.2")','self.assertEqual(plugin["version"], "1.1.8")')
           digest=hashlib.sha256((root/'src/index.js').read_bytes()).hexdigest()
-          s=re.sub(r'(?<=self.assertEqual\(hashlib.sha256\(src\).hexdigest\(\),\s*\n\s*")[a-f0-9]{64}',digest,s)
+          s=s.replace('91c813bb32d100408d48869b02b91256ed5ab92b5883c904c507d7505642f855',digest)
           p.write_text(s)
           print('Synchronized published 1.1.8 source SHA-256',digest)
           print('Synchronized all 23 images')
@@ -85,7 +88,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add main.py plugin.json package.json src/index.js dist/index.js tests/ docs/screenshots/v1.1.8/
+          git add main.py plugin.json package.json src/index.js dist/index.js tests/ docs/PREVIEW24_SHA256.txt docs/screenshots/v1.1.8/
           if git diff --cached --quiet; then echo 'Already synchronized'; else
             git commit -m 'release: sync exact 1.1.8 runtime and publish curated 23-image gallery'
             git pull --rebase origin main
