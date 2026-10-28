@@ -31,4 +31,4 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 
 Code changes should maintain source/dist parity, preserve the hardware-tested native Deck LB/RB path and Steam/non-Steam Game Info restoration, and distinguish hardware acceptance from simulated test results. See [Contributing](CONTRIBUTING.md), [Hardware test matrix](docs/VERIFIED_ON_DECK.md), and [Release checklist](docs/RELEASE_CHECKLIST.md).
 
-**Open issue:** right-stick scrolling in Steam/non-Steam **Game Info description areas** remains broken in 1.1.8; see [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+**Open issue:** Steam/non-Steam **Game Info descriptions scroll with an external controller's right stick**, but **not with the Steam Deck's built-in right stick** in 1.1.8; see [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
