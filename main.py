@@ -68,7 +68,7 @@ def validate_description(value: Any, *, allow_legacy: bool = False) -> str:
 
 
 def blank_state() -> dict[str, Any]:
-    return {"schema": SCHEMA, "enabled": True, "aliases": {}, "descriptions": {}, "description_position": "below_play"}
+    return {"schema": SCHEMA, "enabled": True, "home_menu_titles": True, "aliases": {}, "descriptions": {}, "description_position": "below_play"}
 
 
 def load_state(path: Path | None = None) -> dict[str, Any]:
@@ -94,6 +94,7 @@ def load_state(path: Path | None = None) -> dict[str, Any]:
     if position not in ("below_play", "hero_footer", "game_info") or not isinstance(position, str):
         raise ValueError("Invalid description placement")
     return {"schema": SCHEMA, "enabled": raw.get("enabled") is not False,
+            "home_menu_titles": raw.get("home_menu_titles", raw.get("home_menu_preview", True)) is True,
             "aliases": aliases, "descriptions": descriptions, "description_position": position}
 
 
@@ -227,7 +228,7 @@ class Plugin:
 
     async def _main(self) -> None:
         if decky is not None:
-            decky.logger.info("TitleDeck prototype backend started (read-only Steam access)")
+            decky.logger.info("TitleDeck backend started (read-only Steam access)")
 
     async def snapshot(self) -> dict[str, Any]:
         state = load_state()
@@ -519,6 +520,20 @@ class Plugin:
             state["enabled"] = enabled
             store_state(state)
             return state
+
+    async def set_home_menu_titles(self, enabled: bool) -> dict[str, Any]:
+        """Toggle the reversible STEAM-button menu alias display without editing Steam metadata."""
+        if not isinstance(enabled, bool):
+            raise ValueError("HOME-menu title setting must be true or false")
+        async with self._lock:
+            state = load_state()
+            state["home_menu_titles"] = enabled
+            store_state(state)
+            return state
+
+    async def set_home_menu_preview(self, enabled: bool) -> dict[str, Any]:
+        """Compatibility for older Preview clients; new settings use set_home_menu_titles."""
+        return await self.set_home_menu_titles(enabled)
 
     async def create_backup(self) -> str:
         """Keep a full settings backup outside Steam's files."""

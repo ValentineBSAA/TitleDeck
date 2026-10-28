@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const source=fs.readFileSync(path.join(root,'src/index.js'),'utf8');
-test('1.1.9 RENAMED marker stays above uncut art and blurred backdrop',()=>{
+test('1.2.1 RENAMED marker stays above uncut art and blurred backdrop',()=>{
   const backdrop=source.match(/\.td-root \.td-game-artbox \.td-art-backdrop\{([^}]*)\}/);
   const cover=source.match(/\.td-root \.td-game-artbox \.td-art\{([^}]*)\}/);
   const badge=source.match(/\.td-root \.td-game-artbox > \.td-game-mark\{([^}]*)\}/);
@@ -20,5 +20,5 @@ test('1.1.9 RENAMED marker stays above uncut art and blurred backdrop',()=>{
   assert.match(badge[1],/pointer-events:none!important/);
   assert(source.includes("aliases[game.appid]?h('span',{className:'td-game-mark'},'RENAMED'):null"));
   assert(source.includes("className:'td-game-artbox'},h(Cover,"));
-  assert(source.includes("PLUGIN_VERSION = '1.1.9'"));
+  assert(source.includes("PLUGIN_VERSION = '1.2.1'"));
 });

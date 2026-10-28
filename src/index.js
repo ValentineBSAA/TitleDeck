@@ -1,5 +1,5 @@
-/** TitleDeck 1.0.7 private candidate: hardware-verified descriptions, reversible non-Steam layout and controller-first manager. */
-const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.1.9', ROUTE = '/titledeck/manager';
+/** TitleDeck 1.2.1 Stable: verified Steam/non-Steam context menu editing and 650 ms B/Circle hold. */
+const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.2.1', ROUTE = '/titledeck/manager';
 // Private developer opt-in. Normal users never see scan controls or timing logs;
 // the bounded timing recorder remains available for future Steam UI regressions.
 export function developerDiagnosticsEnabled(){
@@ -11,11 +11,12 @@ const h = (...a) => R.createElement(...a);
 const QAM_VERSION_STYLE = {display:'inline-flex',alignItems:'center',fontSize:10,fontWeight:800,color:'#e9eef6',background:'#384257',border:'1px solid #7d8aa5',borderRadius:99,padding:'3px 7px',lineHeight:1};
 const ICON_DATA_URI = 'data:image/webp;base64,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';
 
-let bridge, adapter, descriptionAdapter, nonSteamDescriptionAdapter, gameInfoDataAdapter, controllerScrollBridge;
+let bridge, adapter, homeMenuAdapter, descriptionAdapter, nonSteamDescriptionAdapter, gameInfoDataAdapter, controllerScrollBridge, gameContextMenuAdapter;
+let pendingContextGame=null;
 let steamDocument = null;
 let steamBridgeStatus = "Waiting for Steam window";
 const STEAM_ANCHOR = "TitleDeckSteamTextBridge";
-let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, description_position:'below_play', games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
+let latestState = { schema:1, enabled:true, home_menu_titles:true, aliases:{}, descriptions:{}, description_position:'below_play', games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
 const observers = new Set();
 function connect() {
   if (bridge) return bridge;
@@ -37,6 +38,7 @@ function acceptState(state){
     before.description_position!==latestState.description_position||
     JSON.stringify(before.descriptions||{})!==JSON.stringify(latestState.descriptions||{});
   if(aliasesChanged)adapter?.runNow();
+  if(aliasesChanged||before.home_menu_titles!==latestState.home_menu_titles)homeMenuAdapter?.runNow();
   if(descriptionsChanged){descriptionAdapter?.runNow();nonSteamDescriptionAdapter?.runNow();}
   return latestState;
 }
@@ -352,6 +354,402 @@ export function createTitleAdapter(host,getState,getStore=()=>globalThis.appStor
   function start(){setup();fullScan();heartbeat=setInterval(()=>{if(hasAliases()){setup();fullScan();}},12000);}
   function stop(){stopped=true;if(scanTimer!==null)clearTimeout(scanTimer);if(heartbeat!==null)clearInterval(heartbeat);for(const item of observerList)item.watch.disconnect();observerList=[];restore();}
   return{start,stop,runNow,get applied(){return activeCount()},get scans(){return scanned},get fastPasses(){return fastPasses},get docs(){return observerList.length}};
+}
+
+
+
+/** 1.2.0 Preview 1: separate, fail-closed STEAM/HOME-button menu experiment.
+ * MetaDeck's route patches do not reach MainMenu_uid. DeckThemes confirms it
+ * is a separate CEF tab. Never pretend that BigPicture document == MainMenu.
+ * We only modify a same-origin, already accessible MainMenu document, with
+ * an authoritative running App ID. No CEF/debug-port injection or global
+ * Steam API replacements; no changing Steam's canonical app metadata.
+ */
+export function homeMenuRunningAppId(contexts=[]){
+  const IDs=new Set();
+  for(const ctx of contexts){
+    if(!ctx)continue;
+    try{
+      const steam=ctx.SteamUIStore||ctx.m_SteamUIStore;
+      const candidate=steam?.MainRunningAppID ?? steam?.MainRunningApp?.appid ??
+        steam?.m_WindowStore?.GamepadUIMainWindowInstance?.MainRunningAppID ??
+        steam?.m_WindowStore?.MainWindowInstance?.MainRunningAppID;
+      const id=normId(candidate);
+      if(id)IDs.add(id);
+    }catch{}
+  }
+  // Never guess when contexts disagree (or there is no active game).
+  return IDs.size===1?[...IDs][0]:'';
+}
+export function isVerifiedHomeMenuDocument(doc){
+  if(!doc?.documentElement||typeof doc.createTreeWalker!=='function')return false;
+  try{
+    const win=doc.defaultView;
+    // A MainMenu_uid tab is independent of BigPicture/QuickAccess.
+    const title=String(doc.title||'');
+    const name=String(win?.name||'');
+    const url=String(doc.URL||win?.location?.href||'');
+    return /(?:^|[^a-z])MainMenu(?:_uid\d+)?(?:$|[^a-z])/i.test(name)||
+      /^MainMenu(?:_uid\d+)?$/i.test(title.trim())||
+      /(?:^|[/?#=&])MainMenu_uid\d+(?:$|[/?#=&])/i.test(url);
+  }catch{return false;}
+}
+/** Preview 2: use the same Decky navigation-tree bridge proven in Grid Menu.
+ * MainMenu browser views are not entries in g_PopupManager. The navigation
+ * tree's Root.Element.ownerDocument exposes the *existing* browser view
+ * without opening/creating a window. A true MainMenu identity is required
+ * both on the navigation tree and on the document itself. */
+export function homeMenuDocumentsFromNavigationTrees(trees=[]){
+  const matched=new Set();
+  try{
+    for(const tree of Array.isArray(trees)?trees:[]){
+      const id=String(tree?.m_ID||tree?.id||'');
+      if(!/^MainMenu(?:_uid\d+)?(?:$|_)/i.test(id))continue;
+      const roots=[tree?.Root?.Element,tree?.m_Root?.Element,
+        tree?.Root?.m_element,tree?.m_Root?.m_element,
+        tree?.Root?.m_HTMLElement,tree?.m_Root?.m_HTMLElement];
+      for(const root of roots){
+        const doc=root?.ownerDocument;
+        if(doc&&isVerifiedHomeMenuDocument(doc))matched.add(doc);
+      }
+    }
+  }catch{}
+  return [...matched].slice(0,4);
+}
+/** Preview 3: Decky Music's Steam MainMenu React-fiber discovery pattern.
+ * Steam's MainMenu_uid browser-view is not a navigation tree or a PopupManager
+ * window. Its React subtree can nevertheless be mounted from SharedJSContext.
+ * Read-only discovery never creates a new popup, reloads Steam, or touches
+ * the game's canonical metadata.  Any DOM we edit must still independently
+ * identify itself as the real MainMenu browser-view document.
+ */
+export function homeMenuReactFiberRoots(documents=[]){
+  const results=new Set();
+  for(const doc of documents){
+    if(!doc?.querySelectorAll)continue;
+    let elements=[];
+    try{
+      elements=[doc.getElementById?.('root'),doc.getElementById?.('app'),
+        doc.querySelector?.('[data-react-nav-root]'),doc.body,doc.documentElement,
+        ...Array.from(doc.querySelectorAll('body > *, #root > *')).slice(0,36)];
+    }catch{}
+    for(const el of elements){
+      if(!el)continue;
+      try{
+        const key=Object.keys(el).find(k=>k.startsWith('__reactContainer$')||k.startsWith('__reactFiber$'));
+        let fiber=key?el[key]:null;
+        for(let i=0;fiber?.return&&i<120;i++)fiber=fiber.return;
+        if(fiber&&typeof fiber==='object')results.add(fiber);
+      }catch{}
+    }
+  }
+  if(!results.size){
+    // Unusual Steam layouts may mount React beneath several wrappers.
+    // Only use this bounded fallback if the ordinary root anchors failed.
+    for(const doc of documents){
+      try{
+        const elements=doc?.querySelectorAll?.('*');
+        for(let i=0;elements&&i<Math.min(elements.length,900)&&results.size<2;i++){
+          const el=elements[i],key=Object.keys(el).find(k=>k.startsWith('__reactFiber$'));
+          let fiber=key?el[key]:null;
+          for(let n=0;fiber?.return&&n<120;n++)fiber=fiber.return;
+          if(fiber)results.add(fiber);
+        }
+      }catch{}
+    }
+  }
+  return [...results].slice(0,8);
+}
+export function inspectHomeMenuReactFibers(documents=[],originals=[]){
+  const roots=homeMenuReactFiberRoots(documents),menuDocs=new Set(),seen=new Set();
+  const titles=new Set(originals.map(x=>String(x).trim()).filter(Boolean));
+  let visited=0,hosts=0,textMatches=0;
+  const stack=[...roots];
+  while(stack.length&&visited<28000){
+    const fiber=stack.pop();if(!fiber||typeof fiber!=='object'||seen.has(fiber))continue;
+    seen.add(fiber);visited++;
+    try{
+      if(fiber.memoizedProps?.navID==='MainNavMenuContainer'||
+         (fiber.memoizedProps?.bLoggedIn!==undefined&&fiber.memoizedProps?.open!==undefined&&
+           'popup' in fiber.memoizedProps))hosts++;
+      const node=fiber.stateNode;
+      const possible=[node?.ownerDocument,node?.containerInfo?.ownerDocument,
+        node?.containerInfo?.nodeType===9?node.containerInfo:null,
+        node?.nodeType===9?node:null];
+      for(const d of possible)if(isVerifiedHomeMenuDocument(d))menuDocs.add(d);
+      const str=fiber.memoizedProps;
+      if(titles.size&&(typeof str==='string'&&titles.has(str.trim())||
+        typeof node?.nodeValue==='string'&&titles.has(node.nodeValue.trim())))textMatches++;
+    }catch{}
+    if(fiber.child)stack.push(fiber.child);
+    if(fiber.sibling)stack.push(fiber.sibling);
+  }
+  return{documents:[...menuDocs].slice(0,4),roots:roots.length,hosts,visited,textMatches};
+}
+/** Exact-match React output rewriting, scoped to a confirmed running AppID.
+ * Only React presentation props are copied; Steam app objects, handlers,
+ * routes, game IDs, and event listeners remain unchanged. */
+export function rewriteHomeMenuReactOutput(input,config,react=R){
+  let replaced=0,visited=0;
+  if(!config?.originals?.size||typeof config.alias!=='string'||!config.alias.trim())
+    return{output:input,replaced:0};
+  const rewrite=(value,depth)=>{
+    if(visited++>3500||depth>18)return value;
+    if(typeof value==='string'){
+      if(config.originals.has(value.trim())){
+        const at=value.indexOf(value.trim());
+        replaced++;return value.slice(0,at)+config.alias+value.slice(at+value.trim().length);
+      }
+      return value;
+    }
+    if(Array.isArray(value)){
+      let change=false;
+      const next=value.map(v=>{const n=rewrite(v,depth+1);if(n!==v)change=true;return n;});
+      return change?next:value;
+    }
+    if(!value||typeof value!=='object'||!value.props||!value.$$typeof)return value;
+    const props=value.props,update={};
+    for(const key of ['children','label','title','name']){
+      if(Object.prototype.hasOwnProperty.call(props,key)){
+        const prior=props[key],next=rewrite(prior,depth+1);
+        if(next!==prior)update[key]=next;
+      }
+    }
+    return Object.keys(update).length&&typeof react?.cloneElement==='function'
+      ?react.cloneElement(value,update):value;
+  };
+  const output=rewrite(input,0);
+  return{output,replaced};
+}
+export function createHomeMenuTitleAdapter(getState,getStore=()=>globalThis.appStore,getDocuments=()=>[],getContexts=()=>[globalThis]){
+  let stopped=false, timer=null, watches=[], attempts=0, lastStatus='HOME-menu titles disabled',
+    accessible=0, rewrites=0, reactRewrites=0, lastId='', lastReactProbe={roots:0,hosts:0,visited:0,textMatches:0,documents:[]}, reactPatch=null;
+  const edited=new Map();
+  const active=()=>{
+    const state=getState()||{};
+    return state.enabled===true&&state.home_menu_titles===true&&
+      Object.keys(state.aliases||{}).length>0;
+  };
+  function contexts(){
+    const set=new Set([globalThis]);
+    try{for(const item of getContexts()||[])if(item)set.add(item);}catch{}
+    return [...set];
+  }
+  function documents(config){
+    const set=new Set(),add=d=>{if(isVerifiedHomeMenuDocument(d))set.add(d)};
+    // Valve renders the menu into a BrowserView via React. The popup can be
+    // absent from Decky's navigation tree yet present in Steam's fiber tree.
+    // This is the critical Preview 3 discovery path.
+    try{
+      const source=new Set([globalThis.document]);
+      for(const d of getDocuments()||[])if(d)source.add(d);
+      for(const ctx of contexts())if(ctx?.document)source.add(ctx.document);
+      lastReactProbe=inspectHomeMenuReactFibers([...source].slice(0,12),config?[...config.originals]:[]);
+      for(const d of lastReactProbe.documents)add(d);
+    }catch{}
+
+    try{for(const d of getDocuments()||[])add(d);}catch{}
+    // The MainMenu window is a Steam BrowserView. Decky exposes its DOM
+    // through navigation trees even when the popup manager does not.
+    try{for(const d of homeMenuDocumentsFromNavigationTrees(UI?.getGamepadNavigationTrees?.()||[]))add(d);}catch{}
+    for(const ctx of contexts()){
+      try{add(ctx?.document);}catch{}
+      // Some Steam client builds expose popup BrowserWindow refs to plugins.
+      // All access is read-only until a *verified* MainMenu tab is located.
+      try{
+        const store=ctx?.SteamUIStore?.m_WindowStore;
+        for(const instance of [store?.MainWindowInstance,store?.GamepadUIMainWindowInstance,
+          ...(Array.isArray(store?.SteamUIWindows)?store.SteamUIWindows.slice(0,12):[])]){
+          add(instance?.BrowserWindow?.document);add(instance?.m_BrowserWindow?.document);
+        }
+      }catch{}
+      try{
+        const pm=ctx?.g_PopupManager;
+        const sources=[pm?.m_mapPopups,pm?.m_mapPopupsByName,pm?.m_rgPopups,pm?.m_Popups];
+        for(const source of sources){
+          let values=[];
+          if(source instanceof Map)values=[...source.values()].slice(0,16);
+          else if(Array.isArray(source))values=source.slice(0,16);
+          else if(source&&typeof source==='object')values=Object.values(source).slice(0,16);
+          for(const item of values){
+            add(item?.document);add(item?.m_window?.document);
+            add(item?.window?.document);add(item?.BrowserWindow?.document);
+            add(item?.m_BrowserWindow?.document);
+          }
+        }
+      }catch{}
+    }
+    return [...set].slice(0,4);
+  }
+  function originalFor(id){
+    const state=getState()||{},alias=state.aliases?.[id];
+    if(typeof alias!=='string'||!alias.trim())return null;
+    const originals=new Set();
+    try{
+      const game=state.games?.find(g=>normId(g.appid)===id);
+      if(game?.name&&game.name!==alias)originals.add(String(game.name).trim());
+    }catch{}
+    for(const ctx of contexts())try{
+      const value=steamOverview(ctx?.appStore||getStore(),id)?.display_name;
+      if(value&&value!==alias)originals.add(String(value).trim());
+    }catch{}
+    return originals.size?{alias,originals}:null;
+  }
+  function restore(){
+    for(const [node,record] of edited){
+      try{if(node.isConnected&&node.nodeValue===record.alias)node.nodeValue=record.original;}catch{}
+    }
+    edited.clear();rewrites=0;
+  }
+  function matchNode(node,config){
+    if(node?.nodeType!==3||!node.parentElement?.isConnected)return false;
+    const el=node.parentElement;
+    try{if(el.closest?.('[contenteditable], input, textarea, [role="textbox"], [class*="decky" i], [data-titledeck-ui]'))return false;}catch{}
+    let existing=edited.get(node);
+    if(existing){
+      if(!node.isConnected){edited.delete(node);return false;}
+      if(node.nodeValue===existing.alias){
+        if(config.originals.has(existing.original.trim())&&existing.alias.trim()===config.alias)return false;
+        node.nodeValue=existing.original;
+      }
+      edited.delete(node);
+    }
+    const old=String(node.nodeValue||''),trimmed=old.trim();
+    if(!config.originals.has(trimmed))return false;
+    const prefix=old.indexOf(trimmed),replacement=old.slice(0,prefix)+config.alias+old.slice(prefix+trimmed.length);
+    if(old===replacement)return false;
+    edited.set(node,{original:old,alias:replacement});
+    node.nodeValue=replacement;
+    return true;
+  }
+  function scan(doc,config){
+    const walker=doc.createTreeWalker(doc.body||doc.documentElement,doc.defaultView?.NodeFilter?.SHOW_TEXT||4);
+    let node,examined=0,applied=0;
+    while((node=walker.nextNode())&&examined++<2400)if(matchNode(node,config))applied++;
+    return applied;
+  }
+  function restoreReactPatch(){
+    if(!reactPatch)return;
+    try{
+      for(const f of [reactPatch.fiber,reactPatch.fiber?.alternate]){
+        if(f?.type===reactPatch.wrapper)f.type=reactPatch.original;
+      }
+    }catch{}
+    reactPatch=null;
+  }
+  /** Secondary path: a narrow live-fiber render wrapper inspired by Decky
+   * Music. No global module replacement, no mutation of persistent metadata.
+   * If Valve no longer exposes the known menu host shape, this is a no-op. */
+  function tryReactRenderBridge(config){
+    if(reactPatch){
+      try{
+        let f=reactPatch.fiber,foundRoot=false;
+        for(let n=0;f&&n<160;n++,f=f.return){if(f.tag===3){foundRoot=true;break;}}
+        if(foundRoot&&reactPatch.fiber.type===reactPatch.wrapper)return true;
+      }catch{}
+      restoreReactPatch();
+    }
+    if(!active()||!config)return false;
+    const source=new Set([globalThis.document]);
+    try{for(const d of getDocuments()||[])if(d)source.add(d);}catch{}
+    const roots=homeMenuReactFiberRoots([...source].slice(0,12));
+    let found=null,seen=new Set(),scanned=0,stack=[...roots];
+    while(stack.length&&scanned++<22000){
+      const f=stack.pop();if(!f||seen.has(f))continue;seen.add(f);
+      const p=f.memoizedProps;
+      // Matches Steam's main-menu host signature documented by Decky Music.
+      if(p&&p.bLoggedIn!==undefined&&p.open!==undefined&&'popup' in p&&
+          typeof f.type==='function'&&!(f.type.__titledeckHomeMenuHost)){
+        found=f;break;
+      }
+      if(f.child)stack.push(f.child);
+      if(f.sibling)stack.push(f.sibling);
+    }
+    if(!found)return false;
+    const original=found.type;
+    const wrapper=function(...args){
+      const result=original.apply(this,args);
+      try{
+        if(!active()||homeMenuRunningAppId(contexts())!==lastId)return result;
+        const latest=originalFor(lastId);if(!latest)return result;
+        const modified=rewriteHomeMenuReactOutput(result,latest,R);
+        reactRewrites+=modified.replaced;
+        return modified.output;
+      }catch{return result;}
+    };
+    wrapper.__titledeckHomeMenuHost=true;
+    try{
+      found.type=wrapper;
+      if(found.alternate)found.alternate.type=wrapper;
+      reactPatch={fiber:found,original,wrapper};
+      return true;
+    }catch{restoreReactPatch();return false;}
+  }
+  function clearObservers(){for(const item of watches)try{item.watch.disconnect();}catch{}watches=[];}
+  function runNow(){
+    if(stopped)return 0;
+    attempts++;
+    if(!active()){restore();clearObservers();restoreReactPatch();reactRewrites=0;lastStatus='HOME-menu titles disabled';return 0;}
+    const ctx=contexts(),id=homeMenuRunningAppId(ctx);
+    if(!id){restore();clearObservers();restoreReactPatch();reactRewrites=0;lastId='';lastStatus='No unambiguous running game ID';return 0;}
+    const config=originalFor(id);
+    if(!config){restore();clearObservers();restoreReactPatch();reactRewrites=0;lastId=id;lastStatus='Running game has no recognized saved alias';return 0;}
+    if(lastId!==id){restore();clearObservers();reactRewrites=0;lastId=id;}
+    const docs=documents(config);accessible=docs.length;
+    const reactor=tryReactRenderBridge(config);
+    if(!docs.length){
+      clearObservers();restore();
+      let treeCount=0,menuTrees=0;
+      try{const trees=UI?.getGamepadNavigationTrees?.()||[];
+        if(Array.isArray(trees)){
+          treeCount=trees.length;
+          menuTrees=trees.filter(t=>/^MainMenu(?:_uid\d+)?(?:$|_)/i.test(String(t?.m_ID||t?.id||''))).length;
+        }
+      }catch{}
+      lastStatus=reactRewrites?`React menu text replaced ${reactRewrites}×; check STEAM menu`:
+        `MainMenu DOM not found · React roots ${lastReactProbe.roots}, hosts ${lastReactProbe.hosts}, render hook ${reactor?'armed':'absent'} · nav trees ${treeCount}, menu trees ${menuTrees}`;
+      return 0;
+    }
+    let count=0;
+    for(const doc of docs){
+      try{
+        count+=scan(doc,config);
+        if(watches.some(x=>x.doc===doc))continue;
+        const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+        if(typeof Observer!=='function')continue;
+        const watch=new Observer(records=>{
+          if(stopped||!active())return;
+          // A running app may change without a menu repaint. Fail closed.
+          if(homeMenuRunningAppId(contexts())!==id)return runNow();
+          const updated=originalFor(id);if(!updated)return;
+          let inspected=0;
+          for(const record of records){
+            const nodes=record.type==='characterData'?[record.target]:(record.addedNodes||[]);
+            for(const target of nodes){
+              if(inspected++>160)return;
+              if(target.nodeType===3){if(matchNode(target,updated))rewrites++;continue;}
+              if(target.nodeType!==1)continue;
+              const walk=doc.createTreeWalker(target,doc.defaultView?.NodeFilter?.SHOW_TEXT||4);
+              let child,steps=0;while((child=walk.nextNode())&&steps++<120)if(matchNode(child,updated))rewrites++;
+            }
+          }
+        });
+        watch.observe(doc.documentElement,{subtree:true,characterData:true,childList:true});
+        watches.push({doc,watch});
+      }catch{}
+    }
+    for(const item of [...watches])if(!docs.includes(item.doc)){
+      item.watch.disconnect();watches=watches.filter(x=>x!==item);
+    }
+    rewrites+=count;
+    lastStatus=rewrites||reactRewrites?'HOME-menu custom title applied':
+      `MainMenu DOM reached; React hook ${reactor?'armed':'absent'}; waiting for game title`;
+    return count;
+  }
+  function start(){stopped=false;runNow();timer=setInterval(()=>{if(active())runNow();},2500);}
+  function stop(){stopped=true;if(timer!==null)clearInterval(timer);timer=null;clearObservers();restore();restoreReactPatch();}
+  return{start,stop,runNow,get status(){return lastStatus},get scans(){return attempts},
+    get documents(){return accessible},get applied(){return edited.size},get reactProbe(){return lastReactProbe},get reactRewrites(){return reactRewrites}};
 }
 
 
@@ -2885,6 +3283,14 @@ const STYLE=`
 .td-root .td-setting-panel.td-panel-wide{grid-column:1 / -1!important;background:#322833!important;border-color:#785461!important}
 .td-root .td-setting-panel.td-panel-danger{background:#382630!important;border-color:#9c6570!important}
 .td-root .td-setting-panel .td-card-buttonrow{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%!important}
+
+/* 1.2.0: native-controller-friendly, theme-aware STEAM menu title switch. */
+.td-root .td-home-toggle{display:inline-flex;gap:10px;align-items:center;justify-content:center;width:100%;font-weight:800}
+.td-root .td-home-toggle-track{width:35px;height:19px;display:inline-flex;align-items:center;flex-shrink:0;border-radius:99px;padding:2px;background:#4e5562;border:1px solid #818a98;transition:background .18s ease,border-color .18s ease}
+.td-root .td-home-toggle-track[data-on="true"]{background:#2e865f;border-color:#90d5a8}
+.td-root .td-home-toggle-knob{width:13px;height:13px;border-radius:50%;background:#f2f4f8;box-shadow:0 1px 3px #0007;transition:transform .18s ease}
+.td-root .td-home-toggle-track[data-on="true"] .td-home-toggle-knob{transform:translateX(16px)}
+
 .td-root button.td-btn,.td-root .td-btn{font-size:13px!important;font-weight:750!important}
 .td-root .td-game-title{color:#f9f9fa!important;-webkit-text-fill-color:#f9f9fa!important;opacity:1!important}
 .td-root .td-game-sub{color:#cbd0dc!important;-webkit-text-fill-color:#cbd0dc!important;opacity:1!important}
@@ -4221,6 +4627,10 @@ export function managerVisibleGames(games,hiddenIds=[]){
 // Extend the settings focus graph ONLY for our reversible visibility row.
 // The previously hardware-verified settingsFocusDestination stays unchanged.
 export function settingsFocusWithHidden(key,d,diagnostics=false){
+  if(key==='setting-0'&&d===10)return 'setting-home-menu';
+  if(key==='setting-home-menu')return d===9?'setting-0':d===10?'setting-context-placement':null;
+  if(key==='setting-context-placement')return d===9?'setting-home-menu':d===10?'setting-backup':null;
+  if(key==='setting-backup'&&d===9)return 'setting-context-placement';
   if(key==='setting-recover'&&d===10)return 'setting-show-hidden';
   if(key==='setting-show-hidden')return d===9?'setting-recover':d===10?'setting-placement-info':null;
   if(key==='setting-placement-info'&&d===9)return 'setting-show-hidden';
@@ -4245,14 +4655,74 @@ export function scrollManagerWorkspaceByStick(root,amount,view='editor'){
   try{workspace.scrollTop=next;return true}catch{return false}
 }
 
+/** Consume the context-menu request once, without scanning the library.
+ * Every lookup is scoped to the selected App ID, never a string-only guess.
+ * The async full-library catalog is loaded only if the user opens All games. */
+export function initialContextEditor(request,snapshot=latestState,store=globalThis.appStore,now=Date.now()){
+  const id=normId(request?.appid);
+  if(!id||!Number.isFinite(Number(request?.at))||now-Number(request.at)>20000||Number(request.at)-now>5000)return null;
+  const row=Array.isArray(snapshot?.games)?snapshot.games.find(g=>normId(g?.appid)===id):null;
+  const steamName=String(steamOverview(store,id)?.display_name||'').trim();
+  const rawName=steamName||String(row?.name||'').trim()||String(request?.name||'').trim()||`Steam App ${id}`;
+  // Prefer Steam's original name; if unavailable, still open the right App ID.
+  if(!rawName||rawName.length>180||/[\r\n]/.test(rawName))return null;
+  return {appid:id,name:rawName,installed:Boolean(row?.installed),source:'context'};
+}
+/** Only a context-menu-launched editor uses this alternative Back gesture.
+ * B/Circle is Steam's GamepadButton.CANCEL (2), independent of label layout.
+ * A quick tap keeps the established single-level Back behavior. A hold
+ * (650 ms) invokes one Steam route-back action, without opening the catalog.
+ * Timers and key state are always cleaned up when the editor unmounts. */
+export function createContextHoldExit({onExit,onShortBack,isEnabled=()=>true,now=Date.now,
+  setTimer=setTimeout,clearTimer=clearTimeout,delay=650}={}){
+  let since=null,timer=null,exited=false,releaseAt=-Infinity;
+  const isB=e=>Number(e?.detail?.button)===2 || (e?.key==='Escape');
+  const reset=()=>{if(timer!==null)clearTimer(timer);timer=null;since=null;};
+  const down=e=>{
+    if(!isB(e)||!isEnabled())return false;
+    halt(e);
+    if(since!==null)return true;
+    since=now();exited=false;
+    timer=setTimer(()=>{
+      timer=null;
+      if(since!==null&&!exited&&isEnabled()){
+        exited=true;try{onExit?.()}catch(err){console.warn('[TitleDeck] hold B exit:',err)}
+      }
+    },delay);
+    return true;
+  };
+  const up=e=>{
+    if(!isB(e)||since===null)return false;
+    halt(e);
+    const wasExit=exited;
+    reset();releaseAt=now();
+    if(!wasExit&&isEnabled())onShortBack?.();
+    return true;
+  };
+  return{down,up,stop:reset,pressed:()=>since!==null,
+    recentlyReleased:()=>now()-releaseAt<120};
+}
+
 function Manager(){
   const state=useStateSnapshot(),root=R.useRef(null);
-  const [games,setGames]=R.useState([]),[scope,setScope]=R.useState('all'),[query,setQuery]=R.useState(''),[view,setView]=R.useState('library');
-  const [selected,setSelected]=R.useState(''),[draft,setDraft]=R.useState(''),[notice,setNotice]=R.useState(null),[working,setWorking]=R.useState(false);
+  // A context-menu click is a direct editor launch, not a library browse.
+  // Claim it in the lazy initializer before any intermediate library frame.
+  const [contextGame]=R.useState(()=>initialContextEditor(pendingContextGame,latestState,globalThis.appStore));
+  const contextEntryActive=R.useRef(Boolean(contextGame));
+  const holdExitRef=R.useRef(null);
+  const returnFromHoldRef=R.useRef(null);
+  // Consume only after commit: React may run lazy initializers twice under
+  // StrictMode. Consuming there could lose the selected game on the second pass.
+  R.useEffect(()=>{
+    if(pendingContextGame && (contextGame?.appid===normId(pendingContextGame.appid) ||
+      Date.now()-Number(pendingContextGame.at)>20000))pendingContextGame=null;
+  },[]);
+  const [games,setGames]=R.useState(()=>contextGame?[contextGame]:[]),[scope,setScope]=R.useState('all'),[query,setQuery]=R.useState(''),[view,setView]=R.useState(contextGame?'editor':'library');
+  const [selected,setSelected]=R.useState(contextGame?.appid||''),[draft,setDraft]=R.useState(contextGame?(state.aliases?.[contextGame.appid]||contextGame.name):''),[notice,setNotice]=R.useState(null),[working,setWorking]=R.useState(false);
   const [entry,setEntry]=R.useState(''),[lastTile,setLastTile]=R.useState(''),[catalogBusy,setCatalogBusy]=R.useState(false);
   const [renderCols,setRenderCols]=R.useState(4);
   const [hiddenManagerIds,setHiddenManagerIds]=R.useState(()=>validHiddenManagerIds(readPreference(HIDDEN_LIBRARY_STORE,'[]')));
-  const [descriptionDraft,setDescriptionDraft]=R.useState('');
+  const [descriptionDraft,setDescriptionDraft]=R.useState(contextGame?(state.descriptions?.[contextGame.appid]||''):'');
   const [accent,setAccent]=R.useState(validAccent(readPreference(ACCENT_STORE,'wine')));
   const [hexDraft,setHexDraft]=R.useState('');
   const [customPickerOpen,setCustomPickerOpen]=R.useState(false);
@@ -4260,6 +4730,7 @@ function Manager(){
   const [pickerHue,setPickerHue]=R.useState(345);
   const [pickerChoice,setPickerChoice]=R.useState('#8b1e3f');
   const [stickScroll,setStickScroll]=R.useState(readControllerScrollSetting());
+  const [contextPosition,setContextPosition]=R.useState(readContextMenuPosition());
   const lastPageInput=R.useRef(0);
   // Independent of LB/RB: the accepted shoulder-button Focusable bridge is untouched.
   R.useEffect(()=>{
@@ -4278,6 +4749,7 @@ function Manager(){
     const timer=setInterval(poll,45);
     return()=>clearInterval(timer);
   },[view]);
+  const catalogReady=R.useRef(false);
   const pageLibraryRef=R.useRef(null);
   R.useEffect(()=>{
     const shell=root.current,win=shell?.ownerDocument?.defaultView;
@@ -4334,10 +4806,10 @@ function Manager(){
       const current=collectSteamGames(globalThis.appStore,snapshot.games,extras);
       setGames(current);
       return current;
-    }finally{setCatalogBusy(false)}
+    }finally{catalogReady.current=true;setCatalogBusy(false)}
   },[]);
-  R.useEffect(()=>{void fullLibrary().catch(e=>notify(`Library scan failed: ${String(e?.message||e)}`,setNotice))},[]);
-  R.useEffect(()=>{setGames(previous=>collectSteamGames(globalThis.appStore,state.games||[],[...remoteGames.current,...previous]));},[state.games]);
+  R.useEffect(()=>{if(view==='library'&&!catalogReady.current)void fullLibrary().catch(e=>notify(`Library scan failed: ${String(e?.message||e)}`,setNotice))},[view]);
+  R.useEffect(()=>{if(contextGame&&view!=='library')return;setGames(previous=>collectSteamGames(globalThis.appStore,state.games||[],[...remoteGames.current,...previous]));},[state.games,view]);
   const filtered=managerVisibleGames(games,hiddenManagerIds).filter(g=>(scope==='all'||(scope==='installed'?g.installed:Boolean(aliases[g.appid])))&&
      (`${g.name} ${aliases[g.appid]||''} ${g.appid}`).toLowerCase().includes(query.toLowerCase()));
   const pageLibrary=delta=>{
@@ -4427,6 +4899,9 @@ function Manager(){
     // scroll position or jump to the bottom of a description preview.
     setTimeout(()=>{const area=root.current?.querySelector?.('.td-workspace');if(area)area.scrollTop=0},145);
   };
+  // Initial direct editor is already rendered. Set controller focus after
+  // Steam has mounted the native gamepad navigation tree, without relayout.
+  R.useEffect(()=>{if(contextGame)focusQuery(root.current,'[data-td-focus="edit-name"]',90)},[]);
   const editDraft=next=>{setCleanupPreview(null);setCleanupUndo(null);setDraft(next)};
   const openDescription=()=>{
     activeInlineKeyboard?.close();
@@ -4482,6 +4957,7 @@ function Manager(){
     try{field.click?.()}catch{}
   };
   const returnLibrary=()=>{
+    contextEntryActive.current=false;holdExitRef.current?.stop();
     activeInlineKeyboard?.close();setCleanupPreview(null);setCleanupUndo(null);
     setView('library');setNotice(null);restoreTile();
   };
@@ -4503,6 +4979,40 @@ function Manager(){
     if(view==='description'){enterView('editor','edit-description');return;}
     if(view==='editor')returnLibrary();
   };
+  // The native shortcut enters a single editor straight from a game tile's
+  // Options menu. Route-back once is enough; visiting All games disables the
+  // hold shortcut so an ordinary Full Library Manager keeps its old controls.
+  returnFromHoldRef.current=()=>{
+    if(!contextEntryActive.current)return;
+    contextEntryActive.current=false;
+    holdExitRef.current?.stop();
+    activeInlineKeyboard?.close();
+    try{UI.Navigation?.NavigateBack?.()}catch(err){console.warn('[TitleDeck] return to Steam:',err)}
+  };
+  const onShortContextBackRef=R.useRef(null);
+  onShortContextBackRef.current=back;
+  R.useEffect(()=>{
+    if(!contextGame)return;
+    const shell=root.current,doc=shell?.ownerDocument;
+    const enabled=()=>contextEntryActive.current &&
+      !shell?.classList?.contains?.('td-native-keyboard-open') &&
+      !shell?.ownerDocument?.activeElement?.matches?.('input,textarea');
+    const hold=createContextHoldExit({
+      onExit:()=>returnFromHoldRef.current?.(),
+      onShortBack:()=>onShortContextBackRef.current?.(),isEnabled:enabled
+    });
+    holdExitRef.current=hold;
+    // Steam emits native focus events which may be consumed by descendants.
+    // Observe only within our editor and in capture phase; no global bindings.
+    const press=e=>hold.down(e),release=e=>hold.up(e);
+    shell?.addEventListener?.('vgp_onbuttondown',press,true);
+    shell?.addEventListener?.('vgp_onbuttonup',release,true);
+    return()=>{
+      shell?.removeEventListener?.('vgp_onbuttondown',press,true);
+      shell?.removeEventListener?.('vgp_onbuttonup',release,true);
+      hold.stop();if(holdExitRef.current===hold)holdExitRef.current=null;
+    };
+  },[contextGame?.appid]);
   const save=async(method,...args)=>{
     if(working)return;
     setCleanupPreview(null);setCleanupUndo(null);
@@ -4511,10 +5021,12 @@ function Manager(){
       const valid=method==='save_alias'?verified.aliases?.[String(args[0])]===args[1]
         :method==='delete_alias'?!verified.aliases?.[String(args[0])]
         :method==='set_description_position'?verified.description_position===args[0]
+        :method==='set_home_menu_titles'?verified.home_menu_titles===args[0]
         :verified.enabled===args[0];
       if(!valid)throw Error('Settings readback failed');
       notify(method==='save_alias'?`Saved “${args[1]}”. TitleDeck confirmed your alias. Open Steam's game page to check the visible title.`:
         method==='delete_alias'?'Restored original Steam title.'
+        :method==='set_home_menu_titles'?`STEAM-button menu custom titles ${args[0]?'enabled':'disabled'}.`
         :method==='set_description_position'?`Description placement changed to ${args[0]==='game_info'?'Game Info':args[0]==='hero_footer'?'Artwork Footer':'Below Play'}.`
         :'Display replacements updated.',setNotice,true);
     }catch(e){notify('Could not save: '+String(e?.message||e),setNotice);}finally{setWorking(false);}
@@ -4643,7 +5155,7 @@ function Manager(){
         onClick:()=>{activeInlineKeyboard?.close();void saveDescription(true)}},'↶ Restore Steam description'):null,
       h(Btn,{className:'td-action','data-td-focus':'edit-hide',nav:e=>editorNav('edit-hide',e),disabled:working,onClick:hideSelectedFromManager},'Hide tile'),
       h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Edit → Save → Verify in Steam'));
-    workspace=h('div',{className:'td-workspace'},h('div',{className:'td-editor'},h('div',null,h('div',{className:'td-editor-art'},h(Cover,{id:selected,title:original}))),
+    workspace=h('div',{className:'td-workspace'},h('div',{className:'td-editor'},h('div',null,h('div',{className:'td-editor-art'},h(Cover,{id:selected,title:original,priority:true}))),
       h('div',{className:'td-card td-game-editor-card'},
         h('div',{className:'td-copy-label'},'CUSTOM DISPLAY TITLE'),
         h(InlineGameNameField,{value:draft,setValue:editDraft,
@@ -4675,7 +5187,7 @@ function Manager(){
             savedDescriptionPreview(state.descriptions[selected]).excerpt),
           h('div',{className:'td-saved-description-hint'},
             'Full text is preserved. Use Edit description or Restore Steam description above.')):null)));
-    bottom=footer('A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
+    bottom=footer(contextEntryActive.current?'A: select  •  Tap B/Circle: All games  •  Hold B/Circle: Steam':'A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
   }else if(view==='description'){
     const nonSteamEdit=isNativeSteamShortcutApp(selected,nonSteamOverviewStore(steamDocument||globalThis.document));
     const stored=state.descriptions?.[selected]||'';
@@ -4717,7 +5229,7 @@ function Manager(){
       h('div',{className:'td-editor-original-meta'},nonSteamEdit?'Non-Steam Game Info: artwork on the left, text on the right · Full descriptions remain saved · Scroll with the right stick · Save and Restore are above':'Full descriptions remain saved · Scroll with the right stick · Save and Restore are above'),
       stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:150,overflowY:'auto',marginTop:15}},'Saved local description: '+stored):null
     ));
-    bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
+    bottom=footer(contextEntryActive.current?'A: edit or save  •  B: back  •  Hold B/Circle: Steam':'A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
   }else if(view==='keyboard'||view==='search'||view==='appid'){
     const isTitle=view==='keyboard',isSearch=view==='search';
     const context=isTitle?'Change display title':isSearch?'Search your game library':'Find game by Steam App ID';
@@ -4793,7 +5305,7 @@ function Manager(){
     actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'settings-back',nav:e=>{if(dir(e)===10)return directionTo(root.current,'setting-0',e);if(dir(e)===9)return directionTo(root.current,'close',e);halt(e);return true;},onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Aliases & recovery'));
     const settingPanel=(id,title,desc,action,extra='',wide=false)=>h('section',{className:`td-setting-panel ${wide?'td-panel-wide':''}`,'data-td-setting':id},
       h('h3',null,title),h('p',null,desc),extra?h('div',{className:'td-mini-state'},extra):null,action);
-    const settingsOrder=['setting-0','setting-backup','setting-backup-restore','setting-recover',
+    const settingsOrder=['setting-0','setting-home-menu','setting-backup','setting-backup-restore','setting-recover',
       'setting-show-hidden',
     'setting-placement-info','setting-placement-hero','setting-placement-below',
       ...(developerDiagnosticsEnabled()?['setting-scan']:[]),
@@ -4825,6 +5337,22 @@ function Manager(){
       h('div',{className:'td-settings-grid'},
         settingPanel('overrides','Display title replacement','Keep your custom titles active throughout supported Steam screens.',
           button(state.enabled?'Pause replacements':'Enable replacements',()=>void save('set_enabled',!state.enabled),{focus:'setting-0'}),state.enabled?'● Enabled':'○ Paused'),
+        settingPanel('home-menu-titles','STEAM-button menu titles',
+          'Display your saved custom title for the running game when you press STEAM. Supports Steam and non-Steam games; the original Steam name and artwork remain unchanged. Turn off to show the original title.',
+          button(h('span',{className:'td-home-toggle',role:'presentation'},
+              h('span',{className:'td-home-toggle-track','data-on':state.home_menu_titles?'true':'false'},
+                h('span',{className:'td-home-toggle-knob'})),
+              h('span',null,state.home_menu_titles?'Custom names ON':'Custom names OFF')),
+            ()=>void save('set_home_menu_titles',!state.home_menu_titles),{focus:'setting-home-menu'}),
+          state.home_menu_titles?'● Enabled · Steam and non-Steam games':'○ Disabled · Original game names'),
+        settingPanel('context-menu-position','Game Options menu placement',
+          'Position “Edit with TitleDeck” after Developer, or before Properties when that row exists. If non-Steam games show Properties only inside Manage, the shortcut goes at the end of the main actions. Other plugins are untouched.',
+          button(contextPosition==='after-developer'?'✓ After Developer · Change':'✓ Before Properties · Change',()=>{
+            const next=contextPosition==='after-developer'?'before-properties':'after-developer';
+            setContextPosition(next);writePreference(CONTEXT_MENU_POSITION_STORE,next);
+            notify(`TitleDeck context shortcut will appear ${next==='after-developer'?'after Developer':'before Properties'} the next time Steam builds the menu.`,setNotice,true);
+          },{focus:'setting-context-placement'}),
+          contextPosition==='after-developer'?'● Near top · After Developer':'● Last game action on non-Steam menus without Properties'),
         settingPanel('backup','Save a backup','Save the current names to a separate local backup you can restore later.',
           button('Create backup',()=>void safeCall('create_backup',()=> 'TitleDeck backup saved.'),{focus:'setting-backup'}),manual.available?`Saved backup: ${manual.count} name(s)`:'No manual backup yet'),
         settingPanel('backup-restore','Restore a saved backup',manual.available?`Replace current names with the ${manual.count} name(s) in your saved backup.`:'Create a backup first to use this feature.',
@@ -5005,10 +5533,16 @@ function Manager(){
       '--td-backdrop':themeColors(accent).backdrop,'--td-surface':themeColors(accent).surface,
       '--td-raised':themeColors(accent).raised,'--td-tile':themeColors(accent).tile,
       '--td-inset':themeColors(accent).inset,'--td-muted':themeColors(accent).muted},
-    'flow-children':'down',onButtonDown:onNativeShoulder,onKeyDown:e=>{if(view==='library'&&!(e.target?.matches?.('input,textarea'))){
+    'flow-children':'down',onButtonDown:e=>{if(contextEntryActive.current&&holdExitRef.current?.down(e))return;onNativeShoulder(e);},
+    onButtonUp:e=>{if(contextEntryActive.current)holdExitRef.current?.up(e);},
+    onKeyUp:e=>{if(contextEntryActive.current)holdExitRef.current?.up(e);},
+    onKeyDown:e=>{if(contextEntryActive.current&&e.key==='Escape'&&holdExitRef.current?.down(e))return;
+    if(view==='library'&&!(e.target?.matches?.('input,textarea'))){
       if(e.key==='PageDown'){e.preventDefault?.();pageLibrary(1)}
       if(e.key==='PageUp'){e.preventDefault?.();pageLibrary(-1)}
-    }},onCancel:e=>{halt(e);if(customPickerOpen){if(pickerAdjust){setPickerAdjust(false);focusQuery(root.current,'[data-td-focus="picker-sv-field"]',25)}else{setCustomPickerOpen(false);focusQuery(root.current,'[data-td-focus="setting-custom-edit"]',70)}}else back()}},
+    }},onCancel:e=>{halt(e);
+    if(contextEntryActive.current&&(holdExitRef.current?.pressed()||holdExitRef.current?.recentlyReleased()))return;
+    if(customPickerOpen){if(pickerAdjust){setPickerAdjust(false);focusQuery(root.current,'[data-td-focus="picker-sv-field"]',25)}else{setCustomPickerOpen(false);focusQuery(root.current,'[data-td-focus="setting-custom-edit"]',70)}}else back()}},
     h('style',null,STYLE),
     h('main',{className:'td-shell','data-td-layout':'manager-shell'},
       h('header',{className:'td-header'},h('div',{className:'td-identity'},h('img',{src:ICON_DATA_URI,className:'td-logo',alt:''}),
@@ -5050,6 +5584,249 @@ function QuickPanel(){
    ]:[]),
    error?h('div',null,error):null));
 }
+
+/** 1.2.1 Preview: Steam's native game context menu (☰/Options).
+ * Based on the established Decky SteamGridDB/MetaDeck context-menu hooks.
+ * Never patch generic context menus or infer a missing App ID; no Steam
+ * metadata is modified. On unsupported Steam clients this simply does nothing. */
+const CONTEXT_ACTION_KEY='titledeck-edit-game';
+const CONTEXT_MENU_POSITION_STORE='titledeck-context-position-v1';
+export function validContextMenuPosition(value){
+  return value==='before-properties'?'before-properties':'after-developer';
+}
+function readContextMenuPosition(){
+  return validContextMenuPosition(readPreference(CONTEXT_MENU_POSITION_STORE,'after-developer'));
+}
+/** Read the *row itself*, not a label inside Manage's nested sub-menu.
+ * Non-Steam Manage often contains a Properties action in its children; a
+ * recursive property search places our shortcut before Launch Options. */
+export function nativeGameContextLabel(node){
+  const props=node?.props||{};
+  if(typeof props.label==='string')return props.label.trim();
+  if(typeof props.children==='string')return props.children.trim();
+  if(Array.isArray(props.children)){
+    const texts=props.children.filter(c=>typeof c==='string').map(c=>c.trim()).filter(Boolean);
+    if(texts.length===1)return texts[0];
+  }
+  const child=props.children;
+  if(child&&typeof child==='object'&&!Array.isArray(child)){
+    if(typeof child.props?.label==='string')return child.props.label.trim();
+    if(typeof child.props?.children==='string')return child.props.children.trim();
+  }
+  return '';
+}
+function contextRowKey(row){return String(row?.key||'').toLowerCase().replace(/^.*[.$:]/,'')}
+function contextPropertyRow(row){
+  const key=contextRowKey(row),label=nativeGameContextLabel(row).toLowerCase();
+  if(key==='properties'||/^properties(?:\.{3}|…)?$/i.test(label))return true;
+  // Native Properties is sometimes wrapped by one React element. Don't
+  // recursively scan Manage's nested submenu for its own Properties action.
+  const direct=[row?.props?.onSelected,row?.onSelected,row?.props?.children?.props?.onSelected];
+  return direct.some(fn=>typeof fn==='function'&&/AppProperties/.test(Function.prototype.toString.call(fn)));
+}
+export function contextMenuInsertIndex(items,mode=readContextMenuPosition()){
+  if(!Array.isArray(items))return 0;
+  const index=(pred)=>items.findIndex(pred);
+  const afterDeveloper=index(row=>contextRowKey(row)==='developer'||nativeGameContextLabel(row).toLowerCase()==='developer');
+  if(mode==='after-developer'){
+    if(afterDeveloper>=0)return afterDeveloper+1;
+    const launch=index(row=>/^(?:launch-options|launchoptions)$/.test(contextRowKey(row))||nativeGameContextLabel(row).toLowerCase()==='launch options');
+    if(launch>=0)return launch;
+  }
+  const properties=index(contextPropertyRow);
+  if(properties>=0)return properties;
+  // Non-Steam menus can contain Properties only *inside* the Manage
+  // sub-menu, not in this top-level list. Do not claim we found it there.
+  // Use the bottom of the top-level actions, just before Cancel if present.
+  const cancel=index(row=>contextRowKey(row)==='cancel'||nativeGameContextLabel(row).toLowerCase()==='cancel');
+  return cancel>=0?cancel:items.length;
+}
+
+function contextMenuNodes(root,max=320){
+  const out=[],seen=new Set(),queue=[root];
+  for(let n=0;queue.length&&n++<max;){
+    const x=queue.shift();if(!x||typeof x!=='object'||seen.has(x))continue;seen.add(x);out.push(x);
+    if(Array.isArray(x)){queue.push(...x);continue}
+    if(x.props?.children)queue.push(x.props.children);
+    if(x.children)queue.push(x.children);
+  }
+  return out;
+}
+function nativeGameContextEntry(x){
+  try{
+    // Real Steam menus may wrap their native MenuItem in another React element.
+    // Match its action, but never infer a context from a generic caption.
+    for(const node of contextMenuNodes(x,55)){
+      if(node?.key==='properties')return true;
+      const handler=node?.props?.onSelected??node?.onSelected;
+      if(typeof handler==='function' && /AppProperties|launchSource/.test(Function.prototype.toString.call(handler)))return true;
+    }
+  }catch{}
+  return false;
+}
+export function resolveContextMenuAppId(component,items){
+  // Steam's most recent game context props override stale element ownership.
+  const nodes=contextMenuNodes([items,component?.props?.children,component?.props],450);
+  const live=new Set();
+  for(const node of nodes){
+    const id=normId(node?.app?.appid??node?.app?.appId??node?.props?.app?.appid);
+    if(id)live.add(id);
+  }
+  if(live.size===1)return [...live][0];
+  if(live.size>1)return ''; // Ambiguous: refuse to open the wrong game's editor.
+  const overview=normId(component?._owner?.pendingProps?.overview?.appid ??
+    component?.props?.overview?.appid ?? component?.props?.appid);
+  const owner=new Set(nodes.map(node=>normId(node?._owner?.pendingProps?.overview?.appid)).filter(Boolean));
+  if(owner.size===1)return [...owner][0];
+  if(owner.size>1)return ''; // Multiple overview owners: no safe selection.
+  return overview;
+}
+export function findNativeGameContextItems(root){
+  // Steam's native game menu includes Properties or a launch-source action;
+  // don't alter friends, downloads, settings, or other context menus.
+  let best=null,score=-1;
+  for(const x of contextMenuNodes(root,350)){
+    if(!Array.isArray(x) || !x.some(nativeGameContextEntry))continue;
+    // Prefer the actual list of native actions over an outer React array
+    // containing an entire panel. This also handles a wrapped Properties row.
+    const direct=x.filter(item=>item?.key==='properties'||
+      typeof item?.props?.onSelected==='function'||
+      (item?.props?.children?.props&&typeof item.props.children.props.onSelected==='function')).length;
+    // A non-Steam Manage submenu may have more native actions than the
+    // outer menu. Prefer the outer game menu's Play and Developer landmarks.
+    // This prevents accidentally inserting the shortcut inside Manage.
+    const label=row=>nativeGameContextLabel(row).toLowerCase();
+    const topPlay=x.some(row=>contextRowKey(row)==='play'||label(row)==='play'||label(row)==='resume');
+    const topDeveloper=x.some(row=>contextRowKey(row)==='developer'||label(row)==='developer');
+    const topLaunch=x.some(row=>contextRowKey(row)==='launch-options'||label(row)==='launch options');
+    const points=(topPlay?3000:0)+(topDeveloper?1800:0)+(topLaunch?700:0)+direct*10+(x.length>1?1:0);
+    if(points>score){best=x;score=points;}
+  }
+  return best;
+}
+export function insertTitleDeckContextItem(items,appid,createItem,mode=readContextMenuPosition()){
+  const id=normId(appid);
+  if(!id||!Array.isArray(items)||!items.some(nativeGameContextEntry)||typeof createItem!=='function')return false;
+  // Remove our old placement before inserting. Steam and other Decky plugins
+  // may rebuild menus, so never move, rename, or splice their entries.
+  for(let i=items.length-1;i>=0;i--)if(items[i]?.key===CONTEXT_ACTION_KEY)items.splice(i,1);
+  const item=createItem(id);
+  if(!item||item.key!==CONTEXT_ACTION_KEY)return false;
+  items.splice(contextMenuInsertIndex(items,mode),0,item);
+  return true;
+}
+function requestTitleDeckEditor(appid,title=''){
+  const id=normId(appid);
+  if(!id)return false;
+  pendingContextGame={appid:id,name:String(title||'').slice(0,180),at:Date.now()};
+  try{
+    if(typeof UI.Navigation?.Navigate!=='function'){pendingContextGame=null;return false;}
+    UI.Navigation.CloseSideMenus?.();UI.Navigation.Navigate(ROUTE);return true;
+  }
+  catch(e){pendingContextGame=null;console.warn('[TitleDeck] context menu navigation:',e);return false;}
+}
+export function createGameContextMenuAdapter(ui=UI,getStore=()=>globalThis.appStore){
+  let patches=[],mounted=false,status='Not connected';
+  const visitedArrays=new Set();
+  let currentId='';
+  function remember(p){if(p?.unpatch)patches.push(p)}
+  function menuItem(id){
+    const nativeMenu=ui.MenuItem;
+    if(typeof nativeMenu!=='function'&&typeof nativeMenu!=='object')return null;
+    const name=String(steamOverview(getStore(),id)?.display_name||'');
+    return h(nativeMenu,{key:CONTEXT_ACTION_KEY,onSelected:()=>requestTitleDeckEditor(id,name)},'Edit with TitleDeck');
+  }
+  function inject(items,component){
+    const arr=findNativeGameContextItems(items);
+    if(!arr)return false;
+    const id=resolveContextMenuAppId(component||{},arr);
+    // Missing or conflicting App IDs fail closed: never reuse another game's ID.
+    if(!id)return false;
+    const ok=insertTitleDeckContextItem(arr,id,menuItem);
+    if(ok){
+      visitedArrays.add(arr);if(visitedArrays.size>45){const oldest=visitedArrays.values().next().value;visitedArrays.delete(oldest)}
+      status='Native game context menu ready';
+    }
+    return ok;
+  }
+  function patchLibraryComponent(LibraryContextMenu){
+    if(!LibraryContextMenu?.prototype||typeof LibraryContextMenu.prototype.render!=='function')return false;
+    if(typeof ui.afterPatch!=='function')return false;
+    const patchedClasses=new WeakSet();
+    remember(ui.afterPatch(LibraryContextMenu.prototype,'render',(_,component)=>{
+      try{
+        const found=resolveContextMenuAppId(component,component?.props?.children);
+        currentId=found||''; // Never keep a previous game's ID on an unrelated menu.
+        if(!currentId)return component;
+        inject(component?.props?.children,component);
+        const target=component?.type;
+        if(target && typeof target==='function' && !patchedClasses.has(target)){
+          patchedClasses.add(target);
+          remember(ui.afterPatch(component,'type',(_,ret)=>{
+            try{
+              const cls=ret?.type;
+              if(cls?.prototype && !patchedClasses.has(cls)){
+                patchedClasses.add(cls);
+                if(typeof cls.prototype.render==='function')remember(ui.afterPatch(cls.prototype,'render',(_,rendered)=>{
+                  try{inject(rendered,component)}catch{}
+                  return rendered;
+                }));
+                if(typeof cls.prototype.shouldComponentUpdate==='function')remember(ui.afterPatch(cls.prototype,'shouldComponentUpdate',([nextProps],shouldUpdate)=>{
+                  try{if(shouldUpdate===true){const id=resolveContextMenuAppId({props:nextProps},nextProps?.children);if(id){currentId=id;inject(nextProps?.children,{props:nextProps});}}}catch{}
+                  return shouldUpdate;
+                }));
+              }
+            }catch{}
+            return ret;
+          }));
+        }
+      }catch(e){status='Context menu unavailable: '+String(e?.message||e).slice(0,100)}
+      return component;
+    }));
+    return true;
+  }
+  function discover(){
+    // Resolve only the native library game context component (SteamGridDB
+    // implementation). No route or global render monkey-patch.
+    try{
+      const f=(x)=>typeof x==='function'&&/\(\)\.LibraryContextMenu/.test(String(x));
+      let candidate;
+      if(typeof ui.findModuleByExport==='function'){
+        const module=ui.findModuleByExport(f);
+        candidate=Object.values(module||{}).find(x=>typeof x==='function'&&/navigator:/.test(String(x)));
+      }
+      if(!candidate&&typeof ui.findModuleChild==='function')candidate=ui.findModuleChild(m=>{
+        if(!m||typeof m!=='object'||!Object.values(m).some(f))return;
+        return Object.values(m).find(x=>typeof x==='function'&&/navigator:/.test(String(x)));
+      });
+      if(!candidate||typeof ui.fakeRenderComponent!=='function')return null;
+      return ui.fakeRenderComponent(candidate)?.type||null;
+    }catch(e){status='Native menu discovery failed: '+String(e?.message||e).slice(0,80);return null}
+  }
+  return{
+    get status(){return status},
+    start(){
+      if(mounted)return;
+      // Retry boundedly during startup; no permanent high-frequency menu scans.
+      let tries=0;
+      const attempt=()=>{
+        if(mounted)return;
+        const cls=discover();
+        if(cls&&patchLibraryComponent(cls)){mounted=true;status='Installed (awaiting game context menu)';}
+        else if(++tries>=10){clearInterval(retry);status='Native context menu not exposed on this Steam build';}
+      };
+      const retry=setInterval(attempt,1700);
+      attempt();
+      patches.push({unpatch:()=>clearInterval(retry)});
+    },
+    stop(){mounted=false;currentId='';
+      for(const arr of visitedArrays)try{for(let i=arr.length-1;i>=0;i--)if(arr[i]?.key===CONTEXT_ACTION_KEY)arr.splice(i,1)}catch{}
+      visitedArrays.clear();for(const patch of patches.reverse())try{patch?.unpatch?.()}catch{};patches=[];
+      status='Unloaded';
+    }
+  };
+}
+
 function discoverDocuments(){
  const docs=[];
  try{const trees=UI?.getGamepadNavigationTrees?.()||[];const stack=Array.isArray(trees)?[...trees]:[trees];let n=0;const seen=new Set();
@@ -5072,16 +5849,17 @@ function SteamDocumentAnchor(){
     if(!doc?.body)return;
     if(steamDocument!==doc){
       steamDocument=doc;
-      adapter?.stop();descriptionAdapter?.stop();nonSteamDescriptionAdapter?.stop();gameInfoDataAdapter?.stop();
+      adapter?.stop();homeMenuAdapter?.stop();descriptionAdapter?.stop();nonSteamDescriptionAdapter?.stop();gameInfoDataAdapter?.stop();
       adapter=createTitleAdapter(doc,()=>latestState,()=>doc.defaultView?.appStore||globalThis.appStore,()=>[doc,...discoverDocuments()]);
+      homeMenuAdapter=createHomeMenuTitleAdapter(()=>latestState,()=>doc.defaultView?.appStore||globalThis.appStore,()=>[doc,...discoverDocuments()],()=>[globalThis,doc.defaultView,...discoverDocuments().map(d=>d.defaultView)]);
       descriptionAdapter=createDescriptionAdapter(doc,()=>steamOnlyDescriptionState(latestState,nonSteamOverviewStore(doc)),()=>[doc,...discoverDocuments()],undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');
       nonSteamDescriptionAdapter=createNonSteamGameInfoAdapter(doc,()=>latestState,()=>[doc,...discoverDocuments()]);
       gameInfoDataAdapter=createGameInfoDataAdapter(()=>latestState,()=>[globalThis,doc.defaultView,...discoverDocuments().map(d=>d.defaultView)]);
-      adapter.start();descriptionAdapter.start();nonSteamDescriptionAdapter.start();gameInfoDataAdapter.start();
+      adapter.start();homeMenuAdapter.start();descriptionAdapter.start();nonSteamDescriptionAdapter.start();gameInfoDataAdapter.start();
       reapplySavedGameInfoAfterBoot();
       steamBridgeStatus='Connected to Steam UI document';
     }
-    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;nonSteamDescriptionAdapter?.stop();nonSteamDescriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
+    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;homeMenuAdapter?.stop();homeMenuAdapter=null;descriptionAdapter?.stop();descriptionAdapter=null;nonSteamDescriptionAdapter?.stop();nonSteamDescriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
   },[]);
   return h('span',{ref,style:{display:'none'},'data-titledeck-ui':'true'});
 }
@@ -5094,14 +5872,16 @@ export default function createPlugin(){
  }else{steamBridgeStatus='Steam UI global component API unavailable';}
  // Fallback adapter watches only the plugin document until the real Steam anchor mounts.
  if(!adapter){adapter=createTitleAdapter(globalThis.document,()=>latestState,()=>globalThis.appStore,()=>steamDocument?[steamDocument]:discoverDocuments());adapter.start();}
+ if(!homeMenuAdapter){homeMenuAdapter=createHomeMenuTitleAdapter(()=>latestState,()=>globalThis.appStore,()=>[steamDocument,globalThis.document,...discoverDocuments()],()=>[globalThis,steamDocument?.defaultView,...discoverDocuments().map(d=>d.defaultView)]);homeMenuAdapter.start();}
  if(!descriptionAdapter){descriptionAdapter=createDescriptionAdapter(globalThis.document,()=>steamOnlyDescriptionState(latestState,nonSteamOverviewStore(steamDocument||globalThis.document)),()=>steamDocument?[steamDocument]:discoverDocuments(),undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');descriptionAdapter.start();}
  if(!nonSteamDescriptionAdapter){nonSteamDescriptionAdapter=createNonSteamGameInfoAdapter(globalThis.document,()=>latestState,()=>steamDocument?[steamDocument]:discoverDocuments());nonSteamDescriptionAdapter.start();}
  if(!controllerScrollBridge){controllerScrollBridge=createControllerScrollBridge();controllerScrollBridge.start();}
+ if(!gameContextMenuAdapter){gameContextMenuAdapter=createGameContextMenuAdapter();gameContextMenuAdapter.start();}
  if(!gameInfoDataAdapter){gameInfoDataAdapter=createGameInfoDataAdapter(()=>latestState,()=>[globalThis,steamDocument?.defaultView,...discoverDocuments().map(d=>d.defaultView)]);gameInfoDataAdapter.start();}
  refreshState().catch(e=>console.warn('[TitleDeck] state load:',e));
  return{name:PLUGIN,titleView:h('span',{style:{display:'flex',alignItems:'center',gap:8}},'TitleDeck',h('span',{className:'td-version-chip',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),content:h(QuickPanel),
    icon:h('img',{src:ICON_DATA_URI,alt:'TitleDeck',style:{width:24,height:24,objectFit:'contain'}}),
-   onDismount(){controllerScrollBridge?.stop();controllerScrollBridge=null;adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;nonSteamDescriptionAdapter?.stop();nonSteamDescriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;
+   onDismount(){gameContextMenuAdapter?.stop();gameContextMenuAdapter=null;pendingContextGame=null;controllerScrollBridge?.stop();controllerScrollBridge=null;adapter?.stop();adapter=null;homeMenuAdapter?.stop();homeMenuAdapter=null;descriptionAdapter?.stop();descriptionAdapter=null;nonSteamDescriptionAdapter?.stop();nonSteamDescriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;
      try{api.routerHook?.removeGlobalComponent?.(STEAM_DOC_ANCHOR)}catch{}
      try{api.routerHook?.removeRoute?.(ROUTE)}catch{}
      for(const timer of bootHydrationTimers)clearTimeout(timer);bootHydrationTimers=[];

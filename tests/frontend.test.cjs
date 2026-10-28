@@ -28,13 +28,13 @@ function setupMock({games=[],aliases={},descriptions={},description_position='be
   const R={
     createElement:(type,props,...children)=>({type,props:props||{},children:children.flat(Infinity).filter(x=>x!==undefined&&x!==false)}),
     Fragment:'fragment',useEffect(){},useRef(v){const i=refCursor++;if(!refs[i])refs[i]={current:v};return refs[i]},useCallback:f=>f,
-    useState(initial){const i=cursor++;if(!hooks[i])hooks[i]={value:initial};
-      if(i===1 && Array.isArray(initial) && !hooks[i].initialized){hooks[i].value=games;hooks[i].initialized=true}
-      if(i===4&&!hooks[i].initialized){hooks[i].value=view;hooks[i].initialized=true}
-      if(i===5&&!hooks[i].initialized){hooks[i].value=selected;hooks[i].initialized=true}
-      if(i===6&&!hooks[i].initialized){hooks[i].value=draft;hooks[i].initialized=true}
-      if(i===5&&!hooks[i].initialized){hooks[i].value=selected;hooks[i].initialized=true}
-      if(i===6&&!hooks[i].initialized){hooks[i].value=draft;hooks[i].initialized=true}
+    useState(initial){const i=cursor++;if(!hooks[i])hooks[i]={value:typeof initial==='function'?initial():initial};
+      if(i===2 && Array.isArray(hooks[i].value) && !hooks[i].initialized){hooks[i].value=games;hooks[i].initialized=true}
+      if(i===5&&!hooks[i].initialized){hooks[i].value=view;hooks[i].initialized=true}
+      if(i===6&&!hooks[i].initialized){hooks[i].value=selected;hooks[i].initialized=true}
+      if(i===7&&!hooks[i].initialized){hooks[i].value=draft;hooks[i].initialized=true}
+      if(i===6&&!hooks[i].initialized){hooks[i].value=selected;hooks[i].initialized=true}
+      if(i===7&&!hooks[i].initialized){hooks[i].value=draft;hooks[i].initialized=true}
       return[hooks[i].value,next=>{hooks[i].value=typeof next==='function'?next(hooks[i].value):next}];
     }
   };
@@ -42,7 +42,7 @@ function setupMock({games=[],aliases={},descriptions={},description_position='be
   globalThis.DFL={DialogButton:'button',Focusable:'focusable',PanelSection:'panel',PanelSectionRow:'row',ButtonItem:'buttonitem',Navigation:{}};
   globalThis.__DECKY_SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED_deckyLoaderAPIInit={connect:()=>api};
   return{
-    state,render(){cursor=0;refCursor=0;return route()},
+    state,render(){cursor=0;refCursor=0;if(!Array.isArray(hooks[2]?.value)){hooks=[];refs=[];}return route()},
     async init(){const mod=await moduleForTest(),plugin=mod.default();await new Promise(resolve=>setImmediate(resolve));return{mod,plugin}},
     cleanup(){delete globalThis.SP_REACT;delete globalThis.DFL;delete globalThis.__DECKY_SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED_deckyLoaderAPIInit}
   };
@@ -50,7 +50,7 @@ function setupMock({games=[],aliases={},descriptions={},description_position='be
 test('source and packaged frontend match; approved logo/version consistent',()=>{
  assert.equal(source,fs.readFileSync(dist,'utf8'));
  const p=JSON.parse(fs.readFileSync(path.join(root,'plugin.json'))),pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json')));
- assert.equal(p.version,'1.1.9');assert.equal(pkg.version,'1.1.9');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
+ assert.equal(p.version,'1.2.1');assert.equal(pkg.version,'1.2.1');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
  assert(source.includes('QAM_VERSION_STYLE')&&source.includes('td-version-chip'));
 });
 test('retired Steam-card badges have no injected adapter and no settings control',async()=>{
@@ -3232,7 +3232,7 @@ test('1.0.4 no inert Top button, palette remains selectable and title metadata u
  assert.match(source,/focusNode\(tile\)/);
  assert.match(source,/grid-template-columns:minmax\(0,1fr\)!important/);
  assert.match(source,/TITLEDECK_COLOR_SWATCHES/);
- assert.match(source,/PLUGIN_VERSION = '1.1.9'/);
+ assert.match(source,/PLUGIN_VERSION = '1.2.1'/);
 });
 
 test('1.0.4 Steam scroll-to-top cleanup can reach an outer UI document with no library route',async()=>{
@@ -3746,7 +3746,7 @@ test('1.1.5 controller diagnostic snapshots only bounded input-state fields',asy
  const m=await moduleForTest();
  const report=m.titleDeckControllerDiagnostic();
  assert.equal(report.format,'titledeck-controller-v1');
- assert.equal(report.version,'1.1.9');
+ assert.equal(report.version,'1.2.1');
  assert(Array.isArray(report.events));
  assert(report.events.length<=64);
  assert(!JSON.stringify(report).includes('titledeck.json'));
@@ -3785,7 +3785,7 @@ test('1.1.6 Decky focus-tree native bumper values are distinct from browser indi
 });
 
 test('1.1.6 manager root subscribes to Decky native onButtonDown in addition to PS4 fallback',()=>{
- assert(source.includes("'flow-children':'down',onButtonDown:onNativeShoulder,onKeyDown:"));
+ assert(source.includes("'flow-children':'down',onButtonDown:e=>"));
  assert(source.includes('const bridge=createLibraryShoulderBridge(delta=>pageFromShoulder(delta),{'));
  assert(source.includes('const pageFromShoulder=delta=>{'));
  assert(source.includes('if(time-last.time<180&&last.delta===delta)return false;'));
@@ -3854,7 +3854,7 @@ test('1.1.8 only hides explicit manager tile IDs, never Steam shortcuts or simil
 test('1.1.8 retains verified Decky Focusable shoulder path and protected Game Info functions',()=>{
  const source=fs.readFileSync(path.join(root,'src/index.js'),'utf8');
  assert(source.includes('titleDeckFocusShoulder(e)'));
- assert(source.includes('onButtonDown:onNativeShoulder'));
+ assert(source.includes('onNativeShoulder(e);'));
  assert(source.includes('createLibraryShoulderBridge'));
  assert(source.includes("\'data-td-focus\':\'edit-hide\'"));
  assert(source.includes('Show all hidden tiles'));
@@ -3899,7 +3899,7 @@ test('1.1.8 uses verified hashed JWE3 Steam cover and preserves portrait content
 
 test('1.1.8 preserves 1.1.6 native shoulder paging while hiding public diagnostics',async()=>{
   const source=fs.readFileSync(path.join(root,'src/index.js'),'utf8');
-  assert(source.includes('onButtonDown:onNativeShoulder'));
+  assert(source.includes('onNativeShoulder(e);'));
   assert(source.includes('createLibraryShoulderBridge'));
   assert(source.includes("h(UI.ButtonItem,{onClick:captureController,layout:'below'},'Save LB/RB input diagnostic')"));
   assert(source.includes("...(developerDiagnosticsEnabled()?["));

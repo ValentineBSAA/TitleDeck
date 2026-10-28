@@ -1,8 +1,8 @@
 {
   "name": "titledeck",
-  "version": "1.1.9",
+  "version": "1.2.1",
   "private": true,
-  "description": "TitleDeck 1.1.9 preview: RENAMED badge now overlays blurred artwork tiles; retains all 1.1.8 features. Physical Deck verification pending.",
+  "description": "TitleDeck 1.2.1 Stable: native game context menu editing, preferred menu placement, fast direct launch, and 650 ms B/Circle quick exit.",
   "type": "module",
   "license": "MIT",
   "author": "Valentine",
