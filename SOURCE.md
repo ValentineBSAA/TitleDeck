@@ -1,17 +1,29 @@
-# TitleDeck release source and provenance
+# TitleDeck source, build, and release provenance
 
-## Current release
+## Publication status
 
-- **Stable:** [0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2), installer `TitleDeck-0.9.2.zip`.
-- **Historical beta:** [0.9.2-beta.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1), original installer checksum `f1b9e4d915c8b1b13ac34c3b620cdd19770b01f9790636f0108b8c691f0a1812`.
-- **Historical RC:** [0.9.0](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0).
+- **Public stable release today:** [0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2). Its ZIP and published source have a historically documented Game Info description problem.
+- **Hardware-tested next candidate:** **1.1.8**, currently in private testing. The maintainer has verified Steam/non-Steam description display after restart and the five 1.1.8 hardware checks, but separately reported failed right-stick scrolling **in description boxes**.
+- **Important:** This documentation preparation commit does **not** publish a 1.1.8 installer or claim that the repository's current runtime source has been updated. Until final synchronization, `main.py`, `plugin.json`, `package.json`, `src/index.js`, `dist/index.js` and source-pinning tests still correspond to **published 0.9.2**.
 
-The 0.9.2 stable release promotes the accepted beta-era features without intentional changes to title editing, descriptions, or restoration. The repository's plugin manifests and frontend version now identify **0.9.2**, and the editable `src/index.js` and bundled `dist/index.js` must remain identical.
+## Historical releases
 
-**Testing claims have boundaries.** Physical Steam Deck reports establish title editing, persistence and Game Info interactions for earlier builds. Automated checks test repository code, not every SteamOS configuration. The published 0.9.2 stable ZIP's SHA-256 and byte-for-byte parity of plugin.json, package.json, main.py and dist/index.js with the repository have been verified by GitHub Actions. An independent physical Steam Deck stable-install acceptance test is still needed. For evidence see [hardware testing](docs/VERIFIED_ON_DECK.md) and [compatibility](docs/COMPATIBILITY.md).
+- [0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2)
+- [0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)
+- [0.9.0 RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0)
 
-## Screenshot provenance
+Historic source and screenshot paths remain accessible. An unreleased 1.1.8 candidate ZIP is **not** a substitute for the current published downloadable installer.
 
-The [gallery](docs/SCREENSHOTS.md) contains original 0.9.2 Beta 1 hardware screenshots. Their displayed beta version badge is historical and **is not a screenshot of stable 0.9.2**. Earlier RC1 and 0.8.1 images remain as development history.
+## Final-release integrity plan
 
-[Install](docs/INSTALL.md) · [Release notes](docs/RELEASE_NOTES_0.9.2.md) · [Support](SUPPORT.md).
+1. Accept the exact final ZIP after the remaining issue is resolved or explicitly accepted.
+2. Verify ZIP structure, files and cryptographic checksum.
+3. Copy the **exact version-matched files** into the repository: `plugin.json`, `package.json`, `main.py`, `src/index.js`, `dist/index.js`, and appropriate tests.
+4. Require `src/index.js` and `dist/index.js` to match byte for byte.
+5. Run frontend/backend and document tests.
+6. Publish the final ZIP only after hardware acceptance, then verify public download and source/asset parity.
+7. Include individual screenshots in the gallery, **not** a screenshots ZIP release asset.
+
+**Safety:** An older workflow previously attempted to synchronize `main` back to the published 0.9.2 runtime. It has been retired to avoid accidentally overwriting newer work.
+
+[Hardware evidence](docs/VERIFIED_ON_DECK.md) · [Release checklist](docs/RELEASE_CHECKLIST.md)

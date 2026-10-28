@@ -1,5 +1,16 @@
 # TitleDeck changelog
 
+## 1.1.8: hardware-tested release candidate (NOT PUBLISHED)
+
+- Hardware tests confirmed the candidate's Steam and non-Steam custom descriptions still display and persist after restarting the Deck.
+- Validated manager paging with physical Deck LB/RB and PS4 Bluetooth controllers.
+- Full Library Manager received artwork discovery improvements, a full-bleed blurred backdrop behind uncropped covers, Jurassic World Evolution 3 fallback, Hide tile, and public UI cleanup.
+- Right-stick scrolling in manager workspaces, Settings and game editors was part of the five-item 1.1.8 acceptance check.
+- **Open issue reported afterward:** right-stick scrolling in Steam/non-Steam **description boxes** does not work. Do not describe that feature as fully hardware-verified.
+- **Publication pending** final acceptance, selected screenshots, and source parity with the final installer.
+
+### Earlier development history
+
 ## 0.9.2 — Stable (2026-10-26)
 
 - Promoted the established Beta 1 behavior to stable 0.9.2 without intending new runtime features.
@@ -190,3 +201,4 @@ Device verification needed: real Steam library badge injection and controller mo
 - Preserved the working rename/restore engine, controller library, persisted settings, recovery safeguards and approved TD icon.
 
 **Steam Deck acceptance still required:** Settings/scroll behavior under CSS Loader, actual on-screen native badges, and notifications in Gaming Mode. Badge success is not guaranteed on every Steam UI release.
+

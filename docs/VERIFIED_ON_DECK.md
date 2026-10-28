@@ -1,33 +1,39 @@
-# TitleDeck 0.9.2: Physical device verification (beta-era evidence)
+# Physical Steam Deck testing: 1.1.8 candidate
 
-> [!WARNING]
-> **October 27, 2026 testing correction:** Custom descriptions inside Steam's Game Info tab are **not currently verified working** for either **Steam games** or **non-Steam games/apps**, including on **0.9.2 Stable and 0.9.2 Beta 1**. The accepted Preview 23/24 description and switching checks documented below were valid historical observations but have been **superseded by later reports of failures**. No corrected release has been verified. [Known bug #6](https://github.com/ValentineBSAA/TitleDeck/issues/6).
+**Last maintainer report:** October 27, 2026. This file distinguishes tests on the actual Deck from automated tests and unresolved behavior. It does not certify every SteamOS installation.
 
-**Reference platform:** real Valve Steam Deck, SteamOS Gaming Mode, Decky Loader. Evidence is separated between **accepted hardware tests**, **screenshots**, and **automated-only** results.
+| Feature | Evidence and current status |
+| --- | --- |
+| Rename a Steam title; save and restore | **Hardware verified** during the original RC testing |
+| Title alias persists after reboot | **Hardware verified** during previous releases |
+| Suggest Cleanup, Apply, explicit Save | **Hardware verified** with game-name cleanup |
+| Steam **Game Info** custom description | **Hardware verified** in the 1.1.8 candidate after a Deck restart: displays and persists |
+| Non-Steam **Game Info** custom description | **Hardware verified** in the 1.1.8 candidate after a Deck restart: displays and persists |
+| Non-Steam side-by-side cover and description | **Hardware verified** in 1.1.1 screenshots |
+| Ghost original artwork removal and Proton information | **Hardware verified** in 1.1.1 Game Info screenshots |
+| Restore Original Game and original non-Steam layout | **Hardware verified** in 1.1.1 screenshots |
+| Physical built-in Deck LB/RB | **Hardware verified** in 1.1.6 and passed 1.1.8 acceptance check |
+| PS4 Bluetooth controller LB/RB | **Hardware verified** in 1.1.6 |
+| Full Library Manager on-screen paging | **Hardware verified** |
+| Right-stick scrolling in **Full Library Manager editor** | **Maintainer marked 1.1.8 five-item test passed**; retest separately from Game Info text scrolling |
+| Right-stick scrolling in Steam/non-Steam **description boxes** | **NEWLY REPORTED BROKEN** after 1.1.8 candidate acceptance; don't advertise as working |
+| Manager artwork fallbacks, filled cover presentation | **1.1.8 five-item hardware check passed**; some uncommon assets remain best-effort |
+| Jurassic World Evolution 3 cover | **1.1.8 five-item hardware check passed** |
+| Hide tile and manager reload | **Hardware verified** on 1.1.7 |
+| Developer options absent from normal public UI | **1.1.8 five-item hardware check passed** |
+| D-pad Settings / custom color picker | **Previously hardware verified** |
+| TitleDeck settings survive every Steam update/theme | **Not comprehensively verified** |
+| 200+ game bulk restore / GTM combination / other handhelds | **Not exhaustively tested** |
 
-| Feature | Status | Evidence / limitation |
-| --- | --- | --- |
-| Catherine Classic title alias and Restore Original | **Hardware accepted** | Renamed Catherine Classic → Catherine, then returned to original in earlier testing |
-| Title alias survives restart | **Hardware accepted** | Steam Deck restart test from earlier release |
-| The Sims 4 / Sims 4 cleanup review, Apply, explicit Save | **Hardware accepted** | Earlier RC1 device testing |
-| Steam keyboard and controller D-pad editor | **Hardware accepted (basic)** | Opened keyboard, used editor and controller directions |
-| Game Info custom description | **REGRESSED / NOT CURRENTLY ACCEPTED** | Historical Catherine screenshots and tests; newer Steam and non-Steam Game Info failures reported |
-| Rapid Community ↔ Game Info switching | **REGRESSION REPORTED** | Earlier Preview 23 acceptance is historical; latest description/Game Info display behavior needs renewed hardware verification |
-| Restore Original Game clears title and description | **Hardware accepted** | Explicit confirmation after Preview 19 onward |
-| Over-1,247-character description warning | **Hardware accepted** | Yellow warning visible at 1,409 characters, non-blocking |
-| Long custom text displayed in native Game Info | **Hardware observed** | 0.9.2 gallery includes upper and lower long-description segments |
-| 0.9.2 beta version visible in Quick Access (historical capture) | **Hardware screenshot** | New screenshot shows v0.9.2-beta.1 with three aliases and two descriptions |
-| Game/app filtering, hiding Steam runtimes | **Hardware reported working** | Proton and anti-cheat components no longer shown |
-| Full Manager artwork fallbacks | **Hardware reported mostly working** | Some missing art falls back; after restart artwork can load a few seconds later |
-| Bulk Restore All for 200+ aliases | **Not fully hardware tested** | Long paginated review and recovery have test coverage, not exhaustive hardware acceptance |
-| GTM 3.6.9 playback and Plugin Store coexistence | **Unresolved / not fully verified** | Earlier intermittent music interruptions; plugin-isolation improvements are not proof |
-| B-dismissal returns raised keyboard field | **Known intermittent problem** | Steam can close keyboard while editor stays raised; use Done editing |
-| All themes / Steam versions / other handhelds | **Unverified** | No broad compatibility promise |
+## Historical version warnings
 
-**Build/test distinction:** The 0.9.2 beta installer was reported as passing 107 JS and 17 Python automated tests. The screenshot shows its version badge on a physical Deck. The new stable ZIP has not been independently hardware-accepted in these records. Those facts do **not** constitute an exhaustive fresh-install, every-game, every-plugin or long-running stability test.
+The published **0.9.2** release has a documented Steam/non-Steam description reliability bug. That issue does not automatically describe the private 1.1.8 candidate, where display and persistence were retested on hardware. Issue #6 remains open until a corrected release is publicly available.
 
-The user-reported accepted **Game Info rendering behavior** applies to the shared working renderer carried from Preview 23 into Preview 24 and the beta installer; do not generalize beyond the actual tests.
+## Testing rules for contributors
 
-TitleDeck stores overrides separately; it does not alter installed game files or canonical Steam metadata. Its long-description warning is advisory rather than enforced.
+- Don't present automated tests as proof of physical Steam Deck functionality.
+- Don't convert a passed **manager right-stick** test into a claim about **Game Info description-box right-stick** behavior.
+- Preserve known-good built-in Deck and PS4 LB/RB paths, original restoration, and Steam/non-Steam description persistence.
+- Record exact version, game/App ID, UI screen, controller type, SteamOS channel and repeat steps for failures.
 
-[Beta release notes](RELEASE_NOTES_0.9.2.md) · [Compatibility](COMPATIBILITY.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues).
+[Candidate release notes](RELEASE_NOTES_1.1.8.md) · [Compatibility](COMPATIBILITY.md) · [Support](../SUPPORT.md)

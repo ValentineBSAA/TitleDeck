@@ -1,31 +1,27 @@
 # TitleDeck roadmap
 
-**Current public milestone: 0.9.2 stable**, published as a GitHub release. Continued compatibility testing remains important. The immediate goal is compatibility and reliability, not adding more experimental features.
+## 1.1.8 candidate: finishing the public launch
 
-## Accepted milestones
+- [x] Reversible local title and Game Info description overrides, including Steam and non-Steam entries.
+- [x] Hardware-tested custom description persistence after reboot and original-game restoration.
+- [x] Artwork-left / description-right presentation, ghost-artwork cleanup and Proton info retained.
+- [x] Full Library Manager D-pad, on-screen and physical LB/RB paging, with built-in Steam Deck and PS4 Bluetooth controller validation.
+- [x] Artwork fallbacks, newer Steam formats/cache, full-bleed background, hide-tile cleanup.
+- [x] RGB/preset visual settings, manager right-stick workspaces, public diagnostics hidden.
+- [x] Rewrite beginner, feature, compatibility and release documentation; stage individual-image gallery.
+- [ ] **Fix or formally disposition right-stick scrolling in Steam/non-Steam description boxes** (new user-reported issue).
+- [ ] Insert new 1.1.8 hardware screenshots (not the screenshot ZIP).
+- [ ] Synchronize and publish the exact final tested 1.1.8 installer/source.
+- [ ] Close historical 0.9.2 description known-issue report after fixed release becomes public.
 
-- [x] Editable Steam game display names with Restore Original and restart persistence.
-- [x] Reviewed title cleanup with explicit Save, controller editing and native Steam keyboard.
-- [x] Custom descriptions appear in Steam's real **Game Info** tab.
-- [x] Rapid Community / Game Info switching on physical Deck without the previous 1–7-second description delay.
-- [x] Full-game Restore Original clears title and description.
-- [x] Non-blocking 1,247-character long-description warning, without a hard limit.
-- [x] Cleaner game/app list excluding compatibility runtimes and improved cover handling.
-- [x] Remove timing diagnostics from normal Quick Access.
-- [x] Publish historical 0.9.2 Beta 1 with hardware screenshots and promote to 0.9.2 stable.
+## Longer-term maintenance
 
-## Still to verify / improve
+- [ ] Recheck behavior after SteamOS/Steam client updates.
+- [ ] Test additional CSS Loader themes and Decky plugin coexistence.
+- [ ] Exercise very large 200+ title restoration and backup recovery cases.
+- [ ] Investigate intermittent native Steam keyboard dismissal if still reproducible.
+- [ ] Expand platform coverage **only after actual testing**; do not imply support for Windows, other handhelds or Android without evidence.
 
-- [ ] Verify GTM 3.6.9 playback and Decky Plugin Store coexistence with this exact beta.
-- [ ] Fix intermittent native Steam keyboard B-dismissal leaving editor raised.
-- [ ] Repeat cold-start artwork load tests and optimize visible loading if needed.
-- [ ] Run bulk Restore All / backup recovery on 200+ real aliases.
-- [ ] Test additional SteamOS versions, CSS Loader themes and uncommon games/non-Steam apps.
-- [ ] Independently validate Steam background metadata refresh behavior, not just restarts.
-- [x] Synchronize `main.py`, plugin manifests and `src/index.js` / `dist/index.js` with the checksummed published beta; document runtime/source parity. [Source verification](../SOURCE.md).
-- [ ] Continue exercising repository regression checks and independent real-Deck stable-release smoke tests as SteamOS evolves.
-- [ ] Collect community testing before planning future 1.0 milestones.
+The next priority is reliability, not more features. Avoid changes to the proven title, artwork, restoration and controller paths while resolving the remaining input regression.
 
-**Out of scope without new testing:** ROG Ally, Windows, Android/DroidDeck, Desktop Mode and unsupported SteamOS-like handheld configurations.
-
-[Verification](VERIFIED_ON_DECK.md) · [Release notes](RELEASE_NOTES_0.9.2.md).
+[1.1.8 notes](RELEASE_NOTES_1.1.8.md) · [Verified on Deck](VERIFIED_ON_DECK.md)
