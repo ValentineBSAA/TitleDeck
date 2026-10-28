@@ -8,7 +8,7 @@ Thanks for helping improve TitleDeck! The project targets **physical Steam Deck 
 - Use [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) for reproducible bugs and [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) for ideas.
 
 ## Development workflow
-- The checked-in source is currently **published 0.9.2**, whereas **1.1.8 is an upcoming privately tested build**. Do not mistake the documentation for a 1.1.8 runtime commit.
+- **Published stable is 1.2.1**. The source must match the published `TitleDeck-1.2.1-Stable.zip` asset before code changes are accepted. Verify source/build parity, manifest version, archived historical tests, and CI after synchronization.
 - Frontend checks: `node --test tests/*.test.cjs`.
 - Backend / documentation checks: `python3 -m unittest discover -s tests -p 'test_*.py'`.
 - Preserve `src/index.js` / `dist/index.js` byte parity within any release version; align backend and manifests with the exact intended ZIP.
@@ -21,6 +21,6 @@ Thanks for helping improve TitleDeck! The project targets **physical Steam Deck 
 ## Before proposing a release
 - Verify game rename / Save, Steam and non-Steam descriptions, original restoration, LB/RB on actual Deck, TitleDeck manager right-stick, artwork and Settings.
 - Record any outstanding failure rather than overstating compatibility.
-- Follow [1.1.8 release checklist](docs/RELEASE_CHECKLIST.md) and [source integrity](SOURCE.md).
+- Follow [1.2.1 release checklist](docs/RELEASE_CHECKLIST.md) and [source integrity](SOURCE.md).
 
 MIT licensed. Thank you to u/TacoOfGod and u/All-Stars64 for the original feature ideas.
