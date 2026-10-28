@@ -1,15 +1,9 @@
-# TitleDeck 1.1.8 screenshot staging
+# TitleDeck 1.1.8 image gallery
 
-This directory is reserved for **individual screenshots**, not the ZIP archive.
+This directory stores **23 individually extracted 1920×1080 original JPEGs** from the maintainer's published screenshot archive (SHA-256 `44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced`).
 
-When the maintainer supplies a screenshot ZIP:
+The images are named by feature, from `01-quick-access.jpeg` through `23-settings-restore-all.jpeg`. Browse the [full annotated gallery](../../SCREENSHOTS.md) for descriptions.
 
-1. Inspect and extract it locally; do not upload the ZIP into this directory.
-2. Keep only useful, nonduplicate, readable screenshots of the **actual 1.1.8 UI**.
-3. Remove/avoid screenshots exposing sensitive information.
-4. Use descriptive names such as `01-quick-access.jpeg`, `02-library-manager.jpeg`, `03-steam-game-info.jpeg`, `04-nonsteam-game-info.jpeg`, `05-settings-colors.jpeg`.
-5. Link the resulting images from [the gallery](../../SCREENSHOTS.md) and [the README](../../../README.md).
-6. Don't mislabel old 0.9.x captures as 1.1.8.
-7. Do not distribute a screenshots ZIP alongside the **plugin** ZIP.
+**Catherine Classic** is the Steam Game Info example (`10-steam-catherine-custom-game-info.jpeg`). **Need for Speed: Most Wanted (2005)** is the non-Steam Game Info example (`13-nonsteam-most-wanted-custom-game-info.jpeg`).
 
-Images haven't been uploaded yet.
+No screenshot ZIP or macOS metadata files are stored in this folder.

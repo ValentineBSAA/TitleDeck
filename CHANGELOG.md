@@ -1,8 +1,9 @@
 # TitleDeck changelog
 
-## 1.1.8 — Upcoming, physically tested release candidate (2026-10-27; not published)
+## 1.1.8 — Published stable release (October 27, 2026)
 
-**This section describes a private candidate; the newest public GitHub release remains 0.9.2.**
+**Public installer:** [TitleDeck-1.1.8.zip](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8). Includes Steam/non-Steam custom description persistence after reboot, built-in Steam Deck and PS4 LB/RB paging, Full Library Manager artwork/hide tile improvements, updated Settings and a full 23-image screenshot gallery. **Known issue:** right-stick scrolling in Steam Game Info descriptions remains unreliable; see [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+
 - Repaired Steam and non-Steam custom Game Info description rendering and restart persistence; custom non-Steam cover-and-text layout and original restore tested on real Deck.
 - Removed the ghost original-artwork placeholder while preserving the Steam Play / Proton information line.
 - Removed obsolete yellow description-length warnings and retained unrestricted description saving.

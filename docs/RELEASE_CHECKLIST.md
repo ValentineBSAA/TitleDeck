@@ -1,30 +1,21 @@
-# TitleDeck 1.1.8 publication checklist
+# TitleDeck 1.1.8: release and verification record
 
-**Status:** Documentation staged; public **0.9.2** release unchanged. **1.1.8 is not yet released.**
+## Completed
 
-## Hardware acceptance
+- [x] Published **1.1.8** GitHub stable release and **TitleDeck-1.1.8.zip** plugin asset.
+- [x] Verified published ZIP SHA-256: `2bae38490fbbb7da783d98b33e8acd4dd6213f03ba1a7256807e60cb736f061c`.
+- [x] Confirmed physical Steam Deck LB/RB and PS4 Bluetooth controller paging, title edit, artwork, hide-tile and restart persistence of Steam/non-Steam descriptions.
+- [x] Added 23 original 1.1.8 screenshots, including Catherine Classic (Steam) and Need for Speed Most Wanted (non-Steam).
+- [x] Rewrote README, complete beginner guide, feature reference, support, installation, compatibility and release documentation.
+- [x] Synchronized repository source/runtime and tests against the exact public ZIP and ran CI.
+- [x] Kept historical 0.9.x screenshots and releases as version-labeled archives.
 
-- [x] Physical Steam Deck 1.1.8: final five-item feature checklist reported successful.
-- [x] Built-in Steam Deck LB/RB and PS4 controller library paging.
-- [x] Full Library Manager editor's right-stick scrolling, refined artwork, developer options hidden.
-- [x] Steam and non-Steam Game Info descriptions persist after a full reboot.
-- [x] Historical 1.1.1 screenshots established side-by-side layout, ghost removal and original restoration.
-- [ ] **Game Info description-box right-stick scrolling:** new issue on both Steam and non-Steam games; investigate and retest.
+## Known limitations and future maintenance
 
-## Repository and release preparation
+- [ ] **Fix the right-stick input issue inside Steam/non-Steam Game Info description areas** ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
+- [ ] Test additional SteamOS releases, CSS Loader themes, very large title-restore batches and unusual non-Steam shortcuts.
+- [ ] Continue preserving built-in Deck and PS4 LB/RB, ghost poster removal, title/description saving and restoration.
 
-- [x] Beginner guide, features, compatibility, troubleshooting, hardware verification and release notes prepared.
-- [x] Upcoming screenshot gallery slots prepared; earlier screenshots retained as clearly historical.
-- [x] Remove dangerous 0.9.2 source-sync automation behavior so future code can't be overwritten silently.
-- [ ] Receive final tested **TitleDeck-1.1.8.zip** for public release.
-- [ ] Verify ZIP structure, manifest versions, SHA-256, frontend/backend tests and source/runtime byte parity.
-- [ ] Upload final screenshot **images** into `docs/screenshots/v1.1.8/` and connect actual files to README/gallery.
-- [ ] Do not attach or retain an uploaded **screenshots.zip** as a separate public release download.
-- [ ] Align `plugin.json`, `package.json`, `src/index.js`, `dist/index.js`, `main.py` and CI release checks with the approved installer.
-- [ ] Create tag/release 1.1.8 and attach **one plugin installer ZIP**.
-- [ ] Verify public release link works and Direct Updater sees the intended installer.
-- [ ] Recheck installation on physical Steam Deck, then update/close old 0.9.2 issue #6 as appropriate.
+**Note:** Don't use an image ZIP as a plugin installer. The gallery contains extracted JPEGs and the release has the official plugin ZIP.
 
-**No title/description or controller changes should be introduced merely as part of documentation or screenshot staging.**
-
-[Source integrity](../SOURCE.md) · [Release notes](RELEASE_NOTES_1.1.8.md) · [Screenshot instructions](SCREENSHOT_UPLOAD_GUIDE.md).
+[Hardware verification](VERIFIED_ON_DECK.md) · [Release notes](RELEASE_NOTES_1.1.8.md) · [Source](../SOURCE.md)

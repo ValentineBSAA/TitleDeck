@@ -1,110 +1,192 @@
-# TitleDeck: beginner's guide
+# TitleDeck 1.1.8: the complete beginner's guide
 
-This walkthrough is written for people who have never installed a Decky plugin or customized a Steam game page before.
+New to Steam Deck customization? Start here. This guide includes **every main feature and Settings section**, with links to real Steam Deck screenshots. TitleDeck is a Decky Loader plugin for Gaming Mode, not a replacement for Steam or a game mod.
 
-> **Version note:** Most steps here describe the **upcoming 1.1.8 release candidate**. The latest public downloadable version is still **0.9.2**, whose Game Info description integration has a known bug. Wait for the actual 1.1.8 installer release to use all the features below. [Release status](../README.md).
+[← Home](../README.md) · [Image gallery](SCREENSHOTS.md) · [Feature reference](FEATURES.md) · [Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
 
-## 1. Where is TitleDeck?
+## 1. What you need
 
-1. Enter **Gaming Mode** on your Steam Deck.
-2. Press the **••• (Quick Access)** button on the right side of the Deck.
-3. Select the **Decky Loader (plug)** tab.
-4. Select **TitleDeck**.
-5. Choose **Open Full Library Manager**.
+- A **Valve Steam Deck**, in **SteamOS Gaming Mode**, with **Decky Loader** installed.
+- The **1.1.8 plugin ZIP** from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8).
+- A game, app, demo or non-Steam shortcut already added to your Steam library.
 
-You'll see **All games**, **Installed**, and **Renamed** filters; search, App ID, Refresh, Settings, LB and RB; and an artwork grid of your games and shortcuts.
+No coding, terminal, game-file editing, or external keyboard is necessary.
 
-**Nothing in TitleDeck requires modifying game installation folders.**
+## 2. Install or update TitleDeck
 
-## 2. Install or update
+1. In Gaming Mode, open the [TitleDeck 1.1.8 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8).
+2. Download **`TitleDeck-1.1.8.zip`**. **Do not unzip it.** An image archive, if available, is *not* a plugin installer.
+3. Press the **•••** button to open **Quick Access**. Select the **Decky Loader plug icon**.
+4. Open **Decky Loader Settings (gear) → Developer → Install Plugin from ZIP** and choose the downloaded ZIP. If this option isn't present, consult your installed Decky Loader version's instructions.
+5. Open **Quick Access → Decky Loader → TitleDeck** and check the version badge.
+6. Select **Open Full Library Manager**.
 
-If you haven't installed Decky Loader yet, use its official installation instructions first. Then download the TitleDeck installer ZIP from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases). Do **not** extract the ZIP.
+![TitleDeck Quick Access panel](screenshots/v1.1.8/01-quick-access.jpeg)
 
-To install: **Quick Access (•••) → Decky Loader → Settings → Developer → Install Plugin from ZIP**, select `TitleDeck-VERSION.zip`, and follow Decky's prompts. **Developer** here is the *Decky install menu*, not TitleDeck's internal diagnostics. Back up existing TitleDeck settings before upgrading. See [INSTALL.md](INSTALL.md).
+**Updating an older TitleDeck?** Create a backup first from **Full Library Manager → ⚙ Settings → Save a backup**, then install the newer ZIP.
 
-## 3. Rename a game
+## 3. Explore Full Library Manager
 
-1. In **Full Library Manager**, find the game using the tile grid or **Search Library**.
-2. Select the game to open its editor.
-3. Select **Change Name**. The Steam keyboard should appear.
-4. Enter the name you want, then dismiss the keyboard.
-5. Select **Save Custom Title** to actually save it.
+![Library overview](screenshots/v1.1.8/02-full-library-manager.jpeg)
 
-Optional: select **Suggest Cleanup** to inspect a cleaner title. Review the suggested change, apply it only if you like it, then **Save Custom Title**. A suggestion by itself does not save anything.
+Across the top, choose **All games**, **Installed** or **Renamed**. The next row offers **Search library**, **App ID**, **↻ Refresh**, **⚙ Settings**, and **◀ LB / RB ▶** page buttons.
 
-Your custom title is a local display override. It does not rename the game folder or rewrite Steam's game identifier.
+Games appear as artwork cards with installed indicators when applicable. Some apps may show a letter placeholder if no suitable art is available. If an artwork cache is slow to load, use **Refresh**. Don't confuse a missing cover with a missing game.
 
-## 4. Add your own description
+**Controller:** use the **D-pad** to select, **A** to open, **B** to go back, and **LB/RB** to switch pages. The Steam Deck built-in shoulder buttons and a PS4 Bluetooth controller were physically tested with 1.1.8. The on-screen buttons are an alternative.
 
-1. Select a Steam game **or** non-Steam game/shortcut in Full Library Manager.
-2. Find the **custom-description editor**. Use the D-pad or right stick to navigate the longer editor panel if needed.
-3. Open the text field with **A**, enter text using the native Steam keyboard, and select the description's **Save** action.
-4. Return to the game's main Steam library page.
-5. Open **Game Info**, the tab next to **Community**. Your local description appears here instead of the usual displayed description.
+## 4. Rename a game safely
 
-**Steam games:** The custom text lives in Game Info and can be restored to Steam's original description.
+![Rename game editor](screenshots/v1.1.8/05-rename-game-actions.jpeg)
 
-**Non-Steam games:** TitleDeck can place artwork alongside your text. Steam's **Runs on this computer via Steam Play / Proton** line remains separate Steam information.
+1. Open the selected game in Full Library Manager.
+2. Choose **Change name** and edit with the **Steam on-screen keyboard**.
+3. Optionally select **Suggest cleanup** to preview a title-formatting suggestion.
+4. Review or apply the suggestion before saving.
+5. Select **Save custom title** to commit the change.
 
-**Long descriptions:** 1.1.8 has no hard character cap and no obsolete yellow length-warning lines. **Known limitation:** The maintainer's latest on-device test reports that the **right stick does not scroll the Game Info description box** for Steam or non-Steam games. This is distinct from right-stick scrolling inside TitleDeck's editor, which passed the 1.1.8 test.
+A suggestion is not saved until you choose Save. Steam's original identifiers and game files stay unchanged, and lettering baked into the game's cover doesn't change.
 
-## 5. Finding Settings
+![Keyboard example](screenshots/v1.1.8/07-native-steam-keyboard.jpeg)
 
-There are two different Settings areas:
+## 5. Add a custom description to a Steam game
 
-- **Decky Loader Settings** (inside the Quick Access Decky tab) is used for **installing a plugin ZIP** and Decky itself.
-- **TitleDeck Settings** is the **Settings button within Full Library Manager**, next to Refresh.
+**Example: Catherine Classic is a Steam game.**
 
-Open **TitleDeck Settings** to find the plugin's appearance, description-placement, backup/recovery, and hidden-entry controls.
+1. Select **Catherine Classic** (or another Steam title) in Full Library Manager.
+2. Open **Edit description** from its game editor.
+3. Type your custom description with Steam's keyboard and **Save description**.
+4. On Steam's regular page for that game, select **Game Info** beside Community.
+5. You should now see your local description rather than the usual Steam-provided description, if **Game Info** placement is selected in Settings.
 
-Depending on your saved preferences, description placement can include **Game Info**, **Artwork Footer**, or **Below Play**. The feature tested most extensively on real Steam Deck hardware is the **Game Info** placement beside Community.
+![Catherine Classic Steam Game Info custom text](screenshots/v1.1.8/10-steam-catherine-custom-game-info.jpeg)
 
-### Change the colors
+These are user-defined local descriptions; they do not replace Valve's canonical store copy. Saved description display and persistence **after restarting the Steam Deck** were verified for 1.1.8.
 
-Open **Full Library Manager → Settings**. Use the available accent-color presets or **custom RGB color picker**. The picker supports visual hue/saturation adjustments as well as fine adjustment; use D-pad / A / B to navigate or leave it. Saved selections remain local to TitleDeck. Different CSS Loader themes may change the appearance.
+## 6. Add a custom description to a non-Steam shortcut
 
-### Hide a duplicate-looking shortcut
+**Example: Need for Speed: Most Wanted (2005) is a non-Steam game in these screenshots.**
 
-If your library contains two separate shortcuts, such as **ES-DE** and **ES-DE (Program)**, select the unwanted tile and choose **Hide tile**. This removes the entry **only from TitleDeck's Full Library Manager**. It does **not** uninstall, delete, merge, or alter either Steam shortcut.
+1. Add the game or shortcut to Steam if it is not already in your library.
+2. Open its TitleDeck game editor and choose **Edit description**.
+3. Enter your text and choose **Save description**.
+4. Open the non-Steam shortcut's normal Steam **Game Info** page.
+5. With Game Info placement, custom artwork appears to the **left** and the description to the **right**. Steam's separate **Steam Play / Proton** details remain underneath.
 
-To undo: **Full Library Manager → Settings → Hidden Full Library Manager entries → Show all hidden tiles**.
+![NFS Most Wanted non-Steam Game Info custom text](screenshots/v1.1.8/13-nonsteam-most-wanted-custom-game-info.jpeg)
 
-### Backup and restore
+Restore Original Game can return the standard Steam non-Steam explanation and original artwork layout.
 
-Back up customizations before a major upgrade or bulk reset. Use TitleDeck's backup/recovery controls in Settings. If you only want to undo one game's changes, use the options below rather than a bulk restore.
+### Description length and scrolling
 
-## 6. Restore one game safely
+There is **no old yellow advisory character threshold** or enforced advisory cap. Long content still depends on Steam's current layout. **Known 1.1.8 issue:** the physical **right stick does not reliably scroll text in Steam Game Info description areas**, for both Steam and non-Steam titles. Use touch/scrollbar where available; editing and saved-display persistence are separate working features. [Tracked issue](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
-- **Restore Steam Description / Restore Original Description:** clears the selected game's custom description while keeping a custom title, where offered.
-- **Restore Original Game:** resets **both** that game's custom name and description.
-- **Show all hidden tiles:** only restores visibility inside Full Library Manager. It does not change titles, descriptions, or files.
+## 7. Where to find TitleDeck Settings
 
-For non-Steam games, restoring the original Game Info presentation should also return Steam's generic explanation and its original artwork layout.
+Inside Full Library Manager, go to the top row and choose **⚙ Settings** (near Refresh). Settings are **inside TitleDeck's manager**, not the SteamOS system Settings menu.
 
-## 7. Controller cheat sheet
+![Settings layout](screenshots/v1.1.8/15-settings-title-replacements.jpeg)
 
-| Input | What to do |
-| --- | --- |
-| D-pad | Move focus between tiles, buttons and settings |
-| A | Open/confirm |
-| B | Return/close |
-| LB / RB | Move Full Library Manager backward/forward a page |
-| Right stick | Scroll TitleDeck's own long editor and Settings areas |
-| Touchscreen | Tap search, page and action buttons |
-| Steam keyboard | Type the game name or description |
+Below is a walkthrough of **every Settings section** from the 1.1.8 version.
 
-**LB/RB paging** was physically verified on the Deck itself and with a paired PS4 controller. On-screen paging buttons are another option.
+### 7.1 Display title replacement
 
-## 8. Common questions
+**Pause replacements** temporarily suspends custom displayed titles without deleting saved names; **Enable replacements** turns them on again. This is useful to compare the Steam default display with your saved aliases.
 
-**Why is a game using initials instead of a cover?** TitleDeck searches Steam artwork, local cached artwork, and other fallbacks, but some games, demos and non-Steam shortcuts may still lack a usable image.
+### 7.2 Save a backup
 
-**Why do some covers look different?** The 1.1.8 library tiles can use a full-tile blurred backdrop and an uncropped foreground image, accommodating both tall and wide artwork.
+Use **Create backup** to save a separate local copy of your current custom titles. Do this before a large rename session or an upgrade.
 
-**Will my descriptions survive a reboot?** The maintainer specifically verified custom Game Info descriptions for both Steam and non-Steam games after a full Steam Deck restart on the 1.1.8 candidate.
+### 7.3 Restore a saved backup
 
-**Will TitleDeck work on other handhelds?** Only the actual Steam Deck Gaming Mode workflow has been verified here.
+If a manual backup exists, **Restore saved backup** loads that saved set of titles. It **replaces current aliases**, so read the confirmation rather than using it as a casual Undo button.
 
-**The right stick doesn't scroll Game Info. Is that expected?** It is a **currently known issue in the 1.1.8 candidate** and is being tracked for resolution. The Full Library Manager's own editor scrolling is separate.
+![Backup settings](screenshots/v1.1.8/16-settings-backup-restore.jpeg)
 
-[Feature reference](FEATURES.md) · [Troubleshooting](../SUPPORT.md) · [Physical verification](VERIFIED_ON_DECK.md) · [Screenshots](SCREENSHOTS.md)
+### 7.4 Recover after Restore All
+
+If you have used **Restore All**, TitleDeck creates a recovery backup before clearing aliases. **Recover names** can restore that set under the conditions displayed in the panel, including the safeguard against later changes.
+
+### 7.5 Hidden Full Library Manager entries
+
+Selecting **Hide tile** in a game's editor hides that card **from TitleDeck's manager only**. It does **not** remove or disable the game/shortcut in Steam. To undo, open **Settings → Hidden Full Library Manager entries → Show all hidden tiles**.
+
+![Recovery and hidden entries](screenshots/v1.1.8/17-settings-recovery-hidden-tiles.jpeg)
+
+### 7.6 Custom game description location
+
+Choose one of the three placements:
+
+- **Show inside GAME INFO:** replace the visible description in the actual Game Info tab. Best if you want Steam/non-Steam custom text next to Community.
+- **Show in Artwork Footer:** use a compact display in the artwork/footer area when Steam offers the layout anchor.
+- **Show Below Play:** display custom text in a wider panel below Play.
+
+Changing placement is a display choice. It does not delete your saved description.
+
+![Description location Settings](screenshots/v1.1.8/18-settings-description-placement.jpeg)
+
+### 7.7 Full manager color theme
+
+**Accent: [name] • Change** cycles through available color themes for TitleDeck's manager. The default design is Wine Red. These colors are for **TitleDeck**, not the Steam store or your game artwork.
+
+### 7.8 Right-stick Game Info scrolling toggle
+
+The Settings panel shows **Right stick scrolling ON/OFF**. This is a control for intended Steam/non-Steam Game Info scrolling. **It is not proof that the feature works:** the maintainer reported that Game Info description-area right-stick scrolling fails in the public 1.1.8 build. This limitation remains open.
+
+![Right-stick option](screenshots/v1.1.8/20-settings-right-stick-toggle.jpeg)
+
+### 7.9 Choose a color (presets)
+
+Select from the color swatches and press **A** to apply. Use the D-pad to move between colors and B to return.
+
+![Color presets](screenshots/v1.1.8/21-settings-color-presets.jpeg)
+
+### 7.10 Custom accent: HEX and visual picker
+
+Enter a six-digit HEX color such as **#8B1E3F**, or choose **Open visual color picker**. The picker offers hue, saturation/shade and fine RGB adjustment. Choose **Apply custom accent** when satisfied.
+
+![HEX editor](screenshots/v1.1.8/22-settings-custom-hex.jpeg)
+
+### 7.11 Restore every original Steam title
+
+**Review Restore All…** is a deliberate bulk operation that removes saved **display-title overrides** after a separate confirmation step. TitleDeck creates a recovery backup first. Do not confuse this with restoring a *single game's description* or *hiding a tile*. Review the count before confirming.
+
+![Restore All Settings](screenshots/v1.1.8/23-settings-restore-all.jpeg)
+
+### Developer options
+
+Diagnostics and development controls are **hidden by default** in the normal 1.1.8 public interface.
+
+## 8. Restore only one game
+
+In that game's editor, choose:
+
+- **Restore original game** to clear the game's custom title and description and return its default presentation.
+- **Restore Steam description** to clear the description only while retaining the custom display title, if one is saved.
+- **Hide tile** to remove only the **manager card**, not the shortcut or saved game files.
+
+Read the button labels carefully: **Restore All** under Settings is a different, bulk operation.
+
+## 9. Search for a title or App ID
+
+![Search TitleDeck](screenshots/v1.1.8/08-search-title-or-id.jpeg)
+
+Open **Search library** and type a name, or choose **App ID** to locate an entry by its Steam identifier. Steam games and non-Steam shortcuts may use different styles of identifiers.
+
+## 10. Common questions
+
+**Will this change game files?** No. TitleDeck manages local display overrides.
+
+**Can I remove a duplicate-looking ES-DE shortcut safely?** **Hide tile** keeps Steam shortcuts intact. It doesn't merge or delete entries; use Settings to show hidden cards again.
+
+**What if the artwork is cropped or missing?** 1.1.8 uses improved local and Steam fallback sources with a soft filled background. Some games genuinely have no available cover and use a placeholder.
+
+**What does the green badge mean?** The title is shown as installed by Steam/TitleDeck.
+
+**Can I control the manager from the couch?** Yes, including built-in Deck LB/RB and tested PS4 Bluetooth controller paging.
+
+**Does it work on ROG Ally, Android or Windows?** Not maintainer-verified. The tested environment is a physical Steam Deck in Gaming Mode.
+
+**I found a bug.** See [SUPPORT.md](../SUPPORT.md) and [report an issue](https://github.com/ValentineBSAA/TitleDeck/issues). Include the affected game and whether the issue is in TitleDeck's editor, the manager, or Steam's Game Info tab.
+
+[Full features](FEATURES.md) · [All 23 screenshots](SCREENSHOTS.md) · [Compatibility](COMPATIBILITY.md) · [Release notes](RELEASE_NOTES_1.1.8.md)

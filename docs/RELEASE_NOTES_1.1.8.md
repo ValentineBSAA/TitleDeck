@@ -1,45 +1,38 @@
-# TitleDeck 1.1.8: release-candidate notes
+# TitleDeck 1.1.8: public stable release
 
-**Status: documentation prepared; installer and screenshot gallery pending final upload.** The most recent **public** release is [0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2). These notes do not represent a published 1.1.8 GitHub release.
+**Published:** October 27, 2026 (Arizona local time). **Installer:** [TitleDeck-1.1.8.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.1.8/TitleDeck-1.1.8.zip). **Test target:** Steam Deck Gaming Mode.
 
-## What changed since the public 0.9.2 release?
+## Your library. Your names. Your descriptions.
 
-### Steam and non-Steam Game Info descriptions
-- Rebuilt and tested description integration for Steam and non-Steam library entries.
-- A non-Steam game's cover can sit beside its custom description; removed the unwanted original-artwork placeholder while retaining Steam Play / Proton information.
-- Supported restoring the game to its original Steam-provided explanation and artwork layout.
-- Confirmed **both Steam and non-Steam custom descriptions survive a full Deck restart** on the 1.1.8 candidate.
-- Removed outdated yellow description-length warnings; no hard enforced character cap.
-- **Current known issue ([#8](https://github.com/ValentineBSAA/TitleDeck/issues/8)):** physical right-stick scrolling **does not work in the Steam Game Info description box** for either Steam or non-Steam entries in the latest maintainer test. Do not promote that particular control as working.
+Version 1.1.8 is the first public release in the 1.1 series. It follows extensive private Deck hardware testing and improvements since the original name-only utility and 0.9.2 description beta.
 
-### Full Library Manager and controller navigation
-- Tile-based All / Installed / Renamed browsing, search, paging, artwork, installed indicators, and controller-friendly navigation.
-- Repaired physical **LB/RB** for the Deck's built-in buttons using Steam's focus-navigation events. **PS4 Bluetooth controller LB/RB** also verified.
-- Preserved on-screen LB/RB paging and D-pad/A/B input.
-- Added right-stick scrolling for longer **TitleDeck editor/settings panels**; this is separate from the Game Info issue above.
-- Added **Hide tile**, a reversible manager-only hide option for duplicate-looking shortcuts. It **does not delete** Steam shortcuts; recover via **Settings → Hidden Full Library Manager entries → Show all hidden tiles**.
+### Steam and non-Steam descriptions
+- Custom descriptions can appear in the real **Game Info** tab for both Steam and non-Steam library entries.
+- A non-Steam game such as Most Wanted 2005 shows custom art beside its custom text, without the extra empty ghost-artwork rectangle.
+- Steam's separate Proton/Steam Play line remains intact.
+- Saving and Restore Original Game have been tested; both Steam and non-Steam saved descriptions survived a full device restart.
+- Three placement settings: Game Info, Artwork Footer and Below Play.
+- Old yellow character-length warnings were removed; long content may still depend on Steam's current UI layout.
 
-### Artwork and appearance
-- More complete Steam capsules, headers, local custom images and image-cache fallback paths.
-- Artwork improvements for demos and uncommon apps; specific Jurassic World Evolution 3 lookup and artwork-fit testing.
-- Tiles can display a background fill with a crisp uncropped image, helping wide and portrait covers coexist.
-- More polished wine/red UI, adjustable accents, custom RGB/hue-saturation picker and installed-state badges.
+### Full Library Manager
+- All games / Installed / Renamed filters, search by title or App ID, artwork grid, installed indicator, and on-screen page controls.
+- **LB/RB paging** repaired for the Deck's built-in controllers as well as PS4 Bluetooth controller, hardware-tested.
+- Right-stick support for longer TitleDeck manager/editor/settings workspaces.
+- Better artwork discovery, Steam and local sources, full-bleed soft backgrounds and uncut front covers, demo/game fallbacks, and improved Jurassic World Evolution 3 artwork.
+- **Hide tile** removes a duplicate-looking card from TitleDeck only. It does not delete a Steam shortcut; hidden cards can be restored from Settings.
 
-### Privacy, recovery and developer controls
-- Individual title/description restoration, backup and bulk restore safeguards retained.
-- Developer diagnostics hidden by default, with opt-in preserved.
-- No changes to game installation files or canonical Steam metadata.
+### Appearance, recovery and privacy
+- Wine Red and alternate accents, swatches, custom HEX/RGB and interactive visual color picker.
+- Title replacements can be paused. Title backups, backup restores and recovery after a Restore All are available with safeguards.
+- Public interface hides developer-only diagnostic controls.
+- Changes are local; original Steam metadata and installed game files are not rewritten.
 
-## Validation and release boundaries
+### Known limitation
+**The right analog stick does not reliably scroll the Steam Game Info description area on either Steam or non-Steam titles in 1.1.8.** This is separate from successful description rendering and saved-state persistence, as well as Full Library Manager paging. [Tracking issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). Additional CSS Loader themes, Steam client versions and non-Steam hardware are not universally supported.
 
-The maintainer reported all **five final 1.1.8 checklist items** passing on a real Steam Deck, then restarted and verified both types of custom Game Info description again. A subsequent test **did reveal the Game Info right-stick scrolling issue**, so that action remains unresolved.
+## Real-device screenshots and guides
+The [23-image 1.1.8 gallery](SCREENSHOTS.md) includes **Catherine Classic (Steam)** and **Need for Speed: Most Wanted 2005 (non-Steam)** Game Info examples, along with the manager, keyboard, title/description editors, and all nine Settings captures.
 
-Automated checks for the private 1.1.8 build were reported as **211 frontend** and **26 backend** tests passing. Those results are not a substitute for real-device checks and do not prove the unresolved scrolling behavior.
+[Start with the beginner guide](BEGINNER_GUIDE.md) · [Features](FEATURES.md) · [Installation](INSTALL.md) · [Hardware verification](VERIFIED_ON_DECK.md)
 
-**Not yet published:** new 1.1.8 installer ZIP, current screenshot gallery, and matching repository source commit. The repository's runtime still corresponds to the published 0.9.2 version until the exact final installer is provided and source/test parity is established.
-
-## Credits
-
-Thanks to **u/TacoOfGod** for the original title-renaming inspiration and **u/All-Stars64** for requesting editable Game Info descriptions. Thank you to additional Steam Deck testers and community contributors for reporting regressions.
-
-[Beginner guide](BEGINNER_GUIDE.md) · [Full features](FEATURES.md) · [Physical-device record](VERIFIED_ON_DECK.md) · [Release checklist](RELEASE_CHECKLIST.md)
+**Thank you** to the Decky community, including u/TacoOfGod for original title-renaming inspiration and u/All-Stars64 for the suggestion to place editable descriptions inside Game Info. Credits acknowledge ideas and feedback, not source-code authorship.

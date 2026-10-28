@@ -1,29 +1,34 @@
-# TitleDeck source, public release and integrity
+# TitleDeck source and release provenance
 
-## Current state, October 27, 2026
+**Latest public release:** [1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8).
 
-| Item | Version / status |
-| --- | --- |
-| **Published GitHub installer** | [TitleDeck 0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2) |
-| **Upcoming candidate tested on real Deck** | 1.1.8, **not yet published** |
-| **Checked-in runtime and source** | Still 0.9.2 until the maintainer supplies and approves the final 1.1.8 ZIP |
-| **Current screenshots** | Historical 0.8.x / 0.9.x captures; 1.1.8 gallery pending |
+The official **TitleDeck-1.1.8.zip** was published by the maintainer. Its verified SHA-256 is:
 
-**Do not claim the `main` branch currently contains the tested 1.1.8 runtime.** It doesn't. This documentation refresh intentionally does not modify `main.py`, `plugin.json`, `package.json`, `src/index.js`, or `dist/index.js` until a final validated installer can be synchronized.
+```
+2bae38490fbbb7da783d98b33e8acd4dd6213f03ba1a7256807e60cb736f061c
+```
 
-## Safe public release procedure
+The repository's bundled runtime source (`main.py`, `plugin.json`, `package.json`, `src/index.js`, and `dist/index.js`) is synchronized from **the exact published installer** as part of the 1.1.8 repository release refresh. In particular, `src/index.js` and `dist/index.js` must be byte-identical.
 
-1. Start from the exact **final, physically tested installer ZIP**.
-2. Validate `TitleDeck/plugin.json`, `package.json`, `main.py`, and `dist/index.js`, and its final version.
-3. Set `src/index.js` to the same bundled frontend bytes as `dist/index.js` unless the developer provides the original source separately.
-4. Update/add appropriate automated regression tests, manifest and source integrity checks, and version-specific release verification.
-5. Check archive integrity and record SHA-256.
-6. Add final screenshots as individual files; **never include screenshot archive as a runtime file or separate new release asset**.
-7. Publish the 1.1.8 GitHub release/tag and plugin ZIP only **after** the hardware bug and final acceptance decision.
-8. Verify that the public ZIP matches what was tested; avoid pinning future repository sync to older versions.
+The verified screenshot-source ZIP SHA-256 was:
 
-## Historical assets
+```
+44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced
+```
 
-The previously published 0.9.2 stable release, 0.9.2 Beta 1 and 0.9.0 RC1 remain available for history. Their original ZIPs and images are not being changed by this documentation refresh. The old stable ZIP was historically verified against its own matching source; that fact does not establish 1.1.8 source parity.
+Its 23 JPEGs are extracted into [the per-image gallery](docs/SCREENSHOTS.md), excluding Mac archive metadata. The public repository's gallery uses **individual image files** rather than shipping another screenshot ZIP.
 
-[Release checklist](docs/RELEASE_CHECKLIST.md) · [Contributor guide](CONTRIBUTING.md) · [Hardware verification](docs/VERIFIED_ON_DECK.md).
+**Historic releases:** [0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2), [0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1), [0.9.0 RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0). The historic 0.9.2 description warning applies to that **older installer**, not to the subsequently hardware-tested 1.1.8 Game Info display and persistence paths.
+
+## For developers
+
+To verify a local checkout:
+
+```sh
+node --test tests/*.test.cjs
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
+Code changes should maintain source/dist parity, preserve the hardware-tested native Deck LB/RB path and Steam/non-Steam Game Info restoration, and distinguish hardware acceptance from simulated test results. See [Contributing](CONTRIBUTING.md), [Hardware test matrix](docs/VERIFIED_ON_DECK.md), and [Release checklist](docs/RELEASE_CHECKLIST.md).
+
+**Open issue:** right-stick scrolling in Steam/non-Steam **Game Info description areas** remains broken in 1.1.8; see [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
