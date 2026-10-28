@@ -24,9 +24,9 @@ The beta installer is named `TitleDeck-1.2.1-Beta.zip`, with in-app/package vers
 | Correct direct editor without intermediate library/artwork flash | ✅ Passed |
 | Context-menu placement, including non-Steam Properties fallback | ✅ Reported passed |
 | Context-only B/Circle hold at **850 ms**, and ordinary Back | ✅ Passed in Preview 3 |
-| NEW **650 ms** hold on a physical Deck | ⏳ Pending final maintainer test |
+| NEW **650 ms** hold on a physical Deck | ✅ Passed final maintainer test |
 
-The beta's new 650 ms threshold passed local simulated input tests, including the exact 649/650 ms boundary, but is **not hardware-verified yet**.
+The beta's new 650 ms hold has **now passed physical Steam Deck testing**. The exact 649/650 ms threshold boundary was also checked in local simulation.
 
 ## Known limitations and scope
 
@@ -35,12 +35,12 @@ The beta's new 650 ms threshold passed local simulated input tests, including th
 - Some Steam updates and other plugins' menu injections can affect internal Steam UI integration. Unsupported layouts should fail without adding the shortcut.
 - Other handhelds, Desktop Mode, Android and every CSS Loader theme are not maintainer verified.
 
-## Final acceptance before public stable 1.2.1
+## Beta acceptance completed; preparation remaining before public stable 1.2.1
 
 1. Install beta through Decky Loader → Settings → Developer → Install Plugin from ZIP; do not extract it.
-2. Confirm `v1.2.1-beta.1` and test B/Circle **tap versus 650 ms hold** from context-launched Catherine and a non-Steam game.
+2. ✅ The maintainer confirmed the context-menu behavior and 650 ms long-hold responsiveness on physical Deck.
 3. Verify the menu placement and ordinary Full Library Manager Back behavior once more.
-4. Build a **separate stable 1.2.1 ZIP** with `1.2.1` (not `1.2.1-beta.1`) in `plugin.json`, `package.json` and frontend. Ensure source/dist parity and verify the published artifact's checksum.
+4. ✅ A separate local stable 1.2.1 ZIP has been built with matching manifest and frontend versions, source/dist parity and a computed local checksum. **The GitHub publication and its asset checksum are still pending.**
 5. Only then publish the stable release and revise public release links/badges.
 
 [Feature reference](FEATURES.md) · [Beginner guide](BEGINNER_GUIDE.md) · [Verified on Deck](VERIFIED_ON_DECK.md) · [Release checklist](RELEASE_CHECKLIST.md)
