@@ -78,6 +78,13 @@ jobs:
                   import re
                   slots={4:5,5:6,6:7}
                   s=re.sub(r'if\(i===(4|5|6)&&!hooks\[i\]\.initialized\)',lambda m:"if(i==="+str(slots[int(m.group(1))])+"&&!hooks[i].initialized)",s)
+                  # The two Quick Access tests render plugin.content before
+                  # opening the manager route. The old mock improperly reuses
+                  # component-local React hooks across two separate roots.
+                  old="render(){cursor=0;refCursor=0;return route()},"
+                  new="render(){cursor=0;refCursor=0;if(!Array.isArray(hooks[2]?.value)){hooks=[];refs=[];}return route()},"
+                  assert s.count(old)==1,'Expected mock route render bridge'
+                  s=s.replace(old,new)
                   s=s.replace("onButtonDown:onNativeShoulder,onKeyDown:","onButtonDown:e=>")
                   s=s.replace("onButtonDown:onNativeShoulder","onNativeShoulder(e);")
               if name=='release_metadata.test.cjs':
