@@ -11,7 +11,7 @@
 - [x] Reduce hold threshold to **650 ms** and pass local tests.
 - [x] Confirm **650 ms** on a physical Deck and package a distinct **1.2.1 Stable** installer.
 - [x] The maintainer published 1.2.1 Stable with the installer ZIP.
-- [ ] Synchronize checked-in runtime and tests with the published 1.2.1 ZIP and verify GitHub Actions CI.
+- [x] Checked-in runtime and regression tests synchronized from the published 1.2.1 ZIP; [GitHub Actions](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787998502) passed **212/212 frontend and 29/29 Python** tests.
 
 [1.2.1 stable release notes](RELEASE_NOTES_1.2.1.md). **Current public stable release is 1.2.1.**
 
