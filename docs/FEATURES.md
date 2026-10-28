@@ -15,7 +15,7 @@
 - Restore a single original description without necessarily deleting the custom name; full original-game restoration available.
 - No enforced historical yellow-warning threshold.
 - Physically verified saved descriptions persist through a Steam Deck reboot.
-- **Known 1.1.8 limitation:** right-stick scrolling **inside Steam Game Info description areas** does not work reliably for either game type. The corresponding toggle may be present in Settings; do not treat it as proof of hardware operation. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+- **Known 1.1.8 limitation:** the **built-in Steam Deck right stick** does not scroll Steam or non-Steam **Game Info descriptions**, although an **external controller's right stick works** for both. The Settings toggle does not establish built-in-input support. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
 ## Full Library Manager
 - Artwork cards, green Installed badges, and **All games / Installed / Renamed** filters.
@@ -28,7 +28,7 @@
 ## Controller controls and scrolling
 - **LB/RB** means previous/next **library page**, not scrolling within a description.
 - The right stick can scroll larger **TitleDeck manager/editor/settings workspace** regions (tested during the 1.1.8 five-item acceptance).
-- Steam's **Game Info** description scrolling uses a separate input handler. A new hardware report found the right stick did not scroll those description areas. This remains open.
+- Steam's **Game Info** description scrolling uses a separate input handler. **External-controller right-stick scrolling works** for both Steam and non-Steam descriptions; **the Steam Deck's built-in right stick does not**. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8) remains open.
 - Steam keyboard supplies game-title and custom-description text entry.
 
 ## Appearance and Settings
@@ -38,7 +38,7 @@
 - Show hidden manager tiles.
 - Three custom-description placement choices.
 - Color theme cycling, preset swatches, HEX editor, visual hue/saturation picker and RGB adjustment.
-- Right-stick Game Info toggle (feature still reported broken on hardware).
+- Right-stick Game Info toggle (external-controller scrolling works; built-in Steam Deck right stick does not).
 - Review Restore All with confirmation and recovery.
 - Developer diagnostic panels hidden from normal users.
 
