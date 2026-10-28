@@ -1,6 +1,9 @@
-# TitleDeck 1.2.1 Beta 1: release notes (October 28, 2026)
+# TitleDeck 1.2.1 Beta 1: archived development notes (October 28, 2026)
 
-**Status:** Privately built for physical Steam Deck verification. **Not a published GitHub release and not yet 1.2.1 Stable.** The latest public stable GitHub release at the time of this update is [1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8); the maintainer has also verified later private builds.
+> [!NOTE]
+> **This beta has been superseded by the publicly published [TitleDeck 1.2.1 Stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1).** The following content preserves the original beta acceptance process and is **not current installation advice**.
+
+**Historical status at beta build:** Privately built for physical Steam Deck verification. **Not a published GitHub release and not yet 1.2.1 Stable.** The latest public stable GitHub release at the time of this update is [1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8); the maintainer has also verified later private builds.
 
 The beta installer is named `TitleDeck-1.2.1-Beta.zip`, with in-app/package version **`1.2.1-beta.1`**. It is provided to the maintainer for final testing, **not linked as an existing GitHub download**.
 
