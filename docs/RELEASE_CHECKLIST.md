@@ -21,7 +21,7 @@ The 1.2.1 beta installer prepared for testing has SHA-256:
 **Accepted and packaged local 1.2.1 stable ZIP:** `TitleDeck-1.2.1-Stable.zip`, SHA-256:
 `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb`
 This is the **local prepared artifact**, not a published release asset. [Stable release preparation](RELEASE_NOTES_1.2.1.md).
-[Full beta notes](RELEASE_NOTES_1.2.1_BETA.md) · [Hardware matrix](VERIFIED_ON_DECK.md).
+[Full beta notes](RELEASE_NOTES_1.2.1_BETA.md) · [Hardware matrix](VERIFIED_ON_DECK.md) · [1.2.1 verified test record](RELEASE_TEST_RESULTS_1.2.1.md).
 
 ## Completed
 
