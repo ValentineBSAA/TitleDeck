@@ -1,4 +1,4 @@
-# TitleDeck: physical Steam Deck verification (1.1.8 public; 1.2.1 beta tested features)
+# TitleDeck: physical Steam Deck verification (1.1.8 public; 1.2.1 stable candidate accepted)
 
 ## Later private hardware acceptance: 1.2.0 and 1.2.1 Preview 3
 
@@ -14,9 +14,9 @@
 | Context-menu placement controls: After Developer and Before Properties / non-Steam fallback | ✅ Maintainer reports all passed |
 | Context-launched hold B / Circle exits directly, older **850 ms** hold | ✅ Passed |
 | Quick tap B/Circle retains familiar Back behavior | ✅ Passed |
-| **New beta: hold B / Circle for 650 ms** | ⏳ **Local tests passed; hardware test pending** |
+| **1.2.1: hold B / Circle for 650 ms** | ✅ **Maintainer physically verified responsive long-hold quick exit** |
 
-The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement have been reported working on actual hardware. This does **not** mean the new 650 ms threshold or every edge case is already verified. No 1.2.1 stable release has been published. [1.2.1 beta notes](RELEASE_NOTES_1.2.1_BETA.md).
+The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement have been reported working on actual hardware. The final **650 ms** interaction has now passed hardware acceptance, but this does **not** establish compatibility with every game, Steam version, or controller. No 1.2.1 stable release has been published yet. [Prepared 1.2.1 release notes](RELEASE_NOTES_1.2.1.md).
 
 ## Original 1.1.8 acceptance
 
