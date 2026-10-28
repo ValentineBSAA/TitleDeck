@@ -4,6 +4,18 @@
 
 [Report a bug](https://github.com/ValentineBSAA/TitleDeck/issues) · [Community discussion](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Illustrated beginner guide](docs/BEGINNER_GUIDE.md)
 
+## Questions about privately tested 1.2.1 Beta
+
+**How do I edit the game I am highlighting?** Select it in Steam's library, press the controller's **Options (☰)** button, and choose **Edit with TitleDeck**. The exact game's editor opens directly. This feature is in the privately tested **1.2.1 Beta**, not yet in the latest published GitHub stable ZIP.
+
+**Can I move the TitleDeck Options entry?** Yes. **Full Library Manager → Settings → Game Options menu placement → After Developer** (default) or **Before Properties**. Some non-Steam games show Properties only inside Manage, so TitleDeck moves to the end of the main action list instead. TitleDeck does not rearrange GTM, SteamGridDB or other plugins.
+
+**How do I exit without going Back twice?** Only when you launched from **Options → Edit with TitleDeck**, **hold B / PlayStation Circle for 650 milliseconds** to return to Steam. A normal tap performs one Back step. The new 650 ms threshold has passed local tests but still needs final physical Deck verification.
+
+**Does the renamed title appear in the physical STEAM-button menu?** With **STEAM-button menu titles** turned ON in Full Library Manager Settings, yes on the tested Steam Catherine Classic and non-Steam Most Wanted games. Turning it OFF restores the original text. The logo on the menu's right side is artwork and stays unchanged.
+
+**Does this mean everything is compatible?** No. Steam internals can change between updates. See the [beta hardware matrix](docs/VERIFIED_ON_DECK.md) and [beta release notes](docs/RELEASE_NOTES_1.2.1_BETA.md).
+
 ## Frequently asked questions
 
 **Where is Settings?** Open **Quick Access (•••) → Decky → TitleDeck → Open Full Library Manager → ⚙ Settings**. It is within TitleDeck, not SteamOS system Settings.
