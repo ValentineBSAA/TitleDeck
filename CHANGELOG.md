@@ -3,7 +3,7 @@
 ## 1.2.1 — Published stable release (October 28, 2026)
 
 - All 1.2.1 Beta functionality accepted on physical Steam Deck. The context-menu shortcut and the new **650 ms B/Circle hold** passed the maintainer's final tests.
-- The **1.2.1** stable installer was published by the maintainer on GitHub with its verified hardware acceptance. The repository's runtime/source synchronization and CI verification remain follow-up release-engineering tasks.
+- The **1.2.1** stable installer was published by the maintainer on GitHub with its verified hardware acceptance. The repository source was subsequently synchronized byte-for-byte from the verified published ZIP. [GitHub Actions](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787998502) passed **212 frontend and 29 Python tests**.
 - [Published 1.2.1 stable notes](docs/RELEASE_NOTES_1.2.1.md).
 
 ## 1.2.1-beta.1 — Hardware-accepted private beta (October 28, 2026)
