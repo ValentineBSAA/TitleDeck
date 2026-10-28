@@ -11,7 +11,7 @@
 
 **Updating:** create a manual title backup before large upgrades, then install the replacement ZIP. Don't delete existing customization settings unless deliberately restoring originals.
 
-**After installing:** test a saved name, Steam/non-Steam Game Info description and LB/RB paging. Steam Game Info description-area **right-stick scrolling is a known 1.1.8 limitation**.
+**After installing:** test a saved name, Steam/non-Steam Game Info description and LB/RB paging. Steam Game Info descriptions **scroll with an external controller's right stick**, but **not with the Steam Deck's built-in right stick** in 1.1.8 ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
 
 The primary verified target is the Steam Deck in Gaming Mode. Other handhelds, Steam Desktop Mode, Windows and Android are unverified.
 
