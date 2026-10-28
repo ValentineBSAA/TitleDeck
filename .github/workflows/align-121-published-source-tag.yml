@@ -1,0 +1,66 @@
+name: Align published 1.2.1 source tag with verified stable runtime
+# One-time repair: release was published before source was synchronized.
+# Guard the old tag SHA and published ZIP SHA before any force-with-lease.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/align-121-published-source-tag.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  tag-source-repair:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Require exact 1.2.1 source on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          a=json.loads(Path('plugin.json').read_text())
+          b=json.loads(Path('package.json').read_text())
+          assert a['version']==b['version']=='1.2.1'
+          src=Path('src/index.js').read_bytes()
+          assert src==Path('dist/index.js').read_bytes()
+          assert b"PLUGIN_VERSION = '1.2.1'" in src
+          print('1.2.1 source/manifest parity OK')
+          PY
+      - name: Require the exact tested 1.2.1 installer is still published
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --retry-delay 3 --output /tmp/titledeck-121.zip 'https://github.com/ValentineBSAA/TitleDeck/releases/download/1.2.1/TitleDeck-1.2.1-Stable.zip'
+          echo '95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb  /tmp/titledeck-121.zip' | sha256sum -c -
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          from pathlib import Path
+          with ZipFile('/tmp/titledeck-121.zip') as z:
+              for f in ('main.py','plugin.json','package.json','src/index.js','dist/index.js'):
+                  assert Path(f).read_bytes()==z.read('TitleDeck/'+f), f
+          print('All published plugin runtime files exactly match main')
+          PY
+      - name: Repair only outdated stable tag using force-with-lease
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='75177560590de0060d38a3a5494f4b7457ee2887'
+          remote="$(git ls-remote origin refs/tags/1.2.1 | cut -f1)"
+          if [ "$remote" = "$(git rev-parse HEAD)" ]; then
+            echo '1.2.1 tag already points to the verified source commit.'
+            exit 0
+          fi
+          test "$remote" = "$expected" || { echo "Unexpected existing stable tag $remote. Refusing to move it."; exit 1; }
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -f 1.2.1 HEAD
+          git push --force-with-lease="refs/tags/1.2.1:$expected" origin refs/tags/1.2.1
+          test "$(git ls-remote origin refs/tags/1.2.1 | cut -f1)" = "$(git rev-parse HEAD)"
+          echo 'Published 1.2.1 release tag now points at SHA-verified source.'
