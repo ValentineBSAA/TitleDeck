@@ -1,4 +1,6 @@
-# Install TitleDeck 1.1.8
+# Install TitleDeck (public 1.1.8 / private 1.2.1 beta)
+
+> **1.2.1 Beta installation:** The maintainer's beta package is `TitleDeck-1.2.1-Beta.zip` with version `v1.2.1-beta.1`. It is **not a GitHub release asset** at the time of writing. Install an explicitly provided ZIP via **••• → Decky Loader → Settings → Developer → Install Plugin from ZIP**. Do not extract. Existing aliases/descriptions should remain. Test **Options → Edit with TitleDeck**, Settings → **Game Options menu placement**, and **650 ms B / Circle hold-to-exit**. Do not confuse this beta with a published stable 1.2.1; [beta notes](RELEASE_NOTES_1.2.1_BETA.md).
 
 **Latest public release:** [TitleDeck 1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8).
 
