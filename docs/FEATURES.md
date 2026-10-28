@@ -6,12 +6,12 @@
 
 - On a game in Steam's library, press **Options (☰)**, then choose **Edit with TitleDeck**. The selected Steam or non-Steam game's own editor opens immediately; you do not have to search the manager or wait for its full artwork grid.
 - In **Full Library Manager → Settings → Game Options menu placement**, choose **After Developer** (the default) or **Before Properties**. When a non-Steam shortcut has Properties only within its Manage submenu, the second placement falls back to the end of top-level actions, above Cancel where shown.
-- Opened from **Edit with TitleDeck** only: **tap B / Circle** for ordinary Back or **hold B / Circle for 650 ms** to close the TitleDeck editor and return directly to Steam. The 650 ms timing is *locally verified only* pending hardware testing.
+- Opened from **Edit with TitleDeck** only: **tap B / Circle** for ordinary Back or **hold B / Circle for 650 ms** to close the TitleDeck editor and return directly to Steam. The 650 ms quick exit has now passed physical Steam Deck acceptance.
 - The **STEAM-button menu titles** setting controls whether the running game's left-hand menu shows your saved alias or its original name. This was physically verified for **Catherine Classic → Catherine** and non-Steam **Most Wanted Black Edition → Need for Speed Most Wanted!**. Catherine also survived a full reboot.
 - The original game logos/artwork inside Steam's menu are **not renamed**. Your original game files and Steam metadata stay unchanged.
 - If the menu is rebuilt by Steam or a theme, the shortcut depends on Steam's internal UI and may not be available.
 
-[Detailed beta release notes](RELEASE_NOTES_1.2.1_BETA.md) · [Physical testing record](VERIFIED_ON_DECK.md). This beta is not a published stable GitHub release.
+[1.2.1 stable release preparation](RELEASE_NOTES_1.2.1.md) · [Physical testing record](VERIFIED_ON_DECK.md). The **stable installer is prepared but not yet published** as a GitHub release.
 
 ## Custom game names
 - Edit a displayed title with Steam's keyboard; save explicitly.
