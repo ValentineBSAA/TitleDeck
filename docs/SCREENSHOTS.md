@@ -4,6 +4,9 @@
 
 [← Back to README](../README.md) · [Beginner guide](BEGINNER_GUIDE.md) · [1.1.8 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
 
+> [!NOTE]
+> **1.2.1 Beta screenshots are not yet committed in this gallery.** The 23 images below are authentic **1.1.8** captures, not representations of the new native game Options shortcut, STEAM-button menu aliases or the 650 ms hold. The maintainer has visually verified Catherine and non-Steam Most Wanted in those newer surfaces, but new images should be uploaded and reviewed before labeling a 1.2.1 gallery complete. [Beta notes](RELEASE_NOTES_1.2.1_BETA.md).
+
 ## 1. Start here: Quick Access and Full Library Manager
 
 | Quick Access: open TitleDeck | Full Library Manager: browse games |
