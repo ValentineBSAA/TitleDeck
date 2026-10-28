@@ -16,6 +16,12 @@
 ## Verification and limitations
 The user verified the new shortcut, placement, and 650 ms hold on a physical Steam Deck. Local syntax, simulated first-render, game-identity/menu-insertion, and 649/650 ms boundary tests passed. This is *not exhaustive testing* of every Steam client version or third-party theme. The Steam Deck's built-in right stick still does not scroll Game Info custom description text while an external controller's right stick does (known [issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)); right-stick input inside TitleDeck's own editor is separate. The STEAM menu's logo artwork is not replaced by text renaming.
 
+## Verified publication and source parity
+
+- Published release asset passed exact SHA-256 verification.
+- Repository 1.2.1 runtime was synchronized byte-for-byte with the released ZIP; **212 frontend / 29 backend** tests passed.
+- GitHub's **1.2.1 source tag** was aligned to the verified source commit after release, so automatic Source Code downloads also contain 1.2.1 rather than the previous development build. [Tag repair run](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40788241341).
+
 ## Post-publication maintenance
 1. ✅ Synchronized `main.py`, frontend `src/index.js`/`dist/index.js`, manifests and regression tests from the exact published ZIP. [All 212 frontend and 29 backend tests passed in GitHub Actions](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787998502).
 2. ✅ The maintainer published the **1.2.1 Stable** GitHub release with `TitleDeck-1.2.1-Stable.zip` attached.
