@@ -2,7 +2,7 @@
 <h1 align="center">TitleDeck</h1>
 <p align="center"><strong>Your library. Your names. Your descriptions.</strong></p>
 <p align="center">
-<a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1"><img alt="Latest release 1.2.1" src="https://img.shields.io/badge/release-1.1.8-brightgreen"></a>
+<a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1"><img alt="Latest release 1.2.1" src="https://img.shields.io/badge/release-1.2.1-brightgreen"></a>
 <img alt="Hardware tested" src="https://img.shields.io/badge/tested-physical%20Steam%20Deck-blue">
 <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
