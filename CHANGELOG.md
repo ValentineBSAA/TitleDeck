@@ -1,10 +1,16 @@
 # TitleDeck changelog
 
-## 1.2.1-beta.1 — Private beta, awaiting final physical Deck test (October 28, 2026)
+## 1.2.1 — Stable installer prepared; hardware acceptance complete (October 28, 2026)
+
+- All 1.2.1 Beta functionality accepted on physical Steam Deck. The context-menu shortcut and the new **650 ms B/Circle hold** passed the maintainer's final tests.
+- A separate **1.2.1** stable installer has been packaged and locally validated. **No public 1.2.1 release has been published yet**; the repository source still requires synchronization before release.
+- [Prepared 1.2.1 stable notes](docs/RELEASE_NOTES_1.2.1.md).
+
+## 1.2.1-beta.1 — Hardware-accepted private beta (October 28, 2026)
 
 - Native game **Options (☰) → Edit with TitleDeck** shortcut works on Steam and non-Steam games; opens the exact selected game's editor without first rendering the artwork library grid.
 - Configurable context-menu position: **After Developer** (default) or **Before Properties**, with a safe last-action fallback where non-Steam Properties is inside Manage.
-- Context-launch-only **B / Circle hold-to-Steam** shortcut, shortened from **850 ms to 650 ms**; quick tap retains normal Back. Earlier hold behavior is hardware verified; the new 650 ms threshold has passed local boundary tests and **still needs physical Deck confirmation**.
+- Context-launch-only **B / Circle hold-to-Steam** shortcut, shortened from **850 ms to 650 ms**; quick tap retains normal Back. Both the previous hold behavior and the new **650 ms** setting were physically verified; the exact 649/650 ms timing boundary was tested locally.
 - Carries forward privately verified 1.2.0 STEAM-button menu title aliases (Steam/non-Steam), reboot persistence for Catherine, and ON/OFF restoration.
 - **Publication:** no public 1.2.1 release created. Public README badges/releases remain on 1.1.8 until the maintainer publishes a separately versioned stable ZIP.
 - [Detailed beta notes](docs/RELEASE_NOTES_1.2.1_BETA.md) · [Hardware record](docs/VERIFIED_ON_DECK.md).
