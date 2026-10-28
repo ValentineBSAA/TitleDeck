@@ -76,7 +76,7 @@ jobs:
           docs_test=docs_test.split(marker)[0]+'''test('1.1.8 public documentation names hardware boundaries and known scrolling issue',()=>{
            const readme=fs.readFileSync(path.join(root,'README.md'),'utf8');
            const changelog=fs.readFileSync(path.join(root,'CHANGELOG.md'),'utf8');
-           for(const item of ['1.1.8','Catherine Classic','Need for Speed','Steam Deck','Game Info','right-stick','unverified']) assert(readme.includes(item),item);
+           for(const item of ['1.1.8','Catherine Classic','Need for Speed','Steam Deck','Game Info','right-stick','not maintainer-verified']) assert(readme.includes(item),item);
            assert(changelog.includes('1.1.8'));
           });\n'''
           p.write_text(docs_test)
