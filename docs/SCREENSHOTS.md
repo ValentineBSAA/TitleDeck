@@ -1,11 +1,11 @@
-# TitleDeck 1.1.8 screenshot gallery
+# TitleDeck screenshot gallery (1.1.8 historical captures)
 
 **23 real Steam Deck Gaming Mode screenshots**, organized by what a user is trying to do. These are individual images checked into the repository, not a screenshot archive or an installer.
 
-[← Back to README](../README.md) · [Beginner guide](BEGINNER_GUIDE.md) · [1.1.8 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
+[← Back to README](../README.md) · [Beginner guide](BEGINNER_GUIDE.md) · [current 1.2.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1) · [1.1.8 historical release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
 
 > [!NOTE]
-> **1.2.1 Beta screenshots are not yet committed in this gallery.** The 23 images below are authentic **1.1.8** captures, not representations of the new native game Options shortcut, STEAM-button menu aliases or the 650 ms hold. The maintainer has visually verified Catherine and non-Steam Most Wanted in those newer surfaces, but new images should be uploaded and reviewed before labeling a 1.2.1 gallery complete. [Beta notes](RELEASE_NOTES_1.2.1_BETA.md).
+> **New 1.2.1 screenshots are not yet committed in this gallery.** The 23 images below are authentic **1.1.8** captures, not representations of the new native game Options shortcut, STEAM-button menu aliases or the 650 ms hold. The maintainer has visually verified Catherine and non-Steam Most Wanted in those newer surfaces, but new images should be uploaded and reviewed before labeling a 1.2.1 gallery complete. [1.2.1 release notes](RELEASE_NOTES_1.2.1.md).
 
 ## 1. Start here: Quick Access and Full Library Manager
 
