@@ -1,0 +1,39 @@
+name: Repair TitleDeck 1.1.8 public release documentation links
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-titledeck-118-release-links.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix-release-links:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Point public release links to the real docs folder
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release view 1.1.8 --repo "$GITHUB_REPOSITORY" --json body --jq '.body' > /tmp/titledeck-release-notes.md
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/titledeck-release-notes.md')
+          body=p.read_text()
+          base='https://github.com/ValentineBSAA/TitleDeck/blob/main/docs/'
+          for name in ('SCREENSHOTS.md','BEGINNER_GUIDE.md','FEATURES.md','INSTALL.md','VERIFIED_ON_DECK.md'):
+              original=']('+name+')'
+              target=']('+base+name+')'
+              if original not in body and target not in body:
+                  raise RuntimeError('Expected release link missing: '+name)
+              body=body.replace(original,target)
+          for name in ('SCREENSHOTS.md','BEGINNER_GUIDE.md','FEATURES.md','INSTALL.md','VERIFIED_ON_DECK.md'):
+              assert ']('+base+name+')' in body
+          p.write_text(body)
+          print('Verified all five public guide/gallery links.')
+          PY
+          gh release edit 1.1.8 --repo "$GITHUB_REPOSITORY" --notes-file /tmp/titledeck-release-notes.md
+          gh release view 1.1.8 --repo "$GITHUB_REPOSITORY" --json body --jq '.body' | grep -F 'https://github.com/ValentineBSAA/TitleDeck/blob/main/docs/SCREENSHOTS.md'
