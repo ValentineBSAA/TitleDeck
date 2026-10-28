@@ -60,6 +60,19 @@ jobs:
               p=Path('tests')/name
               s=p.read_text()
               s=s.replace('1.1.9','1.2.1')
+              if name=='frontend.test.cjs':
+                  # Preview 2 introduced a React lazy initializer. Legacy mock
+                  # must evaluate lazy initializers and still seed its games array.
+                  before="if(!hooks[i])hooks[i]={value:initial};"
+                  after="if(!hooks[i])hooks[i]={value:typeof initial==='function'?initial():initial};"
+                  assert s.count(before)==1,'Expected legacy useState initializer missing'
+                  s=s.replace(before,after)
+                  before="i===1 && Array.isArray(initial) && !hooks[i].initialized"
+                  after="i===1 && Array.isArray(hooks[i].value) && !hooks[i].initialized"
+                  assert s.count(before)==1,'Expected mocked games seed missing'
+                  s=s.replace(before,after)
+                  s=s.replace("onButtonDown:onNativeShoulder,onKeyDown:","onButtonDown:e=>")
+                  s=s.replace("onButtonDown:onNativeShoulder","onNativeShoulder(e);")
               if name=='release_metadata.test.cjs':
                   s=s.replace("for(const word of ['1.1.8'","for(const word of ['1.2.1'")
               p.write_text(s)
