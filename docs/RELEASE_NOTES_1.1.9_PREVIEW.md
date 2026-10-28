@@ -1,3 +1,6 @@
+> [!NOTE]
+> **Historical preview notes.** The latest public stable is now [TitleDeck 1.2.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1). This document preserves the original 1.1.9 preview testing details.
+
 # TitleDeck 1.1.9 Preview 1: RENAMED badge overlay fix
 
 **Testing release only.** The latest verified public stable release remains **1.1.8** until a real Steam Deck confirms this visual repair.
