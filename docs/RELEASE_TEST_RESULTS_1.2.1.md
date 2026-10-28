@@ -40,6 +40,7 @@ These are user-reported device tests, not remote automated hardware instrumentat
 - [x] Publish stable GitHub release **1.2.1** with ZIP asset. Asset size matches the locally built ZIP.
 - [x] Download the published ZIP via GitHub Actions and confirm exact SHA-256 `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb` ([workflow run](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787369311)).
 - [x] Update README stable-download badge and installation links to the published 1.2.1 release.
+- [x] Repoint published 1.2.1 Git tag at checksum-verified source with force-with-lease, confirming tag commit `409e9469c2c649c9cfbad7f591a9e6e1055683c9` and `plugin.json` version 1.2.1 ([verified action](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40788241341)).
 
 **Known issue:** The Steam Deck built-in right stick does not scroll Game Info custom descriptions for Steam/non-Steam titles, while an external controller's right stick does. See [issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
