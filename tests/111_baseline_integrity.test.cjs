@@ -1,0 +1,17 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
+const source=fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8');
+const fingerprint=s=>crypto.createHash('sha256').update(s).digest('hex');
+const block=(start,end)=>{const a=source.indexOf(start);assert(a>=0,start);const b=source.indexOf(end,a);assert(b>a,end);return source.slice(a,b)};
+test('1.1.1 byte-for-byte protected full_library_paging',()=>assert.equal(fingerprint(block("  const pageLibrary=delta=>{","  pageLibraryRef.current=pageLibrary;")),"23945736ea927ce6b90774c8b226b17b50b631bcc081d19cf1d7d89f466ce388"));
+test('1.1.6 adds Steam-native focus input without touching paging; keeps pageLibrary intact',()=>{const portion=block("  pageLibraryRef.current=pageLibrary;","  const installedCount=");assert(portion.includes('createLibraryShoulderBridge'));assert(portion.includes('onNativeShoulder'));assert(portion.includes('pageFromShoulder'));assert(!portion.includes('navigator.getGamepads?.()'));});
+test('1.1.1 byte-for-byte protected library_focus_navigation',()=>assert.equal(fingerprint(block("  const navHeader=","  const editorNav=")),"b4285fe5c2765ccf5a416e474b09c5e3b5b552cd378edd8450445cd200dd9a4c"));
+test('1.1.1 byte-for-byte protected settings_controller_navigation',()=>assert.equal(fingerprint(block("export function settingsFocusDestination(","export function scrollLibraryPageToIndex(")),"2ebd4e5d8b9db9a750a449cfee6a7d2baff972386fcba068fcb5db4dc9840ea3"));
+test('1.1.1 byte-for-byte protected controller_right_stick',()=>assert.equal(fingerprint(block("export function createControllerScrollBridge(","export function createDescriptionAdapter(")),"83eb078cd3227e481ef62957a73110aaa99477539c6b95d4efe51ff118fcb639"));
+test('1.1.1 byte-for-byte protected native_steam_game_info',()=>assert.equal(fingerprint(block("export function createDescriptionAdapter(","\nconst STYLE=`")),"2e63035bf69d70ccc1786e4d0ce8fd7a2a507c679733c0de59cc471d4cced3a8"));
+test('1.1.1 byte-for-byte protected native_nonsteam_game_info',()=>assert.equal(fingerprint(block("export function createNonSteamGameInfoAdapter(","export function createDescriptionAdapter(")),"44366d1aa1ffbbe1cc4fa7924be20922379f91aea416e497b218860d9d035662"));
+test('1.1.1 byte-for-byte protected restore_original',()=>assert.equal(fingerprint(block("  const restoreOriginalGame=async()=>{","  const restoreAll=async()=>{")),"033b08200157d4aa697a842be6b1a427c4a45ce592238e88e9306b9d893cbfdc"));
+test('neutral count and no advisory threshold in 1.1.3',()=>{assert(!source.includes('DESCRIPTION_WARNING_THRESHOLD'));assert(!source.includes('td-description-warning'));assert(source.includes("Array.from(value).length+' characters'"));});

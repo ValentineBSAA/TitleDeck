@@ -68,7 +68,7 @@ def validate_description(value: Any, *, allow_legacy: bool = False) -> str:
 
 
 def blank_state() -> dict[str, Any]:
-    return {"schema": SCHEMA, "enabled": True, "aliases": {}, "descriptions": {}, "description_position": "game_info"}
+    return {"schema": SCHEMA, "enabled": True, "aliases": {}, "descriptions": {}, "description_position": "below_play"}
 
 
 def load_state(path: Path | None = None) -> dict[str, Any]:
@@ -186,13 +186,26 @@ def cover_cache_path() -> Path:
     return settings_path().with_name("titledeck.artwork-cache.json")
 
 
+def layout_diagnostic_path() -> Path:
+    """An easily accessible export on the Steam Deck Desktop, never Steam files.
+
+    Do not use Path.home(): Decky may run its backend under a service user.
+    """
+    return Path("/home/deck/Desktop/TitleDeck/titledeck-game-info-layout.json")
+
+
+def controller_diagnostic_path() -> Path:
+    """Local, read-only user-facing controller-state report on Deck Desktop."""
+    return Path("/home/deck/Desktop/TitleDeck/titledeck-controller-input.json")
+
+
 def validate_cover_cache(value: Any) -> dict[str, int]:
     if not isinstance(value, dict) or len(value) > COVER_CACHE_SIZE:
         raise ValueError("Invalid artwork cache")
     result: dict[str, int] = {}
     for appid, index in value.items():
         ident = normalize_id(appid)
-        if isinstance(index, bool) or not isinstance(index, int) or not 0 <= index <= 6:
+        if isinstance(index, bool) or not isinstance(index, int) or not 0 <= index <= 17:
             raise ValueError("Invalid artwork source index")
         result[ident] = index
     return result
@@ -214,7 +227,7 @@ class Plugin:
 
     async def _main(self) -> None:
         if decky is not None:
-            decky.logger.info("TitleDeck beta backend started (read-only Steam access)")
+            decky.logger.info("TitleDeck prototype backend started (read-only Steam access)")
 
     async def snapshot(self) -> dict[str, Any]:
         state = load_state()
@@ -233,6 +246,164 @@ class Plugin:
             return {"available": True, "count": len(backup["aliases"])}
         except (OSError, ValueError, json.JSONDecodeError) as error:
             return {"available": False, "count": 0, "error": str(error)}
+
+    async def save_layout_diagnostic(self, report: str) -> dict[str, Any]:
+        """Write a bounded, metadata-only layout snapshot. Never include user
+        descriptions, game paths, URLs, Steam files, or game metadata."""
+        if not isinstance(report, str) or len(report) > 45000:
+            raise ValueError("Layout report is too large")
+        data = json.loads(report)
+        if not isinstance(data, dict) or data.get("format") != "titledeck-layout-v1":
+            raise ValueError("Unsupported layout report")
+        records = data.get("records")
+        if not isinstance(records, list) or len(records) > 4:
+            raise ValueError("Invalid layout records")
+        sanitized = []
+        for record in records:
+            if not isinstance(record, dict):
+                raise ValueError("Invalid layout record")
+            nodes = record.get("nodes")
+            if not isinstance(nodes, list) or len(nodes) > 85:
+                raise ValueError("Invalid layout nodes")
+            clean = []
+            for node in nodes:
+                if not isinstance(node, dict):
+                    raise ValueError("Invalid layout node")
+                clean.append({
+                    "label": str(node.get("label", ""))[:70],
+                    "tag": str(node.get("tag", ""))[:20],
+                    "cls": str(node.get("cls", ""))[:150],
+                    "rect": node.get("rect") if isinstance(node.get("rect"), dict) else None,
+                    "css": node.get("css") if isinstance(node.get("css"), dict) else None,
+                    "contents": str(node.get("contents", ""))[:22],
+                    "ghost": bool(node.get("ghost")),
+                })
+            sanitized.append({"kind": "nonsteam-game-info", "nodes": clean})
+        path = layout_diagnostic_path()
+        async with self._lock:
+            store_state({"format": "titledeck-layout-v1", "records": sanitized}, path)
+            # Decky can run under a privileged service account. Keep Desktop
+            # exports readable and, when possible, owned by the Deck user.
+            try:
+                path.chmod(0o644)
+                if hasattr(os, "geteuid") and os.geteuid() == 0:
+                    import pwd
+                    account = pwd.getpwnam("deck")
+                    os.chown(path.parent, account.pw_uid, account.pw_gid)
+                    os.chown(path, account.pw_uid, account.pw_gid)
+            except (OSError, KeyError):
+                # Export has already succeeded; Desktop ownership adjustment
+                # should not prevent the diagnostic button from returning its path.
+                pass
+        return {"path": str(path), "elements": sum(len(r["nodes"]) for r in sanitized)}
+
+    async def save_controller_diagnostic(self, report: str) -> dict[str, Any]:
+        """Export only bounded controller button numbers, never identifying data."""
+        if not isinstance(report, str) or len(report) > 30000:
+            raise ValueError("Controller diagnostic too large")
+        raw = json.loads(report)
+        if not isinstance(raw, dict) or raw.get("format") != "titledeck-controller-v1":
+            raise ValueError("Unsupported controller diagnostic")
+        events = raw.get("events")
+        if not isinstance(events, list) or len(events) > 64:
+            raise ValueError("Invalid controller diagnostic events")
+        clean = []
+        for event in events:
+            if not isinstance(event, dict):
+                raise ValueError("Invalid controller diagnostic event")
+            kind = event.get("kind", "")
+            if kind not in ("manager-open", "manager-close", "steam-registration",
+                            "steam-change", "browser-change", "focus-button", "page"):
+                raise ValueError("Invalid controller diagnostic event type")
+            item = {"kind": kind}
+            for key in ("left", "right"):
+                if type(event.get(key)) is bool:
+                    item[key] = event[key]
+            for key in ("buttons", "upper", "controller", "delta"):
+                if type(event.get(key)) is int and -1 <= event[key] <= 0xFFFFFFFF:
+                    item[key] = event[key]
+            if event.get("source") in ("steam", "gamepad", "shoulder", "steam-focus", "registered", "unavailable", "error"):
+                item["source"] = event["source"]
+            clean.append(item)
+        cleaned = {"format": "titledeck-controller-v1", "version": "1.1.6",
+                   "registration": raw.get("registration") if raw.get("registration") in ("not attempted", "registered", "unavailable", "error") else "unknown",
+                   "events": clean}
+        for key in ("callbacks", "steamSamples", "browserSamples", "pages"):
+            count = raw.get(key)
+            cleaned[key] = count if type(count) is int and 0 <= count <= 10000000 else 0
+        path = controller_diagnostic_path()
+        async with self._lock:
+            store_state(cleaned, path)
+            try:
+                path.chmod(0o644)
+                if hasattr(os, "geteuid") and os.geteuid() == 0:
+                    import pwd
+                    account = pwd.getpwnam("deck")
+                    os.chown(path.parent, account.pw_uid, account.pw_gid)
+                    os.chown(path, account.pw_uid, account.pw_gid)
+            except (OSError, KeyError):
+                pass
+        return {"path": str(path), "events": len(clean)}
+
+    async def get_local_cover(self, appid: str) -> dict[str, str]:
+        """Read-only artwork fallback from existing Steam custom art and library cache.
+
+        Some Decky frontend windows cannot resolve Steam's /customimages paths.
+        The fallback never downloads anything or changes Steam's files.
+        """
+        import base64
+        appid = normalize_id(appid)
+        home = Path('/home/deck') if Path('/home/deck').is_dir() else Path.home()
+        for steam in steam_roots(home):
+            accounts = steam / 'userdata'
+            if not accounts.is_dir():
+                continue
+            try:
+                users = [p for p in accounts.iterdir() if p.is_dir() and p.name.isdecimal()][:12]
+            except OSError:
+                continue
+            for user in users:
+                grid = user / 'config' / 'grid'
+                for label in (appid+'p', appid):
+                    for ext, mime in (('.png', 'image/png'), ('.jpg', 'image/jpeg'), ('.jpeg', 'image/jpeg'), ('.webp', 'image/webp')):
+                        file = grid / (label + ext)
+                        try:
+                            if file.is_symlink() or not file.is_file() or not 0 < file.stat().st_size <= 4_000_000:
+                                continue
+                            data = file.read_bytes()
+                        except OSError:
+                            continue
+                        if ext == '.png' and not data.startswith(b'\x89PNG\r\n\x1a\n'):
+                            continue
+                        if ext in ('.jpg', '.jpeg') and not data.startswith(b'\xff\xd8\xff'):
+                            continue
+                        if ext == '.webp' and not (data[:4] == b'RIFF' and data[8:12] == b'WEBP'):
+                            continue
+                        return {'data_uri': f'data:{mime};base64,' + base64.b64encode(data).decode('ascii')}
+        # 1.1.8: Steam itself caches official portraits outside per-user grid
+        # overrides. Newer store asset URLs are content-hashed and the old
+        # unhashed public paths may fail even for installed games.
+        # Read only known filename shapes, bounded to 4 MiB and verified magic.
+        for steam in steam_roots(home):
+            cache = steam / 'appcache' / 'librarycache'
+            files = (
+                cache / f'{appid}_library_600x900.jpg',
+                cache / appid / 'library_600x900.jpg',
+                cache / f'{appid}_library_capsule.jpg',
+                cache / appid / 'library_capsule.jpg',
+                cache / f'{appid}_header.jpg',
+                cache / appid / 'header.jpg',
+            )
+            for file in files:
+                try:
+                    if file.is_symlink() or not file.is_file() or not 0 < file.stat().st_size <= 4_000_000:
+                        continue
+                    data = file.read_bytes()
+                except OSError:
+                    continue
+                if data.startswith(b'\xff\xd8\xff'):
+                    return {'data_uri': 'data:image/jpeg;base64,' + base64.b64encode(data).decode('ascii')}
+        return {'data_uri': ''}
 
     async def save_cover_cache(self, sources: dict[str, int]) -> dict[str, Any]:
         entries = validate_cover_cache(sources)

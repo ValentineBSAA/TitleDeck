@@ -1,6 +1,5 @@
-/** TitleDeck 0.9.2: local title and native-looking Game Info description customization. */
-const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '0.9.2', ROUTE = '/titledeck/manager';
-export const DESCRIPTION_WARNING_THRESHOLD = 1247;
+/** TitleDeck 1.0.7 private candidate: hardware-verified descriptions, reversible non-Steam layout and controller-first manager. */
+const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.1.8', ROUTE = '/titledeck/manager';
 // Private developer opt-in. Normal users never see scan controls or timing logs;
 // the bounded timing recorder remains available for future Steam UI regressions.
 export function developerDiagnosticsEnabled(){
@@ -12,11 +11,11 @@ const h = (...a) => R.createElement(...a);
 const QAM_VERSION_STYLE = {display:'inline-flex',alignItems:'center',fontSize:10,fontWeight:800,color:'#e9eef6',background:'#384257',border:'1px solid #7d8aa5',borderRadius:99,padding:'3px 7px',lineHeight:1};
 const ICON_DATA_URI = 'data:image/webp;base64,UklGRqgKAABXRUJQVlA4IJwKAABQMwCdASqAAIAAPkUejEUioaEjppFLcHAIiUAZMBYKe/suZu678Oc32cXtq/c+ub/HetD7mfcG/T7+99VfzFfsP+0nu1eir7APgA/WbrafQA/Xn00/ZD/an9t/aFugnLcezmce+/35z8m/27/3fRbvFP51/b+Grm08mv6P/s+OTuTf8N+W/POUAPyl/pftV+Rv/c81v1N/2fcS/mP9Q/2/9t/eXvd+jMWitoTb3LX8trScgmTAZ6CNlXK/+NCqJ35IwjVVvadTm2R6vGVi1mUhHBmgbhz44HQML+P5CnnN5+O+4Ld+mzwCzq+sqhCENxixFwDz+map/LCUWU9epBI1TVSNBFWhBxFVbFLf881BHhpB4A1YKYBSRBIzlEnshJ/9TsNN1wJdCv6DML4XO9G2GqKj/c8MeSFW05HIoOhCmfARXgUUXF+w0b2/Z2bfwQQIiWYLZ9aozbymVP85xfpIMXDuoQwm6UO67ATLfXM+iP8i19bTSV6ie7W0/hVaBQgj4Q44HpyDHmtpPKOCdnAeT/aU3EY9m5pyWTriLlt9Gx24AAD+/1Z7NthDTb37UFPLoTt4wc6i9FM5jSvpHtRfewnQyAuN1wRErY6dy/zKIZbraw6NEQiosdt8dHKKIDoKJP8sINxIf71gphfbMg95t8M36NhaFndX8fsu2/83OWL85izQtfu2kPaFurTSP8kaL6vuTjNQrzuQ3I4U4DRqk3ysoIMNvgBKhzL0wEx/aHBfPUJM6jEqxK/4JEz2xVi8IgvMVlB0kXxSWxBg/s76AW02eaWGP1Xa0XYBCGf/kJlR/BmvW2XVMMdhnO+X+Zugaah9VwJHW1yqA1il9MWKQl2qlwIF69+7GH3Qld7Dt/7UgE+bAdNQXTr5Ro+G91IWYzWf9eZKyGIQoub50d15Y+/JdGlx+0bubtSRLB69N+uc2EnyfWupxFlE8leNo+b+IawppKXucZJQbWyny5RhivERow/Mbqrko9lbn5EeB9dH/RZkyvp67K2/FEmBAQrdCcgXzZBrKF74tHvNALynOK0brZ+BQatNrXRqH5xYQVOEeze2exsT5NVRPOBr69e9dfHkwKsZQsR98F8ldBpi8bsEQO1BaXzii/7m+cEp2S4RLgIDUc/iMbsISQKYc+hdoyDqhx/mrXoZrp1ea3iLaJmvxi6b0+qO5hMLv7q6MMu9ZNH9/hPB3islFno3aijnM/cvU9/7QTxOcP00fO2HkNYsDJ6eJ4CiIs0Hd2+m8ax/ABbJz1S3ZPTFX8JfAnJdtM81vtfaVDTWVTFyv/R5jilNcM/Dt/zmDiZU4/C4ehWFUBCa9LHdNWqwujB6Yw6WrYsH12u/3aqZr7cK5i++vAMc2jTgqi9fbzguGDYQ6e+BR5RyTIHRsL3pWy2T7C3kOtqkS7CUOJFJQkvxuiYN3/HwUPBDIw6c0UTaSBILNKQcHkiMY7P5RVCCR1rpwJ0qWC4gTGf+PuK4+FBWCIQYX7fs6N+ffSAxivW7sXNIM0ufe7Sn7/rPm+VFBHAJr3/qNfJjcKxRFd6lP87CwaxM+5hRgWSgbNANXvYDIIZt2xWk1xiKop3nYJ+SOAq73AtZn+/K9HvxOa67+sJq4z/BXRgUXeoKHOnhunQqCbMVHlhd0nZWEYcnAjTRIl6oN+jBynSN9KGzkcEJzhIIq+8q4C2AW1dQidlTYrRJcGIhv1HhHZjMJLWmhdyoJg0M/qrWf6/qoFFGzrbwN57NWv75bT62mP6hfko+QAkI73iQtyc0bVHD5T15lfJjaMUPvok9N/v/l0jnE3LXnSXgARpS5PyBHxZ4zuw3dajC28fmYCh/IyIS0ApGxKZoLo1NaWtcwZWg/rU/At2bPMLfj737PZbDJgnQ6Niep//PPfx7Xw6rir4riCIkA4wN+AaPrkzZcpW2vSQTKPnlNFnFO+e1vecnyJACKPLQEIyYQCHjy9LLalhUSTIn/94YgYvbKKzcYBTnQWGQ99c1DVU2B/NKbZx2eovAX8qPQVoXuYP6W66/PQu2wzouNMIZt82EtK8SXmYuohklNRKyU/3yfkrdiK2mbPqCgzg8VYQP2HevHZB6bwUT7GKGyQuLOtLRetK+a6BkAu+tTHBdOCPkVL66FBZea/iTalvLZ0Yr1SnpcCTP9WXlZviV/4sWL8EPrablCcxfSk9hmO+tfstM9tYD0yhY+ZwtoJuq3EbQ7fB9/tuCWQwXyZx7UMB7SjiuA7MMHSXSD42h8Dlz//rRI/OY8mG9ZZN80Kqu8DAI63Ai8sk23PwsX7tS5at9tmntPhA/bZ9qmjlSExflHhqWGGGJPChDhXMk2zYcf5lyRY/TrLC42pY52sppoBdETZbIE1WoCwPw74Cln/yZMh/yTHjh1xr/Wsxlyad33sSVQABiLbeQ5b/UdKxer1jvhoRGQ/4uEzmbC/1QpX8H/6n2T4Cz3hBUIf/+vaUF6z+X6TyBk3ZLiK2irO4oQqj3cwPL1MCY9OF0RShQO9tfezl5VFiTc5/GQxran4D0jDGvhgmaDCfhWB5/38TwynEeKQ8U8cKguN75fkWlS4R1td51nP5d12rEWL603V/52gqXc5NRwpsyZc2arhhKnsekIF7/OZAPY8F4iJfxR7tvSwqGcyv0oqrSoJuYOOO/Ucr9JEZYQp7QkC+ZlWRfnYCxGk2U99S6mNUDRWMoyAB5fcDUzw0QfLkXw+Y5PJXX+aBdqyM0CBtOH67g+KkQGNLYv6Uqf4T4DfmMK5IBdM6+phTVMmUB3LInI6lkfA6yAgOnVcC2gVTj8VH8zjA33HZRWor19WFEkbwnC+kCU00J0KoHKSA1WWVPok+IIZ+vjNEZhiYFA4X2pLyb1Q9339zmZ/uld1pvufjchS3D6UfOGfORWnXy/IgxJLHueFxneG8x53iFnikn+L8lQEnEzl3KZLvexFlLk6YK2A9uQiUXZJ7H3qujz1qkQR6xFz5mHCngS3/wsRop89Hrj1jo/a96GSh3Ys32aRiUbLDD3HDffU9kZ1Lx6WFdCLtnByBbDrxEdn4ghcTcH703uf6XUZmQgx5xbf/3NbTxj/NScrpc39G2oGyuxG45RmaAqt8RwAPJf77K9n28n/wbIy/r6TZTpOeFPFCy9A/QZMXuv/kFYyl3nDaR/zzRMqjZFz9TgJURuiVh9YLDrAPPTL7RtW0GMjZPxKocVmmvjY6W21hIXGR9hfiPLQpJxfQokmvet+AjIP+I9y9dDNsG8wCZwLwAmQHPzKNseiKaj189lxe/W00FWR/6Xu/6X0CdOnQXMXDz3qlZC3KmDk1Gh5n4jx3Xncl05xM3OTARujPjyu2ScQ1ioBJELZayD/nm2wdWpxtDbJJh7wLci9AH9KejL8My0U7cAiKLvK1fbAekqlfSQn/0Sp0LDxuOYnlzKRsBkKHPHW/Evnwqw2U4mQv9FgA88VuzJNzzlgTUuX1zg3G9Lx3VCFo8O5NjJhif3MSOovstVaRxKe+ksC0KxyAgNORHtgTvMCxRmvJ80VwTHcfI6DvbHEe0UwV/4fpEtl++xcC3taG8tG7Yt9r8EHcnJgQOwj8jhL0ItgZJQDnbO2OUC8ZvI3AfRnKSE7M2mnhJl4AA';
 
-let bridge, adapter, descriptionAdapter, gameInfoDataAdapter;
+let bridge, adapter, descriptionAdapter, nonSteamDescriptionAdapter, gameInfoDataAdapter, controllerScrollBridge;
 let steamDocument = null;
 let steamBridgeStatus = "Waiting for Steam window";
 const STEAM_ANCHOR = "TitleDeckSteamTextBridge";
-let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, description_position:'game_info', games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
+let latestState = { schema:1, enabled:true, aliases:{}, descriptions:{}, description_position:'below_play', games:[], recovery:{available:false,count:0}, manual_backup:{available:false,count:0} };
 const observers = new Set();
 function connect() {
   if (bridge) return bridge;
@@ -38,7 +37,7 @@ function acceptState(state){
     before.description_position!==latestState.description_position||
     JSON.stringify(before.descriptions||{})!==JSON.stringify(latestState.descriptions||{});
   if(aliasesChanged)adapter?.runNow();
-  if(descriptionsChanged)descriptionAdapter?.runNow();
+  if(descriptionsChanged){descriptionAdapter?.runNow();nonSteamDescriptionAdapter?.runNow();}
   return latestState;
 }
 function useStateSnapshot(){
@@ -46,7 +45,32 @@ function useStateSnapshot(){
   R.useEffect(()=>{observers.add(setSnap);return()=>observers.delete(setSnap)},[]);
   return snap;
 }
-async function refreshState(){return acceptState(await call('snapshot'));}
+let bootHydrationTimers=[];
+function reapplySavedGameInfoAfterBoot(){
+  for(const timer of bootHydrationTimers)clearTimeout(timer);
+  bootHydrationTimers=[];
+  const snap=latestState;
+  if(snap.enabled!==true||snap.description_position!=='game_info'||
+      !Object.keys(snap.descriptions||{}).length)return;
+  // Decky and Valve can mount the game detail after TitleDeck hydrates. These
+  // short-lived retries use Preview 24's ORIGINAL route/fiber identity and
+  // native description renderer, not an alternate broad DOM insertion path.
+  // Preview 24's 4-second fallback continues to handle later page navigation.
+  for(const delay of [0,650,1800,5000]){
+    const timer=setTimeout(()=>{
+      bootHydrationTimers=bootHydrationTimers.filter(x=>x!==timer);
+      if(latestState.enabled&&latestState.description_position==='game_info')
+        descriptionAdapter?.runNow('boot-hydration');
+      nonSteamDescriptionAdapter?.runNow('boot-hydration');
+    },delay);
+    bootHydrationTimers.push(timer);
+  }
+}
+async function refreshState(){
+  const state=acceptState(await call('snapshot'));
+  reapplySavedGameInfoAfterBoot();
+  return state;
+}
 // Suggest capitalization edits without destroying distinctive symbols or series names.
 // Not applied automatically: the user must review the draft and choose Save.
 const ORIGINAL_CASE_TOKENS = new Set([
@@ -734,6 +758,1245 @@ export function isSteamGameInfoMutation(records){
   return false;
 }
 
+/** TitleDeck 0.9.5, isolated NON-STEAM Game Info support.
+ * The verified Steam Game Info renderer below is carried over byte for byte.
+ * Native shortcuts use Steam's localized `steam_NonSteamMessage` fallback,
+ * not the GameDescription DOM node used by installed Steam games.
+ * Only match a confirmed non-Steam overview/shortcut App ID and a narrowly
+ * identified fallback paragraph. Never alter Steam app metadata or language
+ * files, never alter the original paragraph's textContent. */
+export function isNativeSteamShortcutApp(appid,store=null){
+  const id=normId(appid),n=Number(id);
+  if(!id)return false;
+  const overview=steamOverview(store,id);
+  if(overview){
+    try{
+      if(typeof overview.BIsModOrShortcut==='function')return overview.BIsModOrShortcut()===true;
+      if(typeof overview.BIsNonSteamGame==='function')return overview.BIsNonSteamGame()===true;
+    }catch{}
+    const type=Number(overview.app_type??overview.appType??overview.nAppType??overview.type);
+    if(type===1073741824)return true;
+  }
+  // Valve allocates Steam shortcut 32-bit IDs with the high bit set.
+  // Do not assume arbitrary 64-bit numbers are shortcuts.
+  return Number.isSafeInteger(n)&&n>=0x80000000&&n<=0xffffffff;
+}
+function nonSteamOverviewStore(doc){
+  return doc?.defaultView?.appStore||globalThis.appStore||null;
+}
+/** Filter ONLY non-Steam descriptions away from the existing 0.9.4 adapter.
+ * With Steam-only saves, return the ORIGINAL snapshot object unchanged. */
+export function steamOnlyDescriptionState(state,store=null){
+  if(state?.description_position!=='game_info'||!state?.descriptions)return state;
+  const entries=Object.entries(state.descriptions);
+  if(!entries.some(([id])=>isNativeSteamShortcutApp(id,store)))return state;
+  return {...state,descriptions:Object.fromEntries(entries.filter(([id])=>
+    !isNativeSteamShortcutApp(id,store)))};
+}
+/** The English default token is known from SteamTracking's Valve localization
+ * files. We match a leaf belonging to Steam's fallback, never a random
+ * paragraph containing the words 'non-Steam'. Fail closed on other layouts or
+ * translations instead of hiding arbitrary Steam UI text. */
+export function isNonSteamFallbackMessage(text){
+  const value=String(text||'').replace(/\s+/g,' ').trim();
+  return /^Some detailed information on .{1,300} is unavailable because it is a non-Steam (?:game or mod|mod or shortcut|OpenVR application)/i.test(value)
+    &&/Steam will still manage launching/i.test(value);
+}
+function getNonSteamMessageLeaf(root){
+  if(!root?.querySelectorAll)return null;
+  const candidates=[];
+  try{
+    for(const el of root.querySelectorAll('p, div, span, section, article')||[]){
+      if(el.closest?.('[data-titledeck-ui], [data-titledeck-nonsteam-description]'))continue;
+      if(!isNonSteamFallbackMessage(el.textContent))continue;
+      // The innermost qualifying node holds ONLY Steam's explanatory text.
+      const descendants=el.querySelectorAll?.('p, div, span, section, article')||[];
+      if(Array.from(descendants).some(d=>isNonSteamFallbackMessage(d.textContent)))continue;
+      if((el.querySelectorAll?.('img, button, a, input')||[]).length)continue;
+      candidates.push(el);
+    }
+  }catch{return null}
+  return candidates.length===1?candidates[0]:null;
+}
+function locateNonSteamArtwork(root,message){
+  let best=null,bestScore=Infinity;
+  try{
+    const textBox=message.getBoundingClientRect?.();
+    for(const img of root.querySelectorAll('img')||[]){
+      if(img.closest?.('[data-titledeck-ui], [data-titledeck-nonsteam-description]'))continue;
+      const box=img.getBoundingClientRect?.();
+      if(!box||box.width<70||box.width>450||box.height<100||box.height>700)continue;
+      if(box.height/box.width<0.8)continue; // Reject banners and small icons.
+      if(!textBox||box.top<textBox.top-200||box.top>textBox.bottom+650)continue;
+      const score=Math.abs(box.top-(textBox?.bottom||box.top))+
+        (box.width>280?300:0);
+      if(score<bestScore){best={img,box};bestScore=score}
+    }
+  }catch{return null}
+  return best;
+}
+function originalInlineStyle(el,name){
+  const style=el?.style;
+  return {value:style?.getPropertyValue?.(name)??'',priority:style?.getPropertyPriority?.(name)??''};
+}
+function restoreInlineStyle(el,name,saved){
+  const style=el?.style;if(!style||!saved)return;
+  try{if(saved.value)style.setProperty(name,saved.value,saved.priority);else style.removeProperty(name)}catch{}
+}
+// Appearance settings are frontend-only and cannot mutate the Steam library or
+// another Decky plugin. Stored as an independent preference (not title data).
+export const TITLEDECK_COLOR_SWATCHES=Object.freeze([
+  ['Wine','#8B1E3F'],['Rose','#BA3B65'],['Crimson','#C02C43'],['Copper','#B35A31'],
+  ['Amber','#D18A32'],['Forest','#238568'],['Emerald','#29A26E'],['Ocean','#267EAA'],
+  ['Steam Blue','#3267A3'],['Indigo','#5A56C7'],['Royal Purple','#8251B7'],['Slate','#638293']
+]);
+export const TITLEDECK_ACCENTS=Object.freeze({
+  wine:{name:'Wine Red',main:'#902e4b',dark:'#47202f',bright:'#ffc0ce',border:'#cf7791'},
+  blue:{name:'Steam Blue',main:'#276a9c',dark:'#203e5a',bright:'#c5e9ff',border:'#70b5dd'},
+  green:{name:'Emerald',main:'#18765f',dark:'#183d38',bright:'#c2ffe1',border:'#6fc6a3'},
+  purple:{name:'Royal Purple',main:'#7150ac',dark:'#322848',bright:'#e5d6ff',border:'#bca0ec'},
+  gold:{name:'Amber',main:'#966020',dark:'#49371e',bright:'#fff0c2',border:'#dfad63'}
+});
+/** Saturation/brightness picker: 12 hues x 8 saturation columns x 6 brightness rows.
+ * Colors are computed, not a renamed copy of the existing fixed presets. */
+export function hsvPickerHex(hue,saturation,value){
+  const h=((Number(hue)%360)+360)%360,s=Math.max(0,Math.min(1,Number(saturation))),v=Math.max(0,Math.min(1,Number(value)));
+  const c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;
+  const [r,g,b]=h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];
+  return '#'+[r,g,b].map(n=>Math.round((n+m)*255).toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+/** Continuous color editor: unlike a sampled palette, this reaches every RGB shade.
+ * The square supports touch/mouse dragging, D-pad nudges and exact RGB steps. */
+export function rgbOfHex(hex){
+  if(!/^#[0-9a-f]{6}$/i.test(String(hex||'')))return [139,30,63];
+  return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
+}
+export function hexOfRgb(rgb){
+  return '#'+rgb.map(n=>Math.max(0,Math.min(255,Math.round(Number(n)||0))).toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+export function hsvOfHex(hex){
+  const [r,g,b]=rgbOfHex(hex).map(v=>v/255),max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;
+  let hue=0;
+  if(delta>0){if(max===r)hue=60*((g-b)/delta%6);else if(max===g)hue=60*((b-r)/delta+2);else hue=60*((r-g)/delta+4)}
+  return {hue:(hue+360)%360,saturation:max===0?0:delta/max,value:max};
+}
+export function nudgeHexChannel(hex,channel,delta){
+  const rgb=rgbOfHex(hex);if(![0,1,2].includes(channel))return hexOfRgb(rgb);
+  rgb[channel]=Math.max(0,Math.min(255,rgb[channel]+Number(delta||0)));
+  return hexOfRgb(rgb);
+}
+export function pointToHsv(hue,x,y){
+  return hsvPickerHex(hue,Math.max(0,Math.min(1,x)),1-Math.max(0,Math.min(1,y)));
+}
+export function pickerGridColor(hue,index){
+  const col=index%8,row=Math.floor(index/8);
+  return hsvPickerHex(hue,0.2+col*0.8/7,1-row*0.78/5);
+}
+/** When the controller is on a mixer bar, Up/Down must leave that bar.
+ * The optional shade-edit mode captures directions ONLY while explicitly enabled. */
+export function pickerMixerRoute(axis,d,adjusting=false){
+  if(![9,10,11,12].includes(d))return null;
+  if(axis==='hue')return d===9?'picker-cancel':d===10?'picker-sv-field':null;
+  if(axis==='square'&&!adjusting)return d===9?'picker-hue-strip':d===10?'picker-rgb-0-minus':null;
+  return null;
+}
+export function pickerRgbRoute(key,d){
+  const m=/^picker-rgb-([012])-(minus|plus)$/.exec(String(key||''));
+  if(!m||![9,10,11,12].includes(d))return null;
+  const channel=Number(m[1]),side=m[2];
+  if(d===9)return channel===0?'picker-sv-field':`picker-rgb-${channel-1}-${side}`;
+  if(d===10)return channel===2?'picker-hue-0':`picker-rgb-${channel+1}-${side}`;
+  if(d===11)return `picker-rgb-${channel}-minus`;
+  return `picker-rgb-${channel}-plus`;
+}
+export function pickerMove(key,d){
+  if(![9,10,11,12].includes(d))return null;
+  if(key==='picker-cancel'||key==='picker-apply')return d===11?'picker-cancel':d===12?'picker-apply':d===9?'picker-cell-40':null;
+  if(key.startsWith('picker-hue-')){
+    const n=Number(key.slice(11));
+    if(d===11)return 'picker-hue-'+Math.max(0,n-1);
+    if(d===12)return 'picker-hue-'+Math.min(11,n+1);
+    if(d===10)return 'picker-cell-'+Math.min(7,Math.floor(n*8/12));
+    return 'picker-rgb-2-plus';
+  }
+  if(key.startsWith('picker-cell-')){
+    const n=Number(key.slice(12)),col=n%8,row=Math.floor(n/8);
+    if(d===9)return row===0?'picker-hue-'+Math.min(11,Math.floor(col*12/8)):'picker-cell-'+(n-8);
+    if(d===10)return row===5?'picker-apply':'picker-cell-'+(n+8);
+    if(d===11)return 'picker-cell-'+(Math.max(0,col-1)+8*row);
+    if(d===12)return 'picker-cell-'+(Math.min(7,col+1)+8*row);
+  }
+  return null;
+}
+const ACCENT_STORE='titledeck.accent.v1',SCROLL_STORE='titledeck.right_stick_scroll.v1';
+export function validAccent(choice){
+  const raw=String(choice||'').trim().toLowerCase();
+  return Object.hasOwn(TITLEDECK_ACCENTS,raw)||/^#[0-9a-f]{6}$/.test(raw)?raw:'wine';
+}
+function readPreference(key,fallback){try{return globalThis.localStorage?.getItem(key)||fallback}catch{return fallback}}
+function writePreference(key,value){try{globalThis.localStorage?.setItem(key,value)}catch{}}
+export function readControllerScrollSetting(){return readPreference(SCROLL_STORE,'on')!=='off'}
+export function themeColors(choice){
+  const key=validAccent(choice);
+  const basic=TITLEDECK_ACCENTS[key]||
+    {name:'Custom '+key.toUpperCase(),main:key,dark:'#292630',bright:'#fff1f5',border:key};
+  // Derive ALL manager surfaces from the selected accent, not just outlines.
+  // Palette math yields fixed six-digit hex values, compatible with Steam CEF.
+  const mix=(a,b,t)=>{
+    const A=a.match(/[\da-f]{2}/gi)||[],B=b.match(/[\da-f]{2}/gi)||[];
+    if(A.length!==3||B.length!==3)return '#21151e';
+    return '#'+A.map((v,i)=>Math.round(parseInt(v,16)*t+parseInt(B[i],16)*(1-t))
+      .toString(16).padStart(2,'0')).join('');
+  };
+  return {...basic,
+    backdrop:mix(basic.main,'#100b13',.54),
+    surface:mix(basic.main,'#211822',.54),
+    raised:mix(basic.main,'#33202c',.63),
+    tile:mix(basic.main,'#241b27',.42),
+    inset:mix(basic.main,'#130f18',.31),
+    muted:mix(basic.bright,'#a5a3af',.48)};
+}
+/** Controller scrolling uses existing scroll containers. Nothing is added to
+ * Steam's game page, and no buttons are rebound globally. */
+export function normalizedRightStickY(sample){
+  if(!sample||typeof sample!=='object')return 0;
+  let value;
+  if(Array.isArray(sample.axes))value=sample.axes[3];
+  else if(typeof sample.sRightStickY==='number')value=-sample.sRightStickY; // Steam's signed Y axis increases upward.
+  else for(const key of ['flRightStickY','fRightStickY','rStickY','rightStickY','flRightY','fRightY','sJoystickRightY']){
+    if(typeof sample[key]==='number'){value=sample[key];break}
+  }
+  if(!Number.isFinite(value))return 0;
+  // Steam Input versions can return signed 16-bit stick coordinates.
+  if(Math.abs(value)>1)value=value/32767;
+  value=Math.max(-1,Math.min(1,value));
+  return Math.abs(value)<0.19?0:Math.sign(value)*((Math.abs(value)-0.19)/0.81);
+}
+export function findScrollableGameInfo(element){
+  if(!element)return null;
+  const doc=element.ownerDocument,win=doc?.defaultView;
+  for(let node=element.parentElement,depth=0;node&&depth<24;node=node.parentElement,depth++){
+    const height=Number(node.scrollHeight)||0,viewport=Number(node.clientHeight)||0;
+    if(height<=viewport+12||viewport<50)continue;
+    let overflow='';try{const st=win?.getComputedStyle?.(node);overflow=st?.overflowY||st?.overflow||''}catch{}
+    if(/auto|scroll|overlay/i.test(overflow))return node;
+  }
+  const scrolling=doc?.scrollingElement;
+  if(scrolling&&scrolling.scrollHeight>scrolling.clientHeight+12)return scrolling;
+  // CEF/Steam can scroll a masked container without labeling its overflow.
+  for(let node=element.parentElement,depth=0;node&&depth<24;node=node.parentElement,depth++)
+    if(node.scrollHeight>node.clientHeight+20&&node.clientHeight>100)return node;
+  return null;
+}
+/** Separate lifecycle, observers, and DOM ownership for NON-STEAM only. */
+export function createNonSteamGameInfoAdapter(host,getState,getDocuments=()=>[],getStore=nonSteamOverviewStore){
+  // 0.9.7: Never hide Valve's native paragraph behind a custom overlay.
+  // The native text element is already painted in the correct Steam layer;
+  // a separate absolutely-positioned node was intermittently hidden by
+  // Steam's tab re-renders. Keep the same node, replace ONLY a plain-text
+  // leaf, and preserve its original text and inline CSS for full restoration.
+  const current=new Map(),watchers=[],listeners=[],transitions=new Set(),paintGuards=new Map();
+  let stopped=false,pending=null,ticker=null,status='Waiting for non-Steam Game Info';
+  // 0.9.9: React owns the fallback text node and may rewrite it after TitleDeck
+  // has already repaired it. A mutation callback alone does NOT guarantee a
+  // paint free of generic text. Keep a non-Steam-only CSS-generated rendering
+  // attached to that SAME native element. Even if React changes textContent,
+  // the custom text remains the only visually rendered text until restoration.
+  const PAINT_ATTRIBUTE='data-titledeck-nonsteam-live';
+  const LAYOUT_ATTRIBUTE='data-titledeck-nonsteam-side-by-side';
+  const GHOST_ATTRIBUTE='data-titledeck-native-ghost-art';
+  const PAINT_STYLES=`
+    [data-titledeck-nonsteam-live] {
+      font-size:0 !important;
+      line-height:0 !important;
+      color:transparent !important;
+      text-shadow:none !important;
+    }
+    [data-titledeck-nonsteam-live]::before {
+      content:attr(data-titledeck-nonsteam-live);
+      display:block;
+      color:var(--td-nonsteam-color,#293241) !important;
+      font-size:var(--td-nonsteam-font,14px) !important;
+      line-height:var(--td-nonsteam-line,normal) !important;
+      font-family:inherit;
+      font-weight:inherit;
+      letter-spacing:inherit;
+      text-align:inherit;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+      pointer-events:none;
+    }
+    /* 0.9.14: Steam's non-Steam Game Info has a vertical description and
+       poster, often separated by unrelated React wrappers. Build the ONLY
+       presentation row on the already verified native description element.
+       This avoids grid placement on Steam-owned common ancestors. */
+    [data-titledeck-nonsteam-live][data-titledeck-nonsteam-side-by-side] {
+      display:grid !important;
+      grid-template-columns:minmax(105px,180px) minmax(0,1fr) !important;
+      grid-template-rows:auto !important;
+      align-items:start !important;
+      column-gap:16px !important;
+      width:100% !important;
+      min-width:0 !important;
+      max-width:100% !important;
+      height:auto !important;
+      box-sizing:border-box !important;
+    }
+    [data-titledeck-nonsteam-live][data-titledeck-nonsteam-side-by-side]::before {
+      grid-column:2 !important;
+      grid-row:1 !important;
+      min-width:0 !important;
+      max-height:none !important;
+      overflow:visible !important;
+      pointer-events:auto !important;
+    }
+    [data-titledeck-native-ghost-art="1"],
+    [data-titledeck-native-ghost-art="1"]::before,
+    [data-titledeck-native-ghost-art="1"]::after {
+      display:none !important;content:none !important; min-width:0 !important; min-height:0 !important;
+      width:0 !important; height:0 !important; max-height:0 !important;
+      margin:0 !important; padding:0 !important; border:0 !important;
+      aspect-ratio:auto !important; visibility:hidden !important;
+    }
+    [data-titledeck-nonsteam-live][data-titledeck-nonsteam-side-by-side]::after {
+      content:'';
+      display:block;
+      grid-column:1 !important;
+      grid-row:1 !important;
+      width:100%;
+      aspect-ratio:2 / 3;
+      min-height:135px;
+      background-image:var(--td-nonsteam-poster) !important;
+      background-position:top center;
+      background-repeat:no-repeat;
+      background-size:contain;
+      pointer-events:none;
+    }`;
+  function ensurePaintGuard(doc){
+    const existing=paintGuards.get(doc);
+    if(existing?.isConnected)return true;
+    try{
+      const target=doc.head||doc.documentElement;
+      if(!target?.appendChild||!doc.createElement)return false;
+      const style=doc.createElement('style');
+      style.setAttribute('data-titledeck-nonsteam-style','');
+      style.textContent=PAINT_STYLES;
+      target.appendChild(style);
+      paintGuards.set(doc,style);
+      return true;
+    }catch{return false}
+  }
+  function showGuard(record,text){
+    const message=record.message,doc=message?.ownerDocument;
+    if(!message||!ensurePaintGuard(doc)||typeof message.setAttribute!=='function')return false;
+    try{
+      // Use the pre-overridden native typography, NOT the zero-size CSS text.
+      // Applying attributes first also prevents a generic-text interval when
+      // the ordinary React-owned text node is rewritten after this callback.
+      const vars=[['--td-nonsteam-color',record.nativeColor],
+        ['--td-nonsteam-font',record.nativeFont],['--td-nonsteam-line',record.nativeLine]];
+      for(const [key,value] of vars)if(value)message.style.setProperty(key,value);
+      if(message.getAttribute(PAINT_ATTRIBUTE)!==text)message.setAttribute(PAINT_ATTRIBUTE,text);
+      return message.getAttribute(PAINT_ATTRIBUTE)===text;
+    }catch{return false}
+  }
+  function clearGuard(record){
+    const message=record?.message;
+    try{message?.removeAttribute?.(PAINT_ATTRIBUTE);message?.removeAttribute?.(LAYOUT_ATTRIBUTE)}catch{}
+    for(const name of ['--td-nonsteam-color','--td-nonsteam-font','--td-nonsteam-line','--td-nonsteam-poster'])
+      restoreInlineStyle(message,name,record?.originalPaintVars?.[name]);
+  }
+  const touchedStyles=['position','left','top','width','height','min-width','max-width','max-height','z-index','display',
+    'visibility','opacity','white-space','overflow-wrap','overflow-y','box-sizing','margin',
+    'padding','color','pointer-events','scrollbar-width','overscroll-behavior'];
+  const docs=()=>{
+    const all=new Set(),add=d=>{if(d?.querySelectorAll&&d?.documentElement)all.add(d)};
+    add(host);try{for(const d of getDocuments()||[])add(d)}catch{}
+    return [...all];
+  };
+  const routeId=doc=>steamLibraryRouteId(doc.defaultView?.location)||steamLibraryRouteId(globalThis.location);
+  function plainTextLeaf(message){
+    // Do not remove React-owned child components. Steam's fallback is a
+    // plain-text leaf; refuse unknown nested markup rather than damaging it.
+    if((message?.childElementCount||0)>0)return false;
+    const nodes=message?.childNodes;
+    if(nodes&&nodes.length>1)return false;
+    if(nodes?.length&&nodes[0]?.nodeType!==3)return false;
+    return Boolean(message&&typeof message.textContent==='string');
+  }
+  function replaceText(message,value){
+    if(!plainTextLeaf(message))return false;
+    try{
+      // Avoid new characterData records for an already correct Steam paragraph.
+      // With pre-paint MutationObserver recovery, even writing the same value
+      // can cause a loop of unnecessary observer callbacks.
+      if(message.textContent===value)return true;
+      const node=message.firstChild;
+      if(node?.nodeType===3)node.nodeValue=value;
+      else message.textContent=value;
+      return message.textContent===value;
+    }catch{return false}
+  }
+  function visible(el){
+    if(!el?.isConnected||el.offsetParent===null)return false;
+    try{
+      const win=el.ownerDocument?.defaultView;
+      let node=el;
+      for(let depth=0;node&&depth<12;node=node.parentElement,depth++){
+        const css=win?.getComputedStyle?.(node);
+        if(css?.display==='none'||css?.visibility==='hidden'||css?.visibility==='collapse'||
+           css?.opacity==='0'||node.getAttribute?.('aria-hidden')==='true'||node.hidden)return false;
+      }
+      const rect=el.getBoundingClientRect?.();
+      if(rect&&(rect.width<2||rect.height<2))return false;
+    }catch{return false}
+    return true;
+  }
+  // Only the non-Steam Proton line is eligible for bottom alignment. Avoid
+  // applying any global layout changes to the Steam Game Info surface.
+  function locateProtonLine(root){
+    let choices=[];
+    try{choices=Array.from(root.querySelectorAll('div,p,span'))}catch{return null}
+    const matches=choices.filter(el=>{
+      const value=String(el.textContent||'').replace(/\s+/g,' ').trim();
+      return value.length<280&&value.length>35&&
+        /runs on this computer via Steam Play/i.test(value)&&
+        /selected by you for this title|selected by Valve testing|proton/i.test(value);
+    });
+    return matches.sort((a,b)=>String(a.textContent||'').length-String(b.textContent||'').length)[0]||null;
+  }
+  // 1.0.3: Proton belongs to Steam's normal scrollable document. Version
+  // 1.0.2 used CSS translate at scroll-end; transforms do not increase
+  // scrollHeight, so the line could be pushed below the last reachable frame.
+  // Leave it in normal flow. Hiding the redundant artwork *container* now
+  // recovers the wasted room without moving this important compatibility text.
+  function alignProtonFooter(record){
+    if(!record?.message?.isConnected)return false;
+    // Recover a 1.0.2 style if the route is still live during an upgrade.
+    if(record.footerNode){restoreInlineStyle(record.footerNode,'translate',record.footerSaved);}
+    record.footerShift=0;
+    return false;
+  }
+  function restoreProtonFooter(record){
+    try{record?.footerScroller?.removeEventListener?.('scroll',record?.footerListener)}catch{}
+    restoreInlineStyle(record?.footerNode,'translate',record?.footerSaved);
+    if(record){record.footerShift=0;record.footerScroller=null;record.footerNode=null;}
+  }
+  function restoreRecord(doc){
+    const record=current.get(doc);if(!record)return;
+    const {message,originalText,originalMessageStyle}=record;
+    restoreProtonFooter(record);
+    clearGuard(record); // Reveal native text BEFORE restoring its contents/position.
+    // If React reused the node for another shortcut and has already replaced
+    // our words with new content, don't overwrite that game's text.
+    if(message?.isConnected&&message.textContent===record.text)
+      replaceText(message,originalText);
+    else if(!message?.isConnected&&message?.textContent===record.text)
+      replaceText(message,originalText);
+    for(const [name,style] of Object.entries(originalMessageStyle))
+      restoreInlineStyle(message,name,style);
+    restoreGrid(record);
+    current.delete(doc);
+  }
+  // Stable, in-flow layout: Never make the React-owned description absolute.
+  // Absolute cover-relative pixel coordinates in 0.9.10/11 moved whenever
+  // Steam rebuilt its artwork or the page briefly became hidden. This was
+  // confirmed by the user on real Steam Deck hardware.
+  function directChildOf(ancestor,descendant){
+    let node=descendant;
+    for(let depth=0;node?.parentElement&&depth<12;depth++){
+      if(node.parentElement===ancestor)return node;
+      node=node.parentElement;
+    }
+    return null;
+  }
+  // The native non-Steam Game Info DOM is vertically stacked. The cover can
+  // live in another React wrapper several levels away from the message.
+  // Older CSS-grid placement depended on those wrappers being siblings and
+  // silently failed on the real Deck. We instead visually mirror the existing
+  // cover INSIDE the original fallback paragraph (which we already own for
+  // text replacement), then collapse ONLY the original isolated artwork
+  // element. No React-owned DOM nodes are moved or cloned into Steam's tree.
+  const safePosterUrl=img=>{
+    let url='';
+    try{url=String(img?.currentSrc||img?.getAttribute?.('src')||img?.src||'').trim()}catch{}
+    // CSS background-image cannot display a source that isn't a URL. Fail
+    // closed, rather than blanking a user's custom artwork. Include local
+    // Steam CDN/library resources and data/blob image URLs where present.
+    if(!/^(?:https?:|file:|steam:|blob:|data:image\/|\/)/i.test(url))return '';
+    if(url.length>200000)return '';
+    return url;
+  };
+  function isolatedPosterElement(root,img,message){
+    if(!img?.isConnected||!root?.contains?.(img))return null;
+    // 1.0: the 0.9.14 image-only display:none left an empty Steam poster
+    // wrapper underneath the description. Collapse an ancestor only when its
+    // entire subtree is JUST this poster. Never hide Proton, metadata, or an
+    // ancestor of the native fallback message. Do not move React-owned nodes.
+    let best=img,node=img;
+    for(let depth=0;depth<9;depth++){
+      const parent=node.parentElement;
+      if(!parent||parent===root||!root.contains?.(parent)||
+         parent.contains?.(message)||/^(?:BUTTON)$/i.test(parent.tagName||''))break;
+      const images=Array.from(parent.querySelectorAll?.('img')||[]);
+      if(images.length!==1||images[0]!==img)break;
+      // Steam may put the cover next to EMPTY decorative elements inside a
+      // wrapper. Hiding only the <img> leaves an empty portrait-sized card.
+      // Allow inert, textless siblings, but never another image, controls,
+      // live description, badges, or Proton metadata.
+      // Steam's decorative SVG art border may have a <title> child for
+      // accessibility. That text is not Game Info content and must not
+      // prevent collapsing an otherwise empty original poster wrapper.
+      const hasVisibleContent=el=>{
+        if(!el)return false;
+        const name=String(el.tagName||'').toUpperCase();
+        if(['SVG','TITLE','DESC','STYLE','SCRIPT'].includes(name))return false;
+        for(const child of Array.from(el.childNodes||[])){
+          if(child.nodeType===3&&String(child.nodeValue||'').trim())return true;
+          if(child.nodeType===1&&hasVisibleContent(child))return true;
+        }
+        // Test doubles and unusual DOMs without childNodes: retain a safe
+        // text-only guard, except SVGs which are decorative by definition.
+        if(!el.childNodes&&String(el.textContent||'').trim())return true;
+        return false;
+      };
+      if(hasVisibleContent(parent))break;
+      // A poster may itself be wrapped in a link. That is safe to hide with
+      // the duplicate poster if it contains ONLY this art and no link text.
+      const controls=Array.from(parent.querySelectorAll?.('button, a, input, textarea, video, iframe, [role="button"], [data-titledeck-nonsteam-live]')||[]);
+      if(controls.some(el=>!(String(el.tagName||'').toUpperCase()==='A'&&
+           el.contains?.(img)&&!String(el.textContent||'').trim())))break;
+      const descendants=Array.from(parent.querySelectorAll?.('*')||[]);
+      // Decorative vector borders and image-loading chrome may be nested
+      // beside the poster in Valve's live layout. Excluding every SVG stopped
+      // traversal at the IMG, leaving the empty portrait-shaped outer card.
+      // Refuse meaningful controls, a second image, canvas, accessible SVG
+      // actions, and any actual text. Only suppress a fully artwork-owned arm.
+      if(descendants.some(el=>/^(?:canvas|video|iframe)$/i.test(el.tagName||'')||
+           (/^svg$/i.test(el.tagName||'')&&
+             (el.hasAttribute?.('tabindex')||el.getAttribute?.('role')==='button'||
+              el.getAttribute?.('aria-label')))))break;
+      const siblings=Array.from(parent.children||[]).filter(el=>el!==node);
+      if(siblings.some(el=>hasVisibleContent(el) ||
+           (el.querySelectorAll?.('img, canvas, button, a, input, textarea, video, iframe, [role="button"]')||[]).length))break;
+      // Reject a large empty section that happens to contain one image.
+      try{
+        const outer=parent.getBoundingClientRect?.(),poster=img.getBoundingClientRect?.();
+        if(outer&&poster&&poster.width>20&&poster.height>20&&
+          (outer.width>Math.max(550,poster.width*3)||outer.height>Math.max(650,poster.height*3)))break;
+      }catch{}
+      best=parent;node=parent;
+    }
+    return best;
+  }
+  /** 1.1.1: The Steam Deck diagnostic identified a distinct, full-width
+   * artwork-only GRID (828x198) around the hidden native poster. Find that
+   * row independently of the 0.9.14 artwork selection. Never promote the
+   * grid into gridArtChild: doing so changes the native-cover identity on
+   * subsequent React renders and can drop the side-by-side presentation.
+   * This cleanup is ONLY armed after a valid CSS poster source is ready. */
+  function findNativePosterGridRow(root,art,message){
+    if(!root?.contains?.(art)||!art?.isConnected)return null;
+    let child=art;
+    for(let depth=0;child?.parentElement&&depth<9;depth++){
+      const parent=child.parentElement;
+      if(parent===root||parent.contains?.(message))break;
+      const css=parent.ownerDocument?.defaultView?.getComputedStyle?.(parent);
+      const rect=parent.getBoundingClientRect?.();
+      const narrow=child.getBoundingClientRect?.();
+      if(css?.display==='grid'&&rect&&narrow&&
+         rect.width>=450&&rect.width<=1800&&rect.height>=100&&rect.height<=410&&
+         narrow.width>=55&&narrow.width<=330&&narrow.height>=85&&narrow.height<=410&&
+         narrow.width<rect.width*0.65){
+        if(String(parent.textContent||'').trim())return null;
+        const imgs=Array.from(parent.querySelectorAll?.('img')||[]);
+        if(imgs.length!==1||imgs[0]!==art)return null;
+        const controls=Array.from(parent.querySelectorAll?.('button, input, textarea, select, iframe, video, [role="button"]')||[]);
+        const hasVisibleControl=controls.some(el=>{
+          if(String(el.tagName||el.tag||'').toUpperCase()!=='INPUT')return true;
+          const style=el.ownerDocument?.defaultView?.getComputedStyle?.(el);
+          return !(el.hidden||String(el.getAttribute?.('type')||el.type||'').toLowerCase()==='hidden'||
+            el.getAttribute?.('aria-hidden')==='true'||style?.display==='none'||style?.visibility==='hidden');
+        });
+        if(hasVisibleControl)return null;
+        return parent;
+      }
+      child=parent;
+    }
+    return null;
+  }
+  function restoreGrid(record){
+    // Restores ALL CSS values owned by the side-by-side presentation. It does
+    // not change the original text. Original paragraph restoration happens in
+    // restoreRecord, including Valve's fallback text.
+    for(const {el,old} of record?.gridStyles||[])
+      for(const [name,saved] of Object.entries(old))restoreInlineStyle(el,name,saved);
+    try{record?.gridGhostNodes?.forEach?.(node=>node.removeAttribute?.(GHOST_ATTRIBUTE))}catch{}
+    if(record){record.gridGhostNodes=[];record.message?.removeAttribute?.(LAYOUT_ATTRIBUTE);record.gridStyles=[];record.gridAnchor=null;record.gridArtChild=null;record.gridTextChild=null;record.nativePosterGrid=null}
+  }
+  function gridRemember(record,el,name,value){
+    let entry=record.gridStyles.find(e=>e.el===el);
+    if(!entry){entry={el,old:{}};record.gridStyles.push(entry)}
+    if(!(name in entry.old))entry.old[name]=originalInlineStyle(el,name);
+    if(el.style?.getPropertyValue?.(name)!==value)
+      el.style?.setProperty?.(name,value,'important');
+  }
+  // Steam may put the original poster and the Steam Play/Proton sentence in
+  // ONE container. Hiding its <img> does not remove a fixed-height poster slot
+  // supplied by the parent. Find the smallest shared ancestor for that pair,
+  // and release its poster sizing without hiding or moving the Proton text.
+  // This is intentionally skipped when the shared ancestor also owns the
+  // custom Game Info paragraph, controls, or other game details.
+  /** If Steam keeps a fixed portrait placeholder in a wrapper that ALSO
+   * contains the Steam Play row, collapse the dedicated artwork branch rather
+   * than hiding or translating the Proton row. Unlike geometry-only matching,
+   * this follows the actual image-to-Proton ancestry and does not depend on
+   * scrolling coordinates or where the description happens to start. */
+  function collapseNativePosterBranch(record,art,footer){
+    const root=record?.root,message=record?.message;
+    if(!root||!art||!footer)return false;
+    let group=footer.parentElement;
+    for(let depth=0;group&&depth<9;depth++,group=group.parentElement){
+      if(group===root||group.contains?.(message))break;
+      if(!group.contains?.(art))continue;
+      let branch=art;
+      while(branch.parentElement&&branch.parentElement!==group)branch=branch.parentElement;
+      if(branch===group||branch.contains?.(footer)||branch.contains?.(message))return false;
+      const images=Array.from(branch.querySelectorAll?.('img')||[]);
+      if(images.some(img=>img!==art))return false;
+      if(branch.querySelectorAll?.('button,input,textarea,iframe,video,[role="button"]')?.length)return false;
+      const withoutSvg=String(branch.textContent||'').trim();
+      if(withoutSvg.length>0)return false;
+      if(!record.gridGhostNodes)record.gridGhostNodes=[];
+      gridRemember(record,branch,'display','none');
+      branch.setAttribute?.(GHOST_ATTRIBUTE,'1');
+      if(!record.gridGhostNodes.includes(branch))record.gridGhostNodes.push(branch);
+      return true;
+    }
+    return false;
+  }
+  function releaseArtProtonSlot(record,art){
+    const root=record?.root,message=record?.message;
+    if(!root?.querySelectorAll||!art?.isConnected)return false;
+    let footer=null;
+    try{
+      const items=Array.from(root.querySelectorAll('p, div, span')||[]);
+      footer=items.find(el=>{
+        const text=String(el.textContent||'').replace(/\s+/g,' ').trim();
+        if(!/^Runs on this computer via Steam Play\b/i.test(text))return false;
+        if(text.length>400||el.contains?.(message))return false;
+        return !Array.from(el.children||[]).some(child=>
+          /^Runs on this computer via Steam Play\b/i.test(String(child.textContent||'').trim()));
+      });
+    }catch{return false}
+    if(!footer)return false;
+    // A shared wrapper often contains an artwork-only child and separate
+    // Proton child. Remove the artwork child, not the entire group.
+    const structural=collapseNativePosterBranch(record,art,footer);
+    let group=footer.parentElement;
+    for(let d=0;group&&d<7;d++,group=group.parentElement){
+      if(group===root||group.contains?.(message))break;
+      if(!group.contains?.(art))continue;
+      // Exclude metadata, links, controller actions and other original images.
+      if(Array.from(group.querySelectorAll?.('button, input, textarea, iframe, video, [role="button"]')||[]).length)break;
+      if(Array.from(group.querySelectorAll?.('img')||[]).some(other=>other!==art))break;
+      const text=String(group.textContent||'').replace(/\s+/g,' ').trim();
+      if(!/^Runs on this computer via Steam Play\b/i.test(text)||text.length>400)break;
+      for(const [name,value] of [
+        ['min-height','0px'],['height','auto'],['aspect-ratio','auto'],
+        ['background-image','none'],['box-shadow','none'],
+        ['margin-bottom','0px'],['padding-bottom','0px']]){
+        gridRemember(record,group,name,value);
+      }
+      return true;
+    }
+    return structural;
+  }
+  /** A SteamUI skin can draw ANOTHER empty portrait slot after its actual
+   * poster has been hidden. The 1.0.5 parent-chain cleanup cannot find this
+   * separate sibling. Locate only content-free poster-sized boxes below the
+   * active description, near (but NEVER including) the Proton information.
+   * All changes are recorded in gridStyles and restored with the override. */
+  function collapseDetachedGhostSlot(record){
+    const {root,message}=record;
+    if(!root?.querySelectorAll||!message?.getBoundingClientRect)return 0;
+    const own=message.getBoundingClientRect();
+    if(!own||own.width<200)return 0;
+    let proton=null;
+    for(const el of Array.from(root.querySelectorAll('p,span,div')||[])){
+      const text=String(el.textContent||'').replace(/\s+/g,' ').trim();
+      if(!/^Runs on this computer via Steam Play\b/i.test(text)||text.length>450)continue;
+      if(Array.from(el.children||[]).some(ch=>/^Runs on this computer via Steam Play\b/i.test(String(ch.textContent||'').trim())))continue;
+      proton=el;break;
+    }
+    const protonRect=proton?.getBoundingClientRect?.();
+    if(!protonRect||!Number.isFinite(protonRect.top))return 0;
+    const hidden=new Set(record.gridGhostNodes||[]);
+    let best=null,bestArea=0;
+    const elems=Array.from(root.querySelectorAll('div,figure,section,article,img')||[]).slice(0,900);
+    for(const el of elems){
+      if(!el?.isConnected||el===root||el===message||el.contains?.(message)||el.contains?.(proton)||
+         hidden.has(el)||el.hasAttribute?.(GHOST_ATTRIBUTE))continue;
+      const name=String(el.className||'');
+      if(/(?:button|toolbar|nav|header|footer|achievement|compat|proton)/i.test(name))continue;
+      if(String(el.textContent||'').trim()||el.querySelectorAll?.('button,input,textarea,iframe,video,canvas,[role="button"]')?.length)continue;
+      const imgs=String(el.tagName||'').toUpperCase()==='IMG'?[el]:Array.from(el.querySelectorAll?.('img')||[]);
+      if(imgs.some(img=>img!==record.artwork&&safePosterUrl(img)))continue;
+      const r=el.getBoundingClientRect?.();if(!r||r.width<75||r.width>300||r.height<115||r.height>480)continue;
+      if(r.height/r.width<1.12||r.height/r.width>2.5)continue;
+      // Candidate has to be in the left/poster column, BELOW the active
+      // paragraph start and directly before the original Steam Play row.
+      // TitleDeck's native paragraph starts to the RIGHT of the poster.
+      // The old own.left-70 bound rejected the real ghost LEFT column seen
+      // on Deck (the text starts ~250px to the right of the empty poster).
+      // Admit either the left poster column or a Steam-native same-column box.
+      const posterColumn=(r.right<=own.left+50&&r.right>=own.left-350);
+      const nativeColumn=(r.left>=own.left-70&&r.left<=own.left+230);
+      if(!(posterColumn||nativeColumn))continue;
+      if(r.top<own.top-40||r.top>protonRect.top||
+         r.bottom>protonRect.top+60||protonRect.top-r.bottom>320)continue;
+      const area=r.width*r.height;if(area>bestArea){best=el;bestArea=area}
+    }
+    if(!best)return 0;
+    gridRemember(record,best,'display','none');
+    best.setAttribute?.(GHOST_ATTRIBUTE,'1');
+    record.gridGhostNodes.push(best);
+    return 1;
+  }
+  /* MetaDeck uses Steam's description data store rather than moving DOM nodes.
+   * TitleDeck deliberately keeps its hardware-verified description renderer.
+   * Non-Steam SteamUI sometimes creates a *separate empty artwork slot* as a
+   * preceding sibling of the Proton row, with no IMG left inside it. This is
+   * a narrower structural fix than scanning all rectangles in the page. */
+  function collapseProtonAdjacentGhostSlot(record){
+    const {root,message,artwork}=record||{};
+    if(!root?.querySelectorAll||!message?.isConnected)return 0;
+    const footer=locateProtonLine(root);
+    if(!footer?.isConnected)return 0;
+    let branch=footer,collapsed=0;
+    for(let level=0;level<7&&branch?.parentElement;level++){
+      const parent=branch.parentElement;
+      if(parent===root||parent.contains?.(message))break;
+      const siblings=Array.from(parent.children||[]);
+      for(const slot of siblings){
+        if(slot===branch||slot===footer||slot===root||slot===message||
+           slot.contains?.(message)||slot.contains?.(footer)||
+           slot.hasAttribute?.(GHOST_ATTRIBUTE))continue;
+        const tag=String(slot.tagName||slot.tag||'').toUpperCase();
+        if(!['DIV','SECTION','FIGURE','ARTICLE','SPAN'].includes(tag))continue;
+        if(String(slot.textContent||'').trim())continue;
+        if(slot.querySelectorAll?.('button,input,textarea,select,iframe,video,canvas,[role="button"],[data-titledeck-nonsteam-live]')?.length)continue;
+        const imgs=Array.from(slot.querySelectorAll?.('img')||[]);
+        if(imgs.some(img=>img!==artwork&&safePosterUrl(img)))continue;
+        // Require evidence that this really is the old poster arm; merely
+        // being an empty sibling is insufficient to modify Steam's UI.
+        let box=null,styled=null;
+        try{box=slot.getBoundingClientRect?.();styled=slot.ownerDocument?.defaultView?.getComputedStyle?.(slot)}catch{}
+        const ratio=box?.width>65&&box.width<420&&box.height>100&&box.height<620&&
+          box.height/box.width>1.12&&box.height/box.width<2.85;
+        const signature=/(?:poster|artwork|cover|capsule|portrait|gameimage|gameart|headerimage)/i.test(
+          String(slot.className||'')+' '+String(slot.getAttribute?.('data-testid')||''));
+        const childPoster=imgs.includes(artwork)||imgs.some(img=>img===artwork);
+        const cssPoster=/^(?:[1-9]\d*|\d*\.[1-9]\d*)\s*\/\s*(?:[1-9]\d*|\d*\.[1-9]\d*)$/.test(String(styled?.aspectRatio||''));
+        if(!ratio&&!signature&&!childPoster&&!cssPoster)continue;
+        // A detached decorative wrapper can be an empty image placeholder,
+        // but never remove Steam's real Proton row or a section with data.
+        gridRemember(record,slot,'display','none');
+        slot.setAttribute?.(GHOST_ATTRIBUTE,'1');
+        if(!record.gridGhostNodes.includes(slot))record.gridGhostNodes.push(slot);
+        collapsed++;
+      }
+      branch=parent;
+    }
+    return collapsed;
+  }
+  // A deliberately bounded, text-free Steam DOM snapshot for diagnosing real
+  // SteamUI/CSS Loader layouts. No descriptions, filenames or image URLs.
+  function captureGhostLayout(){
+    const records=[];
+    for(const [doc,record] of current){
+      if(!record?.root?.isConnected||!record?.message?.isConnected)continue;
+      const {root,message,artwork}=record,footer=locateProtonLine(root);
+      const seen=new Set(),nodes=[];
+      const add=(node,label)=>{
+        if(!node||seen.has(node)||nodes.length>=85)return;
+        seen.add(node);
+        let rect,css;
+        try{rect=node.getBoundingClientRect?.();css=node.ownerDocument?.defaultView?.getComputedStyle?.(node)}catch{}
+        const fmt=x=>Number.isFinite(Number(x))?Math.round(Number(x)):null;
+        nodes.push({label,tag:String(node.tagName||''),cls:String(node.className||'').slice(0,150),
+          rect:rect?{x:fmt(rect.x??rect.left),y:fmt(rect.y??rect.top),w:fmt(rect.width),h:fmt(rect.height)}:null,
+          css:css?{display:css.display,position:css.position,minHeight:css.minHeight,aspectRatio:css.aspectRatio,
+            background:css.backgroundImage&&css.backgroundImage!=='none'?'image':'none'}:null,
+          contents:node===message?'description':node===footer?'steam-play':
+            node===artwork?'native-image':String(node.textContent||'').trim()?'has-text':'empty',
+          ghost:node.getAttribute?.(GHOST_ATTRIBUTE)==='1'});
+      };
+      add(root,'root');add(message,'custom-description');add(artwork,'original-artwork');add(footer,'steam-play');
+      for(const [label,start] of [['poster',artwork],['footer',footer],['description',message]]){
+        let node=start;
+        for(let depth=0;node&&depth<10;depth++,node=node.parentElement){
+          add(node,`${label}-ancestor-${depth}`);
+          if(node===root)break;
+          for(const child of Array.from(node.parentElement?.children||[]).slice(0,14))
+            add(child,`${label}-sibling-level-${depth}`);
+        }
+      }
+      records.push({kind:'nonsteam-game-info',nodes});
+    }
+    return {format:'titledeck-layout-v1',records};
+  }
+  function positionNative(record){
+    const {root,message}=record;
+    if(!root?.isConnected||!message?.isConnected)return false;
+    let art=record.artwork;
+    if(!art?.isConnected)art=locateNonSteamArtwork(root,message)?.img||null;
+    const url=safePosterUrl(art);
+    if(!url){
+      // No trustworthy source: do not fabricate artwork or hide anything.
+      // Continue displaying the saved text in the native Steam layout.
+      restoreGrid(record);
+      message.removeAttribute?.(LAYOUT_ATTRIBUTE);
+      return false;
+    }
+    // Keep the artwork identity stable across frames. A hidden Steam poster
+    // reports 0x0 dimensions; re-running geometry selection on that hidden
+    // element can yield a different ancestor and undo the working layout.
+    const existing=record.gridArtChild;
+    const stable=existing?.isConnected&&root.contains?.(existing)&&
+      (existing===art||existing.contains?.(art))&&!existing.contains?.(message);
+    const native=stable?existing:isolatedPosterElement(root,art,message);
+    if(!native)return false;
+    // Keep the grid only as a separate cleanup target, NEVER as the native
+    // artwork anchor. Measure it before hiding the source IMG/wrapper.
+    const posterGrid=stable?record.nativePosterGrid:findNativePosterGridRow(root,art,message);
+    // If Steam replaces the old image, reveal it before hiding the new one.
+    if(record.gridArtChild&&record.gridArtChild!==native)restoreGrid(record);
+    // Never replace the source IMG reference with its wrapper: React can refresh
+    // this layout many times while Community/Game Info changes.
+    record.artwork=art;
+    const cssUrl=`url(${JSON.stringify(url)})`;
+    gridRemember(record,message,'--td-nonsteam-poster',cssUrl);
+    if(message.getAttribute?.(LAYOUT_ATTRIBUTE)!=='1')message.setAttribute?.(LAYOUT_ATTRIBUTE,'1');
+    // Only collapse the original image after the side-by-side host has been
+    // armed with a usable poster source. No style changes to its parent, so
+    // Steam Play and other Game Info sections retain their native flow.
+    gridRemember(record,native,'display','none');
+    if(!record.gridGhostNodes)record.gridGhostNodes=[];
+    if(!record.gridGhostNodes.includes(native))record.gridGhostNodes.push(native);
+    native.setAttribute?.(GHOST_ATTRIBUTE,'1');
+    if(posterGrid?.isConnected&&posterGrid!==native&&
+       !posterGrid.contains?.(message)&&root.contains?.(posterGrid)){
+      gridRemember(record,posterGrid,'display','none');
+      posterGrid.setAttribute?.(GHOST_ATTRIBUTE,'1');
+      if(!record.gridGhostNodes.includes(posterGrid))record.gridGhostNodes.push(posterGrid);
+      record.nativePosterGrid=posterGrid;
+    }
+    // Also collapse otherwise empty native art holders left by a React/CSS
+    // poster skeleton. Never collapse the root, a paragraph, or any ancestor
+    // containing text (including the Proton compatibility row).
+    let ghost=native;
+    for(let depth=0;depth<4;depth++){
+      const outer=ghost.parentElement;
+      if(!outer||outer===root||outer.contains?.(message)||!root.contains?.(outer))break;
+      const raw=String(outer.textContent||'').trim();
+      if(raw||outer.querySelectorAll?.('button, input, textarea, video, iframe, [role="button"]')?.length)break;
+      const imgs=Array.from(outer.querySelectorAll?.('img')||[]);
+      if(imgs.some(other=>other!==art))break;
+      // Do not take a full-width page column when only a narrow poster was
+      // duplicated. Its width must be poster-sized relative to the source.
+      try{
+        const box=outer.getBoundingClientRect?.(),src=art.getBoundingClientRect?.();
+        if(box?.width>440||(box?.height>520))break;
+        if(src?.width>0&&box?.width>src.width*2.2)break;
+      }catch{}
+      if(!record.gridGhostNodes.includes(outer))record.gridGhostNodes.push(outer);
+      outer.setAttribute?.(GHOST_ATTRIBUTE,'1');
+      gridRemember(record,outer,'display','none');
+      ghost=outer;
+    }
+    // An image-only wrapper in some Steam skins retains an explicit poster
+    // min-height/aspect-ratio even after its child IMG is hidden. Collapse
+    // that same safely-isolated branch, not the enclosing Game Info content.
+    for(const name of ['min-height','height','margin-top','margin-bottom','padding-top','padding-bottom'])
+      gridRemember(record,native,name,'0px');
+    releaseArtProtonSlot(record,art);
+    collapseDetachedGhostSlot(record);
+    collapseProtonAdjacentGhostSlot(record);
+    record.gridArtChild=native;
+    record.gridAnchor=message;
+    record.gridTextChild=message;
+    return true;
+  }
+  function runNow(){
+    if(stopped)return 0;
+    const state=getState()||{},saved=state.descriptions||{};
+    let shown=0;
+    for(const doc of docs()){
+      const id=routeId(doc),record=current.get(doc);
+      const text=String(saved[id]||'').trim();
+      if(!state.enabled||state.description_position!=='game_info'||!id||!text||
+         !isNativeSteamShortcutApp(id,getStore(doc))){restoreRecord(doc);continue}
+      if(record&&(record.appid!==id||!record.message?.isConnected||
+         !record.root?.isConnected||appidFromVisibleGame(record.root)!==id))
+        restoreRecord(doc);
+      // Community hides Game Info without necessarily unmounting it. Do NOT
+      // remove the paint guard during this transition: revealing the same
+      // paragraph would expose the generic Valve text before React settles.
+      const hidden=current.get(doc);
+      if(hidden&&!visible(hidden.root)){
+        if(showGuard(hidden,text)){hidden.text=text;shown++;continue}
+        restoreRecord(doc);continue;
+      }
+      const active=current.get(doc);
+      if(active){
+        // The saved text is independent of artwork: NEVER undo the visible
+        // paragraph just because a cover is temporarily unmounted or loading.
+        if(!showGuard(active,text)||!replaceText(active.message,text)){
+          restoreRecord(doc);status='Native description paragraph no longer writable';
+          continue;
+        }
+        active.text=text;
+        // Grid is attached only once per live content group. Rehydrate when
+        // Steam replaces the group, but never chase artwork coordinates.
+        positionNative(active);
+        shown++;continue;
+      }
+      let roots=[];
+      try{roots=Array.from(doc.querySelectorAll('[class*="AppDetailsContainer"], [class*="AppDetailsRoot"]'))}catch{}
+      const live=UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer;
+      if(typeof live==='string'&&live.trim())try{roots.push(...Array.from(doc.getElementsByClassName(live)||[]))}catch{}
+      roots=[...new Set(roots)];
+      // PRE-PAINT: validate the route + React owner + exact Valve fallback.
+      // Steam may take 1-4 seconds to load artwork. That must not delay text.
+      // A hidden but connected owner is eligible for pre-hydration too, so
+      // Community -> Game Info does not first expose the generic fallback.
+      const matched=roots.filter(root=>root?.isConnected&&appidFromVisibleGame(root)===id);
+      const candidates=matched.map(root=>({root,message:getNonSteamMessageLeaf(root)}))
+        .filter(item=>item.message?.isConnected&&plainTextLeaf(item.message));
+      const innermost=candidates.filter(item=>!candidates.some(other=>other!==item&&
+        item.root.contains?.(other.root)));
+      // If multiple pages exist during navigation prefer the one actually
+      // visible; never apply the same text to an unverified other game.
+      const visibleMatches=innermost.filter(item=>visible(item.root)&&visible(item.message));
+      const chosen=visibleMatches.length===1?visibleMatches[0]:
+        innermost.length===1?innermost[0]:null;
+      if(!chosen){
+        status='Waiting for a uniquely verified non-Steam Game Info paragraph';
+        continue;
+      }
+      const {root,message}=chosen;
+      const art=locateNonSteamArtwork(root,message);
+      const originalMessageStyle={};
+      for(const name of touchedStyles)originalMessageStyle[name]=originalInlineStyle(message,name);
+      const originalRootStyle=originalInlineStyle(root,'position');
+      const nativeCSS=doc.defaultView?.getComputedStyle?.(message);
+      const originalPaintVars={};
+      for(const key of ['--td-nonsteam-color','--td-nonsteam-font','--td-nonsteam-line'])
+        originalPaintVars[key]=originalInlineStyle(message,key);
+      const newRecord={appid:id,root,message,artwork:art?.img||null,originalText:message.textContent,
+        originalMessageStyle,originalRootStyle,originalPaintVars,
+        nativeColor:nativeCSS?.color||'#293241',
+        nativeFont:nativeCSS?.fontSize||'14px',
+        nativeLine:nativeCSS?.lineHeight||'normal',
+        gridStyles:[],gridAnchor:null,gridArtChild:null,gridTextChild:null,text};
+      try{
+        // The paragraph itself is the hard requirement, NOT the cover. Apply
+        // custom text synchronously before attempting any artwork layout.
+        if(!showGuard(newRecord,text)||!replaceText(message,text))
+          throw Error('Native description not ready');
+        current.set(doc,newRecord);shown++;
+        // Use stable in-flow grid only when cover and text have a confirmed
+        // safe shared parent. Otherwise leave Steam's native page layout alone.
+        positionNative(newRecord);
+      }catch{
+        // Failed initial placement must NEVER leave a blank Game Info page.
+        clearGuard(newRecord);
+        if(message.textContent===text)replaceText(message,newRecord.originalText);
+        for(const [name,style] of Object.entries(originalMessageStyle))restoreInlineStyle(message,name,style);
+        restoreGrid(newRecord);
+        status='Native replacement unavailable; original fallback left visible';
+      }
+    }
+    if(shown)status='Native non-Steam description visible ('+shown+')';
+    return shown;
+  }
+  function schedule(delay=25){
+    if(stopped||pending!==null)return;
+    pending=setTimeout(()=>{pending=null;runNow()},delay);
+  }
+  function queueTransition(delay){
+    const t=setTimeout(()=>{transitions.delete(t);if(!stopped)runNow()},delay);
+    transitions.add(t);
+  }
+  function start(){
+    runNow();
+    for(const doc of docs()){
+      const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+      if(typeof Observer==='function')try{
+        const observer=new Observer(records=>{
+          // Steam commits its fallback paragraph before the next browser paint.
+          // MutationObserver callbacks run in the microtask checkpoint before
+          // rendering. Waiting 16 ms let the generic text appear for a frame
+          // during Community <-> Game Info tab changes. Reassert synchronously
+          // here instead of chasing that visible flash with timer retries.
+          if(stopped||!records?.length)return;
+          const state=getState()||{},id=routeId(doc);
+          const saved=state.descriptions||{};
+          const record=current.get(doc);
+          if(!state.enabled||state.description_position!=='game_info'||
+             !id||!String(saved[id]||'').trim()||
+             !isNativeSteamShortcutApp(id,getStore(doc))){
+            if(record)runNow(); // Restore immediately when a saved override ends.
+            return;
+          }
+          // The first mount may be an anonymous React portal. Even if the
+          // mount is not yet recognized by the game root, a childList mutation
+          // is enough to try before paint. CharacterData matters when React
+          // writes a fallback into a newly mounted or already patched leaf.
+          const relevant=records.some(change=>{
+            if(change.type==='childList'||change.type==='attributes')return true;
+            if(change.type!=='characterData')return false;
+            if(record?.message &&
+              (change.target===record.message.firstChild||
+               change.target?.parentElement===record.message))
+              return record.message.textContent!==String(saved[id]).trim();
+            return isNonSteamFallbackMessage(change.target?.nodeValue||
+              change.target?.textContent||'');
+          });
+          if(relevant)runNow();
+        });
+        observer.observe(doc.documentElement,{subtree:true,childList:true,characterData:true,
+          attributes:true,attributeFilter:['class','hidden','aria-hidden']});
+        watchers.push(observer);
+      }catch{}
+      const onTab=e=>{
+        let target=e?.target;
+        if(target?.nodeType===3)target=target.parentElement;
+        for(let i=0;target&&i<6;i++,target=target.parentElement){
+          const label=String(target.getAttribute?.('aria-label')||target.textContent||'')
+            .replace(/\s+/g,' ').trim();
+          if(/^(?:Game Info|Community)$/i.test(label)){
+            // Preflight the existing Game Info node during the capture phase,
+            // before Steam's click handler starts another React update.
+            // Controller-driven navigation remains covered by the observer.
+            runNow();
+            queueTransition(0);queueTransition(65);queueTransition(230);
+            break;
+          }
+        }
+      };
+      doc.addEventListener?.('click',onTab,true);
+      listeners.push(()=>doc.removeEventListener?.('click',onTab,true));
+      const win=doc.defaultView,resize=()=>schedule(30);
+      win?.addEventListener?.('resize',resize);
+      listeners.push(()=>win?.removeEventListener?.('resize',resize));
+    }
+    // Safety-only recovery, never the mechanism for normal tab switching.
+    ticker=setInterval(runNow,12000);
+  }
+  function restoreGameInfo(appid=''){
+    const target=normId(appid);
+    for(const [doc,record] of current)if(!target||record.appid===target)restoreRecord(doc);
+  }
+  function stop(){
+    stopped=true;
+    if(pending!==null)clearTimeout(pending);
+    if(ticker!==null)clearInterval(ticker);
+    for(const observer of watchers)observer.disconnect?.();
+    for(const t of transitions)clearTimeout(t);
+    for(const fn of listeners)fn();
+    for(const doc of current.keys())restoreRecord(doc);
+    for(const style of paintGuards.values())try{style.remove?.()}catch{}
+    paintGuards.clear();
+  }
+  function scrollByStick(amount){
+    if(!Number.isFinite(amount)||Math.abs(amount)<0.01)return false;
+    const state=getState()||{};
+    if(!state.enabled||state.description_position!=='game_info')return false;
+    for(const doc of docs()){
+      const rec=current.get(doc),id=routeId(doc);
+      if(!rec||rec.appid!==id||!state.descriptions?.[id]||
+         !rec.message?.isConnected||!visible(rec.message)||
+         !isNativeSteamShortcutApp(id,getStore(doc)))continue;
+      const target=findScrollableGameInfo(rec.message);
+      if(!target)continue;
+      const before=Number(target.scrollTop)||0;
+      try{target.scrollTop=before+amount*25;}catch{return false}
+      return true;
+    }
+    return false;
+  }
+  const alignFooter=()=>{for(const record of current.values())alignProtonFooter(record)};
+  return {start,stop,runNow,restoreGameInfo,scrollByStick,alignFooter,captureGhostLayout,get shown(){return current.size},get status(){return status}};
+}
+
+
+/** Also scroll the already hardware-verified *Steam* Game Info custom panel.
+ * Read-only lookup: never change the 0.9.4 renderer, Steam metadata, or its
+ * native page structure. Non-Steam scrolling still uses its own adapter. */
+export function scrollSteamGameInfoByStick(amount,documents=()=>[steamDocument,globalThis.document,...discoverDocuments()],state=()=>latestState){
+  if(!Number.isFinite(amount)||Math.abs(amount)<0.01)return false;
+  const snapshot=state()||{};
+  if(!snapshot.enabled||snapshot.description_position!=='game_info')return false;
+  let docs=[];
+  try{docs=[...new Set(documents()||[])].filter(Boolean)}catch{return false}
+  for(const doc of docs){
+    const id=steamLibraryRouteId(doc.defaultView?.location)||steamLibraryRouteId(globalThis.location);
+    if(!id||!String(snapshot.descriptions?.[id]||'').trim()||
+       isNativeSteamShortcutApp(id,nonSteamOverviewStore(doc)))continue;
+    let panels=[];
+    try{panels=Array.from(doc.querySelectorAll('[data-titledeck-gameinfo-description], [data-titledeck-description]'))}catch{}
+    for(const panel of panels){
+      if(panel.getAttribute?.('data-titledeck-gameinfo-description')!==id&&
+         panel.getAttribute?.('data-titledeck-description')!==id)continue;
+      if(!panel.isConnected||panel.offsetParent===null)continue;
+      const scroller=findScrollableGameInfo(panel);
+      if(!scroller)continue;
+      try{scroller.scrollTop=(Number(scroller.scrollTop)||0)+amount*25;return true}catch{}
+    }
+  }
+  return false;
+}
+
+/** Find Steam's native scroll-up control when it is a styled div/span rather
+ * than a button. Exact visible caption or class signature only; never match
+ * a Game Info description which merely mentions scrolling in its prose. */
+export function findSteamScrollTopControls(doc){
+  let nodes=[];
+  try{nodes=Array.from(doc.querySelectorAll('button, [role="button"], [class*="ScrollToTop" i], [class*="scroll_to_top" i], div, span'))}catch{return []}
+  const out=new Set();
+  for(const node of nodes){
+    if(!node?.style)continue;
+    const name=String(node.className||'');
+    const matchesClass=/(?:scroll.?to.?top|scroll.?top|go.?to.?top)/i.test(name);
+    const label=String(node.getAttribute?.('aria-label')||node.getAttribute?.('title')||node.textContent||'').replace(/\s+/g,' ').trim();
+    if(!matchesClass&&!/^(?:scroll to top|back to top)$/i.test(label))continue;
+    // Do not hide an ancestor that includes any description or other Steam UI.
+    if(label.length>45&&!matchesClass)continue;
+    let target=node;
+    for(let i=0;i<8&&target.parentElement;i++){
+      const parent=target.parentElement;
+      const pLabel=String(parent.getAttribute?.('aria-label')||parent.textContent||'').replace(/\s+/g,' ').trim();
+      const parentClass=String(parent.className||'');
+      const sameCaption=pLabel.toLowerCase()===label.toLowerCase()&&pLabel.length<=45;
+      const classMatches=/(?:scroll.?to.?top|scroll.?top|go.?to.?top)/i.test(parentClass);
+      if(!sameCaption&&!classMatches)break;
+      if(/^(?:HTML|BODY|MAIN|SECTION|ARTICLE)$/i.test(parent.tagName||''))break;
+      // A plain wrapper enclosing only the button caption is part of that
+      // floating control. Hide the whole clickable blue surface, not just
+      // its nested text span. Reject oversized Steam app containers.
+      const rect=parent.getBoundingClientRect?.();
+      if(rect&&((rect.width||0)>475||(rect.height||0)>145))break;
+      if(parent?.querySelectorAll){
+        const buttons=Array.from(parent.querySelectorAll('button, [role="button"]')||[]);
+        if(buttons.filter(x=>x!==node&&x!==target&&!x.contains?.(node)&&!x.contains?.(target)).length)break;
+      }
+      if(parent.style)target=parent;
+      else break;
+    }
+    if(target?.style)out.add(target);
+  }
+  return [...out];
+}
+
+/** Hide Valve's fixed Scroll to Top button only on Game Info pages where a
+ * TitleDeck custom description is ACTIVE. Undo when leaving or restoring.
+ * This does not remove or alter the actual scrollable Steam content. */
+export function createScrollTopCleaner(documents=()=>[steamDocument,globalThis.document,...discoverDocuments()],state=()=>latestState){
+  const touched=new Map();
+  function restore(){
+    for(const [el,previous] of touched)restoreInlineStyle(el,'display',previous);
+    touched.clear();
+  }
+  function runNow(){
+    const s=state()||{};
+    let docs=[];try{docs=[...new Set(documents()||[])].filter(Boolean)}catch{}
+    const keep=new Set();
+    // Steam frequently renders the Game Info tab in one document and the blue
+    // floating Scroll to Top control in its outer SteamUI document. The old
+    // code checked each document's *own* location separately; for the outer
+    // overlay, that location is not the library route and the button survived.
+    const eligible=new Set();
+    if(s.enabled&&s.description_position==='game_info'){
+      for(const doc of docs){
+        const id=steamLibraryRouteId(doc.defaultView?.location);
+        if(id&&String(s.descriptions?.[id]||'').trim())eligible.add(id);
+      }
+      const globalId=steamLibraryRouteId(globalThis.location);
+      if(globalId&&String(s.descriptions?.[globalId]||'').trim())eligible.add(globalId);
+    }
+    // Refuse cross-window cleanup if several unrelated Game Info routes are
+    // simultaneously active. Only the exact Scroll to Top control is hidden.
+    const activeId=eligible.size===1?[...eligible][0]:'';
+    if(activeId)for(const doc of docs){
+      const docRoute=steamLibraryRouteId(doc.defaultView?.location);
+      if(docRoute&&docRoute!==activeId)continue;
+      for(const button of findSteamScrollTopControls(doc)){
+        if(!touched.has(button))touched.set(button,originalInlineStyle(button,'display'));
+        try{button.style?.setProperty?.('display','none','important');keep.add(button)}catch{}
+      }
+    }
+    for(const [el,previous] of touched)if(!keep.has(el)){
+      restoreInlineStyle(el,'display',previous);touched.delete(el);
+    }
+  }
+  return {runNow,stop:restore};
+}
+
+/** Optional right-stick input bridge, separate from the physically accepted
+ * non-Steam paint/navigation adapter and removed on plugin dismount. */
+export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionAdapter){
+  let timer=null,stopInput=null,lastSteamStick=0,lastSteamAt=0,ticks=0;
+  const scrollTopCleaner=createScrollTopCleaner();
+  const topWatchers=[];
+  function start(){
+    if(timer!==null)return;
+    const input=globalThis.SteamClient?.Input;
+    if(typeof input?.RegisterForControllerStateChanges==='function')try{
+      const token=input.RegisterForControllerStateChanges(changes=>{
+        for(const sample of Array.isArray(changes)?changes:[changes]){
+          if(sample&&typeof sample==='object'&&
+             ['sRightStickY','flRightStickY','fRightStickY','rStickY','rightStickY','flRightY','fRightY','sJoystickRightY'].some(k=>typeof sample[k]==='number')){
+            lastSteamStick=normalizedRightStickY(sample);lastSteamAt=Date.now();
+          }
+        }
+      });
+      stopInput=typeof token==='function'?token:typeof token?.unregister==='function'?()=>token.unregister():null;
+    }catch{}
+    // React may mount Steam's blue control long after the first Game Info
+    // draw. A child-list observer hides it in the same frame it appears.
+    const topDocs=[steamDocument,globalThis.document,...discoverDocuments()];
+    for(const doc of new Set(topDocs.filter(Boolean))){
+      const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+      if(!Observer||!doc.documentElement)continue;
+      try{
+        const observer=new Observer(changes=>{
+          if(changes?.some(change=>change.type==='childList'))scrollTopCleaner.runNow();
+        });
+        observer.observe(doc.documentElement,{subtree:true,childList:true});
+        topWatchers.push(observer);
+      }catch{}
+    }
+    scrollTopCleaner.runNow();
+    timer=setInterval(()=>{
+      if(++ticks%12===0){scrollTopCleaner.runNow();getAdapter()?.alignFooter?.()}
+      if(!readControllerScrollSetting())return;
+      let amount=0;
+      try{for(const pad of globalThis.navigator?.getGamepads?.()||[]){
+        if(pad?.connected!==false)amount=normalizedRightStickY(pad);
+        if(amount)break;
+      }}catch{}
+      if(!amount&&Date.now()-lastSteamAt<350)amount=lastSteamStick;
+      if(amount){
+        const handled=getAdapter()?.scrollByStick?.(amount);
+        if(!handled)scrollSteamGameInfoByStick(amount);
+      }
+    },45);
+  }
+  function stop(){if(timer!==null)clearInterval(timer);timer=null;for(const watcher of topWatchers.splice(0))watcher.disconnect?.();try{stopInput?.()}catch{}stopInput=null;scrollTopCleaner.stop();}
+  return {start,stop};
+}
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer,getSteamOriginal=()=> ''){
   const MARK='data-titledeck-description',owned=new Map(),nativeInfo=new Map(),watchers=[],scrollListeners=[];
   // Warm native-styled clones and verified active game roots remain local to a
@@ -774,7 +2037,7 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
   }
   function timingReport(){
     const elapsed=tabSwitchAt?Date.now()-tabSwitchAt:null;
-    const head='TitleDeck developer Game Info timing | watched documents '+observedDocs.size+
+    const head='Preview 24 Game Info timing | watched documents '+observedDocs.size+
       ' | adapter checks '+checks+' | last tab '+(elapsed===null?'not detected':elapsed+'ms ago')+
       ' | visible panels '+nativeInfo.size+' | mutations '+mutationBatches+' | verified events '+verifiedEvents;
     const lines=timingEvents.slice(-12).map(e=>
@@ -1380,6 +2643,18 @@ export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getCl
 }
 
 const STYLE=`
+/* 1.1.8: full-bleed artwork atmosphere without cropping the original.
+ * Constrain everything to manager tiles; Steam's Game Info is untouched. */
+.td-root .td-game-artbox .td-art-backdrop{
+ position:absolute!important;inset:-10%!important;width:120%!important;height:120%!important;
+ object-fit:cover!important;filter:blur(12px) saturate(.9)!important;opacity:.64!important;
+ z-index:1!important;pointer-events:none!important;background:transparent!important
+}
+.td-root .td-game-artbox .td-art{
+ position:relative!important;z-index:2!important;object-fit:contain!important;
+ background:transparent!important;max-width:100%!important;max-height:100%!important
+}
+.td-root .td-game-artbox .td-art-pending{z-index:0!important}
 /* Keep title and description restoration distinct on short Steam Deck screens. */
 .td-root .td-title-editor-toolbar .td-action{width:auto!important;flex:0 1 auto!important;min-width:0!important;white-space:normal!important;line-height:1.1!important}
 /* Short-screen description editor: accessible fixed actions and genuine page scrolling. */
@@ -1418,7 +2693,7 @@ const STYLE=`
 .td-root button.td-tab,.td-root .td-tab{width:100%!important;height:32px!important;padding:4px 8px!important;font-size:13px!important;font-weight:700!important}.td-root button.td-action,.td-root .td-action{width:100%!important;height:33px!important;min-height:33px!important;padding:4px 8px!important;font-size:12px!important;font-weight:700!important;white-space:nowrap!important}.td-root .td-close{min-width:80px!important}
 .td-root button.td-game,.td-root .td-game{width:100%!important;min-height:0!important;height:auto!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:start!important;gap:7px!important;text-align:left!important;padding:8px!important;background:linear-gradient(160deg,#2b303a,#1b2028)!important;border:1px solid #424854!important;border-radius:11px!important;position:relative;overflow:hidden!important}
 .td-root button.td-game.gpfocus,.td-root button.td-game:focus-visible{border-color:#f3bb9a!important;outline:3px solid #f3bb9a!important;outline-offset:1px!important;background:#39303a!important}
-.td-game-artbox{width:100%;position:relative;aspect-ratio:600/850;min-height:0;max-height:185px;overflow:hidden;border-radius:7px;background:#2e3542}.td-art{width:100%;height:100%;object-fit:cover;display:block;background:#232935}.td-art-pending{position:absolute;inset:0;z-index:0}.td-art{position:relative}.td-art-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#303440;color:#f4c2c9;font-size:35px;font-weight:850}.td-game-copy{display:flex;flex-direction:column;gap:3px;min-width:0;min-height:42px}.td-game-title{font-size:13px;font-weight:750;line-height:1.24;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}.td-game-sub{font-size:10px;color:#aeb5c0;line-height:1.15;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.td-game-mark{position:absolute;top:13px;right:13px;font-weight:800;font-size:9px;letter-spacing:.02em;border-radius:6px;padding:4px 6px;color:#fff;background:#9b4059;border:1px solid #d97889}
+.td-game-artbox{width:100%;position:relative;aspect-ratio:600/850;min-height:0;max-height:185px;overflow:hidden;border-radius:7px;background:#2e3542}.td-art{width:100%;height:100%;object-fit:cover;display:block;background:#232935}.td-art-pending{position:absolute;inset:0;z-index:0}.td-art{position:relative}.td-game-artbox .td-art{object-fit:contain!important}.td-art-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#303440;color:#f4c2c9;font-size:35px;font-weight:850}.td-game-copy{display:flex;flex-direction:column;gap:3px;min-width:0;min-height:42px}.td-game-title{font-size:13px;font-weight:750;line-height:1.24;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}.td-game-sub{font-size:10px;color:#aeb5c0;line-height:1.15;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.td-game-mark{position:absolute;top:13px;right:13px;font-weight:800;font-size:9px;letter-spacing:.02em;border-radius:6px;padding:4px 6px;color:#fff;background:#9b4059;border:1px solid #d97889}
 .td-bottom{justify-content:space-between;color:#b7bec9;font-size:11px;gap:8px;padding:4px 13px}.td-bottom strong{color:#ecf0f5;font-size:11px}.td-status{color:#b4bac5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.td-message{position:absolute;bottom:46px;left:18px;right:18px;z-index:6;max-width:860px;margin:auto;background:#33262e;color:#f6c9d1;border:1px solid #905363;border-radius:11px;box-shadow:0 10px 25px #0009;padding:10px 14px;font-size:12px;pointer-events:none}.td-message.success{background:#23362f;color:#c4edd8;border-color:#527e66}
 .td-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center;color:#aeb6c3;padding:65px 18px}.td-empty h2{font-size:20px;color:#faf8f8;margin:0}.td-empty p{margin:0;max-width:480px}
 .td-saved-description-preview{max-height:138px;overflow:hidden;margin-top:10px!important;padding:10px 12px;border:1px solid #434e60;border-radius:8px;background:#1c2532;}
@@ -1575,8 +2850,6 @@ const STYLE=`
 }
 .td-root.td-inline-keyboard-open .td-game-name-field{margin:3px 0 0!important;padding:2px 0!important}
 .td-root .td-description-character-count{font-size:12px;color:#b6cce6;margin:5px 0 2px;line-height:1.3;font-variant-numeric:tabular-nums}
-/* TitleDeck description warning: advisory only; saving remains enabled. */
-.td-description-character-count.td-description-warning{color:#ffda67!important;background:#48390d!important;border:1px solid #b58b28!important;border-radius:8px;padding:8px 10px;font-weight:750}
 .td-root.td-inline-keyboard-open .td-description-character-count{font-size:13px;color:#e2edff;margin:4px 2px}
 .td-root.td-inline-keyboard-open .td-inline-keyboard-fallback{
  height:auto!important;max-height:42px!important;opacity:1!important;overflow:visible!important;
@@ -1640,6 +2913,120 @@ const STYLE=`
 @media (prefers-reduced-motion: reduce){.td-root .td-toast,.td-toast-bar{animation:none!important}}
 
 
+/* 1.0.0 manager-only accent palette: never styles Steam's own pages. */
+.td-root{--td-accent:#902e4b;--td-accent-dark:#47202f;--td-accent-bright:#ffc0ce;--td-accent-border:#cf7791}
+.td-root .td-version-chip,.td-root .td-pill{background:var(--td-accent-dark)!important;color:var(--td-accent-bright)!important;border-color:var(--td-accent-border)!important}
+.td-root .td-btn.td-active:not(.gpfocus):not(:focus-visible),.td-root button.td-btn.td-active:not(.gpfocus):not(:focus-visible){background:var(--td-accent-dark)!important;border-color:var(--td-accent-border)!important;color:var(--td-accent-bright)!important}
+.td-root .td-btn.gpfocus,.td-root .td-btn:focus-visible,.td-root button.td-btn.gpfocus,.td-root button.td-btn:focus-visible{outline:3px solid var(--td-accent-bright)!important;border-color:var(--td-accent-border)!important;background:var(--td-accent)!important;color:white!important;-webkit-text-fill-color:white!important;box-shadow:0 0 0 2px var(--td-accent-dark)!important}
+.td-root button.td-game.gpfocus,.td-root button.td-game:focus-visible{outline:3px solid var(--td-accent-bright)!important;border-color:var(--td-accent-border)!important;background:var(--td-accent-dark)!important}
+.td-root .td-setting-panel{border-color:#6f6170!important;background:#2a2430!important}
+.td-root .td-setting-panel.td-panel-wide{background:var(--td-accent-dark)!important;border-color:var(--td-accent-border)!important}
+.td-root button.td-game:not(.gpfocus):not(:focus-visible){background:linear-gradient(160deg,#31252e,#1c2028)!important;border-color:#634655!important}
+.td-root .td-game-title{font-size:14px!important;line-height:1.34!important}
+.td-root .td-game-sub{font-size:11px!important;line-height:1.36!important}
+.td-root .td-page{white-space:nowrap!important;font-size:11px!important}
+.td-root .td-custom-accent{display:flex;align-items:center;gap:8px}
+.td-root .td-custom-accent input{flex:1;min-width:0;background:#181a23;color:white;border:2px solid var(--td-accent-border);border-radius:7px;padding:8px;font-size:14px}
+.td-root .td-custom-accent .td-btn{flex:1}
+
+/* 1.0.1 COMPLETE MANAGER PALETTE. Override prior fixed-gray rules and
+   CSS Loader orange focus colors inside TitleDeck only. */
+.td-root{
+ background:radial-gradient(ellipse at 55% -22%,var(--td-raised) 0%,var(--td-backdrop) 56%,var(--td-inset) 100%)!important;
+ color:#fff3f7!important;-webkit-text-fill-color:initial!important;
+}
+.td-root .td-shell{background:transparent!important}
+.td-root .td-header,.td-root .td-rail,.td-root .td-actions,.td-root .td-bottom{
+ background:linear-gradient(125deg,var(--td-raised),var(--td-surface))!important;
+ border:1px solid var(--td-accent-border)!important;
+ box-shadow:inset 0 1px 0 #ffffff1a,0 3px 15px #0005!important;
+ color:#fff1f6!important;
+}
+.td-root .td-workspace{background:linear-gradient(165deg,var(--td-backdrop),var(--td-inset))!important;
+ border:1px solid var(--td-accent-border)!important;border-radius:10px!important;
+ scrollbar-color:var(--td-accent-border) var(--td-inset)!important;
+}
+.td-root .td-workspace::-webkit-scrollbar-thumb{background:var(--td-accent-border)!important}
+.td-root .td-heading,.td-root .td-title-large,.td-root .td-title-large *,
+.td-root .td-game-title,.td-root .td-review-custom{color:#fff6f8!important;-webkit-text-fill-color:#fff6f8!important}
+.td-root .td-sub,.td-root .td-rail-label,.td-root .td-results,.td-root .td-status,
+.td-root .td-bottom,.td-root .td-game-sub,.td-root .td-setting-panel p,
+.td-root .td-settings-intro,.td-root .td-editor-note,.td-root .td-small,
+.td-root .td-copy-label{color:var(--td-muted)!important;-webkit-text-fill-color:var(--td-muted)!important}
+.td-root .td-card,.td-root .td-setting-panel,.td-root .td-setting-panel.td-panel-wide,
+.td-root .td-confirm,.td-root .td-confirm-examples,.td-root .td-preview,
+.td-root .td-cleanup-preview,.td-root .td-cleanup-comparison>div,
+.td-root .td-review-panel,.td-root .td-native-entry{
+ background:linear-gradient(155deg,var(--td-raised),var(--td-surface))!important;
+ border-color:var(--td-accent-border)!important;color:#fff2f6!important;
+ box-shadow:inset 0 1px 0 #ffffff12!important;
+}
+.td-root button.td-game,.td-root button.td-game:not(.gpfocus):not(:focus-visible){
+ background:linear-gradient(155deg,var(--td-tile),var(--td-surface))!important;
+ border-color:var(--td-accent-border)!important;color:#fff2f6!important;
+ box-shadow:inset 0 1px 0 #ffffff13,0 3px 12px #0004!important;
+}
+.td-root .td-game-artbox,.td-root .td-art,.td-root .td-art-pending,
+.td-root .td-art-fallback{background:var(--td-inset)!important}
+.td-root .td-game-mark,.td-root .td-pill,.td-root .td-version-chip{
+ background:var(--td-accent)!important;border-color:var(--td-accent-bright)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ box-shadow:0 0 12px var(--td-accent-border)!important;
+}
+.td-root button.td-btn,.td-root button.td-btn:not(.gpfocus):not(:focus-visible),
+.td-root .td-btn:not(.gpfocus):not(:focus-visible){
+ background:linear-gradient(180deg,var(--td-raised),var(--td-surface))!important;
+ color:#fff2f6!important;-webkit-text-fill-color:#fff2f6!important;
+ border-color:var(--td-accent-border)!important;
+ box-shadow:inset 0 1px 0 #ffffff1a!important;
+}
+.td-root button.td-btn.td-active,.td-root button.td-btn.td-active:not(.gpfocus):not(:focus-visible){
+ background:var(--td-accent)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border-color:var(--td-accent-bright)!important;
+ box-shadow:0 0 12px var(--td-accent-border)!important;
+}
+@keyframes tdFocusHeartbeat{
+  0%,100%{box-shadow:0 0 0 2px var(--td-accent-bright),0 0 9px var(--td-accent-border),inset 0 0 8px var(--td-accent-dark)}
+  50%{box-shadow:0 0 0 3px var(--td-accent-bright),0 0 20px 3px var(--td-accent-border),inset 0 0 12px var(--td-accent)}
+}
+.td-root button.td-game.gpfocus,.td-root button.td-game:focus,
+.td-root button.td-game:focus-visible,.td-root button.td-btn.gpfocus,
+.td-root button.td-btn:focus,.td-root button.td-btn:focus-visible,
+.td-root .td-btn.gpfocus,.td-root .td-btn:focus-visible,
+.td-root [data-td-focus].gpfocus{
+ background:var(--td-accent)!important;
+ background-image:linear-gradient(135deg,var(--td-accent),var(--td-accent-dark))!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ outline:3px solid var(--td-accent-bright)!important;outline-offset:1px!important;
+ border-color:var(--td-accent-bright)!important;
+ animation:tdFocusHeartbeat 2.15s ease-in-out infinite!important;
+}
+.td-root .td-setting-panel h3,.td-root .td-editor-original-meta strong,
+.td-root .td-cleanup-heading{color:var(--td-accent-bright)!important}
+.td-root .td-setting-panel input,.td-root .td-native-field input,
+.td-root .td-native-field textarea,.td-root .td-custom-accent input{
+ background:var(--td-inset)!important;color:#fff6f9!important;
+ -webkit-text-fill-color:#fff6f9!important;border-color:var(--td-accent-border)!important;
+}
+.td-root .td-toast{background:var(--td-raised)!important;border-color:var(--td-accent-border)!important}
+/* CSS Loader may place focus on a parent or a descendant, not the button
+   itself. Keep the selected tile identifiable regardless of focus transport. */
+.td-root button.td-game:focus-within,.td-root button.td-btn:focus-within,
+.td-root .td-grid-row:focus-within button.td-game:focus,
+.td-root .td-tab:focus-within,.td-root button.td-tab.gpfocus{
+ border-color:var(--td-accent-bright)!important;
+ outline:3px solid var(--td-accent-bright)!important;outline-offset:1px!important;
+ background:linear-gradient(145deg,var(--td-accent),var(--td-accent-dark))!important;
+ box-shadow:0 0 0 2px var(--td-accent-border),0 0 19px var(--td-accent-border)!important;
+ animation:tdFocusHeartbeat 2.15s ease-in-out infinite!important;
+}
+@media (prefers-reduced-motion:reduce){
+ .td-root button.td-game.gpfocus,.td-root button.td-game:focus-visible,
+ .td-root button.td-btn.gpfocus,.td-root button.td-btn:focus-visible,
+ .td-root .td-btn.gpfocus,.td-root button.td-game:focus-within,
+ .td-root button.td-btn:focus-within,.td-root .td-tab:focus-within,
+ .td-root button.td-tab.gpfocus{animation:none!important}
+}
 /* Never hide the final review rows on a small Gaming Mode screen. The page scrolls; the review list itself does not trap focus. */
 .td-root .td-review-workspace{overflow-y:auto!important;overflow-x:hidden!important;display:block!important}
 .td-root .td-review-panel{height:auto!important;overflow:visible!important;min-height:0!important;margin:4px auto!important}
@@ -1657,28 +3044,183 @@ const STYLE=`
 .td-root .td-review-panel .td-confirm-actions{margin:2px 0 0!important;gap:8px!important}
 .td-root .td-review-panel .td-confirm-actions .td-btn{min-height:35px!important}
 .td-root .td-review-workspace{padding-bottom:5px!important}
+
+/* 1.0.2 refined premium library: complete theme surfaces and glass tiles.
+   All rules are isolated to TitleDeck; never change Steam or CSS Loader. */
+.td-root{height:calc(100dvh - 64px)!important;max-height:calc(100dvh - 64px)!important;min-height:0!important;overflow:hidden!important}
+.td-root .td-shell{min-height:0!important;max-height:100%!important}
+.td-root .td-actions{grid-template-columns:minmax(95px,2.1fr) repeat(3,minmax(62px,1fr)) repeat(3,minmax(48px,.7fr)) auto!important;gap:5px!important}
+.td-root .td-actions .td-results{font-size:10px!important;padding:0 3px!important}
+.td-root .td-rail,.td-root .td-actions{position:relative;z-index:2}
+.td-root button.td-game,.td-root button.td-game:not(.gpfocus):not(:focus-visible){
+ background:linear-gradient(150deg, color-mix(in srgb,var(--td-raised) 75%,#fff 4%),var(--td-tile) 54%,var(--td-inset))!important;
+ border:1px solid color-mix(in srgb,var(--td-accent-border) 60%,#fff 8%)!important;
+ backdrop-filter:blur(14px) saturate(130%)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(130%)!important;
+ box-shadow:inset 0 1px 0 #ffffff32,inset 0 0 22px #ffffff08,0 7px 15px #0006!important;
+ transition:box-shadow .18s ease,background .18s ease,border-color .18s ease!important;
+}
+.td-root button.td-game::after{content:'';position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(125deg,#ffffff12 0%,transparent 42%,#ffffff07 100%);border-radius:inherit}
+.td-root button.td-game.gpfocus,.td-root button.td-game:focus-visible,.td-root button.td-game:focus{
+ background:linear-gradient(155deg,var(--td-accent),var(--td-accent-dark))!important;
+ border-color:var(--td-accent-bright)!important;
+ box-shadow:0 0 0 2px var(--td-accent-border),0 0 26px 3px var(--td-accent-border),inset 0 1px 0 #ffffff77!important;
+}
+.td-root .td-game-sub{display:flex!important;align-items:center!important;gap:4px!important}
+.td-root .td-installed-dot{color:#39ee94!important;-webkit-text-fill-color:#39ee94!important;
+ font-size:14px!important;line-height:1!important;text-shadow:0 0 8px #39ee9499,0 0 3px #39ee94!important}
+.td-root .td-installed-label{color:#c4e3ce!important;-webkit-text-fill-color:#c4e3ce!important}
+.td-root .td-header{flex-shrink:0!important}
+@media(max-width:1030px){.td-root .td-actions .td-results{display:none!important}}
+@media(max-height:660px){.td-root{height:calc(100dvh - 52px)!important;max-height:calc(100dvh - 52px)!important}}
+@media(prefers-reduced-motion:reduce){.td-root button.td-game{transition:none!important}}
+/* 1.0.3: Reserve the SteamOS header's visual space. The root was only
+   shortened in 1.0.2, leaving its upper rows UNDER the fixed Steam bar.
+   --td-top-safe is measured from the actual route mount, and is zero if
+   Steam already reserved the space. */
+.td-root{
+ margin-top:var(--td-top-safe,0px)!important;
+ height:calc(100dvh - 64px)!important;
+ max-height:calc(100dvh - 64px)!important;
+ scroll-margin-top:68px!important;
+}
+.td-root .td-header{position:relative!important;z-index:5!important}
+.td-root .td-rail,.td-root .td-actions{z-index:4!important}
+/* 1.0.5: settings DOM really is one-column; its controller focus graph now follows
+   this same vertical order. The palette is the only intentionally 4-wide grid. */
+.td-root .td-settings{max-width:900px!important}
+.td-root .td-settings-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:11px!important}
+.td-root .td-settings-grid .td-setting-panel{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+/* 1.0.6: override legacy TWO-COLUMN !important on .td-card-buttonrow.
+   Otherwise Steam's spatial nav correctly follows the mistaken horizontal grid. */
+.td-root .td-settings-grid .td-description-position-options{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  grid-auto-flow:row!important;grid-auto-rows:minmax(48px,auto)!important;
+  align-items:stretch!important;justify-items:stretch!important;gap:9px!important;
+}
+.td-root .td-description-position-options>.td-btn{display:block!important;width:100%!important;min-width:0!important;text-align:left!important;}
+.td-root .td-picker-panel{margin:12px auto;max-width:850px;border-radius:18px;padding:16px;background:var(--td-surface);border:2px solid var(--td-accent-border);box-shadow:0 15px 45px #0008;}
+.td-root .td-picker-help{font-size:13px;line-height:1.4;margin:8px 0;color:var(--td-accent-bright)!important;}
+.td-root .td-picker-gradient-hue{display:block!important;position:relative!important;width:100%!important;height:45px!important;padding:0!important;margin:8px 0 16px!important;overflow:visible!important;
+  background:linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)!important;border:2px solid #fff9!important;border-radius:8px!important;}
+.td-root .td-picker-gradient-hue-indicator{pointer-events:none;position:absolute;top:-5px;bottom:-5px;width:4px;border:1px solid #000;background:#fff;box-shadow:0 0 0 2px #fff8,0 0 9px #000;transform:translateX(-50%);}
+.td-root .td-picker-gradient-square{display:block!important;position:relative!important;width:100%!important;min-height:185px!important;padding:0!important;margin:8px 0 14px!important;
+  background-image:linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,transparent)!important;
+  border:2px solid #fffb!important;border-radius:10px!important;touch-action:none;}
+.td-root .td-picker-gradient-square-cursor{pointer-events:none;position:absolute;width:17px;height:17px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #222,0 0 10px #000;transform:translate(-50%,-50%);}
+.td-root .td-picker-channel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 18px;}
+.td-root .td-picker-channel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;background:var(--td-inset);border-radius:8px;border:1px solid var(--td-accent-border);padding:9px;}
+.td-root .td-picker-channel>span{grid-column:1 / -1;font-size:14px;font-weight:700;text-align:center;}
+.td-root .td-picker-channel .td-btn{min-height:40px!important;}
+.td-root .td-picker-hues{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px;margin:10px 0 16px;}
+.td-root .td-picker-shades{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin:10px 0;}
+.td-root .td-picker-hues .td-btn,.td-root .td-picker-shades .td-btn{min-height:44px!important;padding:2px!important;border-radius:8px!important;}
+.td-root .td-picker-chip{display:block;width:100%;height:37px;border-radius:6px;border:1px solid #fffa;box-shadow:inset 0 1px 3px #fff5;}
+.td-root .td-picker-chip[data-selected='true']{outline:3px solid white;outline-offset:-3px;}
+.td-root .td-picker-selected{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:bold;margin:8px 0 12px;}
+.td-root .td-picker-preview{width:60px;height:42px;border-radius:8px;border:2px solid #fffa;}
+.td-root .td-picker-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px;}
+
+.td-root .td-color-picker{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;margin:10px 0!important}
+.td-root button.td-swatch{height:72px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;padding:5px!important}
+.td-root .td-swatch-chip{width:100%!important;max-width:130px!important;height:30px!important;border-radius:7px!important;border:1px solid #fff8!important;box-shadow:inset 0 2px 4px #fff4,0 2px 8px #0006!important}
+.td-root .td-custom-accent{display:flex!important;flex-direction:column!important;gap:8px!important}
+.td-root .td-swatch-label{font-size:11px!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+.td-root button.td-swatch-selected{border:2px solid var(--td-accent-bright)!important}
+/* CSS Loader owns Steam's top chrome, not TitleDeck. Avoid creating a second
+   opaque header-sized strip on the app root. Keep 1.0.3's clearance. */
+.td-root{background:transparent!important}
+@media(max-height:660px){.td-root{height:calc(100dvh - 52px)!important;max-height:calc(100dvh - 52px)!important}}
 `;
 const dir=e=>Number(e?.detail?.button??-1);
 function halt(e){e?.preventDefault?.();e?.stopPropagation?.();}
+/** Scroll ONLY TitleDeck's tile viewport. Native scrollIntoView also scrolls
+ * Valve's parent page and can push the entire manager header under SteamUI. */
+export function scrollLibraryTileIntoView(el){
+  if(!el)return false;
+  const work=el.closest?.('[data-td-scroll="library"]');
+  if(!work)return false;
+  try{
+    const cell=el.getBoundingClientRect?.(),frame=work.getBoundingClientRect?.();
+    if(!cell||!frame)return true;
+    if(cell.top<frame.top+3)work.scrollTop-=frame.top+3-cell.top;
+    else if(cell.bottom>frame.bottom-3)work.scrollTop+=cell.bottom-(frame.bottom-3);
+    return true;
+  }catch{return false}
+}
+/** Scroll Settings and game tiles inside TitleDeck, never Steam's outer
+ * library route. CSS Loader headers must retain their own scroll position. */
+export function scrollManagerNodeIntoView(el){
+  if(!el)return false;
+  const work=el.closest?.('[data-td-scroll="settings"], [data-td-scroll="library"]');
+  if(!work)return false;
+  try{
+    const r=el.getBoundingClientRect?.(),b=work.getBoundingClientRect?.();
+    if(!r||!b)return true;
+    if(r.top<b.top+5)work.scrollTop-=b.top+5-r.top;
+    else if(r.bottom>b.bottom-5)work.scrollTop+=r.bottom-b.bottom+5;
+    return true;
+  }catch{return false}
+}
+/** Check the actual rendered location rather than assuming TitleDeck begins
+ * below Steam's permanently visible chrome. Never move the route itself. */
+export function fitManagerBelowSteamHeader(root,viewport=globalThis){
+  if(!root?.style||!root.getBoundingClientRect)return 0;
+  try{
+    const existing=Number.parseFloat(root.style.getPropertyValue('--td-top-safe'))||0;
+    const top=root.getBoundingClientRect().top-existing;
+    const h=Number(viewport?.innerHeight||root.ownerDocument?.defaultView?.innerHeight)||720;
+    const safe=h<=670?52:64;
+    const inset=Math.max(0,Math.min(safe,Math.ceil(safe-top)));
+    if(existing!==inset)root.style.setProperty('--td-top-safe',`${inset}px`);
+    return inset;
+  }catch{return 0}
+}
 function focusNode(el){
   if(!el)return false;
   try{const get=UI?.getGamepadNavigationTrees;if(typeof get==='function'){
     const roots=get(),stack=Array.isArray(roots)?[...roots]:[roots],seen=new Set();let n=0;
     while(stack.length&&n++<6000){const item=stack.pop();if(!item||typeof item!=='object'||seen.has(item))continue;seen.add(item);
       const node=item.m_element||item.element||item.m_HTMLElement||item.m_DOMElement||item.m_el;
-      if(node===el||(node&&el?.contains?.(node))){const take=item.BTakeFocus||item.TakeFocus||item.takeFocus;if(typeof take==='function'&&take.call(item)!==false){(node||el).scrollIntoView?.({block:'nearest'});return true;}}
+      if(node===el||(node&&el?.contains?.(node))){const take=item.BTakeFocus||item.TakeFocus||item.takeFocus;if(typeof take==='function'&&take.call(item)!==false){if(!scrollManagerNodeIntoView(node||el))(node||el).scrollIntoView?.({block:'nearest'});return true;}}
       for(const key of ['m_Children','children','m_rgChildren','m_vecChildren','m_FocusableChildren']){
         const val=item[key];if(Array.isArray(val))stack.push(...val);else if(val&&typeof val==='object')stack.push(val);
       }
     }
   }}catch{}
-  try{el.focus?.({preventScroll:true});el.scrollIntoView?.({block:'nearest'});return el.ownerDocument?.activeElement===el;}catch{return false;}
+  try{el.focus?.({preventScroll:true});if(!scrollManagerNodeIntoView(el))el.scrollIntoView?.({block:'nearest'});return el.ownerDocument?.activeElement===el;}catch{return false;}
 }
 function focusQuery(root,selector,delay=0){setTimeout(()=>{try{focusNode(root?.querySelector(selector));}catch{}},delay);}
 export function scrollDescriptionWorkspace(root,bottom=true){
   const scroller=root?.querySelector?.('[data-td-description-workspace]');
   if(!scroller)return false;
   try{scroller.scrollTop=bottom?scroller.scrollHeight:0;return true}catch{return false}
+}
+/** Restore manager chrome when Steam has also scrolled its outer route.
+ * Only called for library toolbar/home navigation, never ordinary tiles. */
+function scrollManagerChromeToTop(root){
+  if(!root)return;
+  let outer=root.parentElement;
+  for(let depth=0;outer&&depth<12;outer=outer.parentElement,depth++)
+    if(outer.scrollTop>0)outer.scrollTop=0;
+  const doc=root.ownerDocument;
+  if(doc?.scrollingElement?.scrollTop>0)doc.scrollingElement.scrollTop=0;
+}
+export function scrollManagerToTop(root){
+  if(!root)return false;
+  let changed=false;
+  try{
+    const work=root.querySelector?.('[data-td-scroll="library"]');
+    if(work){work.scrollTop=0;changed=true}
+    let outer=root.parentElement;
+    for(let depth=0;outer&&depth<12;outer=outer.parentElement,depth++){
+      if(outer.scrollTop>0){outer.scrollTop=0;changed=true}
+    }
+    const doc=root.ownerDocument;
+    if(doc?.scrollingElement?.scrollTop>0){doc.scrollingElement.scrollTop=0;changed=true}
+  }catch{}
+  return changed;
 }
 function directionTo(root,next,e){const node=root?.querySelector?.(`[data-td-focus="${next}"]`);if(node && focusNode(node)){halt(e);return true;}return false;}
 export function gridDestination(index,d,length,width=5) {
@@ -1745,16 +3287,37 @@ function Toast({notice}){
 export function coverSources(appid){
   const id=normId(appid);
   if(!id)return[];
+  const parentId=({'4226020':'3920610','3815860':'1984270'})[id]; // Verified parent games for Fatal Frame II and Digimon Time Stranger demos.
   return [
+    // Steam's native custom portrait files come first, including SteamGridDB overrides.
     `/customimages/${id}p.png`,
     `/customimages/${id}p.jpg`,
     `/customimages/${id}p.webp`,
     `/assets/${id}/library_600x900.jpg`,
     `/assets/${id}/library_600x900.png`,
+    `/assets/${id}/library_600x900.webp`,
+    // Modern Steam store artwork can require a content hash. Verified official
+    // Jurassic World Evolution 3 portrait (App 2958130); custom art wins first.
+    ...(id==='2958130'?[
+      `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2958130/317faa59ced4fff3eae44f72df7785b841340eb5/library_600x900.jpg`
+    ]:[]),
+    // Some applications and demos have headers/capsules but no portrait.
+    `/assets/${id}/library_capsule.jpg`,
+    `/assets/${id}/header.jpg`,
     `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.jpg`,
-    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.png`
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900.png`,
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_capsule.jpg`,
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/header.jpg`,
+    `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/capsule_616x353.jpg`,
+    `https://shared.fastly.steamstatic.com/steam/apps/${id}/library_600x900.jpg`,
+    `https://shared.fastly.steamstatic.com/steam/apps/${id}/header.jpg`,
+    ...(parentId?[
+      `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${parentId}/library_600x900.jpg`,
+      `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${parentId}/header.jpg`
+    ]:[])
   ];
 }
+
 export function savedDescriptionPreview(text,limit=210){
   const full=String(text||''),flat=full.replace(/\s+/g,' ').trim();
   const max=Math.min(300,Math.max(80,Number(limit)||210));
@@ -1814,25 +3377,61 @@ export function resetCoverResolutionCache(){
   coverWriteRevision++;
   if(coverPersistTimer!==null){clearTimeout(coverPersistTimer);coverPersistTimer=null}
   coverResolutionCache.clear();
+  localArtworkCache.clear();
 }
-function Cover({id,title,className='',priority=false}){
+// Local Steam grid artwork can be available to the Decky backend but not the
+// frontend CEF URL namespace. Read-only backend fallback, bounded memory cache.
+const localArtworkCache=new Map();
+export function cachedLocalArtwork(appid){return localArtworkCache.get(normId(appid))||null}
+export function rememberLocalArtwork(appid,dataUri){
+  const id=normId(appid);
+  if(!id||typeof dataUri!=='string'||!/^data:image\/(?:jpeg|png|webp);base64,/.test(dataUri)||dataUri.length>7_000_000)return false;
+  localArtworkCache.delete(id);localArtworkCache.set(id,dataUri);
+  while(localArtworkCache.size>28)localArtworkCache.delete(localArtworkCache.keys().next().value);
+  return true;
+}
+function Cover({id,title,className='',priority=false,tile=false}){
   const sources=coverSources(id);
   const [candidate,setCandidate]=R.useState(()=>({id,index:cachedCoverStartIndex(id)}));
   const [loadedKey,setLoadedKey]=R.useState('');
+  const [localResult,setLocalResult]=R.useState(()=>({id,status:'idle',uri:cachedLocalArtwork(id)}));
   const index=candidate.id===id?candidate.index:cachedCoverStartIndex(id);
-  const key=`${id}-${index}`;
+  const localUri=localResult.id===id?localResult.uri:cachedLocalArtwork(id);
+  const localStatus=localResult.id===id?localResult.status:'idle';
+  const exhausted=index>=sources.length;
+  R.useEffect(()=>{
+    if(index<6||!normId(id)||localUri||localStatus!=='idle')return;
+    let active=true;
+    setLocalResult({id,status:'loading',uri:null});
+    void call('get_local_cover',id).then(result=>{
+      if(!active)return;
+      const uri=String(result?.data_uri||'');
+      if(rememberLocalArtwork(id,uri))setLocalResult({id,status:'loaded',uri});
+      else setLocalResult({id,status:'missing',uri:null});
+    }).catch(()=>{if(active)setLocalResult({id,status:'missing',uri:null})});
+    return()=>{active=false};
+  },[id,index,localUri,localStatus]);
+  const useLocal=!!localUri;
+  const key=useLocal?`${id}-local`:`${id}-${index}`;
   const ready=loadedKey===key;
   const initials=title?.trim()?.slice(0,2)?.toUpperCase()||'G';
-  if(!sources.length||index>=sources.length)
+  if(!sources.length||(exhausted&&!localUri))
     return h('div',{className:`td-art-fallback ${className}`},initials);
-  // Keep a meaningful fallback visible until the browser has decoded artwork.
-  // The cover remains in its reserved rectangle; no blank image flicker.
+  const imageSrc=useLocal?localUri:sources[index];
   return h(R.Fragment,null,
     !ready?h('div',{className:'td-art-fallback td-art-pending','aria-hidden':'true'},initials):null,
+    // A soft full-bleed copy fills the portrait/square tile's empty margins.
+    // The sharp foreground stays uncropped, preserving logos and faces.
+    tile?h('img',{key:`${key}-backdrop`,className:'td-art-backdrop',src:imageSrc,
+      loading:priority?'eager':'lazy',decoding:'async',alt:'','aria-hidden':'true'}):null,
     h('img',{key,className:`td-art ${className}`,
-      style:ready?null:{opacity:0},loading:priority?'eager':'lazy',decoding:'async',alt:'',src:sources[index],
-      onLoad:()=>{rememberCoverResolution(id,index,true);setLoadedKey(key)},
-      onError:()=>{rememberCoverResolution(id,index,false);setLoadedKey('');setCandidate({id,index:Math.min(index+1,sources.length)})}}));
+      style:ready?null:{opacity:0},loading:priority?'eager':'lazy',decoding:'async',alt:'',src:imageSrc,
+      onLoad:()=>{if(!useLocal)rememberCoverResolution(id,index,true);setLoadedKey(key)},
+      onError:()=>{
+        setLoadedKey('');
+        if(useLocal){localArtworkCache.delete(normId(id));setLocalResult({id,status:'missing',uri:null});return;}
+        rememberCoverResolution(id,index,false);setCandidate({id,index:Math.min(index+1,sources.length)});
+      }}));
 }
 // Native Steam/Decky text entry. Never insert a custom alphabetic controller keypad.
 // Steam's overlay Paste can update the *DOM input value* without a React change event.
@@ -2143,7 +3742,7 @@ let activeInlineKeyboard=null;
 // second screen exists, dismissing the OSK is sufficient to reveal the editor.
 // Only the explicit Save custom title action ever persists an alias.
 export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180,label='Custom display title',
-  placeholder='Enter a game display name…',fieldKind='name',finishFocus='edit-save'}){
+  placeholder='Enter a game display name…',fieldKind='name',nonSteamDescription=false,finishFocus='edit-save'}){
   // Title fields remain at 180; descriptions have no artificial maxLength.
   maxLength=fieldKind==='description'?undefined:maxLength;
   const wrap=R.useRef(null),latest=R.useRef({value,setValue,onEnter,maxLength,finishFocus});
@@ -2322,11 +3921,8 @@ export function InlineGameNameField({value,setValue,onEnter=()=>{},maxLength=180
     'data-td-inline-game-name':fieldKind==='name'?'true':undefined,'data-td-inline-description':fieldKind==='description'?'true':undefined,
     onInputCapture:sync,onPasteCapture:()=>setTimeout(sync,0)},
     UI?.TextField?h(UI.TextField,props):h('input',{...props,type:'text',onKeyDown:e=>{if(e?.key==='Enter'){e.preventDefault?.();enter()}}}),
-    fieldKind==='description'?h('div',{className:'td-description-character-count'+(Array.from(value).length>=DESCRIPTION_WARNING_THRESHOLD?' td-description-warning':''),
-      'data-td-description-count':'true',role:Array.from(value).length>=DESCRIPTION_WARNING_THRESHOLD?'status':undefined},
-      Array.from(value).length+' characters · '+(Array.from(value).length>=DESCRIPTION_WARNING_THRESHOLD
-        ?'⚠ Longer descriptions (1,247+ characters) may cause Steam Game Info to scroll or behave unexpectedly. You can still save your text.'
-        :'No character limit')):null,
+    fieldKind==='description'?h('div',{className:'td-description-character-count',
+      'data-td-description-count':'true'},Array.from(value).length+' characters'):null,
     h('div',{className:'td-inline-keyboard-fallback'},
       fieldKind==='description'
         ?h(Btn,{className:'td-inline-finish','data-td-description-clear':'true',
@@ -2387,14 +3983,16 @@ export function editorDestination(key,d,{canSave=true,canRestore=true,canRestore
     'close':{10:'edit-back'},
     'edit-back':{9:'close',10:'edit-name',12:'edit-description'},
     'edit-description':{11:'edit-back',12:'edit-description-restore',10:'edit-name'},
-    'edit-description-restore':{11:'edit-description',10:'edit-restore'},
+    'edit-description-restore':{11:'edit-description',12:'edit-hide',10:'edit-restore'},
+    'edit-hide':{11:'edit-description-restore',9:'edit-description',10:'edit-name'},
     'edit-name':{9:'edit-back',12:'edit-clean',10:'edit-save'},
     'edit-clean':{9:'edit-back',11:'edit-name',10:'edit-restore'},
     'edit-save':{9:'edit-name',12:'edit-restore'},
     'edit-restore':{9:'edit-clean',11:'edit-save'}
   };
   let to=active[key]?.[d]||null;
-  if(to==='edit-description-restore'&&!canRestoreDescription)to=null;
+  if(to==='edit-description-restore'&&!canRestoreDescription)to='edit-hide';
+  if(key==='edit-hide'&&d===11&&!canRestoreDescription)to='edit-description';
   if(to==='edit-save'&&!canSave)to=d===10&&key==='edit-name'&&canRestore?'edit-restore':null;
   if(to==='edit-restore'&&!canRestore)to=d===10&&key==='edit-clean'&&canSave?'edit-save':null;
   return to;
@@ -2405,13 +4003,276 @@ export function cleanupPreviewDestination(key,d){
   if(key==='cleanup-apply')return d===11?'cleanup-keep':d===10?'edit-clean':null;
   return null;
 }
+/** Controller settings navigation must match what is visually rendered.
+ * Down NEVER means sideways into an unrelated settings card. The palette
+ * uses a four-column controller grid; all other settings form one column. */
+export function settingsFocusDestination(key,d,diagnostics=false){
+  if(![9,10,11,12].includes(d))return null;
+  const swatches=Array.from({length:12},(_,i)=>`setting-swatch-${i}`);
+  const list=['setting-0','setting-backup','setting-backup-restore','setting-recover',
+    'setting-placement-info','setting-placement-hero','setting-placement-below',
+    ...(diagnostics?['setting-scan']:[]),'setting-theme','setting-stick',
+    ...swatches,'setting-custom-edit','setting-custom','setting-restore-all'];
+  if(key==='settings-back')return d===10?list[0]:null;
+  const at=list.indexOf(key);if(at<0)return null;
+  if(key.startsWith('setting-swatch-')){
+    const n=Number(key.slice('setting-swatch-'.length));
+    if(d===11&&n%4>0)return swatches[n-1];
+    if(d===12&&n%4<3)return swatches[n+1];
+    if(d===9)return n>=4?swatches[n-4]:'setting-stick';
+    if(d===10)return n<8?swatches[n+4]:'setting-custom-edit';
+    return null;
+  }
+  if(d===9){if(at===0)return 'settings-back';if(key==='setting-custom-edit')return swatches[8];return list[at-1]}
+  if(d===10){if(key==='setting-stick')return swatches[0];return list[Math.min(list.length-1,at+1)]}
+  return null;
+}
+/** Controlled pagination: scroll TitleDeck's own grid to the destination row.
+ * Steam's full-page scrollIntoView can move the outer route and obscure buttons.
+ * Different-sized tiles are accounted for using the destination row's DOM box. */
+export function scrollLibraryPageToIndex(root,index,columns=4){
+  const scroll=root?.querySelector?.('[data-td-scroll="library"]');
+  const rowIndex=Math.max(0,Math.floor(index/Math.max(1,columns)));
+  const row=root?.querySelector?.(`[data-td-row="${rowIndex}"]`);
+  if(!scroll||!row)return false;
+  try{
+    const r=row.getBoundingClientRect?.(),b=scroll.getBoundingClientRect?.();
+    if(r&&b&&Number.isFinite(r.top)&&Number.isFinite(b.top)){
+      scroll.scrollTop=Math.max(0,scroll.scrollTop+r.top-b.top-3);
+    }else if(Number.isFinite(row.offsetTop))scroll.scrollTop=Math.max(0,row.offsetTop);
+    return true;
+  }catch{return false}
+}
+/** Physical Steam controller button flags are NOT browser button indices.
+ * Steam's native `ulButtons` maps B to 0x200000 (already used by our working
+ * editor) and the shoulders to LB=0x080000, RB=0x040000. 1.1.4 mistakenly
+ * used 0x08/0x04, which denote OTHER Steam Controller button states.
+ * `ulUpperButtons` is captured diagnostically but cannot be decoded with
+ * lower-word button constants: it describes a different set of inputs.
+ */
+export function titleDeckShoulderState(sample){
+  if(!sample||typeof sample!=='object')return {left:false,right:false};
+  if(Array.isArray(sample.buttons))return {
+    left:Boolean(sample.buttons[4]?.pressed),right:Boolean(sample.buttons[5]?.pressed)};
+  const flags=Number(sample.ulButtons);
+  const mask=Number.isFinite(flags)?flags:0;
+  const pressureLeft=Number(sample.sPressureBumperLeft);
+  const pressureRight=Number(sample.sPressureBumperRight);
+  return {
+    left:Boolean((mask&0x080000)!==0||sample.bLeftBumper===true||sample.bL1===true||
+      (Number.isFinite(pressureLeft)&&pressureLeft>0)),
+    right:Boolean((mask&0x040000)!==0||sample.bRightBumper===true||sample.bR1===true||
+      (Number.isFinite(pressureRight)&&pressureRight>0))
+  };
+}
+
+/** Steam's actual Deck navigation is routed through the focused UI tree.
+ * Unlike navigator.getGamepads(), `onButtonDown` on a Decky Focusable receives
+ * built-in Deck shoulders. This is the enum exported by Decky's FooterLegend:
+ * BUMPER_LEFT=5 and BUMPER_RIGHT=6. Do not use browser button positions 4/5.
+ * Ignore repeats; all ordinary D-pad, A/B, triggers stay in Steam's focus flow.
+ */
+export function titleDeckFocusShoulder(event){
+  const detail=event?.detail||event;
+  if(!detail||typeof detail!=='object'||detail.is_repeat===true)return 0;
+  const button=detail.button;
+  if(button===5||button==='BUMPER_LEFT')return -1;
+  if(button===6||button==='BUMPER_RIGHT')return 1;
+  return 0;
+}
+
+// Diagnostic is bounded and only contains input-state numbers and source tags.
+// No games, descriptions, controller serial numbers, paths or user settings.
+const libraryControllerLog={events:[],callbacks:0,steamSamples:0,browserSamples:0,
+  pages:0,registration:'not attempted'};
+function logLibraryInput(kind,fields={}){
+  const entry={kind};
+  for(const key of ['left','right','buttons','upper','controller','delta','source']){
+    const value=fields[key];
+    if(typeof value==='boolean'||typeof value==='number'&&Number.isFinite(value)||
+       key==='source'&&typeof value==='string')entry[key]=value;
+  }
+  libraryControllerLog.events.push(entry);
+  if(libraryControllerLog.events.length>64)libraryControllerLog.events.shift();
+}
+export function titleDeckControllerDiagnostic(){
+  return {format:'titledeck-controller-v1',version:PLUGIN_VERSION,
+    registration:libraryControllerLog.registration,
+    callbacks:libraryControllerLog.callbacks,steamSamples:libraryControllerLog.steamSamples,
+    browserSamples:libraryControllerLog.browserSamples,pages:libraryControllerLog.pages,
+    events:libraryControllerLog.events.slice()};
+}
+/** One input lifecycle for Steam native events AND browser Gamepad fallback.
+ * Scope to Full Library Manager; preserve pageLibrary() and use rising edges.
+ */
+export function createLibraryShoulderBridge(onPage,env=globalThis){
+  const host=env.window||env;
+  const now=()=>typeof env.now==='function'?env.now():Date.now();
+  const steamControllers=new Map();
+  let interval=null,unregister=null,previousLeft=false,previousRight=false,lastFireAt=-Infinity;
+  let previousBrowserLeft=false,previousBrowserRight=false;
+  const browserState=()=>{
+    let left=false,right=false;
+    const navigators=[host?.navigator,env.navigator];
+    const visited=new Set();
+    for(const nav of navigators){
+      if(!nav||visited.has(nav))continue;visited.add(nav);
+      try{
+        for(const pad of nav.getGamepads?.()||[]){
+          if(!pad||pad.connected===false)continue;
+          const state=titleDeckShoulderState(pad);
+          left=left||state.left;right=right||state.right;
+        }
+      }catch{}
+    }
+    if(left!==previousBrowserLeft||right!==previousBrowserRight){
+      libraryControllerLog.browserSamples++;
+      logLibraryInput('browser-change',{left,right,source:'gamepad'});
+      previousBrowserLeft=left;previousBrowserRight=right;
+    }
+    return {left,right};
+  };
+  function reconcile(){
+    if(interval===null)return;
+    const time=now(),browser=browserState();
+    let left=browser.left,right=browser.right;
+    for(const [id,state] of steamControllers){
+      // Bound a stale native state in case a controller disconnects silently.
+      if(time-state.time>1200){steamControllers.delete(id);continue}
+      left=left||state.left;right=right||state.right;
+    }
+    const rightEdge=right&&!previousRight,leftEdge=left&&!previousLeft;
+    if(time-lastFireAt>=150){
+      if(rightEdge){lastFireAt=time;if(onPage(1)!==false){libraryControllerLog.pages++;logLibraryInput('page',{delta:1,source:'shoulder'});}}
+      else if(leftEdge){lastFireAt=time;if(onPage(-1)!==false){libraryControllerLog.pages++;logLibraryInput('page',{delta:-1,source:'shoulder'});}}
+    }
+    previousLeft=left;previousRight=right;
+  }
+  function steamChanges(changes){
+    if(interval===null)return;
+    libraryControllerLog.callbacks++;
+    for(const sample of Array.isArray(changes)?changes:[changes]){
+      if(!sample||typeof sample!=='object')continue;
+      if(!('ulButtons' in sample)&&!('ulUpperButtons' in sample)&&
+         !('sPressureBumperLeft' in sample)&&!('sPressureBumperRight' in sample)&&
+         !('bLeftBumper' in sample)&&!('bRightBumper' in sample)&&
+         !('bL1' in sample)&&!('bR1' in sample))continue;
+      const index=Number(sample.unControllerIndex),key=Number.isFinite(index)?String(index):'default';
+      const state=titleDeckShoulderState(sample);
+      const previous=steamControllers.get(key);
+      const flags=Number(sample.ulButtons),upper=Number(sample.ulUpperButtons);
+      // Save changes, not the high-frequency repeated state packets.
+      if(!previous||previous.left!==state.left||previous.right!==state.right||
+         previous.buttons!==flags||previous.upper!==upper){
+        logLibraryInput('steam-change',{...state,controller:Number.isFinite(index)?index:-1,
+          buttons:Number.isFinite(flags)?flags:0,upper:Number.isFinite(upper)?upper:0,source:'steam'});
+      }
+      libraryControllerLog.steamSamples++;
+      steamControllers.set(key,{...state,time:now(),buttons:flags,upper});
+    }
+    reconcile();
+  }
+  function start(){
+    if(interval!==null)return;
+    const set=host?.setInterval?.bind(host)||setInterval;
+    interval=set(reconcile,70);
+    logLibraryInput('manager-open');
+    const input=host?.SteamClient?.Input||env?.SteamClient?.Input;
+    libraryControllerLog.registration='unavailable';
+    if(typeof input?.RegisterForControllerStateChanges==='function')try{
+      const token=input.RegisterForControllerStateChanges(steamChanges);
+      unregister=typeof token==='function'?token:
+        typeof token?.unregister==='function'?()=>token.unregister():
+        typeof token?.Unregister==='function'?()=>token.Unregister():null;
+      libraryControllerLog.registration='registered';
+    }catch{libraryControllerLog.registration='error'}
+    logLibraryInput('steam-registration',{source:libraryControllerLog.registration});
+  }
+  function stop(){
+    if(interval===null)return;
+    const clear=host?.clearInterval?.bind(host)||clearInterval;
+    clear(interval);interval=null;
+    try{unregister?.()}catch{}
+    unregister=null;steamControllers.clear();previousLeft=false;previousRight=false;
+    logLibraryInput('manager-close');
+  }
+  return {start,stop};
+}
+
+// These are *only* Full Library Manager visibility preferences. Separate App
+// IDs are separate Steam shortcuts, even when their labels are similar.
+const HIDDEN_LIBRARY_STORE='titledeck-hidden-manager-entries-v1';
+export function validHiddenManagerIds(raw){
+  let ids=raw;
+  if(typeof raw==='string'){try{ids=JSON.parse(raw)}catch{return[]}}
+  if(!Array.isArray(ids))return[];
+  return [...new Set(ids.map(normId).filter(Boolean))].slice(0,400);
+}
+export function managerVisibleGames(games,hiddenIds=[]){
+  const excluded=new Set(validHiddenManagerIds(hiddenIds));
+  return (games||[]).filter(g=>!excluded.has(normId(g?.appid)));
+}
+// Extend the settings focus graph ONLY for our reversible visibility row.
+// The previously hardware-verified settingsFocusDestination stays unchanged.
+export function settingsFocusWithHidden(key,d,diagnostics=false){
+  if(key==='setting-recover'&&d===10)return 'setting-show-hidden';
+  if(key==='setting-show-hidden')return d===9?'setting-recover':d===10?'setting-placement-info':null;
+  if(key==='setting-placement-info'&&d===9)return 'setting-show-hidden';
+  return settingsFocusDestination(key,d,diagnostics);
+}
+/** 1.1.8 Manager-only right-stick scrolling. Uses the same normalized axis
+ * as accepted Game Info scrolling, but NEVER touches Steam's content or
+ * registers a global navigation listener. Returns false at screen limits. */
+export function scrollManagerWorkspaceByStick(root,amount,view='editor'){
+  if(!root||!Number.isFinite(amount)||!amount||!['editor','description','settings','review'].includes(view))return false;
+  // During OSK editing Steam owns the stick/focus; do not fight it.
+  if(root.classList?.contains?.('td-inline-keyboard-open'))return false;
+  const workspace=view==='description'
+    ?root.querySelector?.('[data-td-description-workspace]')
+    :root.querySelector?.('.td-workspace');
+  if(!workspace)return false;
+  const height=Number(workspace.scrollHeight)||0,shown=Number(workspace.clientHeight)||0;
+  if(height<=shown+2||shown<=0)return false;
+  const before=Number(workspace.scrollTop)||0;
+  const next=Math.max(0,Math.min(height-shown,before+amount*25));
+  if(Math.abs(next-before)<.2)return false;
+  try{workspace.scrollTop=next;return true}catch{return false}
+}
+
 function Manager(){
   const state=useStateSnapshot(),root=R.useRef(null);
   const [games,setGames]=R.useState([]),[scope,setScope]=R.useState('all'),[query,setQuery]=R.useState(''),[view,setView]=R.useState('library');
   const [selected,setSelected]=R.useState(''),[draft,setDraft]=R.useState(''),[notice,setNotice]=R.useState(null),[working,setWorking]=R.useState(false);
   const [entry,setEntry]=R.useState(''),[lastTile,setLastTile]=R.useState(''),[catalogBusy,setCatalogBusy]=R.useState(false);
   const [renderCols,setRenderCols]=R.useState(4);
+  const [hiddenManagerIds,setHiddenManagerIds]=R.useState(()=>validHiddenManagerIds(readPreference(HIDDEN_LIBRARY_STORE,'[]')));
   const [descriptionDraft,setDescriptionDraft]=R.useState('');
+  const [accent,setAccent]=R.useState(validAccent(readPreference(ACCENT_STORE,'wine')));
+  const [hexDraft,setHexDraft]=R.useState('');
+  const [customPickerOpen,setCustomPickerOpen]=R.useState(false);
+  const [pickerAdjust,setPickerAdjust]=R.useState(false);
+  const [pickerHue,setPickerHue]=R.useState(345);
+  const [pickerChoice,setPickerChoice]=R.useState('#8b1e3f');
+  const [stickScroll,setStickScroll]=R.useState(readControllerScrollSetting());
+  const lastPageInput=R.useRef(0);
+  // Independent of LB/RB: the accepted shoulder-button Focusable bridge is untouched.
+  R.useEffect(()=>{
+    if(!['editor','description','settings','review'].includes(view))return;
+    const shell=root.current;
+    const win=shell?.ownerDocument?.defaultView||globalThis;
+    const poll=()=>{
+      if(!readControllerScrollSetting())return;
+      let amount=0;
+      try{for(const pad of win?.navigator?.getGamepads?.()||globalThis.navigator?.getGamepads?.()||[]){
+        if(pad?.connected!==false)amount=normalizedRightStickY(pad);
+        if(amount)break;
+      }}catch{}
+      if(amount)scrollManagerWorkspaceByStick(root.current,amount,view);
+    };
+    const timer=setInterval(poll,45);
+    return()=>clearInterval(timer);
+  },[view]);
+  const pageLibraryRef=R.useRef(null);
   R.useEffect(()=>{
     const shell=root.current,win=shell?.ownerDocument?.defaultView;
     if(!shell)return;
@@ -2420,6 +4281,18 @@ function Manager(){
     const observer=typeof win?.ResizeObserver==='function'?new win.ResizeObserver(update):null;
     observer?.observe(shell);win?.addEventListener?.('resize',update);
     return()=>{observer?.disconnect();win?.removeEventListener?.('resize',update)};
+  },[]);
+  // Run after the manager opens and after Steam's route has settled. The
+  // library alone remains scrollable; its header is kept below Steam chrome.
+  R.useEffect(()=>{
+    const shell=root.current;if(!shell)return;
+    scrollManagerChromeToTop(shell);
+    fitManagerBelowSteamHeader(shell,shell.ownerDocument?.defaultView||globalThis);
+    const recheck=setTimeout(()=>fitManagerBelowSteamHeader(shell,shell.ownerDocument?.defaultView||globalThis),180);
+    const onResize=()=>fitManagerBelowSteamHeader(shell,shell.ownerDocument?.defaultView||globalThis);
+    const win=shell.ownerDocument?.defaultView;
+    win?.addEventListener?.('resize',onResize);
+    return()=>{clearTimeout(recheck);win?.removeEventListener?.('resize',onResize)};
   },[]);
   const [resetPage,setResetPage]=R.useState(0);
   // Ephemeral, per-game editing aids. A suggestion never changes the draft until
@@ -2459,9 +4332,83 @@ function Manager(){
   },[]);
   R.useEffect(()=>{void fullLibrary().catch(e=>notify(`Library scan failed: ${String(e?.message||e)}`,setNotice))},[]);
   R.useEffect(()=>{setGames(previous=>collectSteamGames(globalThis.appStore,state.games||[],[...remoteGames.current,...previous]));},[state.games]);
-  const filtered=games.filter(g=>(scope==='all'||(scope==='installed'?g.installed:Boolean(aliases[g.appid])))&&
+  const filtered=managerVisibleGames(games,hiddenManagerIds).filter(g=>(scope==='all'||(scope==='installed'?g.installed:Boolean(aliases[g.appid])))&&
      (`${g.name} ${aliases[g.appid]||''} ${g.appid}`).toLowerCase().includes(query.toLowerCase()));
+  const pageLibrary=delta=>{
+    if(view!=='library'||!filtered.length||!Number.isFinite(delta)||!delta)return false;
+    const shell=root.current;
+    const activeTile=shell?.ownerDocument?.activeElement?.closest?.('[data-td-game]');
+    const focusedId=activeTile?.getAttribute?.('data-td-game');
+    const activeIndex=filtered.findIndex(g=>String(g.appid)===String(focusedId||lastTile||selected));
+    const currentIndex=Math.max(0,activeIndex);
+    const nextIndex=Math.min(filtered.length-1,Math.max(0,currentIndex+Math.sign(delta)*Math.max(1,renderCols*3)));
+    if(nextIndex===currentIndex)return false;
+    const next=filtered[nextIndex];setLastTile(next.appid);
+    const focus=()=>{
+      const container=root.current;
+      const tile=container?.querySelector?.(`[data-td-focus="tile-${nextIndex}"]`);
+      if(!tile)return false;
+      // 1.0.2 hardware-verified page switching used Steam's navigation tree,
+      // NOT the HTML .focus({preventScroll:true}) adopted in 1.0.3.
+      const grid=container?.querySelector?.('[data-td-scroll="library"]');
+      if(grid)scrollLibraryTileIntoView(tile);
+      if(!focusNode(tile)){
+        try{tile.focus?.();}catch{}
+      }
+      if(grid)scrollLibraryTileIntoView(tile);
+      return true;
+    };
+    // The new row can be installed during React's next commit; retry after
+    // React renders and Steam refreshes its controller navigation tree.
+    setTimeout(focus,35);
+    return true;
+  };
+  pageLibraryRef.current=pageLibrary;
+  // One shared gate for Decky's native Focusable button event AND the PS4/browser
+  // fallback. Both can report the same physical shoulder press; never double-page.
+  // On-screen buttons still call pageLibrary directly and are unaffected.
+  const shoulderLast=R.useRef({time:-Infinity,delta:0});
+  const pageFromShoulder=delta=>{
+    if(view!=='library'||(delta!==1&&delta!==-1))return false;
+    const time=Date.now(),last=shoulderLast.current;
+    if(time-last.time<180&&last.delta===delta)return false;
+    shoulderLast.current={time,delta};
+    return Boolean(pageLibraryRef.current?.(delta));
+  };
+  const onNativeShoulder=e=>{
+    if(view!=='library')return;
+    const delta=titleDeckFocusShoulder(e);
+    if(!delta)return;
+    // Steam's native Focusable handler is the missing Deck built-in controller
+    // path (the diagnostic showed SteamClient.Input registration unavailable).
+    logLibraryInput('focus-button',{delta,source:'steam-focus'});
+    if(pageFromShoulder(delta)){
+      libraryControllerLog.pages++;
+      logLibraryInput('page',{delta,source:'steam-focus'});
+    }
+    e?.stopPropagation?.();e?.preventDefault?.();
+  };
+  // Physical LB/RB can be absent from navigator.getGamepads() in SteamOS
+  // Gaming Mode. Use SteamClient controller-state events first, with browser
+  // Gamepad fallback, while keeping the proven pageLibrary() function intact.
+  R.useEffect(()=>{
+    if(view!=='library')return;
+    const win=root.current?.ownerDocument?.defaultView||globalThis;
+    const bridge=createLibraryShoulderBridge(delta=>pageFromShoulder(delta),{
+      window:win,navigator:globalThis.navigator,SteamClient:globalThis.SteamClient
+    });
+    bridge.start();
+    return()=>bridge.stop();
+  },[view]);
   const installedCount=games.filter(g=>g.installed).length;
+  const setHiddenEntries=ids=>{const next=validHiddenManagerIds(ids);setHiddenManagerIds(next);writePreference(HIDDEN_LIBRARY_STORE,JSON.stringify(next));};
+  const hideSelectedFromManager=()=>{
+    if(!normId(selected))return;
+    setHiddenEntries([...hiddenManagerIds,selected]);
+    setLastTile('');setSelected('');setScope('all');setQuery('');
+    enterView('library','tile-0');
+    notify('Hidden from TitleDeck manager only. Steam shortcut is untouched; restore under Settings.',setNotice,true);
+  };
   const original=games.find(g=>g.appid===selected)?.name||steamOverview(globalThis.appStore,selected)?.display_name||'';
   const restoreTile=()=>focusQuery(root.current,`[data-td-game="${lastTile||selected}"]`,70);
   const enterView=(next,first)=>{setNotice(null);setView(next);if(next==='settings')setTimeout(()=>{const scroller=root.current?.querySelector?.('[data-td-scroll="settings"]');if(scroller)scroller.scrollTop=0;},25);if(first)focusQuery(root.current,`[data-td-focus="${first}"]`,90);};
@@ -2579,6 +4526,7 @@ function Manager(){
         // Remove the TitleDeck-owned Game Info element immediately. Never
         // repeatedly rewrite Steam's React text during subsequent scans.
         descriptionAdapter?.restoreGameInfo?.(selected,state.descriptions?.[selected]||'');
+        nonSteamDescriptionAdapter?.restoreGameInfo?.(selected);
       }else await call('save_description',selected,content);
       const verified=await refreshState();
       if(remove?Boolean(verified.descriptions?.[selected]):verified.descriptions?.[selected]!==content)throw Error('Description readback did not match.');
@@ -2600,6 +4548,7 @@ function Manager(){
       // The shared snapshot already triggers both display adapters. Explicitly
       // dismantle the active Game Info shell before the next Steam paint.
       descriptionAdapter?.restoreGameInfo?.(target,previous);
+      nonSteamDescriptionAdapter?.restoreGameInfo?.(target);
       adapter?.runNow();
       setDraft(original);setDescriptionDraft('');
       notify('Restored original game state: Steam title and description. Unsaved edits cleared.',setNotice,true);
@@ -2628,10 +4577,10 @@ function Manager(){
     setResetPage(0);enterView('resetConfirm','reset-cancel');
   };
   // Explicit focus graph. Do not let the native two-pane/flex layout determine D-pad targets.
-  const navHeader=(key,e)=>{const target=topMove(key,dir(e),scope);if(target){if(target==='tile-0'&&!filtered.length)return false;return directionTo(root.current,target,e);}halt(e);return true;};
+  const navHeader=(key,e)=>{const target=topMove(key,dir(e),scope);if(target){if(target==='tile-0'&&!filtered.length)return false;if(target==='close'||target.startsWith('filter-')||target.startsWith('tool-'))scrollManagerChromeToTop(root.current);return directionTo(root.current,target,e);}halt(e);return true;};
   const navTile=(index,e)=>{const d=dir(e);if(![9,10,11,12].includes(d))return false;const columns=renderCols,visual=measuredGridDestination(root.current,index,d),next=visual!==undefined?visual:libraryMove(index,d,filtered.length,columns);
     if(next!==null){if(directionTo(root.current,`tile-${next}`,e))return true;return false;} // Native nested row/column navigation handles focus when no explicit target is mounted.
-    if(d===9&&index<columns){const destinations=['tool-search','tool-search','tool-id','tool-refresh','tool-settings'];return directionTo(root.current,destinations[Math.min(destinations.length-1,Math.floor(index*5/Math.max(1,columns)))],e)}
+    if(d===9&&index<columns){scrollManagerChromeToTop(root.current);const destinations=['tool-search','tool-search','tool-id','tool-refresh','tool-settings'];return directionTo(root.current,destinations[Math.min(destinations.length-1,Math.floor(index*5/Math.max(1,columns)))],e)}
     // At a grid edge, keep focus on the current game, never skip into random controls.
     halt(e);return true;
   };
@@ -2653,7 +4602,7 @@ function Manager(){
   };
   const title=view==='description'?'Edit game description':view==='library'?'Library':view==='editor'?'Rename game':view==='settings'?'Settings':view==='resetConfirm'?'Restore original titles':view==='backupConfirm'?'Restore backup':view==='search'?'Search your games':'Find game by App ID';
   const summary=view==='library'?`${games.length} games  ·  ${installedCount} installed  ·  ${Object.keys(aliases).length} renamed`:view==='description'?'Local custom descriptions · original Steam data preserved':'Custom display titles, saved locally';
-  const changeFilter=k=>{setScope(k);setQuery('');focusQuery(root.current,'[data-td-focus="tile-0"]',65);};
+  const changeFilter=k=>{scrollManagerToTop(root.current);setScope(k);setQuery('');focusQuery(root.current,'[data-td-focus="tile-0"]',65);};
   const showMessage=h(Toast,{notice});
   const footer=(primary,secondary)=>h('div',{className:'td-bottom'},h('span',{className:'td-status'},primary),h('strong',null,secondary));
   let rail,actions,workspace,bottom;
@@ -2664,6 +4613,8 @@ function Manager(){
     actions=h(UI.Focusable,{'flow-children':'right',className:'td-actions','data-td-layout':'tool-row'},
       ...[['tool-search',query?`Search: ${query}`:'⌕ Search library',openSearch],['tool-id','App ID',manualId],['tool-refresh',catalogBusy?'Scanning…':'↻ Refresh',()=>void fullLibrary({refreshArtwork:true}).then(()=>notify('Game list and artwork sources refreshed.',setNotice,true)).catch(e=>notify(String(e),setNotice))],['tool-settings','⚙ Settings',()=>enterView('settings','setting-0')]].map(([key,label,click])=>h(Btn,{key,className:'td-action','data-td-focus':key,
         nav:e=>navHeader(key,e),onClick:click,disabled:catalogBusy&&key==='tool-refresh'},label)),
+      h(Btn,{className:'td-action td-page', 'data-td-focus':'tool-page-prev',nav:e=>navHeader('tool-page-prev',e),onClick:()=>pageLibrary(-1)},'◀ LB'),
+      h(Btn,{className:'td-action td-page', 'data-td-focus':'tool-page-next',nav:e=>navHeader('tool-page-next',e),onClick:()=>pageLibrary(1)},'RB ▶'),
       h('span',{className:'td-results'},`${filtered.length} shown`));
     workspace=h('div',{className:'td-workspace','data-td-scroll':'library'},
       filtered.length?h(UI.Focusable,{'flow-children':'down',className:'td-grid','data-td-grid':'true','data-td-columns':renderCols},
@@ -2673,17 +4624,18 @@ function Manager(){
           ...row.map((game,col)=>{const index=rowIndex*renderCols+col;return h(Btn,{
             key:game.appid,className:'td-game','data-td-game':game.appid,'data-td-focus':`tile-${index}`,
             nav:e=>navTile(index,e),onClick:()=>openGame(game),onFocus:()=>setLastTile(game.appid),onGamepadFocus:()=>setLastTile(game.appid)},
-            h('div',{className:'td-game-artbox'},h(Cover,{id:game.appid,title:game.name,priority:index<24}),aliases[game.appid]?h('span',{className:'td-game-mark'},'RENAMED'):null),
+            h('div',{className:'td-game-artbox'},h(Cover,{id:game.appid,title:game.name,priority:index<24,tile:true}),aliases[game.appid]?h('span',{className:'td-game-mark'},'RENAMED'):null),
             h('div',{className:'td-game-copy'},h('div',{className:'td-game-title'},aliases[game.appid]||game.name),
-              h('div',{className:'td-game-sub'},aliases[game.appid]?game.name:game.installed?'● Installed':`App ${game.appid}`)));}))))
+              h('div',{className:'td-game-sub'},...(game.installed?[h('span',{className:'td-installed-dot',title:'Installed','aria-label':'Installed'},'●'),h('span',{className:'td-installed-label'},aliases[game.appid]?`Installed · ${game.name}`:'Installed')]:[h('span',null,aliases[game.appid]?game.name:`App ${game.appid}`)]))));}))))
        :h('div',{className:'td-empty'},h('h2',null,query?'No matching games':'No games in this category'),h('p',null,query?'Open Search to try a different title or App ID.':'Refresh the library or choose All games.'),
          h(Btn,{onClick:()=>{setScope('all');setQuery('');}},'Show all games')));
-    bottom=footer('D-pad: browse   •   A: rename   •   B: back   •   Search and filters above',`${filtered.length} titles`);
+    bottom=footer('D-pad: browse   •   LB/RB: page   •   A: select   •   B: back',`${filtered.length} titles`);
   }else if(view==='editor'){
     rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM NAME'),h('div',{className:'td-rail-label',style:{textAlign:'center'}},'Steam game '+selected),h('div',{className:'td-rail-label',style:{textAlign:'right'}},aliases[selected]?'● Saved override':'Original title'));
     actions=h('div',{className:'td-actions td-title-editor-toolbar',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'edit-back',nav:e=>editorNav('edit-back',e),onClick:returnLibrary},'← All games'),h(Btn,{className:'td-action','data-td-focus':'edit-description',nav:e=>editorNav('edit-description',e),onClick:openDescription},state.descriptions?.[selected]?'✎ Edit description ●':'✎ Add description'),
       state.descriptions?.[selected]?h(Btn,{className:'td-action','data-td-focus':'edit-description-restore',nav:e=>editorNav('edit-description-restore',e),disabled:working,
         onClick:()=>{activeInlineKeyboard?.close();void saveDescription(true)}},'↶ Restore Steam description'):null,
+      h(Btn,{className:'td-action','data-td-focus':'edit-hide',nav:e=>editorNav('edit-hide',e),disabled:working,onClick:hideSelectedFromManager},'Hide tile'),
       h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Edit → Save → Verify in Steam'));
     workspace=h('div',{className:'td-workspace'},h('div',{className:'td-editor'},h('div',null,h('div',{className:'td-editor-art'},h(Cover,{id:selected,title:original}))),
       h('div',{className:'td-card td-game-editor-card'},
@@ -2719,6 +4671,7 @@ function Manager(){
             'Full text is preserved. Use Edit description or Restore Steam description above.')):null)));
     bottom=footer('A: select an action  •  B: return to library',state.enabled?'Steam title replacement ON':'Display replacement paused');
   }else if(view==='description'){
+    const nonSteamEdit=isNativeSteamShortcutApp(selected,nonSteamOverviewStore(steamDocument||globalThis.document));
     const stored=state.descriptions?.[selected]||'';
     const descNav=(key,e)=>{
       const d=dir(e),dest={
@@ -2733,7 +4686,7 @@ function Manager(){
       halt(e);return true;
     };
     rail=h('div',{className:'td-rail'},h('div',{className:'td-rail-label'},'CUSTOM DESCRIPTION'),
-      h('div',{className:'td-rail-label'},'Steam game '+selected),
+      h('div',{className:'td-rail-label'},(nonSteamEdit?'Non-Steam shortcut ':'Steam game ')+selected),
       h('div',{className:'td-rail-label'},stored?'● Locally saved':'○ No override'));
     // Save and Restore stay visible in the fixed toolbar. On short-screen Deck
     // resolutions the previous buttons were clipped below a nested focus view.
@@ -2744,18 +4697,18 @@ function Manager(){
       h(Btn,{className:'td-action','data-td-focus':'description-bottom',nav:e=>descNav('description-bottom',e),onClick:()=>scrollDescriptionWorkspace(root.current,true)},'↓ Bottom'));
     workspace=h('div',{className:'td-workspace','data-td-description-workspace':'true'},h('div',{className:'td-card td-game-editor-card',style:{maxWidth:900,margin:'0 auto',paddingBottom:28}},
       h('div',{className:'td-copy-label'},'DESCRIPTION FOR '+(aliases[selected]||original||selected)),
-      h('p',{className:'td-editor-note'},'Customize the description displayed locally on the matching Steam game page. Game Info mode follows Steam’s own styling; other placements use separate panels. Original Steam metadata stays unchanged.'),
+      h('p',{className:'td-editor-note'},nonSteamEdit?'Customize this non-Steam shortcut locally. In Game Info, your artwork appears beside the description and the right stick scrolls longer text. Original Steam metadata remains unchanged.':'Customize the description displayed locally on the matching Steam game page. Longer descriptions can be scrolled with the right stick. Original Steam metadata stays unchanged.'),
       h(UI.Focusable,{'flow-children':'down'},h(Btn,{'data-td-focus':'description-open',nav:e=>descNav('description-open',e),onClick:openDescriptionTyping},'⌨ Edit description using Steam keyboard')),
       h('div',{'data-td-focus':'description-input',className:'td-description-native-input',
         onGamepadDirection:e=>descNav('description-input',e)},
         h(InlineGameNameField,{value:descriptionDraft,setValue:setDescriptionDraft,
           label:'Custom game description',
-          placeholder:'Write your custom description…',fieldKind:'description',finishFocus:'description-save',
+          placeholder:'Write your custom description…',fieldKind:'description',nonSteamDescription:nonSteamEdit,finishFocus:'description-save',
           onEnter:()=>focusQuery(root.current,'[data-td-focus="description-save"]',70)})),
       h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',minHeight:85,
         maxHeight:160,overflowY:'auto',padding:'14px 16px',borderRadius:10,background:'#172234',border:'1px solid #43566e'}},
         descriptionDraft||'Your custom description preview will appear here.'),
-      h('div',{className:'td-editor-original-meta'},'No description character limit · At 1,247 characters a yellow Steam scrolling warning appears; saving remains available · Save and Restore are above'),
+      h('div',{className:'td-editor-original-meta'},nonSteamEdit?'Non-Steam Game Info: artwork on the left, text on the right · Full descriptions remain saved · Scroll with the right stick · Save and Restore are above':'Full descriptions remain saved · Scroll with the right stick · Save and Restore are above'),
       stored?h('div',{className:'td-editor-note',style:{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:150,overflowY:'auto',marginTop:15}},'Saved local description: '+stored):null
     ));
     bottom=footer('A: edit or save  •  B: return to game editor','Shown on matching Steam game detail pages');
@@ -2834,18 +4787,29 @@ function Manager(){
     actions=h('div',{className:'td-actions',style:{display:'flex'}},h(Btn,{className:'td-action','data-td-focus':'settings-back',nav:e=>{if(dir(e)===10)return directionTo(root.current,'setting-0',e);if(dir(e)===9)return directionTo(root.current,'close',e);halt(e);return true;},onClick:returnLibrary},'← All games'),h('div',{style:{flex:1}}),h('span',{className:'td-results'},'Aliases & recovery'));
     const settingPanel=(id,title,desc,action,extra='',wide=false)=>h('section',{className:`td-setting-panel ${wide?'td-panel-wide':''}`,'data-td-setting':id},
       h('h3',null,title),h('p',null,desc),extra?h('div',{className:'td-mini-state'},extra):null,action);
-    const settingsGrid=[['setting-0','setting-backup'],['setting-backup-restore','setting-recover'],developerDiagnosticsEnabled()?['setting-placement-info','setting-scan']:['setting-placement-info'],['setting-placement-hero'],['setting-placement-below'],['setting-restore-all']];
+    const settingsOrder=['setting-0','setting-backup','setting-backup-restore','setting-recover',
+      'setting-show-hidden',
+    'setting-placement-info','setting-placement-hero','setting-placement-below',
+      ...(developerDiagnosticsEnabled()?['setting-scan']:[]),
+      'setting-theme','setting-stick',...Array.from({length:12},(_,i)=>`setting-swatch-${i}`),
+      'setting-custom-edit','setting-custom','setting-restore-all'];
     const settingsDirection=(key,e)=>{
-      const d=dir(e),coord=settingsGrid.flatMap((r,y)=>r.map((v,x)=>({v,y,x}))).find(x=>x.v===key);
-      if(!coord)return false;
-      if(d===9&&coord.y===0){const scroller=root.current?.querySelector?.('[data-td-scroll="settings"]');if(scroller)scroller.scrollTop=0;return directionTo(root.current,'settings-back',e);}
-      const candidates=[];
-      if(d===11&&coord.x>0)candidates.push(settingsGrid[coord.y][coord.x-1]);
-      if(d===12&&coord.x<settingsGrid[coord.y].length-1)candidates.push(settingsGrid[coord.y][coord.x+1]);
-      if(d===9&&coord.y>0){for(let row=coord.y-1;row>=0;row--)candidates.push(settingsGrid[row][Math.min(coord.x,settingsGrid[row].length-1)]);}
-      if(d===10&&coord.y<settingsGrid.length-1){for(let row=coord.y+1;row<settingsGrid.length;row++)candidates.push(settingsGrid[row][Math.min(coord.x,settingsGrid[row].length-1)]);}
-      for(const dest of candidates){const node=root.current?.querySelector?.(`[data-td-focus=\"${dest}\"]`);if(node&&!node.disabled&&directionTo(root.current,dest,e))return true;}
-      halt(e);return true;
+      // Stop Steam's default spatial search FIRST. Otherwise when a target's
+      // navigation node isn't mounted yet, the fallback goes right instead of
+      // down through the three vertically stacked placement choices.
+      halt(e);
+      const d=dir(e),next=settingsFocusWithHidden(key,d,developerDiagnosticsEnabled());
+      if(!next)return true;
+      const focus=()=>{
+        const node=root.current?.querySelector?.(`[data-td-focus="${next}"]`);
+        if(node)focusNode(node);
+      };
+      if(next==='settings-back'){
+        const scroller=root.current?.querySelector?.('[data-td-scroll="settings"]');
+        if(scroller)scroller.scrollTop=0;
+      }
+      focus();setTimeout(focus,0);
+      return true;
     };
     const button=(text,onClick,opts={})=>h(Btn,{className:'td-action',onClick,disabled:opts.disabled||working,'data-td-focus':opts.focus||undefined,nav:opts.focus?e=>settingsDirection(opts.focus,e):undefined},text);
     const safeCall=async(name,success)=>{if(working)return;setWorking(true);try{const result=await call(name);await refreshState();adapter?.runNow();notify(success(result),setNotice,true);}catch(e){notify(`Could not ${name.replaceAll('_',' ')}: ${String(e?.message||e)}.`,setNotice);}finally{setWorking(false)}};
@@ -2861,9 +4825,14 @@ function Manager(){
           button('Restore saved backup',()=>{setView('backupConfirm');focusQuery(root.current,'[data-td-focus="backup-cancel"]',90)},{disabled:!manual.available,focus:'setting-backup-restore'}),manual.available?'● Backup available':'○ No backup'),
         settingPanel('recovery','Recover after Restore All',recovery.available?`Your last Restore All saved ${recovery.count} name(s). Undo is allowed only if you have not added new names.`:'No Restore All recovery is available yet. This option activates after a confirmed reset.',
           button(`Recover ${recovery.count||0} names`,()=>void safeCall('undo_restore_all',r=>`Recovered ${r?.recovered_count||recovery.count} custom titles.`),{disabled:!recovery.available||aliasCount!==0,focus:'setting-recover'}),recovery.available?(aliasCount?'Save or clear current names before recovery':'● Recovery ready'):'○ Nothing to recover'),
+        settingPanel('hidden-library','Hidden Full Library Manager entries',
+          `Only TitleDeck tiles are hidden, never deleted from Steam. ${hiddenManagerIds.length} hidden. Use Hide tile in a game's editor to remove an unwanted duplicate.` ,
+          button(`Show all hidden tiles (${hiddenManagerIds.length})`,()=>{
+            setHiddenEntries([]);notify('All hidden manager tiles restored. Steam entries were never changed.',setNotice,true);
+          },{focus:'setting-show-hidden',disabled:hiddenManagerIds.length===0})),
         settingPanel('description-placement','Custom game description location',
           'Game Info replaces the visible description inside Steam’s GAME INFO tab. Artwork Footer uses the strip above Play. Below Play keeps the full-width panel. All three preserve your original Steam metadata.',
-          h('div',{className:'td-card-buttonrow',style:{display:'grid',gridTemplateColumns:'1fr',gap:6}},
+          h(UI.Focusable,{'flow-children':'down',className:'td-card-buttonrow td-description-position-options',style:{display:'flex',flexDirection:'column',gap:6}},
             button(state.description_position==='game_info'?'✓ Game Info (selected)':'Show inside GAME INFO',
               ()=>void save('set_description_position','game_info'),{focus:'setting-placement-info'}),
             button(state.description_position==='hero_footer'?'✓ Artwork Footer (selected)':'Show in Artwork Footer',
@@ -2874,16 +4843,166 @@ function Manager(){
             :state.description_position==='hero_footer'?'● Artwork Footer selected · compact preview above Play'
             :'● Below Play selected · full description panel'),
         ...(developerDiagnosticsEnabled()?[settingPanel('diagnostics','Developer: Steam display diagnostics',`Bridge: ${steamBridgeStatus}. Documents: ${adapter?.docs||0}. Visible text matches: ${adapter?.applied||0}. Live UI updates: ${adapter?.fastPasses||0}. Description panels: ${descriptionAdapter?.shown||0}. Current view: ${descriptionAdapter?.status||'not ready'}. Last captured Steam game page: ${formatDescriptionGameProbe()}. Native Game Info data: ${gameInfoDataAdapter?.status||'not connected'}; hooks ${gameInfoDataAdapter?.hookedStores||0}, overrides ${gameInfoDataAdapter?.overrides||0}. Description placement: ${state.description_position==='game_info'?'Game Info':state.description_position==='hero_footer'?'Artwork Footer':'Below Play'}. Saved names: ${aliasCount}; descriptions: ${Object.keys(state.descriptions||{}).length}. No Steam artwork or metadata is modified.`,
-          button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'}))]:[]),
+          button('Rescan Steam UI',()=>{adapter?.runNow();descriptionAdapter?.runNow();nonSteamDescriptionAdapter?.runNow();notify(`Steam scan complete. Titles: ${adapter?.applied||0}; description panels: ${descriptionAdapter?.shown||0}.`,setNotice,true)},{focus:'setting-scan'}))]:[]),
+        settingPanel('appearance','Full manager color theme',
+          'Choose a complete TitleDeck color theme for backgrounds, cards, buttons, text and glowing focus. Default: Wine Red. Steam pages stay untouched.',
+          button(`Accent: ${themeColors(accent).name}  •  Change`,()=>{
+            const keys=Object.keys(TITLEDECK_ACCENTS),at=keys.indexOf(accent);
+            const next=keys[(at+1+keys.length)%keys.length];setAccent(next);writePreference(ACCENT_STORE,next);
+          },{focus:'setting-theme'}),`● ${themeColors(accent).name}`),
+        settingPanel('controls','Right-stick Game Info scrolling',
+          'Scroll long Steam and non-Steam Game Info descriptions with the right analog stick. It works only on active customized Game Info pages.',
+          button(stickScroll?'✓ Right stick scrolling ON':'Right stick scrolling OFF',()=>{
+            const value=!stickScroll;setStickScroll(value);writePreference(SCROLL_STORE,value?'on':'off');
+          },{focus:'setting-stick'}),stickScroll?'● Enabled':'○ Disabled'),
+        settingPanel('color-picker','Choose a color',
+          'Use the D-pad to select a color. Press A to apply it immediately. The hex field underneath is for any other shade.',
+          h('div',{className:'td-color-picker',role:'group','aria-label':'Accent color palette'},
+            ...TITLEDECK_COLOR_SWATCHES.map(([name,color],i)=>
+              h(Btn,{key:color,className:`td-swatch${accent.toLowerCase()===color.toLowerCase()?' td-swatch-selected':''}`,
+                'data-td-focus':`setting-swatch-${i}`,nav:e=>settingsDirection(`setting-swatch-${i}`,e),
+                'aria-label':`Select ${name} (${color})`,
+                onClick:()=>{setAccent(color);setHexDraft(color);writePreference(ACCENT_STORE,color)}},
+                  h('span',{className:'td-swatch-chip',style:{backgroundColor:color}},null),
+                  h('span',{className:'td-swatch-label'},name))))),
+        settingPanel('custom-color','Custom accent (hex)',
+          'Open the visual picker to create any RGB color with a dragable hue bar, two-dimensional color square, D-pad fine adjustment and exact RGB controls.',
+          h('div',{className:'td-custom-accent'},
+            h(UI?.TextField||'input',{type:'text',inputMode:'text',placeholder:'#8B1E3F',maxLength:7,autocomplete:'off',
+              'aria-label':'Custom accent hex color',value:hexDraft,
+              onChange:e=>setHexDraft(String(e.target?.value||''))}),
+            button('Open visual color picker ▦',()=>{
+              setPickerChoice(/^#[0-9a-f]{6}$/i.test(hexDraft)?hexDraft.toUpperCase():
+                (/^#[0-9a-f]{6}$/i.test(accent)?accent.toUpperCase():'#8B1E3F'));
+              setPickerHue(hsvOfHex(/^#[0-9a-f]{6}$/i.test(hexDraft)?hexDraft:
+                (/^#[0-9a-f]{6}$/i.test(accent)?accent:'#8B1E3F')).hue);
+              setPickerAdjust(false);
+              setCustomPickerOpen(true);
+              focusQuery(root.current,'[data-td-focus="picker-hue-strip"]',70);
+            },{focus:'setting-custom-edit'}),
+            button('Apply custom accent',()=>{
+              const next=validAccent(hexDraft);
+              if(!/^#[0-9a-f]{6}$/.test(next)){notify('Use a 6-digit hex color, such as #8B1E3F.',setNotice);return}
+              setAccent(next);writePreference(ACCENT_STORE,next);
+              notify('Custom accent saved for Full Library Manager.',setNotice,true);
+            },{focus:'setting-custom'}))),
         h('section',{className:'td-setting-panel td-panel-wide td-panel-danger'},h('h3',null,'Restore every original Steam title'),
           h('p',null,`Remove all ${aliasCount} saved display override${aliasCount===1?'':'s'} from TitleDeck. You will review a separate confirmation and an automatic recovery backup will be created first.`),
           button('Review Restore All…',startRestoreAll,{disabled:!aliasCount,focus:'setting-restore-all'}),
           h('div',{className:'td-mini-state'},'Nothing is removed until you explicitly confirm.'))
       )));
-    bottom=footer('B: return to library',`TitleDeck ${PLUGIN_VERSION}`);
+    if(customPickerOpen){
+      const focusPicker=(key)=>{
+        if(!key)return false;
+        const focus=()=>{const node=root.current?.querySelector?.(`[data-td-focus="${key}"]`);
+          if(node)focusNode(node)};
+        focus();setTimeout(focus,0);return true;
+      };
+      const pickerDirection=(key,e)=>{
+        const d=dir(e);if(![9,10,11,12].includes(d))return false;
+        halt(e);focusPicker(pickerMove(key,d));return true;
+      };
+      const currentHSV=hsvOfHex(pickerChoice);
+      const chooseHue=(hue)=>{const old=hsvOfHex(pickerChoice);setPickerHue(hue);setPickerChoice(hsvPickerHex(hue,old.saturation,old.value))};
+      const freeDirection=(axis,e)=>{
+        const d=dir(e);if(![9,10,11,12].includes(d))return false;
+        halt(e);
+        const destination=pickerMixerRoute(axis,d,pickerAdjust);
+        if(destination){focusPicker(destination);return true}
+        if(axis==='hue'&&(d===11||d===12)){
+          chooseHue((currentHSV.hue+(d===12?1:-1)+360)%360);return true;
+        }
+        if(axis==='square'&&pickerAdjust){
+          const sat=Math.max(0,Math.min(1,currentHSV.saturation+(d===12?1:d===11?-1:0)*.01));
+          const value=Math.max(0,Math.min(1,currentHSV.value+(d===9?1:d===10?-1:0)*.01));
+          setPickerChoice(hsvPickerHex(currentHSV.hue,sat,value));return true;
+        }
+        // In navigation mode, left/right tune saturation; Up/Down leave.
+        if(axis==='square'&&(d===11||d===12)){
+          const sat=Math.max(0,Math.min(1,currentHSV.saturation+(d===12?1:-1)*.01));
+          setPickerChoice(hsvPickerHex(currentHSV.hue,sat,currentHSV.value));return true;
+        }
+        return true;
+      };
+      const chooseFromPointer=(axis,e)=>{
+        const target=e.currentTarget,rect=target?.getBoundingClientRect?.();
+        if(!rect?.width||!rect?.height)return;
+        const x=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+        if(axis==='hue')chooseHue(Math.round(359*x));
+        else setPickerChoice(pointToHsv(currentHSV.hue,x,(e.clientY-rect.top)/rect.height));
+      };
+      const pickerDrag=(axis,e)=>{if(e.buttons===1||e.pressure>0)chooseFromPointer(axis,e)};
+      const cancelPicker=()=>{setPickerAdjust(false);setCustomPickerOpen(false);focusQuery(root.current,'[data-td-focus="setting-custom-edit"]',60)};
+      const applyPicker=()=>{
+        const hex=pickerChoice.toUpperCase();setAccent(hex);setHexDraft(hex);
+        writePreference(ACCENT_STORE,hex);setPickerAdjust(false);setCustomPickerOpen(false);
+        focusQuery(root.current,'[data-td-focus="setting-custom-edit"]',70);
+        notify(`Custom color ${hex} applied.`,setNotice,true);
+      };
+      workspace=h('div',{className:'td-workspace td-picker-workspace','data-td-scroll':'settings'},
+        h(UI.Focusable,{'flow-children':'down',className:'td-picker-panel'},
+          h('h2',{className:'td-title-large'},'Visual custom color picker'),
+          h('p',{className:'td-settings-intro'},'Create any color using the free hue bar, two-dimensional color square, or exact RGB +/- controls. Quick swatches below are optional.'),
+          h('h3',null,'1 · Mix any color'),
+          h('p',{className:'td-picker-help'},'D-pad Down moves from Hue → Shade → RGB → swatches → Apply. Left/Right adjusts hue or saturation. On Shade, press A for precise brightness adjustment; press A again to move on. B closes the picker.'),
+          h(Btn,{className:'td-picker-gradient-hue','data-td-focus':'picker-hue-strip',
+            nav:e=>freeDirection('hue',e),onClick:()=>focusPicker('picker-sv-field'),
+            onPointerDown:e=>chooseFromPointer('hue',e),onPointerMove:e=>pickerDrag('hue',e),
+            'aria-label':`Continuous hue, ${Math.round(currentHSV.hue)} degrees; left or right to adjust`},
+            h('span',{className:'td-picker-gradient-hue-indicator',style:{left:`${currentHSV.hue/359*100}%`}})),
+          h(Btn,{className:'td-picker-gradient-square','data-td-focus':'picker-sv-field',
+            nav:e=>freeDirection('square',e),
+            onClick:()=>setPickerAdjust(value=>!value),
+            onPointerDown:e=>chooseFromPointer('square',e),onPointerMove:e=>pickerDrag('square',e),
+            style:{backgroundColor:hsvPickerHex(currentHSV.hue,1,1)},
+            'aria-label':'Continuous saturation and brightness. Left/right changes saturation; up/down changes brightness.'},
+            h('span',{className:'td-picker-gradient-square-cursor',
+              style:{left:`${currentHSV.saturation*100}%`,top:`${(1-currentHSV.value)*100}%`}})),
+          h('p',{className:'td-picker-help','data-td-picker-mode':pickerAdjust?'adjust':'navigate'},
+            pickerAdjust?'Shade adjustment ON · D-pad adjusts saturation and brightness · A finishes adjusting · B exits adjustment':
+              'D-pad Down: RGB controls · Left/Right: saturation · A: adjust shade brightness · B: Cancel'),
+          h('div',{className:'td-picker-channel-grid'},
+            ...['Red','Green','Blue'].map((name,channel)=>h('div',{className:'td-picker-channel',key:name},
+              h('span',null,`${name}: ${rgbOfHex(pickerChoice)[channel]}`),
+              h(Btn,{className:'td-action','data-td-focus':`picker-rgb-${channel}-minus`,
+                nav:e=>{const d=dir(e);if(![9,10,11,12].includes(d))return false;halt(e);focusPicker(pickerRgbRoute(`picker-rgb-${channel}-minus`,d));return true},
+                onClick:()=>setPickerChoice(nudgeHexChannel(pickerChoice,channel,-1)),
+                'aria-label':`Decrease ${name} by one`},'− 1'),
+              h(Btn,{className:'td-action','data-td-focus':`picker-rgb-${channel}-plus`,
+                nav:e=>{const d=dir(e);if(![9,10,11,12].includes(d))return false;halt(e);focusPicker(pickerRgbRoute(`picker-rgb-${channel}-plus`,d));return true},
+                onClick:()=>setPickerChoice(nudgeHexChannel(pickerChoice,channel,1)),
+                'aria-label':`Increase ${name} by one`},'+ 1')))),
+          h('h3',null,'2 · Optional quick color squares'),
+          h(UI.Focusable,{'flow-children':'right',className:'td-picker-hues'},
+            ...Array.from({length:12},(_,i)=>h(Btn,{key:i,className:'td-picker-tile',
+              'data-td-focus':`picker-hue-${i}`,nav:e=>pickerDirection(`picker-hue-${i}`,e),
+              'aria-label':`Hue ${i+1}`,onClick:()=>setPickerHue(i*30)},
+              h('span',{className:'td-picker-chip','data-selected':pickerHue===i*30?'true':'false',style:{backgroundColor:hsvPickerHex(i*30,1,1)}})))),
+          h('h3',null,'2 · Saturation and brightness'),
+          h(UI.Focusable,{'flow-children':'down',className:'td-picker-shades'},
+            ...Array.from({length:48},(_,i)=>{const hex=pickerGridColor(pickerHue,i);return h(Btn,{key:i,
+              className:'td-picker-tile','data-td-focus':`picker-cell-${i}`,nav:e=>pickerDirection(`picker-cell-${i}`,e),
+              'aria-label':`Select custom shade ${i+1}: ${hex}`,onClick:()=>setPickerChoice(hex)},
+              h('span',{className:'td-picker-chip','data-selected':pickerChoice===hex?'true':'false',style:{backgroundColor:hex}}))})),
+          h('div',{className:'td-picker-selected'},h('span',{className:'td-picker-preview',style:{backgroundColor:pickerChoice}}),
+            h('span',null,`Selected: ${pickerChoice.toUpperCase()}`)),
+          h(UI.Focusable,{'flow-children':'right',className:'td-picker-actions'},
+            h(Btn,{className:'td-action','data-td-focus':'picker-cancel',nav:e=>pickerDirection('picker-cancel',e),onClick:cancelPicker},'Cancel'),
+            h(Btn,{className:'td-action','data-td-focus':'picker-apply',nav:e=>pickerDirection('picker-apply',e),onClick:applyPicker},'✓ Apply custom color'))));
+    }
+    bottom=footer(customPickerOpen?'D-pad: adjust hue/brightness · Touch: drag to mix · A: apply · B: close':'B: return to library',`TitleDeck ${PLUGIN_VERSION}`);
   }
   const nativeScreen=view==='keyboard'||view==='search'||view==='appid';
-  return h(UI.Focusable,{'data-titledeck-ui':'true',className:`td-root${nativeScreen?' td-native-screen':''}`,ref:root,'flow-children':'down',onCancel:e=>{halt(e);back()}},
+  return h(UI.Focusable,{'data-titledeck-ui':'true',className:`td-root${nativeScreen?' td-native-screen':''}`,ref:root,
+    style:{'--td-accent':themeColors(accent).main,'--td-accent-dark':themeColors(accent).dark,
+      '--td-accent-bright':themeColors(accent).bright,'--td-accent-border':themeColors(accent).border,
+      '--td-backdrop':themeColors(accent).backdrop,'--td-surface':themeColors(accent).surface,
+      '--td-raised':themeColors(accent).raised,'--td-tile':themeColors(accent).tile,
+      '--td-inset':themeColors(accent).inset,'--td-muted':themeColors(accent).muted},
+    'flow-children':'down',onButtonDown:onNativeShoulder,onKeyDown:e=>{if(view==='library'&&!(e.target?.matches?.('input,textarea'))){
+      if(e.key==='PageDown'){e.preventDefault?.();pageLibrary(1)}
+      if(e.key==='PageUp'){e.preventDefault?.();pageLibrary(-1)}
+    }},onCancel:e=>{halt(e);if(customPickerOpen){if(pickerAdjust){setPickerAdjust(false);focusQuery(root.current,'[data-td-focus="picker-sv-field"]',25)}else{setCustomPickerOpen(false);focusQuery(root.current,'[data-td-focus="setting-custom-edit"]',70)}}else back()}},
     h('style',null,STYLE),
     h('main',{className:'td-shell','data-td-layout':'manager-shell'},
       h('header',{className:'td-header'},h('div',{className:'td-identity'},h('img',{src:ICON_DATA_URI,className:'td-logo',alt:''}),
@@ -2897,9 +5016,27 @@ function QuickPanel(){
  const open=()=>{try{UI.Navigation.CloseSideMenus?.();UI.Navigation.Navigate(ROUTE);}catch(e){setError(String(e));}};
  const scan=()=>{try{setCapture(descriptionAdapter?.timingReport?.()||'Game Info adapter not connected')}
    catch(e){setCapture('Game Info scan error: '+String(e?.message||e))}};
+ const captureController=async()=>{try{
+   const report=titleDeckControllerDiagnostic();
+   const result=await call('save_controller_diagnostic',JSON.stringify(report));
+   setCapture(`Controller report saved: ${result.path}. Open Full Library Manager, try Deck LB/RB, then capture this report if paging still fails.`);
+ }catch(e){setCapture('Controller diagnostic error: '+String(e?.message||e))}};
+ const captureArt=async()=>{try{
+   const report=nonSteamDescriptionAdapter?.captureGhostLayout?.();
+   if(!report?.records?.length){setCapture('Open a non-Steam game with a saved custom description, then Game Info, before capturing.');return;}
+   const result=await call('save_layout_diagnostic',JSON.stringify(report));
+   setCapture(`Layout captured (${report.records[0].nodes.length} elements). Saved locally: ${result.path}. Share that JSON file to identify the actual Steam poster wrapper.`);
+ }catch(e){setCapture('Layout capture error: '+String(e?.message||e))}};
  return h(UI.PanelSection,{title:'TitleDeck'},h('div',{'data-titledeck-ui':'true'},
    h('div',{style:{display:'flex',alignItems:'center',gap:9,padding:'6px 0'}},h('img',{src:ICON_DATA_URI,style:{width:42,height:42,borderRadius:9}}),h('div',null,h('div',{style:{display:'flex',alignItems:'center',gap:7}},h('strong',null,'TitleDeck'),h('span',{className:'td-qam-version',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),h('div',{style:{fontSize:12,opacity:.7}},Object.keys(data.descriptions||{}).length?`${Object.keys(data.aliases||{}).length} names · ${Object.keys(data.descriptions||{}).length} descriptions`:`${Object.keys(data.aliases||{}).length} custom names`))),
    h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:open,layout:'below'},'Open full library manager')),
+   ...(developerDiagnosticsEnabled()?[
+     h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:captureController,layout:'below'},'Save LB/RB input diagnostic')),
+     ...(nonSteamDescriptionAdapter?.shown>0?[
+       h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:captureArt,layout:'below'},'Diagnose non-Steam artwork')),
+     ]:[]),
+     capture?h('div',{style:{fontSize:11,opacity:.9,whiteSpace:'pre-wrap',overflowWrap:'anywhere',padding:6}},capture):null,
+   ]:[]),
    ...(developerDiagnosticsEnabled()?[
      h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:scan,layout:'below'},'Capture Game Info timing')),
      h('div',{style:{fontSize:11,opacity:.84,lineHeight:1.4,padding:'6px 4px',whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:250,overflowY:'auto'}},
@@ -2929,14 +5066,16 @@ function SteamDocumentAnchor(){
     if(!doc?.body)return;
     if(steamDocument!==doc){
       steamDocument=doc;
-      adapter?.stop();descriptionAdapter?.stop();gameInfoDataAdapter?.stop();
+      adapter?.stop();descriptionAdapter?.stop();nonSteamDescriptionAdapter?.stop();gameInfoDataAdapter?.stop();
       adapter=createTitleAdapter(doc,()=>latestState,()=>doc.defaultView?.appStore||globalThis.appStore,()=>[doc,...discoverDocuments()]);
-      descriptionAdapter=createDescriptionAdapter(doc,()=>latestState,()=>[doc,...discoverDocuments()],undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');
+      descriptionAdapter=createDescriptionAdapter(doc,()=>steamOnlyDescriptionState(latestState,nonSteamOverviewStore(doc)),()=>[doc,...discoverDocuments()],undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');
+      nonSteamDescriptionAdapter=createNonSteamGameInfoAdapter(doc,()=>latestState,()=>[doc,...discoverDocuments()]);
       gameInfoDataAdapter=createGameInfoDataAdapter(()=>latestState,()=>[globalThis,doc.defaultView,...discoverDocuments().map(d=>d.defaultView)]);
-      adapter.start();descriptionAdapter.start();gameInfoDataAdapter.start();
+      adapter.start();descriptionAdapter.start();nonSteamDescriptionAdapter.start();gameInfoDataAdapter.start();
+      reapplySavedGameInfoAfterBoot();
       steamBridgeStatus='Connected to Steam UI document';
     }
-    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
+    return ()=>{if(steamDocument===doc){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;nonSteamDescriptionAdapter?.stop();nonSteamDescriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;steamBridgeStatus='Steam UI detached';}};
   },[]);
   return h('span',{ref,style:{display:'none'},'data-titledeck-ui':'true'});
 }
@@ -2949,13 +5088,16 @@ export default function createPlugin(){
  }else{steamBridgeStatus='Steam UI global component API unavailable';}
  // Fallback adapter watches only the plugin document until the real Steam anchor mounts.
  if(!adapter){adapter=createTitleAdapter(globalThis.document,()=>latestState,()=>globalThis.appStore,()=>steamDocument?[steamDocument]:discoverDocuments());adapter.start();}
- if(!descriptionAdapter){descriptionAdapter=createDescriptionAdapter(globalThis.document,()=>latestState,()=>steamDocument?[steamDocument]:discoverDocuments(),undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');descriptionAdapter.start();}
+ if(!descriptionAdapter){descriptionAdapter=createDescriptionAdapter(globalThis.document,()=>steamOnlyDescriptionState(latestState,nonSteamOverviewStore(steamDocument||globalThis.document)),()=>steamDocument?[steamDocument]:discoverDocuments(),undefined,id=>gameInfoDataAdapter?.getOriginalDescription(id)||'');descriptionAdapter.start();}
+ if(!nonSteamDescriptionAdapter){nonSteamDescriptionAdapter=createNonSteamGameInfoAdapter(globalThis.document,()=>latestState,()=>steamDocument?[steamDocument]:discoverDocuments());nonSteamDescriptionAdapter.start();}
+ if(!controllerScrollBridge){controllerScrollBridge=createControllerScrollBridge();controllerScrollBridge.start();}
  if(!gameInfoDataAdapter){gameInfoDataAdapter=createGameInfoDataAdapter(()=>latestState,()=>[globalThis,steamDocument?.defaultView,...discoverDocuments().map(d=>d.defaultView)]);gameInfoDataAdapter.start();}
  refreshState().catch(e=>console.warn('[TitleDeck] state load:',e));
  return{name:PLUGIN,titleView:h('span',{style:{display:'flex',alignItems:'center',gap:8}},'TitleDeck',h('span',{className:'td-version-chip',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),content:h(QuickPanel),
    icon:h('img',{src:ICON_DATA_URI,alt:'TitleDeck',style:{width:24,height:24,objectFit:'contain'}}),
-   onDismount(){adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;
+   onDismount(){controllerScrollBridge?.stop();controllerScrollBridge=null;adapter?.stop();adapter=null;descriptionAdapter?.stop();descriptionAdapter=null;nonSteamDescriptionAdapter?.stop();nonSteamDescriptionAdapter=null;gameInfoDataAdapter?.stop();gameInfoDataAdapter=null;steamDocument=null;
      try{api.routerHook?.removeGlobalComponent?.(STEAM_DOC_ANCHOR)}catch{}
      try{api.routerHook?.removeRoute?.(ROUTE)}catch{}
+     for(const timer of bootHydrationTimers)clearTimeout(timer);bootHydrationTimers=[];
      bridge=null;observers.clear();}};
 }
