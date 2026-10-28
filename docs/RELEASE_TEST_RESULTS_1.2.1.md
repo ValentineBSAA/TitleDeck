@@ -1,6 +1,6 @@
 # TitleDeck 1.2.1 — hardware and local release test record
 
-**Prepared on October 28, 2026.** This is the evidence record for the `TitleDeck-1.2.1-Stable.zip` prepared installer. **Not an announcement that the GitHub release has been published.**
+**October 28, 2026.** This is the testing record for the **published** [TitleDeck 1.2.1 Stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1) installer. The user independently published it following hardware acceptance.
 
 ## Maintainer-confirmed physical Steam Deck tests
 
@@ -33,14 +33,14 @@ These are user-reported device tests, not remote automated hardware instrumentat
 - Additional 649/650 ms threshold simulation was passed in prior beta testing.
 - **Local SHA-256:** `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb`.
 
-## Publication blockers still open
+## Post-publication source and verification tasks
 
 - [ ] Synchronize GitHub repo `main.py`, `src/index.js`, `dist/index.js`, `plugin.json`, `package.json` and appropriate regression tests with **these exact stable ZIP bytes**. **Currently main still has 1.1.9 runtime source.**
 - [ ] Run GitHub Actions CI against that synchronized commit; **no green GitHub CI run for 1.2.1 is claimed here**.
-- [ ] Publish GitHub stable tag/release **1.2.1** with the exact ZIP binary attached.
+- [x] Publish stable GitHub release **1.2.1** with ZIP asset. Asset size matches the locally built ZIP.
 - [ ] Independently compare the downloaded release asset SHA-256 with the local checksum.
-- [ ] Only after publication update the README stable-download badge and install links (they correctly still reference the latest public stable release 1.1.8).
+- [x] Update README stable-download badge and installation links to the published 1.2.1 release.
 
 **Known issue:** The Steam Deck built-in right stick does not scroll Game Info custom descriptions for Steam/non-Steam titles, while an external controller's right stick does. See [issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
-[Prepared stable release notes](RELEASE_NOTES_1.2.1.md) · [Verified hardware matrix](VERIFIED_ON_DECK.md) · [Release checklist](RELEASE_CHECKLIST.md).
+[Published 1.2.1 release notes](RELEASE_NOTES_1.2.1.md) · [Verified hardware matrix](VERIFIED_ON_DECK.md) · [Release checklist](RELEASE_CHECKLIST.md).
