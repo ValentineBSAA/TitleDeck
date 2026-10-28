@@ -71,6 +71,13 @@ jobs:
                   after="i===1 && Array.isArray(hooks[i].value) && !hooks[i].initialized"
                   assert s.count(before)==1,'Expected mocked games seed missing'
                   s=s.replace(before,after)
+                  # useStateSnapshot is slot 0, direct-editor contextGame is new
+                  # slot 1, moving games / view / selected / draft one slot.
+                  assert s.count("i===1 && Array.isArray(hooks[i].value)")==1
+                  s=s.replace("i===1 && Array.isArray(hooks[i].value)","i===2 && Array.isArray(hooks[i].value)")
+                  import re
+                  slots={4:5,5:6,6:7}
+                  s=re.sub(r'if\(i===(4|5|6)&&!hooks\[i\]\.initialized\)',lambda m:"if(i==="+str(slots[int(m.group(1))])+"&&!hooks[i].initialized)",s)
                   s=s.replace("onButtonDown:onNativeShoulder,onKeyDown:","onButtonDown:e=>")
                   s=s.replace("onButtonDown:onNativeShoulder","onNativeShoulder(e);")
               if name=='release_metadata.test.cjs':
