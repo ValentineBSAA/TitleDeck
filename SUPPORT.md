@@ -10,11 +10,11 @@
 
 **Can I move the TitleDeck Options entry?** Yes. **Full Library Manager → Settings → Game Options menu placement → After Developer** (default) or **Before Properties**. Some non-Steam games show Properties only inside Manage, so TitleDeck moves to the end of the main action list instead. TitleDeck does not rearrange GTM, SteamGridDB or other plugins.
 
-**How do I exit without going Back twice?** Only when you launched from **Options → Edit with TitleDeck**, **hold B / PlayStation Circle for 650 milliseconds** to return to Steam. A normal tap performs one Back step. The new 650 ms threshold has passed local tests but still needs final physical Deck verification.
+**How do I exit without going Back twice?** Only when you launched from **Options → Edit with TitleDeck**, **hold B / PlayStation Circle for 650 milliseconds** to return to Steam. A normal tap performs one Back step. The 650 ms hold has passed the maintainer's physical Steam Deck test.
 
 **Does the renamed title appear in the physical STEAM-button menu?** With **STEAM-button menu titles** turned ON in Full Library Manager Settings, yes on the tested Steam Catherine Classic and non-Steam Most Wanted games. Turning it OFF restores the original text. The logo on the menu's right side is artwork and stays unchanged.
 
-**Does this mean everything is compatible?** No. Steam internals can change between updates. See the [beta hardware matrix](docs/VERIFIED_ON_DECK.md) and [beta release notes](docs/RELEASE_NOTES_1.2.1_BETA.md).
+**Does this mean everything is compatible?** No. Steam internals can change between updates. See the [beta hardware matrix](docs/VERIFIED_ON_DECK.md) and [1.2.1 release preparation](docs/RELEASE_NOTES_1.2.1.md).
 
 ## Frequently asked questions
 
