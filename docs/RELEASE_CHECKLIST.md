@@ -23,6 +23,8 @@ The 1.2.1 beta installer prepared for testing has SHA-256:
 The corresponding asset has been published: [TitleDeck 1.2.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1). Its published ZIP has been downloaded and checksum-verified in GitHub Actions (SHA-256 matches locally accepted installer). [Stable release preparation](RELEASE_NOTES_1.2.1.md).
 [Full beta notes](RELEASE_NOTES_1.2.1_BETA.md) · [Hardware matrix](VERIFIED_ON_DECK.md) · [1.2.1 verified test record](RELEASE_TEST_RESULTS_1.2.1.md).
 
+- [x] Repair published **1.2.1 source tag** to point to checksum-matched runtime, avoiding an outdated GitHub auto-generated Source Code archive. [GitHub verification](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40788241341) passed; tag commit `409e9469c2c649c9cfbad7f591a9e6e1055683c9`.
+
 ## Historical 1.1.8 acceptance (preserved)
 
 - [x] Published **1.1.8** GitHub stable release and **TitleDeck-1.1.8.zip** plugin asset.
