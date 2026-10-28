@@ -1,12 +1,12 @@
-# TitleDeck 1.1.8: troubleshooting and support
+# TitleDeck 1.2.1: troubleshooting and support
 
-**Current public version:** [TitleDeck 1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8). Primary verified platform: Valve Steam Deck, SteamOS Gaming Mode with Decky Loader.
+**Current public version:** [TitleDeck 1.2.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1). Primary verified platform: Valve Steam Deck, SteamOS Gaming Mode with Decky Loader.
 
 [Report a bug](https://github.com/ValentineBSAA/TitleDeck/issues) · [Community discussion](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Illustrated beginner guide](docs/BEGINNER_GUIDE.md)
 
-## Questions about privately tested 1.2.1 Beta
+## TitleDeck 1.2.1 stable features
 
-**How do I edit the game I am highlighting?** Select it in Steam's library, press the controller's **Options (☰)** button, and choose **Edit with TitleDeck**. The exact game's editor opens directly. This feature is in the privately tested **1.2.1 Beta**, not yet in the latest published GitHub stable ZIP.
+**How do I edit the game I am highlighting?** Select it in Steam's library, press the controller's **Options (☰)** button, and choose **Edit with TitleDeck**. The exact game's editor opens directly. This feature is included in the published **1.2.1 Stable** release.
 
 **Can I move the TitleDeck Options entry?** Yes. **Full Library Manager → Settings → Game Options menu placement → After Developer** (default) or **Before Properties**. Some non-Steam games show Properties only inside Manage, so TitleDeck moves to the end of the main action list instead. TitleDeck does not rearrange GTM, SteamGridDB or other plugins.
 
