@@ -1,6 +1,6 @@
-# Screenshot maintenance: TitleDeck 1.1.8
+# Screenshot maintenance: historical 1.1.8 gallery (current plugin 1.2.1)
 
-The 23 screenshots used in the current gallery were supplied as a maintainer ZIP with SHA-256 `44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced`.
+The 23 **historical 1.1.8** screenshots retained in the current gallery were supplied as a maintainer ZIP with SHA-256 `44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced`.
 
 The public documentation references **individual JPEGs**, stored in `docs/screenshots/v1.1.8/`. A screenshot ZIP is *not* a Decky plugin installer.
 
