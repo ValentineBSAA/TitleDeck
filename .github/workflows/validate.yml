@@ -46,7 +46,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Frontend tests
-        run: node --test tests/*.test.cjs
+        run: node --test --test-force-exit tests/*.test.cjs
       - name: Backend tests
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Check Decky version and bundle
