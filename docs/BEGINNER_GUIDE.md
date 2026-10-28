@@ -1,10 +1,10 @@
-# TitleDeck: the complete beginner's guide (public stable 1.1.8; 1.2.1 beta workflows)
+# TitleDeck 1.2.1: the complete beginner's guide
 
 New to Steam Deck customization? Start here. This guide includes **every main feature and Settings section**, with links to real Steam Deck screenshots. TitleDeck is a Decky Loader plugin for Gaming Mode, not a replacement for Steam or a game mod.
 
-[← Home](../README.md) · [Image gallery](SCREENSHOTS.md) · [Feature reference](FEATURES.md) · [Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
+[← Home](../README.md) · [Image gallery](SCREENSHOTS.md) · [Feature reference](FEATURES.md) · [Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1)
 
-## New in 1.2.1 Beta: edit the highlighted game without opening the catalog
+## New in 1.2.1 Stable: edit the highlighted game without opening the catalog
 
 1. Highlight the game you want to edit in Steam's library.
 2. Press the **Options (☰)** controller button to open the game's native context menu.
@@ -20,20 +20,20 @@ In **Full Library Manager → ⚙ Settings → Game Options menu placement**, se
 
 In Full Library Manager → Settings, turn **STEAM-button menu titles** ON to show a saved custom name for the *running* game in the physical STEAM-button menu. Turn it OFF to restore the original displayed game name there. The maintainer verified Catherine Classic → Catherine (including reboot persistence) and a non-Steam Most Wanted custom alias. The right-side **artwork/logo remains original**, because the name setting only changes text.
 
-These additions are **accepted for 1.2.1 Stable**, which is prepared but **not yet published as a GitHub release**. [Stable release preparation](RELEASE_NOTES_1.2.1.md).
+These features are included in the **published, physically tested TitleDeck 1.2.1 Stable** release. [Stable release preparation](RELEASE_NOTES_1.2.1.md).
 
 ## 1. What you need
 
 - A **Valve Steam Deck**, in **SteamOS Gaming Mode**, with **Decky Loader** installed.
-- The **1.1.8 plugin ZIP** from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8).
+- The **1.2.1 Stable plugin ZIP** from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1).
 - A game, app, demo or non-Steam shortcut already added to your Steam library.
 
 No coding, terminal, game-file editing, or external keyboard is necessary.
 
 ## 2. Install or update TitleDeck
 
-1. In Gaming Mode, open the [TitleDeck 1.1.8 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8).
-2. Download **`TitleDeck-1.1.8.zip`**. **Do not unzip it.** An image archive, if available, is *not* a plugin installer.
+1. In Gaming Mode, open the [TitleDeck 1.2.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1).
+2. Download **`TitleDeck-1.2.1-Stable.zip`**. **Do not unzip it.** An image archive, if available, is *not* a plugin installer.
 3. Press the **•••** button to open **Quick Access**. Select the **Decky Loader plug icon**.
 4. Open **Decky Loader Settings (gear) → Developer → Install Plugin from ZIP** and choose the downloaded ZIP. If this option isn't present, consult your installed Decky Loader version's instructions.
 5. Open **Quick Access → Decky Loader → TitleDeck** and check the version badge.
@@ -105,7 +105,7 @@ Inside Full Library Manager, go to the top row and choose **⚙ Settings** (near
 
 ![Settings layout](screenshots/v1.1.8/15-settings-title-replacements.jpeg)
 
-Below is a walkthrough of **every Settings section** from the 1.1.8 version.
+Below is a walkthrough of **every core Settings section** (screenshots captured in 1.1.8; newer 1.2.1 controls are described above).
 
 ### 7.1 Display title replacement
 
