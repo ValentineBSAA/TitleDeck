@@ -1,8 +1,8 @@
 # TitleDeck roadmap
 
-**Current released version: 1.1.8**. The project is now focused on reliability, Steam compatibility and hardware feedback rather than more speculative feature additions.
+**Current released version: 1.2.1**. The project is now focused on reliability, Steam compatibility and hardware feedback rather than more speculative feature additions.
 
-### 1.2.1 Beta milestone (not yet publicly released)
+### 1.2.1 Stable milestone (published October 28, 2026)
 
 - [x] Steam and non-Steam **STEAM-button menu alias** support, including Catherine reboot persistence and ON/OFF restoration.
 - [x] Native **Options → Edit with TitleDeck** for Steam and non-Steam games, direct selected-game editor without an artwork-grid flash.
@@ -10,9 +10,10 @@
 - [x] Long-hold B/Circle to return to Steam when editing via context menu (previous 850 ms behavior physically tested).
 - [x] Reduce hold threshold to **650 ms** and pass local tests.
 - [x] Confirm **650 ms** on a physical Deck and package a distinct **1.2.1 Stable** installer.
-- [ ] Synchronize repository runtime and tests, run CI, and publish 1.2.1 Stable when approved.
+- [x] The maintainer published 1.2.1 Stable with the installer ZIP.
+- [ ] Synchronize checked-in runtime and tests with the published 1.2.1 ZIP and verify GitHub Actions CI.
 
-[1.2.1 stable release preparation](RELEASE_NOTES_1.2.1.md). **Current public stable release remains 1.1.8 until a new release is actually published.**
+[1.2.1 stable release notes](RELEASE_NOTES_1.2.1.md). **Current public stable release is 1.2.1.**
 
 ### Shipped and hardware-tested
 - [x] Local, reversible Steam/non-Steam displayed-title editing.
@@ -30,4 +31,4 @@
 - [ ] Continued native Steam keyboard and controller-focus stability tests.
 - [ ] Other handhelds only after actual physical verification.
 
-[Beginner guide](BEGINNER_GUIDE.md) · [Release notes](RELEASE_NOTES_1.1.8.md)
+[Beginner guide](BEGINNER_GUIDE.md) · [Release notes](RELEASE_NOTES_1.2.1.md)
