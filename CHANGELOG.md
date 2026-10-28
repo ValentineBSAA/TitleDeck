@@ -1,5 +1,15 @@
 # TitleDeck changelog
 
+## 1.2.1-beta.1 — Private beta, awaiting final physical Deck test (October 28, 2026)
+
+- Native game **Options (☰) → Edit with TitleDeck** shortcut works on Steam and non-Steam games; opens the exact selected game's editor without first rendering the artwork library grid.
+- Configurable context-menu position: **After Developer** (default) or **Before Properties**, with a safe last-action fallback where non-Steam Properties is inside Manage.
+- Context-launch-only **B / Circle hold-to-Steam** shortcut, shortened from **850 ms to 650 ms**; quick tap retains normal Back. Earlier hold behavior is hardware verified; the new 650 ms threshold has passed local boundary tests and **still needs physical Deck confirmation**.
+- Carries forward privately verified 1.2.0 STEAM-button menu title aliases (Steam/non-Steam), reboot persistence for Catherine, and ON/OFF restoration.
+- **Publication:** no public 1.2.1 release created. Public README badges/releases remain on 1.1.8 until the maintainer publishes a separately versioned stable ZIP.
+- [Detailed beta notes](docs/RELEASE_NOTES_1.2.1_BETA.md) · [Hardware record](docs/VERIFIED_ON_DECK.md).
+
+
 ## 1.1.8 — Published stable release (October 27, 2026)
 
 **Public installer:** [TitleDeck-1.1.8.zip](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8). Includes Steam/non-Steam custom description persistence after reboot, built-in Steam Deck and PS4 LB/RB paging, Full Library Manager artwork/hide tile improvements, updated Settings and a full 23-image screenshot gallery. **Known issue:** the Deck's **built-in right stick** does not scroll Steam/non-Steam Game Info descriptions; an **external controller's right stick does**. See [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
