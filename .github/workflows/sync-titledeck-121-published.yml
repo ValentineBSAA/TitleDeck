@@ -78,7 +78,9 @@ jobs:
           set -euo pipefail
           node --check src/index.js
           python3 -m py_compile main.py
-          node --test tests/*.test.cjs
+          # The updated Steam UI adapters can keep JS timers alive after assertions.
+          # Force test-runner cleanup after all tests report, without hiding failures.
+          node --test --test-force-exit tests/*.test.cjs
           python3 -m unittest discover -s tests -p 'test_*.py'
           python3 - <<'PY'
           import json
