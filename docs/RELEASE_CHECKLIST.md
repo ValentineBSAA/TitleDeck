@@ -1,5 +1,24 @@
 # TitleDeck 1.1.8: release and verification record
 
+## 1.2.1 Beta acceptance before the maintainer's public Stable release
+
+- [x] Package `TitleDeck-1.2.1-Beta.zip` with matching `v1.2.1-beta.1` frontend, `plugin.json`, and `package.json`.
+- [x] Reduce **context-launched hold B / Circle** from 850 to **650 ms**; preserve a quick tap's normal Back.
+- [x] Run JavaScript syntax, Python syntax, selected-game first render, Steam/non-Steam native menu, duplicate insertion, restoration and controller timing tests.
+- [x] Verify exact test boundary **649 ms: no exit; 650 ms: one exit** in a local deterministic simulation.
+- [x] Capture the maintainer's physical results for Steam and non-Steam context-menu shortcuts, position choices, direct editor, 850 ms hold, and STEAM-button menu title overrides.
+- [x] Update README, changelog, install/guide, features, compatibility, verified list and beta notes, without falsely labeling the beta as a public stable release.
+- [ ] **Physically test new 650 ms hold** with Steam and non-Steam context-launched editing, plus short B/Circle tap and ordinary-manager Back.
+- [ ] Verify resulting stable installer metadata/version **1.2.1** (distinct from beta **1.2.1-beta.1**).
+- [ ] Synchronize the repository's runtime source, tests and signed-off installer ZIP; run CI against the final stable bytes.
+- [ ] Publish **1.2.1 Stable** and attach its exact installer ZIP; verify GitHub asset SHA-256, then update README badges/download link and mark release published.
+- [ ] Add new screenshot gallery images only after checking actual 1.2.1 hardware screenshots into the repository; do not relabel older 1.1.8 images as 1.2.1.
+
+The 1.2.1 beta installer prepared for testing has SHA-256:
+`d3cf000a66aadda5b742a4bea272587a9adb3b638a492eff3909252f0aa409df`.
+**This is the beta checksum, not an already-published stable ZIP checksum.**
+[Full beta notes](RELEASE_NOTES_1.2.1_BETA.md) · [Hardware matrix](VERIFIED_ON_DECK.md).
+
 ## Completed
 
 - [x] Published **1.1.8** GitHub stable release and **TitleDeck-1.1.8.zip** plugin asset.
