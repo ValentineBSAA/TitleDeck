@@ -10,7 +10,7 @@
 - Supported restoring the game to its original Steam-provided explanation and artwork layout.
 - Confirmed **both Steam and non-Steam custom descriptions survive a full Deck restart** on the 1.1.8 candidate.
 - Removed outdated yellow description-length warnings; no hard enforced character cap.
-- **Current known issue:** physical right-stick scrolling **does not work in the Steam Game Info description box** for either Steam or non-Steam entries in the latest maintainer test. Do not promote that particular control as working.
+- **Current known issue ([#8](https://github.com/ValentineBSAA/TitleDeck/issues/8)):** physical right-stick scrolling **does not work in the Steam Game Info description box** for either Steam or non-Steam entries in the latest maintainer test. Do not promote that particular control as working.
 
 ### Full Library Manager and controller navigation
 - Tile-based All / Installed / Renamed browsing, search, paging, artwork, installed indicators, and controller-friendly navigation.
