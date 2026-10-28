@@ -22,4 +22,4 @@ The user verified the new shortcut, placement, and 650 ms hold on a physical Ste
 3. Compare the GitHub release asset's SHA-256 against the local checksum above.
 4. **After actual publication**, update README badges, stable download links, and installation references to 1.2.1. Until then, leave the existing 1.1.8 public download links intact.
 
-[Hardware verification](VERIFIED_ON_DECK.md) · [Release checklist](RELEASE_CHECKLIST.md) · [Install](INSTALL.md)
+[Hardware verification](VERIFIED_ON_DECK.md) · [Local and device test evidence](RELEASE_TEST_RESULTS_1.2.1.md) · [Release checklist](RELEASE_CHECKLIST.md) · [Install](INSTALL.md)
