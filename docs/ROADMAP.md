@@ -2,6 +2,17 @@
 
 **Current released version: 1.1.8**. The project is now focused on reliability, Steam compatibility and hardware feedback rather than more speculative feature additions.
 
+### 1.2.1 Beta milestone (not yet publicly released)
+
+- [x] Steam and non-Steam **STEAM-button menu alias** support, including Catherine reboot persistence and ON/OFF restoration.
+- [x] Native **Options → Edit with TitleDeck** for Steam and non-Steam games, direct selected-game editor without an artwork-grid flash.
+- [x] **After Developer** and **Before Properties** context-item placement, including nested non-Steam Manage → Properties fallback.
+- [x] Long-hold B/Circle to return to Steam when editing via context menu (previous 850 ms behavior physically tested).
+- [x] Reduce hold threshold to **650 ms** and pass local tests.
+- [ ] Confirm **650 ms** on a physical Deck, then build the distinct 1.2.1 Stable installer and publish it when approved.
+
+[1.2.1 beta release notes](RELEASE_NOTES_1.2.1_BETA.md). **Current public stable release remains 1.1.8 until a new release is actually published.**
+
 ### Shipped and hardware-tested
 - [x] Local, reversible Steam/non-Steam displayed-title editing.
 - [x] Steam/non-Steam Game Info descriptions, persistence after restart and original restoration.
