@@ -1,4 +1,5 @@
 name: Finalize TitleDeck 1.1.8 source and screenshot gallery
+# Re-run with restored historical gallery links and current public documentation.
 on:
   push:
     branches: [main]
