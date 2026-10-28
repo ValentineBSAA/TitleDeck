@@ -4,7 +4,7 @@
 
 **Published Decky installer:** `TitleDeck-1.2.1-Stable.zip`. Internal version is **1.2.1** in the frontend, package.json, and plugin.json. The ZIP has the required TitleDeck/ root, eight files, and identical source/dist JavaScript.
 
-**Locally verified ZIP SHA-256:** `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb`. This checksum is for the locally verified ZIP; independently matching it to the uploaded release asset remains a release-audit check.
+**Locally verified ZIP SHA-256:** `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb`. The **published release asset** passed the exact SHA-256 check in the GitHub Actions sync workflow ([verification run](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787369311)).
 
 ## What's new
 - STEAM-button running-game menu shows saved custom names for **Steam and non-Steam games**, and an ON/OFF setting restores original names when disabled. Hardware-tested with Catherine Classic → Catherine and non-Steam Need for Speed Most Wanted Black Edition → Need for Speed Most Wanted!. Catherine override persisted through a Steam Deck restart.
@@ -19,7 +19,7 @@ The user verified the new shortcut, placement, and 650 ms hold on a physical Ste
 ## Post-publication maintenance
 1. Synchronize the GitHub repository runtime files and regression tests with the accepted exact stable installer, then run CI.
 2. ✅ The maintainer published the **1.2.1 Stable** GitHub release with `TitleDeck-1.2.1-Stable.zip` attached.
-3. Compare the GitHub release asset's SHA-256 against the local checksum above.
+3. ✅ Published GitHub ZIP SHA-256 checked against the local accepted installer in GitHub Actions.
 4. ✅ Update the README badge, stable download links and active install guides to 1.2.1; preserve older 1.1.8 release notes as history.
 
 [Hardware verification](VERIFIED_ON_DECK.md) · [Local and device test evidence](RELEASE_TEST_RESULTS_1.2.1.md) · [Release checklist](RELEASE_CHECKLIST.md) · [Install](INSTALL.md)
