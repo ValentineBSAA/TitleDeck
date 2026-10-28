@@ -1,6 +1,6 @@
-# TitleDeck 1.1.8: release and verification record
+# TitleDeck 1.2.1: release and verification record
 
-## 1.2.1 Beta acceptance before the maintainer's public Stable release
+## 1.2.1 stable release acceptance and repository synchronization
 
 - [x] Package `TitleDeck-1.2.1-Beta.zip` with matching `v1.2.1-beta.1` frontend, `plugin.json`, and `package.json`.
 - [x] Reduce **context-launched hold B / Circle** from 850 to **650 ms**; preserve a quick tap's normal Back.
@@ -11,7 +11,7 @@
 - [x] **Physically test new 650 ms hold** and native context-menu flow. The maintainer reported both passed; previous tap/Back behavior was already verified.
 - [x] Verify prepared stable installer metadata/version **1.2.1** (distinct from beta **1.2.1-beta.1**), source/dist equality, ZIP structure and SHA-256.
 - [ ] Synchronize the repository's runtime source and regression tests with the prepared stable installer; run CI against the final stable bytes.
-- [ ] Publish **1.2.1 Stable** and attach its exact installer ZIP; verify GitHub asset SHA-256, then update README badges/download link and mark release published.
+- [x] Publish **1.2.1 Stable** on GitHub with `TitleDeck-1.2.1-Stable.zip` (the published asset is present). README badge and public links updated. **Independent download-asset checksum verification still pending CI confirmation.**
 - [ ] Add new screenshot gallery images only after checking actual 1.2.1 hardware screenshots into the repository; do not relabel older 1.1.8 images as 1.2.1.
 
 The 1.2.1 beta installer prepared for testing has SHA-256:
@@ -20,10 +20,10 @@ The 1.2.1 beta installer prepared for testing has SHA-256:
 
 **Accepted and packaged local 1.2.1 stable ZIP:** `TitleDeck-1.2.1-Stable.zip`, SHA-256:
 `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb`
-This is the **local prepared artifact**, not a published release asset. [Stable release preparation](RELEASE_NOTES_1.2.1.md).
+The corresponding asset has been published: [TitleDeck 1.2.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1). Its release-upload size matches the local ZIP; checksum verification requires downloading its actual bytes. [Stable release preparation](RELEASE_NOTES_1.2.1.md).
 [Full beta notes](RELEASE_NOTES_1.2.1_BETA.md) · [Hardware matrix](VERIFIED_ON_DECK.md) · [1.2.1 verified test record](RELEASE_TEST_RESULTS_1.2.1.md).
 
-## Completed
+## Historical 1.1.8 acceptance (preserved)
 
 - [x] Published **1.1.8** GitHub stable release and **TitleDeck-1.1.8.zip** plugin asset.
 - [x] Verified published ZIP SHA-256: `2bae38490fbbb7da783d98b33e8acd4dd6213f03ba1a7256807e60cb736f061c`.
@@ -41,4 +41,4 @@ This is the **local prepared artifact**, not a published release asset. [Stable 
 
 **Note:** Don't use an image ZIP as a plugin installer. The gallery contains extracted JPEGs and the release has the official plugin ZIP.
 
-[Hardware verification](VERIFIED_ON_DECK.md) · [Release notes](RELEASE_NOTES_1.1.8.md) · [Source](../SOURCE.md)
+[Hardware verification](VERIFIED_ON_DECK.md) · [1.2.1 release notes](RELEASE_NOTES_1.2.1.md) · [Source](../SOURCE.md)
