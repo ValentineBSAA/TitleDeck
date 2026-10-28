@@ -28,7 +28,7 @@ Version 1.1.8 is the first public release in the 1.1 series. It follows extensiv
 - Changes are local; original Steam metadata and installed game files are not rewritten.
 
 ### Known limitation
-**The right analog stick does not reliably scroll the Steam Game Info description area on either Steam or non-Steam titles in 1.1.8.** This is separate from successful description rendering and saved-state persistence, as well as Full Library Manager paging. [Tracking issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). Additional CSS Loader themes, Steam client versions and non-Steam hardware are not universally supported.
+**The Steam Deck's built-in right stick does not scroll custom descriptions in Steam's Game Info tab for either Steam or non-Steam titles in 1.1.8. An external controller's right stick does scroll both types.** This input-device-specific issue is separate from successful description rendering, saved-state persistence, and Full Library Manager paging. [Tracking issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). Additional CSS Loader themes, Steam client versions and non-Steam hardware are not universally supported.
 
 ## Real-device screenshots and guides
 The [23-image 1.1.8 gallery](SCREENSHOTS.md) includes **Catherine Classic (Steam)** and **Need for Speed: Most Wanted 2005 (non-Steam)** Game Info examples, along with the manager, keyboard, title/description editors, and all nine Settings captures.
