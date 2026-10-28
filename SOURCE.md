@@ -20,6 +20,20 @@ Its 23 JPEGs are extracted into [the per-image gallery](docs/SCREENSHOTS.md), ex
 
 **Historic releases:** [0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2), [0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1), [0.9.0 RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0). The historic 0.9.2 description warning applies to that **older installer**, not to the subsequently hardware-tested 1.1.8 Game Info display and persistence paths.
 
+## 1.2.1 Beta artifact versus public repository source
+
+**The maintainer's new `TitleDeck-1.2.1-Beta.zip` is a locally prepared beta test installer, not a published GitHub release.** Its checked ZIP checksum is:
+
+```
+d3cf000a66aadda5b742a4bea272587a9adb3b638a492eff3909252f0aa409df
+```
+
+The beta has `1.2.1-beta.1` in **both metadata manifests and the frontend badge**, and the packaged `src/index.js` and `dist/index.js` are byte-identical. The only functional difference from the maintainer's verified 1.2.1 Preview 3 is a context-menu-scoped **B / Circle hold change from 850 to 650 ms**.
+
+**Do not claim repository source currently matches this beta installer.** Documentation can be updated in advance, but the repository must be synchronized with the exact accepted stable runtime before the maintainer publishes 1.2.1 Stable. Do not create a stable release from an installer whose internal version is still `1.2.1-beta.1`. After publication, replace these beta notes with the stable asset name and an independently checked checksum.
+
+[Beta acceptance plan](docs/RELEASE_CHECKLIST.md) · [Release notes](docs/RELEASE_NOTES_1.2.1_BETA.md).
+
 ## For developers
 
 To verify a local checkout:
