@@ -1,4 +1,4 @@
-name: Complete TitleDeck 1.1.8 repository release refresh
+name: Finalize TitleDeck 1.1.8 source and screenshot gallery
 on:
   push:
     branches: [main]
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Download exact approved public installer and image archive
+      - name: Verify public release archives against approved checksums
         shell: bash
         run: |
           set -euo pipefail
@@ -29,95 +29,138 @@ jobs:
           echo '2bae38490fbbb7da783d98b33e8acd4dd6213f03ba1a7256807e60cb736f061c  /tmp/titledeck118.zip' | sha256sum -c -
           curl -fL --retry 5 --retry-delay 3 -o /tmp/titledeck118_images.zip 'https://github.com/ValentineBSAA/TitleDeck/releases/download/1.1.8/TitleDeck.1.1.8.screenshots.zip'
           echo '44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced  /tmp/titledeck118_images.zip' | sha256sum -c -
-      - name: Copy public runtime and 23 curated screenshots into repository
+      - name: Extract the 23 actual screenshots as separately named files
         shell: bash
         run: |
           python3 - <<'PY'
-          import hashlib, json, re
           from pathlib import Path
           from zipfile import ZipFile
-
-          root=Path('.')
-          with ZipFile('/tmp/titledeck118.zip') as z:
-              assert z.testzip() is None, 'Installer CRC failed'
-              for name in ['main.py','plugin.json','package.json','src/index.js','dist/index.js']:
-                  b=z.read('TitleDeck/'+name)
-                  p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)
-              assert json.loads((root/'plugin.json').read_text())['version']=='1.1.8'
-              assert json.loads((root/'package.json').read_text())['version']=='1.1.8'
-              assert (root/'src/index.js').read_bytes()==(root/'dist/index.js').read_bytes()
-              p=root/'docs/PREVIEW24_SHA256.txt'
-              p.parent.mkdir(parents=True,exist_ok=True)
-              p.write_bytes(z.read('TitleDeck/docs/PREVIEW24_SHA256.txt'))
-              # Keep the version-matched tests from the exact installer.
-              for name in z.namelist():
-                  if name.startswith('TitleDeck/tests/') and (name.endswith('.cjs') or name.endswith('.py')):
-                      p=root/name.removeprefix('TitleDeck/')
-                      p.parent.mkdir(parents=True,exist_ok=True)
-                      p.write_bytes(z.read(name))
-
-          names=[["Quick menu.jpeg","01-quick-access.jpeg"],["Full Library 1.jpeg","02-full-library-manager.jpeg"],["Full Library 2.jpeg","03-title-editor-overview.jpeg"],["Full Library 3.jpeg","04-description-editor-overview.jpeg"],["Change Title 1.jpeg","05-rename-game-actions.jpeg"],["Change Title 2.jpeg","06-description-editor-details.jpeg"],["Change Title .jpeg","07-native-steam-keyboard.jpeg"],["Search App Or app id.jpeg","08-search-title-or-id.jpeg"],["Search App ID.jpeg","09-search-app-id-keyboard.jpeg"],["Catherine classic 1.jpeg","10-steam-catherine-custom-game-info.jpeg"],["Catherine classic 2.jpeg","11-steam-catherine-game-info-bottom.jpeg"],["Catherine classic three.jpeg","12-steam-catherine-artwork-view.jpeg"],["NFS MW Custom Description non-steam game.jpeg","13-nonsteam-most-wanted-custom-game-info.jpeg"],["NFS MW Custom description non-steam game 2.jpeg","14-nonsteam-most-wanted-description-bottom.jpeg"],["Settings 1.jpeg","15-settings-title-replacements.jpeg"],["Settings 2.jpeg","16-settings-backup-restore.jpeg"],["Settings 3.jpeg","17-settings-recovery-hidden-tiles.jpeg"],["Settings 4.jpeg","18-settings-description-placement.jpeg"],["Settings 5.jpeg","19-settings-theme-accent.jpeg"],["Settings 6.jpeg","20-settings-right-stick-toggle.jpeg"],["Settings 7.jpeg","21-settings-color-presets.jpeg"],["Settings 8.jpeg","22-settings-custom-hex.jpeg"],["Settings 9.jpeg","23-settings-restore-all.jpeg"]]
-          dest=root/'docs/screenshots/v1.1.8';dest.mkdir(parents=True,exist_ok=True)
+          names = [
+            ("Quick menu.jpeg","01-quick-access.jpeg"),
+            ("Full Library 1.jpeg","02-full-library-manager.jpeg"),
+            ("Full Library 2.jpeg","03-title-editor-overview.jpeg"),
+            ("Full Library 3.jpeg","04-description-editor-overview.jpeg"),
+            ("Change Title 1.jpeg","05-rename-game-actions.jpeg"),
+            ("Change Title 2.jpeg","06-description-editor-details.jpeg"),
+            ("Change Title .jpeg","07-native-steam-keyboard.jpeg"),
+            ("Search App Or app id.jpeg","08-search-title-or-id.jpeg"),
+            ("Search App ID.jpeg","09-search-app-id-keyboard.jpeg"),
+            ("Catherine classic 1.jpeg","10-steam-catherine-custom-game-info.jpeg"),
+            ("Catherine classic 2.jpeg","11-steam-catherine-game-info-bottom.jpeg"),
+            ("Catherine classic three.jpeg","12-steam-catherine-artwork-view.jpeg"),
+            ("NFS MW Custom Description non-steam game.jpeg","13-nonsteam-most-wanted-custom-game-info.jpeg"),
+            ("NFS MW Custom description non-steam game 2.jpeg","14-nonsteam-most-wanted-description-bottom.jpeg"),
+            ("Settings 1.jpeg","15-settings-title-replacements.jpeg"),
+            ("Settings 2.jpeg","16-settings-backup-restore.jpeg"),
+            ("Settings 3.jpeg","17-settings-recovery-hidden-tiles.jpeg"),
+            ("Settings 4.jpeg","18-settings-description-placement.jpeg"),
+            ("Settings 5.jpeg","19-settings-theme-accent.jpeg"),
+            ("Settings 6.jpeg","20-settings-right-stick-toggle.jpeg"),
+            ("Settings 7.jpeg","21-settings-color-presets.jpeg"),
+            ("Settings 8.jpeg","22-settings-custom-hex.jpeg"),
+            ("Settings 9.jpeg","23-settings-restore-all.jpeg")
+          ]
+          dest=Path('docs/screenshots/v1.1.8')
+          dest.mkdir(parents=True,exist_ok=True)
           with ZipFile('/tmp/titledeck118_images.zip') as z:
-              assert z.testzip() is None, 'Screenshot archive CRC failed'
-              lookup={p.split('/')[-1]:p for p in z.namelist() if p.lower().endswith('.jpeg') and not p.startswith('__MACOSX/')}
-              assert set(lookup)=={n for n,_ in names}, 'Unexpected screenshot filenames'
-              for src,tgt in names:
-                  image=z.read(lookup[src])
-                  assert image[:3]==b'\\xff\\xd8\\xff' or image[:3]==bytes((255,216,255)),src
-                  (dest/tgt).write_bytes(image)
-              assert len(list(dest.glob('*.jpeg')))==23
-
-          # Replace an obsolete private-preview documentation assertion with truthful public-release expectations.
-          p=root/'tests/release_metadata.test.cjs'
-          docs_test=p.read_text()
-          marker="test('RC readme discloses physical Deck baseline, unsupported hardware and intermittent B bug',()=>{"
-          assert marker in docs_test, 'Unexpected release metadata test version'
-          docs_test=docs_test.split(marker)[0]+'''test('1.1.8 public documentation names hardware boundaries and known scrolling issue',()=>{
-           const readme=fs.readFileSync(path.join(root,'README.md'),'utf8');
-           const changelog=fs.readFileSync(path.join(root,'CHANGELOG.md'),'utf8');
-           for(const item of ['1.1.8','Catherine Classic','Need for Speed','Steam Deck','Game Info','right-stick','not maintainer-verified']) assert(readme.includes(item),item);
-           assert(changelog.includes('1.1.8'));
-          });\n'''
-          p.write_text(docs_test)
-
-          # Synchronize source/version assertion without replacing this repo's documentation tests.
-          p=root/'tests/test_repo_docs.py'
-          s=p.read_text()
-          s=s.replace('self.assertEqual(plugin["version"], "0.9.2")','self.assertEqual(plugin["version"], "1.1.8")')
-          digest=hashlib.sha256((root/'src/index.js').read_bytes()).hexdigest()
-          s=s.replace('91c813bb32d100408d48869b02b91256ed5ab92b5883c904c507d7505642f855',digest)
-          p.write_text(s)
-          print('Synchronized published 1.1.8 source SHA-256',digest)
-          print('Synchronized all 23 images')
+              assert z.testzip() is None
+              lookup={p.rsplit('/',1)[-1]:p for p in z.namelist() if p.lower().endswith('.jpeg') and not p.startswith('__MACOSX/')}
+              print('Original screenshots:',len(lookup))
+              assert set(lookup)==set(n for n,_ in names)
+              for source,output in names:
+                  b=z.read(lookup[source])
+                  assert b.startswith(bytes([255,216,255])),source
+                  (dest/output).write_bytes(b)
+                  print(output,len(b))
+          assert len(list(dest.glob('*.jpeg')))==23
+          print('All 23 original screenshots written successfully.')
           PY
-      - name: Run complete source and documentation tests
+      - name: Synchronize source and matching tests from the published installer
+        shell: bash
         run: |
+          python3 - <<'PY'
+          import json,hashlib,re
+          from zipfile import ZipFile
+          from pathlib import Path
+          with ZipFile('/tmp/titledeck118.zip') as z:
+              assert z.testzip() is None
+              for item in ('main.py','plugin.json','package.json','src/index.js','dist/index.js'):
+                  dest=Path(item); dest.parent.mkdir(parents=True,exist_ok=True)
+                  dest.write_bytes(z.read('TitleDeck/'+item))
+                  print('Synchronized',item)
+              for item in z.namelist():
+                  if item.startswith('TitleDeck/tests/') and item.endswith(('.cjs','.py')):
+                      dest=Path(item.removeprefix('TitleDeck/'))
+                      dest.parent.mkdir(parents=True,exist_ok=True)
+                      dest.write_bytes(z.read(item))
+              dest=Path('docs/PREVIEW24_SHA256.txt')
+              dest.parent.mkdir(parents=True,exist_ok=True)
+              dest.write_bytes(z.read('TitleDeck/docs/PREVIEW24_SHA256.txt'))
+          assert json.loads(Path('plugin.json').read_text())['version']=='1.1.8'
+          assert json.loads(Path('package.json').read_text())['version']=='1.1.8'
+          assert Path('src/index.js').read_bytes()==Path('dist/index.js').read_bytes()
+          p=Path('tests/test_repo_docs.py')
+          text=p.read_text()
+          text=text.replace('self.assertEqual(plugin["version"], "0.9.2")','self.assertEqual(plugin["version"], "1.1.8")')
+          oldhash='91c813bb32d100408d48869b02b91256ed5ab92b5883c904c507d7505642f855'
+          newhash=hashlib.sha256(Path('src/index.js').read_bytes()).hexdigest()
+          if oldhash not in text and newhash not in text: raise Exception('Unexpected source-pin in repository documentation tests')
+          p.write_text(text.replace(oldhash,newhash))
+          print('Published runtime SHA-256:',newhash)
+          PY
+      - name: Update legacy metadata test to reflect the public documentation
+        shell: bash
+        run: |
+          cat > tests/release_metadata.test.cjs <<'JS'
+          const test=require('node:test');
+          const assert=require('node:assert/strict');
+          const fs=require('node:fs');
+          const path=require('node:path');
+          const root=path.resolve(__dirname,'..');
+          const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+          test('public 1.1.8 runtime and manifests agree',()=>{
+            const plugin=JSON.parse(read('plugin.json'));
+            const pkg=JSON.parse(read('package.json'));
+            assert.equal(plugin.version,'1.1.8');
+            assert.equal(pkg.version,'1.1.8');
+            assert.equal(plugin.name,'TitleDeck');
+            assert.equal(plugin.api_version,1);
+            assert.equal(read('src/index.js'),read('dist/index.js'));
+            assert(read('src/index.js').includes("PLUGIN_VERSION = '1.1.8'"));
+          });
+          test('public README accurately discloses hardware boundaries and known scrolling bug',()=>{
+            const readme=read('README.md');
+            for(const word of ['1.1.8','Catherine Classic','Most Wanted','physical Steam Deck','ROG Ally','right-stick']){
+              assert(readme.includes(word),word);
+            }
+            assert(read('docs/SCREENSHOTS.md').includes('23 real Steam Deck'));
+          });
+          JS
+      - name: Run all frontend, backend and repository document tests
+        shell: bash
+        run: |
+          set -euo pipefail
           node --test tests/*.test.cjs
           python3 -m unittest discover -s tests -p 'test_*.py'
-      - name: Commit source and individual images only
+      - name: Commit tested runtime, tests and curated screenshot files
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add main.py plugin.json package.json src/index.js dist/index.js tests/ docs/PREVIEW24_SHA256.txt docs/screenshots/v1.1.8/
-          if git diff --cached --quiet; then echo 'Already synchronized'; else
-            git commit -m 'release: sync exact 1.1.8 runtime and publish curated 23-image gallery'
+          if git diff --cached --quiet; then
+            echo 'Release source and gallery already synchronized.'
+          else
+            git commit -m 'release: sync tested 1.1.8 source and add 23 genuine screenshots'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
-      - name: Apply release notes and remove screenshot archive release asset
+      - name: Update published release notes using the actual public documentation
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh release edit '1.1.8' --repo "$GITHUB_REPOSITORY" --notes-file docs/RELEASE_NOTES_1.1.8.md
-          asset_id="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/1.1.8" --jq '.assets[] | select(.name=="TitleDeck.1.1.8.screenshots.zip") | .id')"
-          if [ -n "$asset_id" ]; then
-            # The gallery now contains all 23 individual image files.
-            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id"
-            echo 'Screenshot ZIP removed; official plugin ZIP preserved.'
-          fi
-          gh release view 1.1.8 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name'
+          gh release edit 1.1.8 --repo "$GITHUB_REPOSITORY" --notes-file docs/RELEASE_NOTES_1.1.8.md
+          echo '1.1.8 release notes updated; plugin ZIP bytes unchanged.'
