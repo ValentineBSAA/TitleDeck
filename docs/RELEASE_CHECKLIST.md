@@ -1,34 +1,30 @@
 # TitleDeck 1.1.8 publication checklist
 
-**Current public release:** 0.9.2. **Planned next release:** 1.1.8, candidate only. **Do not publish** until the remaining description-box scrolling issue is addressed or explicitly documented as an accepted limitation.
+**Status:** Documentation staged; public **0.9.2** release unchanged. **1.1.8 is not yet released.**
 
-## Physical tests
+## Hardware acceptance
 
-- [x] Built-in Deck LB/RB pages Full Library Manager.
-- [x] PS4 Bluetooth controller LB/RB works.
-- [x] Steam custom description displays and persists after restart.
-- [x] Non-Steam custom description displays and persists after restart.
-- [x] Ghost poster removed, correct side-by-side custom layout, Restore Original returns native layout.
-- [x] Hide tile removes only the manager card, not the underlying Steam shortcut.
-- [x] 1.1.8 five-point hardware check: manager right-stick, JWE3 cover, tile presentation, LB/RB, diagnostics hidden.
-- [ ] **Investigate newly reported right-stick scrolling failure inside Steam/non-Steam description boxes.**
-- [ ] Repeat an exact-final-installer smoke test after any fix or release-stage changes.
-- [ ] Verify fresh install and existing-settings migration on the final public ZIP.
+- [x] Physical Steam Deck 1.1.8: final five-item feature checklist reported successful.
+- [x] Built-in Steam Deck LB/RB and PS4 controller library paging.
+- [x] Full Library Manager editor's right-stick scrolling, refined artwork, developer options hidden.
+- [x] Steam and non-Steam Game Info descriptions persist after a full reboot.
+- [x] Historical 1.1.1 screenshots established side-by-side layout, ghost removal and original restoration.
+- [ ] **Game Info description-box right-stick scrolling:** new issue on both Steam and non-Steam games; investigate and retest.
 
-## Repository preparation
+## Repository and release preparation
 
-- [x] Update README, beginner guide, features, hardware matrix, compatibility, support and release notes for the planned 1.1.8 release.
-- [x] Preserve historical 0.9.2 release information and screenshots; do not falsely say the candidate is already public.
-- [x] Stage a new screenshot directory **without** bundling the screenshot ZIP.
-- [x] Deactivate unsafe legacy automation that could overwrite newer source with 0.9.2.
-- [ ] Receive final selected screenshots, extract and commit individual images, link gallery and README.
-- [ ] Receive/confirm final installer ZIP and its SHA-256.
-- [ ] Synchronize `plugin.json`, `package.json`, `main.py`, `src/index.js`, `dist/index.js` and matching tests **from that exact final installer**.
-- [ ] Update source-pinning tests and release parity workflow to target the final 1.1.8 ZIP **after it is published**.
-- [ ] Run GitHub CI against the synchronized source, plus ZIP extract-and-test checks.
-- [ ] Publish the GitHub Release with **plugin ZIP only**, no screenshots ZIP. Verify asset filename and displayed version.
-- [ ] Update README download links and version badges once the public release exists.
-- [ ] Update/close historical issue #6 once the corrected Game Info implementation is publicly available; link the release.
-- [ ] Keep SteamOS/CSS Loader compatibility and unrelated plugin integration under continued observation.
+- [x] Beginner guide, features, compatibility, troubleshooting, hardware verification and release notes prepared.
+- [x] Upcoming screenshot gallery slots prepared; earlier screenshots retained as clearly historical.
+- [x] Remove dangerous 0.9.2 source-sync automation behavior so future code can't be overwritten silently.
+- [ ] Receive final tested **TitleDeck-1.1.8.zip** for public release.
+- [ ] Verify ZIP structure, manifest versions, SHA-256, frontend/backend tests and source/runtime byte parity.
+- [ ] Upload final screenshot **images** into `docs/screenshots/v1.1.8/` and connect actual files to README/gallery.
+- [ ] Do not attach or retain an uploaded **screenshots.zip** as a separate public release download.
+- [ ] Align `plugin.json`, `package.json`, `src/index.js`, `dist/index.js`, `main.py` and CI release checks with the approved installer.
+- [ ] Create tag/release 1.1.8 and attach **one plugin installer ZIP**.
+- [ ] Verify public release link works and Direct Updater sees the intended installer.
+- [ ] Recheck installation on physical Steam Deck, then update/close old 0.9.2 issue #6 as appropriate.
 
-[Beginner's guide](BEGINNERS_GUIDE.md) · [Release notes](RELEASE_NOTES_1.1.8.md) · [Source](../SOURCE.md)
+**No title/description or controller changes should be introduced merely as part of documentation or screenshot staging.**
+
+[Source integrity](../SOURCE.md) · [Release notes](RELEASE_NOTES_1.1.8.md) · [Screenshot instructions](SCREENSHOT_UPLOAD_GUIDE.md).

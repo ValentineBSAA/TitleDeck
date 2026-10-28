@@ -1,15 +1,25 @@
-# This workflow formerly restored the published 0.9.2 ZIP to main.
-# Retired: automatic source rollback is unsafe during later release preparation.
-name: Historical 0.9.2 sync (retired; read-only)
+name: Audit historical stable runtime (read-only)
 on:
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  retired:
+  audit-historical-092:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo 'This historical sync workflow is deliberately disabled.'
-          echo 'Never overwrite newer source with the 0.9.2 release.'
-          echo 'See SOURCE.md for the current final ZIP to source synchronization procedure.'
+      - uses: actions/checkout@v4
+      - name: Protect newer source from automatic rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'This workflow is now READ-ONLY. It will never overwrite main.py, manifests, src/index.js or dist/index.js.'
+          echo 'Historical stable 0.9.2 source parity belongs to the archived release.'
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          v=json.loads(Path('plugin.json').read_text())['version']
+          print('Current checked-in plugin version:',v)
+          if v != '0.9.2':
+              print('Runtime is no longer historical 0.9.2: refusing any old-version synchronization.')
+          PY

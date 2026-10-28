@@ -1,39 +1,39 @@
-# Physical Steam Deck testing: 1.1.8 candidate
+# Physical Steam Deck acceptance log
 
-**Last maintainer report:** October 27, 2026. This file distinguishes tests on the actual Deck from automated tests and unresolved behavior. It does not certify every SteamOS installation.
+**Date:** October 27, 2026. **Target:** actual Valve Steam Deck running SteamOS Gaming Mode and Decky Loader, with user-reported tests and camera photos. This is not a universal hardware certification.
 
-| Feature | Evidence and current status |
-| --- | --- |
-| Rename a Steam title; save and restore | **Hardware verified** during the original RC testing |
-| Title alias persists after reboot | **Hardware verified** during previous releases |
-| Suggest Cleanup, Apply, explicit Save | **Hardware verified** with game-name cleanup |
-| Steam **Game Info** custom description | **Hardware verified** in the 1.1.8 candidate after a Deck restart: displays and persists |
-| Non-Steam **Game Info** custom description | **Hardware verified** in the 1.1.8 candidate after a Deck restart: displays and persists |
-| Non-Steam side-by-side cover and description | **Hardware verified** in 1.1.1 screenshots |
-| Ghost original artwork removal and Proton information | **Hardware verified** in 1.1.1 Game Info screenshots |
-| Restore Original Game and original non-Steam layout | **Hardware verified** in 1.1.1 screenshots |
-| Physical built-in Deck LB/RB | **Hardware verified** in 1.1.6 and passed 1.1.8 acceptance check |
-| PS4 Bluetooth controller LB/RB | **Hardware verified** in 1.1.6 |
-| Full Library Manager on-screen paging | **Hardware verified** |
-| Right-stick scrolling in **Full Library Manager editor** | **Maintainer marked 1.1.8 five-item test passed**; retest separately from Game Info text scrolling |
-| Right-stick scrolling in Steam/non-Steam **description boxes** | **NEWLY REPORTED BROKEN** after 1.1.8 candidate acceptance; don't advertise as working |
-| Manager artwork fallbacks, filled cover presentation | **1.1.8 five-item hardware check passed**; some uncommon assets remain best-effort |
-| Jurassic World Evolution 3 cover | **1.1.8 five-item hardware check passed** |
-| Hide tile and manager reload | **Hardware verified** on 1.1.7 |
-| Developer options absent from normal public UI | **1.1.8 five-item hardware check passed** |
-| D-pad Settings / custom color picker | **Previously hardware verified** |
-| TitleDeck settings survive every Steam update/theme | **Not comprehensively verified** |
-| 200+ game bulk restore / GTM combination / other handhelds | **Not exhaustively tested** |
+> [!IMPORTANT]
+> **1.1.8 is a physically tested release candidate, not yet a published GitHub download.** The newest public release is still 0.9.2. Current 1.1.8 hardware findings supersede earlier 0.9.2 claims **for the candidate only**. Do not silently apply newer findings to the older ZIP.
 
-## Historical version warnings
+| Feature / scenario | 1.1.8 evidence | Remaining limit |
+| --- | --- | --- |
+| Steam Game Info custom description displays | **PASS, hardware confirmed after full Deck reboot** | Game Info right-stick scrolling now reported not functioning |
+| Non-Steam Game Info custom description displays | **PASS, hardware confirmed after full Deck reboot** | Same Game Info right-stick scrolling issue |
+| Non-Steam cover to the left of custom text | **PASS, hardware screenshot on 1.1.1**; working renderer retained | Different themes / games may lay out differently |
+| Ghost artwork removed, Proton line preserved | **PASS, user screenshot on 1.1.1** | Steam UI updates may change internals |
+| Restore Original Game returns original non-Steam text and layout | **PASS, user screenshot on 1.1.1** | Reconfirm after future Steam updates |
+| Title alias, cleanup review, restoration | **PASS, earlier hardware checks** | Not every special-character title tested |
+| Steam Deck built-in LB / RB pages Full Library Manager | **PASS on 1.1.6; 1.1.8 final checklist completed** | Physical result, not a guarantee for every Steam channel |
+| PS4 Bluetooth LB / RB pages Full Library Manager | **PASS on 1.1.6; 1.1.8 checklist completed** | Other external controllers unverified |
+| On-screen LB / RB paging | **PASS** | No known issue from current check |
+| Right stick scrolls TitleDeck Full Library Manager editor/settings content | **PASS in 1.1.8 checklist** | **Not** proof of Steam Game Info description scrolling |
+| Missing library art / sizing / new sources | **PASS for maintainer's five-item 1.1.8 checklist** | Some apps or non-Steam shortcuts may still lack art |
+| Jurassic World Evolution 3 art | **PASS as part of maintainer's 1.1.8 checklist** | Different artwork caches may vary |
+| Hide unwanted library tile | **PASS: ES-DE (Program) hidden and library reloaded** | Not a deletion or deduplication of Steam entries |
+| Developer diagnostics hidden from public UI | **PASS in 1.1.8 checklist** | Diagnostic opt-in remains for developer use |
+| Settings D-pad, custom RGB picker, installed badges | **PASS on earlier physically tested builds** | Theme combinations not exhaustively tested |
+| Steam client / non-Steam description restart persistence | **PASS on 1.1.8** | Ongoing Steam UI compatibility to monitor |
+| Very large Restore All with 200+ items | **Not exhaustively hardware accepted** | Safeguards exist but large-scale test incomplete |
+| Every CSS Loader theme / GTM interaction / alternative device | **Not accepted as universally compatible** | Report specific combinations |
+| Right-stick scroll in Steam/non-Steam **Game Info** text | **KNOWN ISSUE, currently fails on user test** | Open for follow-up; do not claim fixed |
 
-The published **0.9.2** release has a documented Steam/non-Steam description reliability bug. That issue does not automatically describe the private 1.1.8 candidate, where display and persistence were retested on hardware. Issue #6 remains open until a corrected release is publicly available.
+### Hardware-history highlights
+- **0.9.0 RC1:** title rename, native keyboard, cleanup review, save and restore.
+- **0.9.2:** descriptions introduced, but later reported unreliable in the published release.
+- **0.9.14:** Steam and non-Steam Game Info description persistence confirmed in earlier private tests.
+- **1.1.1:** side-by-side custom art/text, ghost artwork cleanup, Proton information, and original restoration shown in hardware screenshots.
+- **1.1.6:** built-in Steam Deck LB/RB finally confirmed, alongside PS4 controller LB/RB.
+- **1.1.7:** image-source fallback and reversible Hide tile added.
+- **1.1.8:** expanded artwork presentation, manager right-stick scrolling, hidden diagnostics, 5/5 requested feature checks, and successful post-reboot description checks. **New Game Info right-stick scroll issue reported after those checks.**
 
-## Testing rules for contributors
-
-- Don't present automated tests as proof of physical Steam Deck functionality.
-- Don't convert a passed **manager right-stick** test into a claim about **Game Info description-box right-stick** behavior.
-- Preserve known-good built-in Deck and PS4 LB/RB paths, original restoration, and Steam/non-Steam description persistence.
-- Record exact version, game/App ID, UI screen, controller type, SteamOS channel and repeat steps for failures.
-
-[Candidate release notes](RELEASE_NOTES_1.1.8.md) · [Compatibility](COMPATIBILITY.md) · [Support](../SUPPORT.md)
+Automated regression results are useful but are not substitutes for the hardware outcomes above. [Release notes](RELEASE_NOTES_1.1.8.md) · [Compatibility](COMPATIBILITY.md).

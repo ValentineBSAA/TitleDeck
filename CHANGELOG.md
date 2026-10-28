@@ -1,5 +1,33 @@
 # TitleDeck changelog
 
+## 1.1.8 — Upcoming, physically tested release candidate (2026-10-27; not published)
+
+**This section describes a private candidate; the newest public GitHub release remains 0.9.2.**
+- Repaired Steam and non-Steam custom Game Info description rendering and restart persistence; custom non-Steam cover-and-text layout and original restore tested on real Deck.
+- Removed the ghost original-artwork placeholder while preserving the Steam Play / Proton information line.
+- Removed obsolete yellow description-length warnings and retained unrestricted description saving.
+- Repaired Full Library Manager physical **LB/RB** paging for both the Steam Deck controls and PS4 Bluetooth controller.
+- Expanded Full Library Manager artwork sources, including Steam/local/cache fallbacks and improved poster tile sizing.
+- Added reversible **Hide tile** for duplicate-looking entries without deleting Steam shortcuts.
+- Added right-stick scrolling within **TitleDeck's own editor / Settings** and kept developer diagnostics hidden for public use.
+- Updated accent colors, custom color picker, navigation, installed indicators and library presentation.
+- **Hardware:** Maintainer completed all five final 1.1.8 feature checks and verified both Steam and non-Steam custom descriptions after reboot.
+- **Open issue:** Steam's **Game Info** description-box right-stick scrolling is **not working** for either game type in the most recent on-device test. This is **not** the same as the working manager-editor right-stick scrolling.
+- **Release status:** installer ZIP, source parity, screenshots and GitHub release publication are pending.
+
+## 1.1.6–1.1.7 — Private hardware-tested milestones
+
+- **1.1.6:** Steam Deck's built-in LB/RB and PS4 controller LB/RB confirmed working in Full Library Manager after native focus-navigation input repair.
+- **1.1.7:** Additional Steam/local artwork fallbacks and reversible Hide tile, confirmed with ES-DE (Program) on Deck.
+
+## 1.1.0–1.1.5 — Private Game Info and controller milestones
+
+- **1.1.1:** Hardware-proven custom artwork left / custom description right, ghost-slot cleanup, visible Proton text and original restoration.
+- **1.1.2–1.1.3:** Removed obsolete editor warnings and protected working Game Info layout.
+- **1.1.4–1.1.5:** Investigated controller input discrepancies, added native input bridge and diagnostics; PS4 controller navigation passed before built-in input was repaired in 1.1.6.
+
+---
+
 ## 1.1.8: hardware-tested release candidate (NOT PUBLISHED)
 
 - Hardware tests confirmed the candidate's Steam and non-Steam custom descriptions still display and persist after restarting the Deck.
@@ -201,4 +229,5 @@ Device verification needed: real Steam library badge injection and controller mo
 - Preserved the working rename/restore engine, controller library, persisted settings, recovery safeguards and approved TD icon.
 
 **Steam Deck acceptance still required:** Settings/scroll behavior under CSS Loader, actual on-screen native badges, and notifications in Gaming Mode. Badge success is not guaranteed on every Steam UI release.
+
 

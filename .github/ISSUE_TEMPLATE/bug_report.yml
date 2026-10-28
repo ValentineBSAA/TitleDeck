@@ -1,82 +1,81 @@
 name: Bug report
-description: Report Steam Deck behavior with reproducible steps
+description: Report TitleDeck behavior on Steam Deck or another clearly identified test platform
 title: "[Bug] "
 labels: []
 body:
   - type: markdown
     attributes:
-      value: "Steam Deck Gaming Mode is the maintainer-tested target. 1.1.8 is a candidate; the published 0.9.2 has a known description issue. Please do not post credentials or private unredacted diagnostics."
+      value: "TitleDeck's primary tested platform is a physical Steam Deck in SteamOS Gaming Mode. As of Oct 27 2026, the published release is 0.9.2, while 1.1.8 is an upcoming candidate. Please do not upload credentials or Steam Guard codes."
   - type: input
     id: version
     attributes:
       label: TitleDeck version
-      placeholder: "1.1.8 candidate, or 0.9.2 public"
+      placeholder: "e.g. 0.9.2 published / 1.1.8 candidate"
     validations:
       required: true
   - type: dropdown
     id: hardware
     attributes:
-      label: Hardware
+      label: Test hardware
       options:
         - Steam Deck OLED
         - Steam Deck LCD
-        - Other handheld (unverified)
-        - Desktop / laptop (unverified)
-        - Android / DroidDeck (unverified)
-        - Other
+        - ROG Ally / other handheld
+        - Desktop / laptop
+        - Android / DroidDeck
+        - Other (describe)
     validations:
       required: true
   - type: input
-    id: os
+    id: system
     attributes:
-      label: SteamOS, Steam client, Decky Loader, and CSS Loader version/theme
-      placeholder: "Include version/channel, or write unknown"
+      label: SteamOS / Steam client / Decky / CSS theme
+      placeholder: "Include update channel and theme, if present"
     validations:
       required: true
+  - type: input
+    id: controller
+    attributes:
+      label: Input device
+      placeholder: "Built-in Steam Deck buttons, PS4 Bluetooth, touchscreen, etc."
   - type: dropdown
     id: feature
     attributes:
-      label: Affected feature / surface
+      label: Affected feature
       options:
-        - Game Info description display or persistence
-        - Steam Game Info description scrolling
-        - TitleDeck custom description editor scrolling
-        - Full Library Manager scrolling or LB/RB paging
-        - Title rename, Suggest Cleanup, Save
-        - Restore Original Game / description-only restore
-        - Artwork source or tile sizing
-        - Hide tile / hidden entry recovery
-        - Settings / RGB color picker
-        - Steam keyboard / controller focus
-        - Backup and recovery
+        - Steam Game Info custom description
+        - Non-Steam Game Info custom description
+        - Game Info right-stick scrolling
+        - Full Library Manager scrolling
+        - LB/RB physical paging or D-pad
+        - Library artwork / image sizing
+        - Hide tile / restore hidden entries
+        - Title renaming / Save / Suggest Cleanup
+        - Restore Original / backup
+        - Keyboard or UI theme
         - Other
     validations:
       required: true
-  - type: input
-    id: game
-    attributes:
-      label: Game name / App ID and Steam or non-Steam
-      placeholder: "Catherine Classic (Steam), or imported shortcut (non-Steam)"
   - type: textarea
     id: steps
     attributes:
       label: Steps to reproduce
-      description: Include physical buttons, connected controllers and exact page.
+      description: Include the game name, App ID if known, and the exact actions/buttons.
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: Expected result
+      label: Expected behavior
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: Actual result
+      label: Actual behavior
     validations:
       required: true
   - type: textarea
     id: notes
     attributes:
-      label: Screenshots or extra notes (redact personal information)
+      label: Screenshots / other details

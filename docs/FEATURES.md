@@ -1,52 +1,42 @@
-# TitleDeck features and how they work
+# TitleDeck feature reference
 
-**Scope:** 1.1.8 release candidate. This page describes implemented features. Refer to [physical-device verification](VERIFIED_ON_DECK.md) for the distinction between tested behavior and open issues.
+The features below describe the **upcoming 1.1.8 candidate**. **0.9.2 remains the latest published installer** until the new installer and final screenshots are provided. Status labels distinguish hardware-confirmed behavior from remaining limitations.
 
-## Names and title cleanup
+## Game title customization
+- Set a local per-game displayed name for Steam games and non-Steam shortcuts without rewriting game files or Steam's metadata.
+- Use the native Steam keyboard in Gaming Mode.
+- **Suggest Cleanup** gives a reversible, reviewable suggestion; explicitly save a new name.
+- Restore a title individually, or restore the entire game.
+- Names and local overrides have been tested for persistence across Deck restarts.
 
-- **Change Name:** local displayed-title override, not a game-file rename.
-- **Suggest Cleanup:** preview and optionally apply safer formatting without saving automatically.
-- **Save Custom Title:** explicit save; persisted after restart in prior hardware tests.
-- **Restore Original Game:** restore the selected game's original name and description.
-- **Description-only restoration:** remove the customized description without having to abandon a custom title.
-
-## Descriptions: Steam and non-Steam
-
-- Write a description in TitleDeck's game editor and save it locally.
-- Steam titles: replace the displayed Steam **Game Info** description when Game Info placement is selected.
-- Non-Steam shortcuts: show the custom text alongside their cover while preserving Proton details.
-- Description placement choices: **Game Info**, **Artwork Footer**, and **Below Play**.
-- Supports long descriptions without the older yellow warning thresholds or a hard character cap.
-- Restart persistence, restore behavior, and the non-Steam ghost-poster removal were tested on the maintainer's Deck.
-- **Known 1.1.8 input limitation:** right-stick scrolling in **description boxes** does not respond in recent hardware testing. Text rendering and saving still work. This is not the same as right-stick scrolling in the library manager or LB/RB page controls.
+## Game Info descriptions
+- Replace displayed **Game Info** text on real Steam game pages, next to Community.
+- Replace the corresponding displayed description for non-Steam games and shortcuts.
+- Preserve custom non-Steam artwork beside the description and retain the Steam Play / Proton text.
+- Preserve originals via **Restore Steam Description** and **Restore Original Game**.
+- No enforced description character cap; previous yellow threshold warnings removed.
+- **Hardware verified:** both Steam and non-Steam descriptions displayed after restart in 1.1.8; 1.1.1 screenshots demonstrated side-by-side artwork, removal of a ghost artwork slot, Proton line, and original restoration.
+- **Unresolved in 1.1.8:** the maintainer now reports physical **right-stick scrolling does not scroll either Game Info description box**. It is not acceptable to advertise that interaction as working until retested.
 
 ## Full Library Manager
+- All games, Installed and Renamed filters; Search Library; App ID lookup; Refresh.
+- Controller-navigable artwork tile grid and installed-state indicator.
+- Real LB/RB page navigation on Steam Deck built-in controls and external PS4 controller, confirmed on 1.1.6 and again in 1.1.8.
+- On-screen LB/RB controls, D-pad browsing, A select and B close/back.
+- Right-stick scrolling in TitleDeck's **own editor/Settings workspaces**, tested on 1.1.8.
+- New artwork fallbacks across Steam capsule/header images, local artwork and cached artwork, including specific demo and app fallbacks. A blurred fill and full uncropped image improve mixed cover proportions.
+- **Hide tile** removes an unwanted shortcut from the manager only; **Show all hidden tiles** reverses it. It does not delete anything from Steam.
 
-- Card grid with **All games / Installed / Renamed** tabs, Search, App ID lookup, Refresh, Settings, and paging.
-- **LB/RB** library paging for built-in Deck controls and PS4 Bluetooth controllers, hardware-confirmed in 1.1.6 and retested in the 1.1.8 candidate.
-- D-pad navigation, A select, B back, on-screen paging buttons, and touchscreen.
-- **Hide tile** suppresses a selected manager card. A hidden Steam shortcut still exists and launches as before. **Show all hidden tiles** reverses the setting.
-- Installation indicators, current version badge, redesigned color/accent controls.
+## Settings and appearance
+- TitleDeck Settings is reached from the **Full Library Manager → Settings** button (not Decky Loader's install settings).
+- Wine/red-themed interface, adaptive accent-color options, preset colors, custom RGB/hue-saturation picker, color-enabled toggles and readable library panels.
+- Description placement options include Game Info, Artwork Footer and Below Play; **Game Info** is the main hardware-tested presentation.
+- Backup/recovery and individual or bulk restore safeguards.
+- Developer diagnostics are **hidden by default** in 1.1.8, not permanently removed. They are available only after explicit developer opt-in.
 
-## Artwork handling
+## Safety and scope
+- No modification of installed game executables, folders or canonical Steam identifiers.
+- Back up your settings before upgrading or performing large restores.
+- Physical testing is specific to Steam Deck Gaming Mode. Other hardware, all CSS Loader themes, all SteamOS versions and massive batch restores are not fully verified.
 
-- Prefer user-custom artwork from the Steam Deck's grid images when available.
-- Try Steam's official artwork formats and local read-only Steam artwork cache as fallbacks.
-- Use a blurred image background to fill spare tile space, with a fully visible sharp cover in front (no damaging crop).
-- Includes fallback support for some demo/parent art and a verified URL for Jurassic World Evolution 3.
-- When artwork is genuinely unavailable, show an initials placeholder rather than a broken image.
-- These changes affect **TitleDeck's manager cards**, not the original Steam artwork files or Game Info renderer.
-
-## Color and navigation
-
-- Wine Red / preset accents and user-adjustable hue, saturation and RGB options.
-- Settings and the RGB editor are controller-navigable.
-- Developer diagnostics are hidden from the ordinary public UI; diagnostics remain a developer-only opt-in.
-
-## Privacy, files and reversibility
-
-- Overrides are stored locally through TitleDeck.
-- TitleDeck does not change installed games, Steam's canonical metadata, or artwork baked into image files.
-- Backup/restore controls provide additional recovery; test carefully before very large bulk restores.
-
-[Beginner's guide](BEGINNERS_GUIDE.md) · [1.1.8 release notes](RELEASE_NOTES_1.1.8.md) · [Support](../SUPPORT.md)
+[Beginner guide](BEGINNER_GUIDE.md) · [Current release status](../README.md) · [Hardware acceptance](VERIFIED_ON_DECK.md)

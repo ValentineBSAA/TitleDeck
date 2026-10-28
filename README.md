@@ -2,77 +2,76 @@
 <h1 align="center">TitleDeck</h1>
 <p align="center"><strong>Your library. Your names. Your descriptions.</strong></p>
 <p align="center">
-  <img alt="Next version" src="https://img.shields.io/badge/next-1.1.8%20candidate-7c294c">
-  <img alt="Published release" src="https://img.shields.io/badge/published-0.9.2-blue">
-  <img alt="Platform" src="https://img.shields.io/badge/tested-Steam%20Deck-brightgreen">
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
+<img alt="Hardware tested" src="https://img.shields.io/badge/tested-physical%20Steam%20Deck-1b82ba">
+<img alt="Published release" src="https://img.shields.io/badge/published-0.9.2-blue">
+<img alt="Next release" src="https://img.shields.io/badge/1.1.8-hardware%20tested%20candidate-orange">
+<a href="LICENSE"><img alt="License MIT" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
 
-**TitleDeck** customizes the **names and Game Info descriptions** you see in SteamOS Gaming Mode. It works with Steam games and non-Steam shortcuts, keeps changes local, and lets you restore the original display. It does **not** rename your installation files or rewrite Steam's canonical metadata.
+**TitleDeck** is a [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin for customizing **game titles and Game Info descriptions** in Steam Deck **Gaming Mode**. Customizations are local, reversible and do not rewrite installed game files or Valve's canonical game records.
 
 > [!IMPORTANT]
-> **Release status (October 27, 2026):** **1.1.8 is being prepared for public release, not yet published.** The maintainer has tested the candidate on a physical Steam Deck, including restart persistence for Steam and non-Steam descriptions, built-in Deck and PS4 LB/RB library paging, artwork and hide-tile behavior. **One newly reported issue remains:** right-stick scrolling does not respond in Steam/non-Steam **description boxes**. We are tracking this separately from the successfully tested description display and persistence. The source on `main` and the latest downloadable GitHub release remain **0.9.2** until the final installer is published and its source synchronized.
+> **Release status, October 27, 2026:** **0.9.2 is still the latest downloadable public release.** Its Game Info description feature has a [known reliability issue](https://github.com/ValentineBSAA/TitleDeck/issues/6). **1.1.8 is the upcoming, physically tested release candidate**, not a public download yet. The maintainer has verified Steam **and** non-Steam descriptions after reboot, library paging on the Deck and PS4 controller, artwork presentation, hiding library entries, and several other features. One new issue is still being investigated: **right-stick scrolling inside Steam's Game Info description area does not currently respond on the maintainer's Deck**. The 1.1.8 installer and current screenshots will be added only after final verification. [Verification notes](docs/VERIFIED_ON_DECK.md).
 
-**Start here:** [Beginner's guide](docs/BEGINNERS_GUIDE.md) · [Full feature guide](docs/FEATURES.md) · [Install and update](docs/INSTALL.md) · [Screenshots](docs/SCREENSHOTS.md) · [Troubleshooting](SUPPORT.md)
-
-**Download currently published version:** [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases). The **0.9.2 release has a known Game Info description reliability issue**; see [issue #6](https://github.com/ValentineBSAA/TitleDeck/issues/6). Do not mistake its historical installer for the pending 1.1.8 update.
+**Start here:** [Beginner guide](docs/BEGINNER_GUIDE.md) · [Installation](docs/INSTALL.md) · [All features](docs/FEATURES.md) · [Screenshots](docs/SCREENSHOTS.md) · [Help](SUPPORT.md) · [Changelog](CHANGELOG.md)
 
 ## What can TitleDeck do?
 
-| Feature | What it means |
+| Feature | What it means for you |
 | --- | --- |
-| **Rename a game** | Change its displayed name locally without altering game files. Preview **Suggest Cleanup** and choose **Save Custom Title** explicitly. |
-| **Custom Game Info descriptions** | Write personalized descriptions for Steam games **and** non-Steam shortcuts. Show them inside Steam's Game Info tab or choose another supported placement in Settings. |
-| **Restore originals** | Restore a game's original title and description, or restore only its description. |
-| **Full Library Manager** | Search, browse, filter All / Installed / Renamed, and navigate artwork tiles with the D-pad, touchscreen, or controllers. |
-| **Controller paging** | Page with **LB/RB** using the Deck's built-in controls or a PS4 Bluetooth controller (hardware-tested in candidate builds). |
-| **More complete cover art** | Use official Steam artwork, read-only local artwork caches, and custom grid images where available. Fill a tile with a soft background without cropping the foreground cover. |
-| **Hide an unwanted tile** | Hide entries such as **ES-DE (Program)** from TitleDeck's manager **without deleting anything from Steam**. Restore hidden entries in Settings. |
-| **Appearance** | Change the accent color, use preset colors or the custom RGB picker, and keep a controller-friendly layout. |
-| **Backup / recovery** | Use the built-in backup and recovery controls before large changes. |
+| **Rename games locally** | Change the visible title of a Steam or non-Steam library entry; restore the original when you want. |
+| **Write your own descriptions** | Replace the text shown in the real **Game Info** tab, beside Community, for Steam games and non-Steam shortcuts. |
+| **Use your Steam keyboard** | Edit names and descriptions in Gaming Mode without an external keyboard. |
+| **Browse the entire library** | Search, filter All / Installed / Renamed, use tile artwork, see installed indicators and page with LB/RB. |
+| **Clean up names safely** | Preview **Suggest Cleanup**, apply the suggestion, and explicitly save or undo. |
+| **Keep or restore originals** | Restore a description alone, restore an entire game, or use backup / recovery tools. |
+| **Personalize the interface** | Adjustable visual accent colors and controller-friendly Settings. |
+| **Hide unwanted manager tiles** | Hide a duplicate-looking Steam shortcut **only from TitleDeck**; recover it in Settings. |
 
-### A simple example
+These are features of the **upcoming 1.1.8 build**. Some were not available or reliable in the older, presently published 0.9.2 package. [Full version-by-version explanation](docs/RELEASE_NOTES_1.1.8.md).
 
-Open **Quick Access (•••) → Decky Loader → TitleDeck → Full Library Manager**, select a game, then use **Change Name** or the custom description editor. Saving a name and saving a description are separate actions. To see a saved Game Info description, open the game's Steam page and select **Game Info** next to Community.
+## Getting started in Gaming Mode
 
-For detailed pictures and every step, see the [beginner's guide](docs/BEGINNERS_GUIDE.md).
+1. Ensure **Decky Loader** is installed on a **Valve Steam Deck**.
+2. Download the actual **TitleDeck installer ZIP** from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases) when the desired version is published; **do not extract it**. At present, the available stable version is 0.9.2 and carries the warning above.
+3. Open **Quick Access (•••) → Decky Loader → Settings → Developer → Install Plugin from ZIP** and select the ZIP.
+4. Open **Quick Access (•••) → Decky → TitleDeck** and choose **Open Full Library Manager**.
+5. Select a game, use **Change Name** or the custom-description editor, and **Save**.
+6. To see your description, open the game's normal Steam page and select **Game Info**, located beside **Community**.
 
-## Controls at a glance
+For screenshots of each step, a guide to Settings, descriptions, backups, and controller buttons, see the **[beginner's guide](docs/BEGINNER_GUIDE.md)**.
 
-- **D-pad:** move between controls and games.
-- **A:** select or activate. **B:** back/close.
-- **LB/RB:** previous/next page in Full Library Manager, including Deck and PS4 controller hardware-tested paths.
-- **Right stick:** intended to scroll longer **Full Library Manager editor/settings** areas. **Known issue:** right-stick scrolling in Steam/non-Steam **description boxes** is currently reported not working. Use the scrollbar/touchscreen where available until retested.
-- **Touchscreen:** select tiles, buttons, and scrollable content.
+## Steam games and non-Steam apps
 
-[Detailed controls and Settings walkthrough](docs/BEGINNERS_GUIDE.md#controller-controls).
+TitleDeck keeps separate per-entry local overrides for both types. Steam games display the custom description in Game Info; non-Steam shortcuts can also show custom artwork beside the description. **Restore Original Game** returns the selected entry's original text/layout. A non-Steam title's **Steam Play / Proton** line is Steam-provided information and remains visible. No original Steam text is permanently rewritten.
 
-## Screenshots
+Long descriptions have **no enforced character limit** in 1.1.8, and old yellow character-length warnings have been removed. **Important:** the maintainer has recently reported that the **right stick is not scrolling the Game Info description areas** on either Steam or non-Steam games in 1.1.8; that input behavior should not be advertised as solved. Scrolling inside TitleDeck's own Full Library Manager editor is a separate feature and passed the recent hardware check.
 
-**New 1.1.8 screenshots are being prepared.** This README deliberately does not present older screenshots as current. The updated [gallery](docs/SCREENSHOTS.md) has a 1.1.8 section ready for individually extracted images. **The screenshots ZIP is an upload source, not an installer or a public release asset.**
+## Controllers and accessibility
 
-Historical screenshots remain available:
+| Control | Full Library Manager |
+| --- | --- |
+| D-pad | Move through games and available controls |
+| A | Select or activate |
+| B | Back / close |
+| **LB / RB** | Previous / next library page, including built-in Deck and PS4 controller (verified in 1.1.6 and 1.1.8) |
+| **Right stick** | Scroll longer TitleDeck editor/settings panels (1.1.8 hardware check passed) |
+| Touchscreen | Tap any on-screen control, including LB/RB |
 
-| 0.9.2 Beta 1: Game Info | 0.9.0 RC1: Library manager |
-|:---:|:---:|
-| [![Historical Catherine Game Info screenshot](docs/screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg)](docs/screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg) | [![Historical library manager](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg)](docs/screenshots/v0.9.0-rc1/02-full-library-manager.jpeg) |
+Controls inside Steam's **Game Info** page are handled separately; see the scrolling limitation above.
 
-*The images above show historical versions and do not represent the current 1.1.8 appearance.*
+## Screenshots and what's coming
 
-## Compatibility and honesty about testing
+The fresh **1.1.8 screenshot gallery is being prepared**. [See the gallery](docs/SCREENSHOTS.md) for reserved image slots and clearly labeled older captures. Historic screenshots are retained so the original 0.8.x/0.9.x development story is preserved. **Screenshots are gallery media, not a second installer ZIP.**
 
-**Primary tested setup:** a real Valve Steam Deck in **SteamOS Gaming Mode**, with Decky Loader. A PS4 Bluetooth controller has also been physically tested for Full Library Manager paging. Hardware verification is documented in [Verified on Deck](docs/VERIFIED_ON_DECK.md). Automated tests are not a substitute for physical verification.
+## Made with community feedback
 
-ROG Ally, Legion Go, Windows, Android/DroidDeck, Steam Desktop Mode and other devices are **not maintainer-verified**. CSS Loader themes, future Steam updates, and combinations of Decky plugins can change behavior. [Compatibility details](docs/COMPATIBILITY.md).
+TitleDeck began with a community request for game-name customization, including **u/TacoOfGod**. **u/All-Stars64** suggested editing descriptions **inside Game Info, beside Community**. Thank you to both, and to everyone testing, reporting regressions, and sharing feedback. These credits acknowledge feature ideas, not code authorship.
 
-## Where we came from
+## Compatibility, support and source
 
-TitleDeck started with the community's request for a way to **rename Steam library games**. Thanks to **u/TacoOfGod** for helping inspire the original idea and **u/All-Stars64** for suggesting custom descriptions **inside Game Info**. Those are feature-idea acknowledgments, not claims of code authorship.
+**Tested target:** physical Valve Steam Deck running SteamOS Gaming Mode with Decky Loader. PS4 Bluetooth controller library paging was also verified. ROG Ally, other handhelds, Android/DroidDeck, Windows, and Steam Desktop Mode are **not verified**. Steam client or CSS Loader updates can change the UI. [Compatibility](docs/COMPATIBILITY.md).
 
-The road from 0.9.x to 1.1.8 included Steam/non-Steam description restoration, side-by-side artwork and ghost-artwork fixes, controller-native LB/RB paging, a Full Library Manager refresh, reusable artwork sources, reversible hidden tiles, expanded visual settings, and an upgraded screenshot-ready interface. Read the [release notes](docs/RELEASE_NOTES_1.1.8.md) or [changelog](CHANGELOG.md) for the details.
+**Published installer and repository source:** The checked-in runtime currently corresponds to **published 0.9.2** until the final 1.1.8 installer/source synchronization. **Do not build 1.1.8 from the repository's current source yet.** [Source and release integrity](SOURCE.md).
 
-## Developer resources
-
-[Contributing](CONTRIBUTING.md) · [Source and release provenance](SOURCE.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Roadmap](docs/ROADMAP.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
-
-MIT licensed. An independent community project, not affiliated with Valve, Steam, Decky Loader, or game publishers.
+[Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Contributing](CONTRIBUTING.md) · [Release checklist](docs/RELEASE_CHECKLIST.md). MIT licensed; independent of Valve, Steam, Decky Loader, and game publishers.

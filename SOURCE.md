@@ -1,29 +1,29 @@
-# TitleDeck source, build, and release provenance
+# TitleDeck source, public release and integrity
 
-## Publication status
+## Current state, October 27, 2026
 
-- **Public stable release today:** [0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2). Its ZIP and published source have a historically documented Game Info description problem.
-- **Hardware-tested next candidate:** **1.1.8**, currently in private testing. The maintainer has verified Steam/non-Steam description display after restart and the five 1.1.8 hardware checks, but separately reported failed right-stick scrolling **in description boxes**.
-- **Important:** This documentation preparation commit does **not** publish a 1.1.8 installer or claim that the repository's current runtime source has been updated. Until final synchronization, `main.py`, `plugin.json`, `package.json`, `src/index.js`, `dist/index.js` and source-pinning tests still correspond to **published 0.9.2**.
+| Item | Version / status |
+| --- | --- |
+| **Published GitHub installer** | [TitleDeck 0.9.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2) |
+| **Upcoming candidate tested on real Deck** | 1.1.8, **not yet published** |
+| **Checked-in runtime and source** | Still 0.9.2 until the maintainer supplies and approves the final 1.1.8 ZIP |
+| **Current screenshots** | Historical 0.8.x / 0.9.x captures; 1.1.8 gallery pending |
 
-## Historical releases
+**Do not claim the `main` branch currently contains the tested 1.1.8 runtime.** It doesn't. This documentation refresh intentionally does not modify `main.py`, `plugin.json`, `package.json`, `src/index.js`, or `dist/index.js` until a final validated installer can be synchronized.
 
-- [0.9.2 stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2)
-- [0.9.2 Beta 1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.2-beta.1)
-- [0.9.0 RC1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/0.9.0)
+## Safe public release procedure
 
-Historic source and screenshot paths remain accessible. An unreleased 1.1.8 candidate ZIP is **not** a substitute for the current published downloadable installer.
+1. Start from the exact **final, physically tested installer ZIP**.
+2. Validate `TitleDeck/plugin.json`, `package.json`, `main.py`, and `dist/index.js`, and its final version.
+3. Set `src/index.js` to the same bundled frontend bytes as `dist/index.js` unless the developer provides the original source separately.
+4. Update/add appropriate automated regression tests, manifest and source integrity checks, and version-specific release verification.
+5. Check archive integrity and record SHA-256.
+6. Add final screenshots as individual files; **never include screenshot archive as a runtime file or separate new release asset**.
+7. Publish the 1.1.8 GitHub release/tag and plugin ZIP only **after** the hardware bug and final acceptance decision.
+8. Verify that the public ZIP matches what was tested; avoid pinning future repository sync to older versions.
 
-## Final-release integrity plan
+## Historical assets
 
-1. Accept the exact final ZIP after the remaining issue is resolved or explicitly accepted.
-2. Verify ZIP structure, files and cryptographic checksum.
-3. Copy the **exact version-matched files** into the repository: `plugin.json`, `package.json`, `main.py`, `src/index.js`, `dist/index.js`, and appropriate tests.
-4. Require `src/index.js` and `dist/index.js` to match byte for byte.
-5. Run frontend/backend and document tests.
-6. Publish the final ZIP only after hardware acceptance, then verify public download and source/asset parity.
-7. Include individual screenshots in the gallery, **not** a screenshots ZIP release asset.
+The previously published 0.9.2 stable release, 0.9.2 Beta 1 and 0.9.0 RC1 remain available for history. Their original ZIPs and images are not being changed by this documentation refresh. The old stable ZIP was historically verified against its own matching source; that fact does not establish 1.1.8 source parity.
 
-**Safety:** An older workflow previously attempted to synchronize `main` back to the published 0.9.2 runtime. It has been retired to avoid accidentally overwriting newer work.
-
-[Hardware evidence](docs/VERIFIED_ON_DECK.md) · [Release checklist](docs/RELEASE_CHECKLIST.md)
+[Release checklist](docs/RELEASE_CHECKLIST.md) · [Contributor guide](CONTRIBUTING.md) · [Hardware verification](docs/VERIFIED_ON_DECK.md).

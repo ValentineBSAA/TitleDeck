@@ -1,18 +1,21 @@
-## Change summary
+## Summary
 
-Explain the issue and effect of this change.
+What changes, and why? Link the issue and identify Steam/non-Steam behavior.
 
-## Validation checklist
+## Regression checklist
 
-- [ ] Frontend Node tests passed
-- [ ] Python backend tests passed
-- [ ] Existing aliases, custom descriptions, backups, safe Restore All, and explicit save preserved
-- [ ] Restore Original Game clears BOTH title and description; Restore Steam Description only description
-- [ ] Game Info ↔ Community tab switching and 1,247-character warning unaffected
-- [ ] Real Steam Deck Gaming Mode results separated from simulated results
-- [ ] Device/OS, Decky, Steam client channel, CSS Loader theme documented
-- [ ] Controller D-pad / keyboard behavior tested when changed
-- [ ] Release notes and compatibility warnings updated if necessary
+- [ ] `node --test tests/*.test.cjs` passes
+- [ ] `python3 -m unittest discover -s tests -p 'test_*.py'` passes
+- [ ] `src/index.js` and `dist/index.js` remain identical for a release build
+- [ ] Game names, local descriptions, save/restore, backup and original Steam presentation unaffected
+- [ ] Steam **and** non-Steam Game Info paths considered separately
+- [ ] Steam Deck built-in and external-controller LB/RB Full Library Manager paging protected
+- [ ] TitleDeck editor right-stick behavior distinguished from Steam Game Info right-stick behavior
+- [ ] Missing/odd artwork and hidden-title restoration tested where relevant
+- [ ] No new developer-only controls exposed to ordinary users
+- [ ] Physical hardware evidence separated from automated-only tests
+- [ ] README, changelog, compatibility and release notes updated if needed
 
-**Physical device / alternate platform used:**  
-**Known problems remaining:**
+**Hardware / SteamOS / Steam client / Decky version:**  
+**Real-device verification results:**  
+**Unverified scenarios / known issues:**

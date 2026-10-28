@@ -1,34 +1,39 @@
-# Installing and updating TitleDeck on Steam Deck
+# Install or update TitleDeck
 
-> **Read this first:** The **currently published** GitHub release is **0.9.2**. The **1.1.8 release candidate** has been tested on hardware but is not public yet, and description-box right-stick scrolling remains an open issue. Do not download the older ZIP believing it is 1.1.8. Visit [Releases](https://github.com/ValentineBSAA/TitleDeck/releases) for the actual published assets.
+> **As of October 27, 2026:** Public stable download: **0.9.2**. **1.1.8 is an upcoming tested candidate**, not yet a GitHub release. The 0.9.2 build has a known Game Info description regression. If you need the newly verified Steam and non-Steam description behavior, wait for the 1.1.8 installer to be published.
 
-## Step-by-step
+**Supported hardware evidence:** Valve Steam Deck running SteamOS Gaming Mode with Decky Loader. [Compatibility details](COMPATIBILITY.md).
 
-1. Use a **physical Steam Deck in Gaming Mode** with **Decky Loader** installed.
-2. If already using TitleDeck, open **TitleDeck Settings** and create a backup of existing customizations.
-3. Download the **TitleDeck plugin ZIP**, named `TitleDeck-<version>.zip`, from the chosen GitHub release.
-4. **Do not unzip the installer.** The plugin's ZIP is different from any screenshot archive.
-5. Press the **•••** button to open Quick Access. Select the **Decky Loader** plug icon, open **Decky's Settings** and its **Developer** section.
-6. Select **Install Plugin from ZIP** and select the downloaded ZIP. Wording may vary with Decky version.
-7. Open **Quick Access → Decky Loader → TitleDeck**, then **Open Full Library Manager**.
-8. Confirm the version badge matches the ZIP you intended to install.
+## New installation
 
-### First-use example
+1. Install [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) using its official instructions, if needed.
+2. From [TitleDeck GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases), download the desired version's **`TitleDeck-<version>.zip` plugin installer**.
+3. Do **not** unpack or repackage that ZIP.
+4. On the Steam Deck, enter **Gaming Mode**, press **••• (Quick Access)** and open the **Decky Loader** tab.
+5. Open **Decky Loader Settings → Developer → Install Plugin from ZIP** and choose the downloaded installer.
+6. Return to **Quick Access → Decky → TitleDeck → Open Full Library Manager**.
+7. Use **Full Library Manager → Settings** for TitleDeck's own preferences.
 
-In Full Library Manager, select a game, choose **Change Name**, type using Steam's keyboard, and choose **Save Custom Title**. To add custom text, open its **description editor**, save, then visit the game's **Game Info** tab in Steam. Open **⚙ Settings** in TitleDeck's manager to change description placement and appearance.
+**The Developer menu in step 5 belongs to Decky Loader** and is for installing a ZIP. TitleDeck's diagnostic controls are a different, normally hidden feature.
 
-### Controllers
+## Upgrade from an older version
 
-**D-pad** navigates, **A** selects, **B** goes back, **LB/RB** changes library pages. On-screen ◀ LB and RB ▶ work too. Full instructions: [Beginner's guide](BEGINNERS_GUIDE.md).
+1. Save a backup of your existing TitleDeck customizations, where supported.
+2. Install the newer ZIP through Decky Loader as above.
+3. Check that the version badge identifies your installed version.
+4. Open Full Library Manager and test physical LB/RB, a saved game name, a Steam and non-Steam Game Info description, and Restore Original.
+5. Let Steam populate the artwork cache after a cold restart; not every application has public cover art.
 
-### Update guidance
+**1.1.8 final release files are pending.** Do not mistake screenshot archives or old 0.9.x installers for the newer plugin.
 
-- Keep your saved settings and use backups for recovery.
-- Install the new version's ZIP through Decky in the normal way.
-- Check your main features after an update, particularly restore, custom descriptions and controller navigation.
-- Avoid using screenshots ZIPs as plugin installers.
-- If you see a known regression, check [Support](../SUPPORT.md) before filing a report.
+## First-time customization
 
-**Support boundary:** Steam Deck Gaming Mode is the maintainer-tested environment; other platforms are unverified. The 0.9.2 Game Info warning remains valid for people still running 0.9.2.
+1. Open TitleDeck's **Full Library Manager**.
+2. Select a game. **Change Name → Steam keyboard → Save Custom Title** changes its local displayed name.
+3. Open the description editor and save custom text.
+4. Visit the game page in Steam and choose **Game Info** (beside Community).
+5. If you wish, use **Restore Steam Description** or **Restore Original Game**.
 
-[README](../README.md) · [Features](FEATURES.md) · [Compatibility](COMPATIBILITY.md)
+**Known pending issue:** right-stick scrolling of the Steam **Game Info description box** is reported not working in 1.1.8 for both Steam and non-Steam entries. Right-stick scrolling inside TitleDeck's own Full Library Manager editor is a different, hardware-tested feature.
+
+**Detailed illustrated walkthrough:** [Beginner guide](BEGINNER_GUIDE.md) · [Features](FEATURES.md) · [Help](../SUPPORT.md).
