@@ -97,7 +97,7 @@ Restore Original Game can return the standard Steam non-Steam explanation and or
 
 ### Description length and scrolling
 
-There is **no old yellow advisory character threshold** or enforced advisory cap. Long content still depends on Steam's current layout. **Known 1.1.8 issue:** the Steam Deck's **built-in right stick does not scroll** text in Steam or non-Steam Game Info description areas; an **external controller's right stick works** for both. Use touch/scrollbar where available. Saved descriptions and restart persistence are separate, working features. [Tracked issue](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+There is **no old yellow advisory character threshold** or enforced advisory cap. Long content still depends on Steam's current layout. **Known issue (still present in 1.2.1):** the Steam Deck's **built-in right stick does not scroll** text in Steam or non-Steam Game Info description areas; an **external controller's right stick works** for both. Use touch/scrollbar where available. Saved descriptions and restart persistence are separate, working features. [Tracked issue](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
 ## 7. Where to find TitleDeck Settings
 
@@ -149,7 +149,7 @@ Changing placement is a display choice. It does not delete your saved descriptio
 
 ### 7.8 Right-stick Game Info scrolling toggle
 
-The Settings panel shows **Right stick scrolling ON/OFF**. This is a control for intended Steam/non-Steam Game Info scrolling. **This option does not guarantee every input device works:** an external controller's right stick scrolls Steam and non-Steam Game Info descriptions, but the Steam Deck's **integrated right stick does not** in 1.1.8. This input-specific issue remains open.
+The Settings panel shows **Right stick scrolling ON/OFF**. This is a control for intended Steam/non-Steam Game Info scrolling. **This option does not guarantee every input device works:** an external controller's right stick scrolls Steam and non-Steam Game Info descriptions, but the Steam Deck's **integrated right stick does not** in tested 1.2.1. This input-specific issue remains open.
 
 ![Right-stick option](screenshots/v1.1.8/20-settings-right-stick-toggle.jpeg)
 
