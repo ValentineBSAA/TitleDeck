@@ -8,7 +8,7 @@
 95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb
 ```
 
-The uploaded GitHub asset's independently downloaded SHA-256 is still pending; the matching byte count alone does **not** establish byte-for-byte identity. The published stable build passed maintainer hands-on hardware checks for Steam and non-Steam title aliases, native Options context-menu shortcut, direct editor, menu placement, and 650 ms B/Circle exit.
+**The published GitHub ZIP was downloaded and verified by the release-source synchronization GitHub Actions workflow:** size 1,957,477 bytes and SHA-256 `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb` passed. [View verification run](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787369311). The published stable build passed maintainer hands-on hardware checks for Steam and non-Steam title aliases, native Options context-menu shortcut, direct editor, menu placement, and 650 ms B/Circle exit.
 
 **Source sync note:** The repository's runtime files were still at 1.1.9 when 1.2.1 was published. The authoritative source for a sync is the exact published 1.2.1 ZIP. Do **not** replace the published ZIP with a generated approximation, alter historical releases, or claim CI was green until checked.
 
