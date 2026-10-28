@@ -12,7 +12,7 @@
 
 **What about non-Steam games?** The same editor works for local/non-Steam shortcuts. [Most Wanted 2005 example](docs/screenshots/v1.1.8/13-nonsteam-most-wanted-custom-game-info.jpeg). Saved descriptions were verified to persist after reboot.
 
-**The right stick won't scroll the custom Game Info text.** This is a **known 1.1.8 issue** affecting the Game Info description area of Steam **and** non-Steam games. The Settings toggle exists, but hardware behavior is not currently accepted as fixed. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). Use touch scrolling when available.
+**The Steam Deck's built-in right stick won't scroll custom Game Info text.** This is a **known 1.1.8 input-specific issue** on both Steam and non-Steam games. **An external controller's right stick works** for both types. The Settings toggle does not resolve built-in-input handling. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). Use touch scrolling where available.
 
 **Why are there several different scrolling features?** The Steam **Game Info page**, TitleDeck's **game editor**, and TitleDeck's **Full Library Manager** have distinct scrolling handlers. Please tell us which one misbehaves.
 
