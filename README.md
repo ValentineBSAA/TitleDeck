@@ -12,7 +12,7 @@
 **[⬇ Download TitleDeck 1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)** · [🧭 Start here: beginner guide](docs/BEGINNER_GUIDE.md) · [🛠 Every feature](docs/FEATURES.md) · [📸 Full screenshot gallery](docs/SCREENSHOTS.md) · [❓ Troubleshooting](SUPPORT.md)
 
 > [!NOTE]
-> **Tested on a physical Steam Deck running SteamOS Gaming Mode.** The 1.1.8 release was tested with both the Steam Deck's built-in LB/RB buttons and a PS4 Bluetooth controller. Steam and non-Steam custom descriptions were verified after restarting the Deck. **Known limitation:** right-stick scrolling inside the **Game Info description area** currently does not respond reliably; this does **not** prevent saved descriptions from appearing or surviving restarts. [Tracked issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). ROG Ally, other handhelds, Windows, Android/DroidDeck and Desktop Mode are not maintainer-verified.
+> **Tested on a physical Steam Deck running SteamOS Gaming Mode.** The 1.1.8 release was tested with both the Steam Deck's built-in LB/RB buttons and a PS4 Bluetooth controller. Steam and non-Steam custom descriptions were verified after restarting the Deck. **Known limitation:** the Steam Deck's **built-in right stick** does not scroll custom text inside the **Game Info description area**, while an **external controller's right stick does scroll** both Steam and non-Steam Game Info descriptions. This does **not** prevent descriptions from appearing, saving or surviving restarts. [Tracked issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). ROG Ally, other handhelds, Windows, Android/DroidDeck and Desktop Mode are not maintainer-verified.
 
 ## See it working on Steam Deck
 
@@ -57,7 +57,7 @@
 
 ## Controller quick reference
 
-**D-pad:** browse · **A:** select · **B:** back · **LB/RB:** page Full Library Manager (Deck and PS4 confirmed) · **Touch:** tap and scroll · **Right stick:** scroll longer *TitleDeck manager/editor/settings workspaces* where supported. **Game Info description-area right-stick scrolling is a known issue** in this version. See [input differences](docs/FEATURES.md#controller-controls-and-scrolling).
+**D-pad:** browse · **A:** select · **B:** back · **LB/RB:** page Full Library Manager (Deck and PS4 confirmed) · **Touch:** tap and scroll · **Right stick:** scroll longer *TitleDeck manager/editor/settings workspaces* where supported. **In Game Info, an external controller's right stick works for both game types, but the Steam Deck's built-in right stick does not** ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)). See [input differences](docs/FEATURES.md#controller-controls-and-scrolling).
 
 ## Community-made and reversible
 
