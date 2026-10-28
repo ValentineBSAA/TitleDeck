@@ -10,7 +10,7 @@ New to Steam Deck customization? Start here. This guide includes **every main fe
 2. Press the **Options (☰)** controller button to open the game's native context menu.
 3. Select **Edit with TitleDeck**. TitleDeck should open **that game's editor directly**, without an intermediate all-games artwork grid.
 4. Edit and save the game's custom name or description using the normal TitleDeck controls.
-5. **Tap B / Circle** to go Back. **Hold B / Circle for 650 ms** to leave the context-launched editor and return directly to Steam. The 650 ms duration is a **new beta adjustment requiring final physical Deck verification**. This shortcut does *not* change Back behavior when TitleDeck is opened normally.
+5. **Tap B / Circle** to go Back. **Hold B / Circle for 650 ms** to leave the context-launched editor and return directly to Steam. The 650 ms duration has **passed the maintainer's physical Steam Deck testing**. This shortcut does *not* change Back behavior when TitleDeck is opened normally.
 
 ### Choosing where the context-menu shortcut appears
 
@@ -20,7 +20,7 @@ In **Full Library Manager → ⚙ Settings → Game Options menu placement**, se
 
 In Full Library Manager → Settings, turn **STEAM-button menu titles** ON to show a saved custom name for the *running* game in the physical STEAM-button menu. Turn it OFF to restore the original displayed game name there. The maintainer verified Catherine Classic → Catherine (including reboot persistence) and a non-Steam Most Wanted custom alias. The right-side **artwork/logo remains original**, because the name setting only changes text.
 
-These additions are documented for **1.2.1 Beta**, not a published stable GitHub installer. [Beta release notes](RELEASE_NOTES_1.2.1_BETA.md).
+These additions are **accepted for 1.2.1 Stable**, which is prepared but **not yet published as a GitHub release**. [Stable release preparation](RELEASE_NOTES_1.2.1.md).
 
 ## 1. What you need
 
