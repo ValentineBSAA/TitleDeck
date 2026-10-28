@@ -65,12 +65,12 @@ These images show real settings from TitleDeck 1.1.8. The names match the implem
 
 The source archive was **TitleDeck.1.1.8.screenshots.zip** attached by the maintainer to the public 1.1.8 release. These are **23 individually extracted images**, preserving the original captures. Archive SHA-256: `44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced`. Mac-specific `__MACOSX` metadata entries were excluded. The image gallery can be browsed without downloading a ZIP.
 
-**Historical screenshots** for 0.8.1, 0.9.0 RC1 and 0.9.2 Beta 1 remain under their original `docs/screenshots/` directories; older badge versions are not presented as current UI.
+## Historical screenshot archive
 
-## Historical 0.9.2 Beta 1 screenshots (archived)
+For the development record, these captures are **older builds** and must not be mistaken for 1.1.8 screenshots.
 
-These captures show **an older version**, not the 1.1.8 UI.
-
-| Older Quick Access | Older Game Info | Older long description |
+| 0.9.2 Beta 1 Quick Access | 0.9.2 Beta 1 custom Game Info | 0.9.2 Beta 1 long text |
 |:---:|:---:|:---:|
-| [![Beta 1 Quick Access](screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg)](screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg) | [![Beta 1 Game Info](screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg)](screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg) | [![Beta 1 long description](screenshots/v0.9.2-beta1/03-long-description-end.jpeg)](screenshots/v0.9.2-beta1/03-long-description-end.jpeg) |
+| [![0.9.2 beta Quick Access](screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg)](screenshots/v0.9.2-beta1/01-quick-access-beta-version.jpeg) | [![0.9.2 beta Game Info](screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg)](screenshots/v0.9.2-beta1/02-native-game-info-description.jpeg) | [![0.9.2 beta long text](screenshots/v0.9.2-beta1/03-long-description-end.jpeg)](screenshots/v0.9.2-beta1/03-long-description-end.jpeg) |
+
+Earlier 0.9.0 RC1 and 0.8.1 screenshots also remain preserved in their original versioned folders. The 0.9.2 builds had a documented Game Info bug subsequently addressed in 1.1.8; older images are historical evidence, not a promise about those older packages.
