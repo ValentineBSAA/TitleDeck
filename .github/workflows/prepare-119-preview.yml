@@ -1,0 +1,183 @@
+name: Prepare TitleDeck 1.1.9 Renamed Badge Preview
+on:
+  push:
+    branches: [titledeck-1.1.9-badge-preview]
+    paths:
+      - '.github/workflows/prepare-119-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  preview:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fix the artwork badge stacking and bump version to 1.1.9
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          src=Path('src/index.js')
+          s=src.read_text(encoding='utf-8')
+          old_version="PLUGIN_VERSION = '1.1.8'"
+          assert s.count(old_version)==1,'Unexpected frontend version'
+          s=s.replace(old_version,"PLUGIN_VERSION = '1.1.9'",1)
+          needle=".td-root .td-game-artbox .td-art-pending{z-index:0!important}"
+          assert s.count(needle)==1,'Expected original cover/backdrop stack was not found'
+          overlay='''/* 1.1.9: RENAMED stays above the sharp cover (z=2) and blurred backdrop (z=1).
+           * Scope this to Full Library Manager; do not affect Game Info art. */
+          .td-root .td-game-artbox > .td-game-mark{
+           position:absolute!important;z-index:3!important;pointer-events:none!important;
+          }
+          '''
+          s=s.replace(needle,needle+'\n'+overlay,1)
+          assert s.count('z-index:3!important;pointer-events:none!important')==1
+          for dest in (Path('src/index.js'),Path('dist/index.js')):
+              dest.write_text(s,encoding='utf-8')
+          for name in ('plugin.json','package.json'):
+              path=Path(name)
+              data=json.loads(path.read_text())
+              assert data['version']=='1.1.8'
+              data['version']='1.1.9'
+              data['description']='TitleDeck 1.1.9 preview: RENAMED badge now overlays blurred artwork tiles; retains all 1.1.8 features. Physical Deck verification pending.'
+              path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          path=Path('tests/frontend.test.cjs')
+          tests=path.read_text()
+          tests=tests.replace("'1.1.8'","'1.1.9'")
+          path.write_text(tests)
+          path=Path('tests/release_metadata.test.cjs')
+          tests=path.read_text().replace('public 1.1.8 runtime','preview 1.1.9 runtime').replace("'1.1.8'","'1.1.9'")
+          # The public README accurately describes the still-stable 1.1.8.
+          tests=tests.replace("for(const word of ['1.1.9'","for(const word of ['1.1.8'")
+          path.write_text(tests)
+          path=Path('tests/test_repo_docs.py')
+          tests=path.read_text()
+          assert tests.count('"1.1.8"')==1
+          tests=tests.replace('"1.1.8"','"1.1.9"')
+          old_hash='a6d94283deb11ae85ca5df4142e4b32b51a9eb74be76af2d7990b735f2d9b4f5'
+          assert tests.count(old_hash)==1,'Unexpected source digest pin'
+          new_hash=hashlib.sha256(s.encode('utf-8')).hexdigest()
+          tests=tests.replace(old_hash,new_hash)
+          path.write_text(tests)
+          Path('tests/renamed_badge_overlay.test.cjs').write_text('''const test=require('node:test');
+          const assert=require('node:assert/strict');
+          const fs=require('node:fs');
+          const path=require('node:path');
+          const root=path.resolve(__dirname,'..');
+          const source=fs.readFileSync(path.join(root,'src/index.js'),'utf8');
+          test('1.1.9 RENAMED marker stays above uncut art and blurred backdrop',()=>{
+            const backdrop=source.match(/\\.td-root \\.td-game-artbox \\.td-art-backdrop\\{([^}]*)\\}/);
+            const cover=source.match(/\\.td-root \\.td-game-artbox \\.td-art\\{([^}]*)\\}/);
+            const badge=source.match(/\\.td-root \\.td-game-artbox > \\.td-game-mark\\{([^}]*)\\}/);
+            assert(backdrop,'full-bleed background must remain');
+            assert(cover,'full sharp cover must remain');
+            assert(badge,'renamed badge must be scoped to artwork tiles');
+            assert.match(backdrop[1],/z-index:1!important/);
+            assert.match(backdrop[1],/filter:blur\\(12px\\)/);
+            assert.match(cover[1],/z-index:2!important/);
+            assert.match(cover[1],/object-fit:contain!important/);
+            assert.match(badge[1],/position:absolute!important/);
+            assert.match(badge[1],/z-index:3!important/);
+            assert.match(badge[1],/pointer-events:none!important/);
+            assert(source.includes("aliases[game.appid]?h('span',{className:'td-game-mark'},'RENAMED'):null"));
+            assert(source.includes("className:'td-game-artbox'},h(Cover,"));
+            assert(source.includes("PLUGIN_VERSION = '1.1.9'"));
+          });
+          ''')
+          Path('docs/RELEASE_NOTES_1.1.9_PREVIEW.md').write_text('''# TitleDeck 1.1.9 Preview 1: RENAMED badge overlay fix
+
+          **Testing release only.** The latest verified public stable release remains **1.1.8** until a real Steam Deck confirms this visual repair.
+
+          ## What changed
+
+          - Fix the **RENAMED** marker on Full Library Manager artwork tiles so the marker paints *above* the foreground cover instead of disappearing behind it.
+          - Preserve the 1.1.8 full-bleed soft blurred tile background and uncropped sharp cover.
+          - Limit the fix to TitleDeck's library tile markup. Do not change Steam's native artwork, Game Info, library navigation, or saved title/description behavior.
+          - Update the visible Quick Access and Full Library Manager version chip and both package manifests to **1.1.9**.
+          - Add a targeted regression test verifying blurred background at z-index 1, sharp art at z-index 2, and renamed badge at z-index 3.
+
+          ## What to test on your Steam Deck
+
+          1. Install the preview ZIP from this release using Decky Loader's **Install Plugin from ZIP** option; do not extract the ZIP.
+          2. Open **TitleDeck → Full Library Manager**, navigate to the **Renamed** filter, and select a renamed game such as **Catherine Classic → Catherine**.
+          3. Confirm the **RENAMED** label is completely visible on top of the cover, including with focused and unfocused tiles.
+          4. Confirm the blurred background still fills the tile and the sharp cover remains uncropped.
+          5. Confirm original names, descriptions, LB/RB paging, and Save/Restore still work.
+
+          ## Known limitation carried forward
+
+          Steam's actual **Game Info** custom description area may still not scroll with the right stick for Steam or non-Steam games. **Issue #8** remains open. This preview does not claim to fix that separate behavior.
+
+          [Stable 1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8) · [Known issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)
+          ''')
+          print('New frontend SHA256:',new_hash)
+          print('All version and badge changes staged.')
+          PY
+      - name: Run frontend, backend, and documentation tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/*.test.cjs
+          python3 -m unittest discover -s tests -p 'test_*.py'
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('plugin.json').read_text())
+          b=json.loads(Path('package.json').read_text())
+          assert a['version']==b['version']=='1.1.9'
+          assert Path('src/index.js').read_bytes()==Path('dist/index.js').read_bytes()
+          assert Path(a['publish']['image']).is_file()
+          print('Metadata, source and dist parity: PASSED')
+          PY
+      - name: Commit verified 1.1.9 preview files to the preview branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/index.js dist/index.js plugin.json package.json tests/frontend.test.cjs tests/release_metadata.test.cjs tests/test_repo_docs.py tests/renamed_badge_overlay.test.cjs docs/RELEASE_NOTES_1.1.9_PREVIEW.md
+          git commit -m 'fix: render RENAMED badge above artwork in TitleDeck 1.1.9 preview'
+          git push origin HEAD:"$GITHUB_REF_NAME"
+      - name: Package actual 1.1.9 Decky installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/td119/TitleDeck
+          cp main.py plugin.json package.json LICENSE /tmp/td119/TitleDeck/
+          cp -R assets src dist /tmp/td119/TitleDeck/
+          (cd /tmp/td119 && zip -q -r "$GITHUB_WORKSPACE/TitleDeck-1.1.9-Preview1.zip" TitleDeck)
+          python3 - <<'PY'
+          import json
+          from zipfile import ZipFile
+          with ZipFile('TitleDeck-1.1.9-Preview1.zip') as z:
+              assert z.testzip() is None
+              assert json.loads(z.read('TitleDeck/plugin.json'))['version']=='1.1.9'
+              assert b"PLUGIN_VERSION = '1.1.9'" in z.read('TitleDeck/dist/index.js')
+              assert z.read('TitleDeck/src/index.js')==z.read('TitleDeck/dist/index.js')
+              assert b'z-index:3!important;pointer-events:none!important' in z.read('TitleDeck/dist/index.js')
+              print('Validated ZIP contents:',len(z.namelist()))
+          PY
+      - name: Publish GitHub 1.1.9 preview for physical device testing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create 1.1.9-preview.1 TitleDeck-1.1.9-Preview1.zip \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$(git rev-parse HEAD)" \
+            --prerelease \
+            --title 'TitleDeck 1.1.9 Preview 1 - RENAMED badge overlay fix' \
+            --notes-file docs/RELEASE_NOTES_1.1.9_PREVIEW.md
+          gh release view 1.1.9-preview.1 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,assets
