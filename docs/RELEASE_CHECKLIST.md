@@ -12,7 +12,7 @@
 
 ## Known limitations and future maintenance
 
-- [ ] **Fix the right-stick input issue inside Steam/non-Steam Game Info description areas** ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
+- [ ] **Fix the built-in Steam Deck right-stick input** for Steam and non-Steam Game Info descriptions; scrolling already works with an external controller's right stick ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
 - [ ] Test additional SteamOS releases, CSS Loader themes, very large title-restore batches and unusual non-Steam shortcuts.
 - [ ] Continue preserving built-in Deck and PS4 LB/RB, ghost poster removal, title/description saving and restoration.
 
