@@ -2,7 +2,7 @@
 
 ## 1.1.8 — Published stable release (October 27, 2026)
 
-**Public installer:** [TitleDeck-1.1.8.zip](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8). Includes Steam/non-Steam custom description persistence after reboot, built-in Steam Deck and PS4 LB/RB paging, Full Library Manager artwork/hide tile improvements, updated Settings and a full 23-image screenshot gallery. **Known issue:** right-stick scrolling in Steam Game Info descriptions remains unreliable; see [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+**Public installer:** [TitleDeck-1.1.8.zip](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8). Includes Steam/non-Steam custom description persistence after reboot, built-in Steam Deck and PS4 LB/RB paging, Full Library Manager artwork/hide tile improvements, updated Settings and a full 23-image screenshot gallery. **Known issue:** the Deck's **built-in right stick** does not scroll Steam/non-Steam Game Info descriptions; an **external controller's right stick does**. See [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
 - Repaired Steam and non-Steam custom Game Info description rendering and restart persistence; custom non-Steam cover-and-text layout and original restore tested on real Deck.
 - Removed the ghost original-artwork placeholder while preserving the Steam Play / Proton information line.
@@ -13,7 +13,7 @@
 - Added right-stick scrolling within **TitleDeck's own editor / Settings** and kept developer diagnostics hidden for public use.
 - Updated accent colors, custom color picker, navigation, installed indicators and library presentation.
 - **Hardware:** Maintainer completed all five final 1.1.8 feature checks and verified both Steam and non-Steam custom descriptions after reboot.
-- **Open issue:** Steam's **Game Info** description-box right-stick scrolling is **not working** for either game type in the most recent on-device test. This is **not** the same as the working manager-editor right-stick scrolling.
+- **Open issue:** Steam's **Game Info** description-box scrolling works with an **external controller's right stick** for both game types, but **not with the Steam Deck's built-in right stick**. This is distinct from working manager-editor right-stick scrolling.
 - **Release status:** installer ZIP, source parity, screenshots and GitHub release publication are pending.
 
 ## 1.1.6–1.1.7 — Private hardware-tested milestones
@@ -35,7 +35,7 @@
 - Validated manager paging with physical Deck LB/RB and PS4 Bluetooth controllers.
 - Full Library Manager received artwork discovery improvements, a full-bleed blurred backdrop behind uncropped covers, Jurassic World Evolution 3 fallback, Hide tile, and public UI cleanup.
 - Right-stick scrolling in manager workspaces, Settings and game editors was part of the five-item 1.1.8 acceptance check.
-- **Open issue reported afterward:** right-stick scrolling in Steam/non-Steam **description boxes** does not work. Do not describe that feature as fully hardware-verified.
+- **Open issue clarified afterward:** external-controller right-stick scrolling works in both Steam/non-Steam **Game Info description boxes**, but the **built-in Steam Deck right stick** does not. Do not claim built-in-input support until hardware verified.
 - **Publication pending** final acceptance, selected screenshots, and source parity with the final installer.
 
 ### Earlier development history
