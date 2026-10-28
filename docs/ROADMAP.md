@@ -12,7 +12,7 @@
 - [x] Public 1.1.8 release, full documentation and 23 actual hardware screenshots.
 
 ### Still worth addressing
-- [ ] Right-stick scrolling on **Steam Game Info description areas**, Steam and non-Steam ([#8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
+- [ ] Fix **built-in Steam Deck right-stick** input for Steam and non-Steam Game Info descriptions; **external-controller right-stick scrolling already works** ([#8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
 - [ ] Further SteamOS/CSS Loader version compatibility tests.
 - [ ] 200+ game bulk restoration and unusual library-artwork edge cases.
 - [ ] Continued native Steam keyboard and controller-focus stability tests.
