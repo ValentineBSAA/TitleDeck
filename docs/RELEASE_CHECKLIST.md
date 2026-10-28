@@ -10,7 +10,7 @@
 - [x] Update README, changelog, install/guide, features, compatibility, verified list and beta notes, without falsely labeling the beta as a public stable release.
 - [x] **Physically test new 650 ms hold** and native context-menu flow. The maintainer reported both passed; previous tap/Back behavior was already verified.
 - [x] Verify prepared stable installer metadata/version **1.2.1** (distinct from beta **1.2.1-beta.1**), source/dist equality, ZIP structure and SHA-256.
-- [ ] Synchronize the repository's runtime source and regression tests with the prepared stable installer; run CI against the final stable bytes.
+- [x] Synchronize the repo's runtime and regression tests byte-for-byte with the published stable ZIP; [GitHub Actions](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787998502) passed **212 frontend and 29 Python tests**.
 - [x] Publish **1.2.1 Stable** on GitHub with `TitleDeck-1.2.1-Stable.zip` (the published asset is present). README badge and public links updated. **Published ZIP SHA-256 verification passed in [GitHub Actions](https://github.com/ValentineBSAA/TitleDeck/actions/runs/40787369311).**
 - [ ] Add new screenshot gallery images only after checking actual 1.2.1 hardware screenshots into the repository; do not relabel older 1.1.8 images as 1.2.1.
 
