@@ -30,7 +30,7 @@ d3cf000a66aadda5b742a4bea272587a9adb3b638a492eff3909252f0aa409df
 
 The beta has `1.2.1-beta.1` in **both metadata manifests and the frontend badge**, and the packaged `src/index.js` and `dist/index.js` are byte-identical. The only functional difference from the maintainer's verified 1.2.1 Preview 3 is a context-menu-scoped **B / Circle hold change from 850 to 650 ms**.
 
-**Do not claim repository source currently matches this beta installer.** Documentation can be updated in advance, but the repository must be synchronized with the exact accepted stable runtime before the maintainer publishes 1.2.1 Stable. Do not create a stable release from an installer whose internal version is still `1.2.1-beta.1`. After publication, replace these beta notes with the stable asset name and an independently checked checksum.
+**Prepared and hardware-accepted stable installer:** `TitleDeck-1.2.1-Stable.zip` uses `1.2.1` in the frontend and both manifests, has byte-identical `src/index.js` and `dist/index.js`, retains backend and assets, and has SHA-256 `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb`. The 650 ms quick exit passed the maintainer's physical test. **The public repository runtime has not yet been synchronized to these exact stable bytes**; synchronize runtime and tests, run CI, then publish. Do not change public stable links from 1.1.8 until the new GitHub release exists.
 
 [Beta acceptance plan](docs/RELEASE_CHECKLIST.md) · [Release notes](docs/RELEASE_NOTES_1.2.1_BETA.md).
 
