@@ -1,0 +1,43 @@
+name: Remove redundant 1.1.8 screenshot archive
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/remove-redundant-screenshot-zip.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify gallery and official plugin installer before cleanup
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          d=Path('docs/screenshots/v1.1.8')
+          imgs=list(d.glob('*.jpeg'))
+          assert len(imgs)==23,len(imgs)
+          assert (d/'10-steam-catherine-custom-game-info.jpeg').is_file()
+          assert (d/'13-nonsteam-most-wanted-custom-game-info.jpeg').is_file()
+          print('All 23 gallery images available separately.')
+          PY
+          repo="$GITHUB_REPOSITORY"
+          gh api "repos/$repo/releases/tags/1.1.8" --jq '.assets[].name' | grep -Fxq 'TitleDeck-1.1.8.zip'
+          count="$(gh api "repos/$repo/releases/tags/1.1.8" --jq '[.assets[] | select(.name == "TitleDeck.1.1.8.screenshots.zip")] | length')"
+          if [ "$count" = 0 ]; then
+            echo 'Screenshot ZIP already absent. Nothing to remove.'
+            exit 0
+          fi
+          test "$count" = 1
+          digest="$(gh api "repos/$repo/releases/tags/1.1.8" --jq '.assets[] | select(.name == "TitleDeck.1.1.8.screenshots.zip") | .digest')"
+          test "$digest" = 'sha256:44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced'
+          asset_id="$(gh api "repos/$repo/releases/tags/1.1.8" --jq '.assets[] | select(.name == "TitleDeck.1.1.8.screenshots.zip") | .id')"
+          gh api --method DELETE "repos/$repo/releases/assets/$asset_id"
+          echo 'Redundant screenshot ZIP removed; official plugin installer preserved.'
