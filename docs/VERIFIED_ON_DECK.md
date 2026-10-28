@@ -1,4 +1,24 @@
-# TitleDeck 1.1.8: physical Steam Deck verification
+# TitleDeck: physical Steam Deck verification (1.1.8 public; 1.2.1 beta tested features)
+
+## Later private hardware acceptance: 1.2.0 and 1.2.1 Preview 3
+
+| Later feature / behavior | Maintainer's physical Steam Deck result |
+| --- | --- |
+| STEAM-button menu: Catherine Classic → Catherine | ✅ Passed |
+| STEAM-button menu: non-Steam Most Wanted Black Edition → Need for Speed Most Wanted! | ✅ Passed |
+| Steam title override after full Deck restart | ✅ Passed for Catherine |
+| Switch HOME-menu custom name OFF → Catherine Classic; ON → Catherine | ✅ Passed |
+| Native Steam game context menu → Edit with TitleDeck | ✅ Passed |
+| Native non-Steam game context menu → Edit with TitleDeck | ✅ Passed |
+| Directly opens correct game editor without artwork/library flash | ✅ Passed |
+| Context-menu placement controls: After Developer and Before Properties / non-Steam fallback | ✅ Maintainer reports all passed |
+| Context-launched hold B / Circle exits directly, older **850 ms** hold | ✅ Passed |
+| Quick tap B/Circle retains familiar Back behavior | ✅ Passed |
+| **New beta: hold B / Circle for 650 ms** | ⏳ **Local tests passed; hardware test pending** |
+
+The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement have been reported working on actual hardware. This does **not** mean the new 650 ms threshold or every edge case is already verified. No 1.2.1 stable release has been published. [1.2.1 beta notes](RELEASE_NOTES_1.2.1_BETA.md).
+
+## Original 1.1.8 acceptance
 
 **Last acceptance:** October 27, 2026, on a physical Valve Steam Deck (SteamOS Gaming Mode / Decky Loader), with a PS4 Bluetooth controller used for separate input tests.
 
