@@ -167,3 +167,5 @@ jobs:
           echo '1.1.8 release notes updated; plugin ZIP bytes unchanged.'
 
 # Re-run after the gallery's historical-link validation fix.
+
+# Re-run after explicitly documenting unsupported ROG Ally hardware.
