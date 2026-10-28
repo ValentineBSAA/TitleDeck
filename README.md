@@ -2,24 +2,24 @@
 <h1 align="center">TitleDeck</h1>
 <p align="center"><strong>Your library. Your names. Your descriptions.</strong></p>
 <p align="center">
-<a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8"><img alt="Latest release 1.1.8" src="https://img.shields.io/badge/release-1.1.8-brightgreen"></a>
+<a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1"><img alt="Latest release 1.2.1" src="https://img.shields.io/badge/release-1.1.8-brightgreen"></a>
 <img alt="Hardware tested" src="https://img.shields.io/badge/tested-physical%20Steam%20Deck-blue">
 <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
 
 **TitleDeck** is a free, community-made [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin that gives you control over the **displayed names and Game Info descriptions** in your Steam Deck library. It works with Steam titles **and non-Steam shortcuts**, and its customizations are local and reversible. It does not modify installed game files or Valve's canonical metadata.
 
-**[⬇ Download TitleDeck 1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)** · [🧭 Start here: beginner guide](docs/BEGINNER_GUIDE.md) · [🛠 Every feature](docs/FEATURES.md) · [📸 Full screenshot gallery](docs/SCREENSHOTS.md) · [❓ Troubleshooting](SUPPORT.md)
+**[⬇ Download TitleDeck 1.2.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1)** · [🧭 Start here: beginner guide](docs/BEGINNER_GUIDE.md) · [🛠 Every feature](docs/FEATURES.md) · [📸 Full screenshot gallery](docs/SCREENSHOTS.md) · [❓ Troubleshooting](SUPPORT.md)
 
 > [!NOTE]
 > **Tested on a physical Steam Deck running SteamOS Gaming Mode.** The 1.1.8 release was tested with both the Steam Deck's built-in LB/RB buttons and a PS4 Bluetooth controller. Steam and non-Steam custom descriptions were verified after restarting the Deck. **Known limitation:** the Steam Deck's **built-in right stick** does not scroll custom text inside the **Game Info description area**, while an **external controller's right stick does scroll** both Steam and non-Steam Game Info descriptions. This does **not** prevent descriptions from appearing, saving or surviving restarts. [Tracked issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). ROG Ally, other handhelds, Windows, Android/DroidDeck and Desktop Mode are not maintainer-verified.
 
 > [!IMPORTANT]
-> **TitleDeck 1.2.1 Stable is hardware-accepted and the installer is prepared, but not yet published on GitHub.** Steam and non-Steam game names now also appear in the STEAM-button menu, and the game's **Options (☰) → Edit with TitleDeck** shortcut opens the selected editor directly. In Full Library Manager → Settings, choose **After Developer** or **Before Properties** for shortcut placement. A context-launched editor supports **hold B / Circle for 650 ms** to return straight to Steam; the **650 ms quick exit is now physically verified**. [1.2.1 stable release preparation](docs/RELEASE_NOTES_1.2.1.md) · [hardware and local tests](docs/RELEASE_TEST_RESULTS_1.2.1.md) · [current hardware checklist](docs/VERIFIED_ON_DECK.md). The download badge above intentionally continues to show the latest **public** stable release, 1.1.8.
+> **TitleDeck 1.2.1 Stable is published and verified on a physical Steam Deck.** The STEAM-button menu shows aliases for running Steam and non-Steam games, and the game's **Options (☰) → Edit with TitleDeck** opens its editor directly. In Full Library Manager → Settings, choose **After Developer** or **Before Properties** for menu placement. From a context-launched editor, **hold B / Circle for 650 ms** to return straight to Steam (hardware verified). [1.2.1 release notes](docs/RELEASE_NOTES_1.2.1.md) · [hardware tests](docs/RELEASE_TEST_RESULTS_1.2.1.md) · [verification checklist](docs/VERIFIED_ON_DECK.md).
 
 ## See it working on Steam Deck
 
-**These images are genuine TitleDeck 1.1.8 captures.** The two Game Info examples deliberately distinguish a Steam game from a non-Steam shortcut.
+**These historical images are genuine TitleDeck 1.1.8 captures; 1.2.1's new features are described above.** The two Game Info examples deliberately distinguish a Steam game from a non-Steam shortcut.
 
 | Steam game: Catherine Classic | Non-Steam game: Need for Speed Most Wanted 2005 |
 |:---:|:---:|
@@ -51,7 +51,7 @@
 ## Install in Gaming Mode
 
 1. Install [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) on your Steam Deck if you have not already.
-2. Download **[TitleDeck-1.1.8.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.1.8/TitleDeck-1.1.8.zip)**. **Do not extract the plugin ZIP.**
+2. Download **[TitleDeck-1.2.1-Stable.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.2.1/TitleDeck-1.2.1-Stable.zip)**. **Do not extract the plugin ZIP.**
 3. Open **Quick Access (•••) → Decky Loader (plug icon) → Decky Settings (gear) → Developer → Install Plugin from ZIP**. Select the downloaded ZIP. The wording may differ slightly with Decky versions.
 4. Go back to **Quick Access → Decky → TitleDeck → Open Full Library Manager**.
 5. Select a game to rename it or edit its description. **Save the change** and open the game's **Game Info** tab to see the description.
@@ -68,6 +68,6 @@ TitleDeck began with community interest in renaming Steam Deck games. **u/TacoOf
 
 ## More information
 
-[Complete beginner guide](docs/BEGINNER_GUIDE.md) · [Feature reference](docs/FEATURES.md) · [1.1.8 release notes](docs/RELEASE_NOTES_1.1.8.md) · [Verified on Deck](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md) · [Installation](docs/INSTALL.md) · [Changelog](CHANGELOG.md) · [Source and checksums](SOURCE.md) · [Contributing](CONTRIBUTING.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
+[Complete beginner guide](docs/BEGINNER_GUIDE.md) · [Feature reference](docs/FEATURES.md) · [1.2.1 release notes](docs/RELEASE_NOTES_1.2.1.md) · [Verified on Deck](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md) · [Installation](docs/INSTALL.md) · [Changelog](CHANGELOG.md) · [Source and checksums](SOURCE.md) · [Contributing](CONTRIBUTING.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
 
 MIT licensed. Independent of Valve, Steam, Decky Loader and game publishers.
