@@ -32,7 +32,7 @@ The beta has `1.2.1-beta.1` in **both metadata manifests and the frontend badge*
 
 **Prepared and hardware-accepted stable installer:** `TitleDeck-1.2.1-Stable.zip` uses `1.2.1` in the frontend and both manifests, has byte-identical `src/index.js` and `dist/index.js`, retains backend and assets, and has SHA-256 `95a6b3533c1d6588c5a3c936a7eca22a8c69f49cd2ed3e6f30126d47e1d0c6fb`. The 650 ms quick exit passed the maintainer's physical test. **The public repository runtime has not yet been synchronized to these exact stable bytes**; synchronize runtime and tests, run CI, then publish. Do not change public stable links from 1.1.8 until the new GitHub release exists.
 
-[Beta acceptance plan](docs/RELEASE_CHECKLIST.md) · [Release notes](docs/RELEASE_NOTES_1.2.1_BETA.md).
+[Beta acceptance plan](docs/RELEASE_CHECKLIST.md) · [Final 1.2.1 test record](docs/RELEASE_TEST_RESULTS_1.2.1.md) · [Release notes](docs/RELEASE_NOTES_1.2.1.md).
 
 ## For developers
 
