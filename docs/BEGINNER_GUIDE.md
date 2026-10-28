@@ -1,8 +1,26 @@
-# TitleDeck 1.1.8: the complete beginner's guide
+# TitleDeck: the complete beginner's guide (public stable 1.1.8; 1.2.1 beta workflows)
 
 New to Steam Deck customization? Start here. This guide includes **every main feature and Settings section**, with links to real Steam Deck screenshots. TitleDeck is a Decky Loader plugin for Gaming Mode, not a replacement for Steam or a game mod.
 
 [← Home](../README.md) · [Image gallery](SCREENSHOTS.md) · [Feature reference](FEATURES.md) · [Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
+
+## New in 1.2.1 Beta: edit the highlighted game without opening the catalog
+
+1. Highlight the game you want to edit in Steam's library.
+2. Press the **Options (☰)** controller button to open the game's native context menu.
+3. Select **Edit with TitleDeck**. TitleDeck should open **that game's editor directly**, without an intermediate all-games artwork grid.
+4. Edit and save the game's custom name or description using the normal TitleDeck controls.
+5. **Tap B / Circle** to go Back. **Hold B / Circle for 650 ms** to leave the context-launched editor and return directly to Steam. The 650 ms duration is a **new beta adjustment requiring final physical Deck verification**. This shortcut does *not* change Back behavior when TitleDeck is opened normally.
+
+### Choosing where the context-menu shortcut appears
+
+In **Full Library Manager → ⚙ Settings → Game Options menu placement**, select **After Developer** (default) or **Before Properties**. On some non-Steam games, Properties is nested under Manage rather than displayed as a top-level action; TitleDeck then appears at the end of the main actions (before Cancel, when present) rather than incorrectly before Launch Options. The setting does not reorder GTM, SteamGridDB or other plugins.
+
+### STEAM-button menu aliases (1.2.0 feature preserved in 1.2.1)
+
+In Full Library Manager → Settings, turn **STEAM-button menu titles** ON to show a saved custom name for the *running* game in the physical STEAM-button menu. Turn it OFF to restore the original displayed game name there. The maintainer verified Catherine Classic → Catherine (including reboot persistence) and a non-Steam Most Wanted custom alias. The right-side **artwork/logo remains original**, because the name setting only changes text.
+
+These additions are documented for **1.2.1 Beta**, not a published stable GitHub installer. [Beta release notes](RELEASE_NOTES_1.2.1_BETA.md).
 
 ## 1. What you need
 
