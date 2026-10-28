@@ -1,4 +1,4 @@
-# TitleDeck: physical Steam Deck verification (1.1.8 public; 1.2.1 stable candidate accepted)
+# TitleDeck: physical Steam Deck verification (1.2.1 published stable; 1.1.8 historical tests)
 
 ## Later private hardware acceptance: 1.2.0 and 1.2.1 Preview 3
 
@@ -16,7 +16,7 @@
 | Quick tap B/Circle retains familiar Back behavior | ✅ Passed |
 | **1.2.1: hold B / Circle for 650 ms** | ✅ **Maintainer physically verified responsive long-hold quick exit** |
 
-The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement have been reported working on actual hardware. The final **650 ms** interaction has now passed hardware acceptance, but this does **not** establish compatibility with every game, Steam version, or controller. No 1.2.1 stable release has been published yet. [Prepared 1.2.1 release notes](RELEASE_NOTES_1.2.1.md).
+The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement have been reported working on actual hardware. The final **650 ms** interaction has now passed hardware acceptance, but this does **not** establish compatibility with every game, Steam version, or controller. The maintainer has now published 1.2.1 Stable. [Published 1.2.1 release notes](RELEASE_NOTES_1.2.1.md).
 
 ## Original 1.1.8 acceptance
 
@@ -48,4 +48,4 @@ The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement
 
 **Automated build tests**, such as the reported 211 frontend and 26 backend passes, are not substitutes for real-device testing.
 
-[Release notes](RELEASE_NOTES_1.1.8.md) · [Compatibility](COMPATIBILITY.md) · [Known issue](https://github.com/ValentineBSAA/TitleDeck/issues/8)
+[1.2.1 release notes](RELEASE_NOTES_1.2.1.md) · [Compatibility](COMPATIBILITY.md) · [Known issue](https://github.com/ValentineBSAA/TitleDeck/issues/8)
