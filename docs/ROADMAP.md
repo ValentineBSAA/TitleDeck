@@ -9,9 +9,10 @@
 - [x] **After Developer** and **Before Properties** context-item placement, including nested non-Steam Manage → Properties fallback.
 - [x] Long-hold B/Circle to return to Steam when editing via context menu (previous 850 ms behavior physically tested).
 - [x] Reduce hold threshold to **650 ms** and pass local tests.
-- [ ] Confirm **650 ms** on a physical Deck, then build the distinct 1.2.1 Stable installer and publish it when approved.
+- [x] Confirm **650 ms** on a physical Deck and package a distinct **1.2.1 Stable** installer.
+- [ ] Synchronize repository runtime and tests, run CI, and publish 1.2.1 Stable when approved.
 
-[1.2.1 beta release notes](RELEASE_NOTES_1.2.1_BETA.md). **Current public stable release remains 1.1.8 until a new release is actually published.**
+[1.2.1 stable release preparation](RELEASE_NOTES_1.2.1.md). **Current public stable release remains 1.1.8 until a new release is actually published.**
 
 ### Shipped and hardware-tested
 - [x] Local, reversible Steam/non-Steam displayed-title editing.
