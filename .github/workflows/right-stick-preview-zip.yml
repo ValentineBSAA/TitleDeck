@@ -1,0 +1,93 @@
+name: TitleDeck right-stick Preview ZIP (unverified)
+on:
+  push:
+    branches:
+      - fix/gameinfo-steamdeck-right-stick-preview
+    paths:
+      - src/**
+      - dist/**
+      - tests/**
+      - .github/workflows/right-stick-preview-zip.yml
+  pull_request:
+    paths:
+      - src/**
+      - dist/**
+      - tests/**
+      - .github/workflows/right-stick-preview-zip.yml
+permissions:
+  contents: read
+jobs:
+  package-preview:
+    if: github.ref == 'refs/heads/fix/gameinfo-steamdeck-right-stick-preview' || github.head_ref == 'fix/gameinfo-steamdeck-right-stick-preview'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Full frontend regression suite
+        run: node --test --test-force-exit tests/*.test.cjs
+      - name: Full Python regression suite
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Package isolated unverified Preview
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import shutil
+          import zipfile
+          from pathlib import Path
+
+          preview = '1.2.2-preview.2'
+          root = Path.cwd()
+          assert (root/'src/index.js').read_bytes() == (root/'dist/index.js').read_bytes()
+          assert json.loads((root/'plugin.json').read_text())['version'] == '1.2.1'
+          stage = root/'preview-build'/'TitleDeck'
+          stage.mkdir(parents=True, exist_ok=True)
+          files = ['main.py','plugin.json','package.json','LICENSE',
+                   'src/index.js','dist/index.js',
+                   'assets/titledeck-icon.png','assets/titledeck-qam.webp']
+          for rel in files:
+              source, dest = root/rel, stage/rel
+              assert source.is_file(), f'Missing required plugin file: {rel}'
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(source, dest)
+          for rel in ['plugin.json', 'package.json']:
+              dest = stage/rel
+              obj = json.loads(dest.read_text())
+              obj['version'] = preview
+              dest.write_text(json.dumps(obj, indent=2, ensure_ascii=False)+'\n')
+          for rel in ['src/index.js', 'dist/index.js']:
+              dest = stage/rel
+              js = dest.read_text()
+              marker = "PLUGIN_VERSION = '1.2.1'"
+              assert js.count(marker) == 1, 'Version marker not unique'
+              js = js.replace(marker, f"PLUGIN_VERSION = '{preview}'")
+              dest.write_text(js)
+          assert (stage/'src/index.js').read_bytes() == (stage/'dist/index.js').read_bytes()
+          (stage/'PREVIEW-NOTICE.txt').write_text(
+              'TitleDeck 1.2.2-preview.2: UNVERIFIED HARDWARE TEST BUILD.\n'
+              'Preview 2: bounded Game Info scrolling, overscroll recovery, and integrated-Deck input diagnostics for GitHub PR #12 and issues #8.\n'
+              'NOT Stable. Back up TitleDeck settings before testing.\n'
+              'Use physical Steam Deck built-in stick and external controller.\n'
+              'Report pass/fail before anyone merges or promotes this version.\n')
+          archive = root/'TitleDeck-1.2.2-RightStick-Preview2.zip'
+          with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+              for f in sorted(stage.rglob('*')):
+                  if f.is_file(): z.write(f, str(f.relative_to(stage.parent)))
+          with zipfile.ZipFile(archive) as z:
+              assert all(n.startswith('TitleDeck/') and not n.startswith('/') for n in z.namelist())
+              assert z.testzip() is None
+              print('Preview files:', z.namelist())
+          print('ZIP SHA-256:', hashlib.sha256(archive.read_bytes()).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TitleDeck-1.2.2-RightStick-Preview2
+          path: TitleDeck-1.2.2-RightStick-Preview2.zip
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
