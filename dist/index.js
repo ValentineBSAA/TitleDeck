@@ -1386,32 +1386,39 @@ export function findScrollableGameInfo(element){
     if(node.scrollHeight>node.clientHeight+20&&node.clientHeight>100)return node;
   return null;
 }
-/** Move only an actual Game Info scroll surface. A successful property write
- * is not proof that Steam moved: hidden, clipped or boundary containers can
- * accept scrollTop assignments while remaining stationary. Try the verified
- * nearest candidate first, then other ancestors and the document scroller. */
+/** Game Info has ONE scrolling owner. Never cascade to unrelated Steam
+ * page ancestors at a boundary: Preview 1 did that and created blank travel. */
 export function scrollGameInfoElementByStick(element,amount){
   if(!element||!Number.isFinite(amount)||Math.abs(amount)<0.01)return false;
-  const doc=element.ownerDocument,win=doc?.defaultView,candidates=[];
-  const add=node=>{if(node&&!candidates.includes(node))candidates.push(node)};
-  add(findScrollableGameInfo(element));
-  for(let node=element.parentElement,depth=0;node&&depth<24;node=node.parentElement,depth++){
-    if(Number(node.scrollHeight)>Number(node.clientHeight)+12&&Number(node.clientHeight)>=50){
-      let overflow='';try{const style=win?.getComputedStyle?.(node);overflow=style?.overflowY||style?.overflow||''}catch{}
-      if(/auto|scroll|overlay/i.test(overflow)||!overflow||overflow==='visible')add(node);
+  const target=findScrollableGameInfo(element);
+  if(!target)return false;
+  const height=Number(target.scrollHeight)||0,viewport=Number(target.clientHeight)||0;
+  if(height<=viewport+12||viewport<50)return false;
+  const before=Number(target.scrollTop)||0;
+  let distance=amount*25;
+  // Constrain movement to the bottom of the actual description, not the
+  // height of unrelated Steam spacers. Never style or hide Steam's header.
+  try{
+    const content=element.getBoundingClientRect?.();
+    const port=target.getBoundingClientRect?.();
+    if(content&&port&&Number.isFinite(content.bottom)&&Number.isFinite(port.bottom)){
+      const screen=Number(element.ownerDocument?.defaultView?.innerHeight);
+      const bottom=Math.min(port.bottom,Number.isFinite(screen)&&screen>0?screen:port.bottom);
+      if(distance>0){
+        const remaining=content.bottom-(bottom-12);
+        if(remaining<=0)return false;
+        distance=Math.min(distance,remaining);
+      }else{
+        // Recovery for an already-overscrolled page on first reverse input.
+        const top=Math.max(0,Number(port.top)||0);
+        if(content.bottom<top)distance=-Math.max(Math.abs(distance),top-content.bottom+48);
+      }
     }
-  }
-  add(doc?.scrollingElement);
-  for(const target of candidates){
-    const height=Number(target.scrollHeight)||0,viewport=Number(target.clientHeight)||0;
-    if(height<=viewport+12||viewport<50)continue;
-    const before=Number(target.scrollTop)||0;
-    const desired=Math.max(0,Math.min(height-viewport,before+amount*25));
-    if(Math.abs(desired-before)<0.5)continue;
-    try{target.scrollTop=desired}catch{continue}
-    if(Math.abs((Number(target.scrollTop)||0)-before)>0.5)return true;
-  }
-  return false;
+  }catch{}
+  const desired=Math.max(0,Math.min(height-viewport,before+distance));
+  if(Math.abs(desired-before)<0.5)return false;
+  try{target.scrollTop=desired}catch{return false}
+  return Math.abs((Number(target.scrollTop)||0)-before)>0.5;
 }
 /** Separate lifecycle, observers, and DOM ownership for NON-STEAM only. */
 export function createNonSteamGameInfoAdapter(host,getState,getDocuments=()=>[],getStore=nonSteamOverviewStore){
@@ -2369,6 +2376,8 @@ export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionA
   let timer=null,registeredInput=null,unsubscribe=null,registration='waiting',ticks=0;
   const steamSticks=new Map(),topWatchers=[],scrollTopCleaner=createScrollTopCleaner();
   let callbackCount=0,scrollCount=0,lastSource='none';
+  let nativeAxisPackets=0,browserAxisPackets=0,nativePackets=0,unrecognizedPackets=0;
+  let lastNativeAxis=0,lastBrowserAxis=0,lastSteamAxisFields='none',browserCount=0;
   const windows=()=>{
     const contexts=[steamDocument?.defaultView];
     try{contexts.push(...discoverDocuments().map(doc=>doc?.defaultView))}catch{}
@@ -2379,11 +2388,16 @@ export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionA
     callbackCount++;
     for(const sample of Array.isArray(changes)?changes:[changes]){
       if(!sample||typeof sample!=='object')continue;
+      nativePackets++;
       const keys=['sRightStickY','flRightStickY','fRightStickY','rStickY','rightStickY','flRightY','fRightY','sJoystickRightY'];
-      if(!keys.some(key=>typeof sample[key]==='number'))continue;
+      const fields=keys.filter(key=>typeof sample[key]==='number');
+      if(!fields.length){unrecognizedPackets++;continue}
+      nativeAxisPackets++;
+      lastSteamAxisFields=fields.join(',');
+      lastNativeAxis=Number(normalizedRightStickY(sample).toFixed(2));
       const index=Number(sample.unControllerIndex);
       const id=Number.isFinite(index)?index:'default';
-      steamSticks.set(id,{value:normalizedRightStickY(sample),at:Date.now()});
+      steamSticks.set(id,{value:lastNativeAxis,at:Date.now()});
     }
   }
   // Decky's context may mount before Steam's real UI document is available.
@@ -2414,13 +2428,17 @@ export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionA
     // Keep ordinary browser gamepads working. This source often exposes an
     // external pad but omits the Deck's integrated Neptune controls.
     try{
+      const seen=new Set();
       for(const context of windows()){
         for(const pad of context?.navigator?.getGamepads?.()||[]){
-          if(pad?.connected===false)continue;
+          if(!pad||pad.connected===false||seen.has(pad))continue;
+          seen.add(pad);
           const value=normalizedRightStickY(pad);
           if(Math.abs(value)>Math.abs(amount)){amount=value;source='browser'}
         }
       }
+      browserCount=seen.size;
+      if(source==='browser'){browserAxisPackets++;lastBrowserAxis=Number(amount.toFixed(2))}
     }catch{}
     if(!amount){
       const now=Date.now();
@@ -2461,7 +2479,11 @@ export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionA
     unsubscribe=null;registeredInput=null;steamSticks.clear();
     scrollTopCleaner.stop();
   }
-  return {start,stop,get diagnostics(){return {registration,callbackCount,scrollCount,lastSource}}};
+  return {start,stop,get diagnostics(){return {
+    registration,callbackCount,scrollCount,lastSource,
+    nativePackets,nativeAxisPackets,unrecognizedPackets,lastNativeAxis,lastSteamAxisFields,
+    browserCount,browserAxisPackets,lastBrowserAxis,stickEnabled:readControllerScrollSetting()
+  }}};
 }
 /** Game Info native description overlay remains unchanged. */
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer,getSteamOriginal=()=> ''){
@@ -5630,6 +5652,20 @@ function QuickPanel(){
    const result=await call('save_controller_diagnostic',JSON.stringify(report));
    setCapture(`Controller report saved: ${result.path}. Open Full Library Manager, try Deck LB/RB, then capture this report if paging still fails.`);
  }catch(e){setCapture('Controller diagnostic error: '+String(e?.message||e))}};
+ const showStickDiagnostics=()=>{
+   const d=controllerScrollBridge?.diagnostics;
+   if(!d){setCapture('Right-stick input bridge is not running');return}
+   setCapture('Right-stick Preview diagnostic (no private details):\\n'+
+     'Steam input: '+d.registration+' | callbacks: '+d.callbackCount+
+     ' | native packets: '+d.nativePackets+' | axis packets: '+d.nativeAxisPackets+
+     ' | other packets: '+d.unrecognizedPackets+'\\n'+
+     'Native right-Y: '+d.lastNativeAxis+' | fields: '+d.lastSteamAxisFields+'\\n'+
+     'Browser pads: '+d.browserCount+' | active polls: '+d.browserAxisPackets+
+     ' | browser right-Y: '+d.lastBrowserAxis+'\\n'+
+     'Scroll moves: '+d.scrollCount+' | last source: '+d.lastSource+
+     ' | setting: '+(d.stickEnabled?'ON':'OFF')+'\\n'+
+     'Use the built-in Deck right stick on Game Info first, then return here.');
+ };
  const captureArt=async()=>{try{
    const report=nonSteamDescriptionAdapter?.captureGhostLayout?.();
    if(!report?.records?.length){setCapture('Open a non-Steam game with a saved custom description, then Game Info, before capturing.');return;}
@@ -5639,6 +5675,10 @@ function QuickPanel(){
  return h(UI.PanelSection,{title:'TitleDeck'},h('div',{'data-titledeck-ui':'true'},
    h('div',{style:{display:'flex',alignItems:'center',gap:9,padding:'6px 0'}},h('img',{src:ICON_DATA_URI,style:{width:42,height:42,borderRadius:9}}),h('div',null,h('div',{style:{display:'flex',alignItems:'center',gap:7}},h('strong',null,'TitleDeck'),h('span',{className:'td-qam-version',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),h('div',{style:{fontSize:12,opacity:.7}},Object.keys(data.descriptions||{}).length?`${Object.keys(data.aliases||{}).length} names · ${Object.keys(data.descriptions||{}).length} descriptions`:`${Object.keys(data.aliases||{}).length} custom names`))),
    h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:open,layout:'below'},'Open full library manager')),
+   ...(PLUGIN_VERSION.includes('preview')?[
+     h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:showStickDiagnostics,layout:'below'},'Right-stick test diagnostics')),
+     capture?h('div',{style:{fontSize:11,opacity:.9,whiteSpace:'pre-wrap',overflowWrap:'anywhere',padding:6}},capture):null
+   ]:[]),
    ...(developerDiagnosticsEnabled()?[
      h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:captureController,layout:'below'},'Save LB/RB input diagnostic')),
      ...(nonSteamDescriptionAdapter?.shown>0?[
