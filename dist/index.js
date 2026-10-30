@@ -1,4 +1,4 @@
-/** TitleDeck 1.2.1 Stable: verified Steam/non-Steam context menu editing and 650 ms B/Circle hold. */
+/** TitleDeck 1.2.1 Stable baseline; experimental right-stick fix on preview branch ONLY. */
 const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.2.1', ROUTE = '/titledeck/manager';
 // Private developer opt-in. Normal users never see scan controls or timing logs;
 // the bounded timing recorder remains available for future Steam UI regressions.
@@ -1386,6 +1386,33 @@ export function findScrollableGameInfo(element){
     if(node.scrollHeight>node.clientHeight+20&&node.clientHeight>100)return node;
   return null;
 }
+/** Move only an actual Game Info scroll surface. A successful property write
+ * is not proof that Steam moved: hidden, clipped or boundary containers can
+ * accept scrollTop assignments while remaining stationary. Try the verified
+ * nearest candidate first, then other ancestors and the document scroller. */
+export function scrollGameInfoElementByStick(element,amount){
+  if(!element||!Number.isFinite(amount)||Math.abs(amount)<0.01)return false;
+  const doc=element.ownerDocument,win=doc?.defaultView,candidates=[];
+  const add=node=>{if(node&&!candidates.includes(node))candidates.push(node)};
+  add(findScrollableGameInfo(element));
+  for(let node=element.parentElement,depth=0;node&&depth<24;node=node.parentElement,depth++){
+    if(Number(node.scrollHeight)>Number(node.clientHeight)+12&&Number(node.clientHeight)>=50){
+      let overflow='';try{const style=win?.getComputedStyle?.(node);overflow=style?.overflowY||style?.overflow||''}catch{}
+      if(/auto|scroll|overlay/i.test(overflow)||!overflow||overflow==='visible')add(node);
+    }
+  }
+  add(doc?.scrollingElement);
+  for(const target of candidates){
+    const height=Number(target.scrollHeight)||0,viewport=Number(target.clientHeight)||0;
+    if(height<=viewport+12||viewport<50)continue;
+    const before=Number(target.scrollTop)||0;
+    const desired=Math.max(0,Math.min(height-viewport,before+amount*25));
+    if(Math.abs(desired-before)<0.5)continue;
+    try{target.scrollTop=desired}catch{continue}
+    if(Math.abs((Number(target.scrollTop)||0)-before)>0.5)return true;
+  }
+  return false;
+}
 /** Separate lifecycle, observers, and DOM ownership for NON-STEAM only. */
 export function createNonSteamGameInfoAdapter(host,getState,getDocuments=()=>[],getStore=nonSteamOverviewStore){
   // 0.9.7: Never hide Valve's native paragraph behind a custom overlay.
@@ -2217,11 +2244,7 @@ export function createNonSteamGameInfoAdapter(host,getState,getDocuments=()=>[],
       if(!rec||rec.appid!==id||!state.descriptions?.[id]||
          !rec.message?.isConnected||!visible(rec.message)||
          !isNativeSteamShortcutApp(id,getStore(doc)))continue;
-      const target=findScrollableGameInfo(rec.message);
-      if(!target)continue;
-      const before=Number(target.scrollTop)||0;
-      try{target.scrollTop=before+amount*25;}catch{return false}
-      return true;
+      if(scrollGameInfoElementByStick(rec.message,amount))return true;
     }
     return false;
   }
@@ -2249,9 +2272,7 @@ export function scrollSteamGameInfoByStick(amount,documents=()=>[steamDocument,g
       if(panel.getAttribute?.('data-titledeck-gameinfo-description')!==id&&
          panel.getAttribute?.('data-titledeck-description')!==id)continue;
       if(!panel.isConnected||panel.offsetParent===null)continue;
-      const scroller=findScrollableGameInfo(panel);
-      if(!scroller)continue;
-      try{scroller.scrollTop=(Number(scroller.scrollTop)||0)+amount*25;return true}catch{}
+      if(scrollGameInfoElementByStick(panel,amount))return true;
     }
   }
   return false;
@@ -2344,29 +2365,81 @@ export function createScrollTopCleaner(documents=()=>[steamDocument,globalThis.d
 
 /** Optional right-stick input bridge, separate from the physically accepted
  * non-Steam paint/navigation adapter and removed on plugin dismount. */
-export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionAdapter){
-  let timer=null,stopInput=null,lastSteamStick=0,lastSteamAt=0,ticks=0;
-  const scrollTopCleaner=createScrollTopCleaner();
-  const topWatchers=[];
+export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionAdapter,env=globalThis){
+  let timer=null,registeredInput=null,unsubscribe=null,registration='waiting',ticks=0;
+  const steamSticks=new Map(),topWatchers=[],scrollTopCleaner=createScrollTopCleaner();
+  let callbackCount=0,scrollCount=0,lastSource='none';
+  const windows=()=>{
+    const contexts=[steamDocument?.defaultView];
+    try{contexts.push(...discoverDocuments().map(doc=>doc?.defaultView))}catch{}
+    contexts.push(env);
+    return [...new Set(contexts.filter(Boolean))];
+  };
+  function onSteamControllerChanges(changes){
+    callbackCount++;
+    for(const sample of Array.isArray(changes)?changes:[changes]){
+      if(!sample||typeof sample!=='object')continue;
+      const keys=['sRightStickY','flRightStickY','fRightStickY','rStickY','rightStickY','flRightY','fRightY','sJoystickRightY'];
+      if(!keys.some(key=>typeof sample[key]==='number'))continue;
+      const index=Number(sample.unControllerIndex);
+      const id=Number.isFinite(index)?index:'default';
+      steamSticks.set(id,{value:normalizedRightStickY(sample),at:Date.now()});
+    }
+  }
+  // Decky's context may mount before Steam's real UI document is available.
+  // Retry and prefer the actual Steam document, not only the plugin window.
+  function ensureSteamInput(){
+    let input=null;
+    for(const context of windows()){
+      const candidate=context?.SteamClient?.Input;
+      if(typeof candidate?.RegisterForControllerStateChanges==='function'){input=candidate;break}
+    }
+    if(input===registeredInput)return;
+    try{unsubscribe?.()}catch{}
+    unsubscribe=null;registeredInput=null;steamSticks.clear();
+    if(!input){registration='unavailable';return}
+    try{
+      const token=input.RegisterForControllerStateChanges(onSteamControllerChanges);
+      unsubscribe=typeof token==='function'?token:
+        typeof token?.unregister==='function'?()=>token.unregister():
+        typeof token?.Unregister==='function'?()=>token.Unregister():null;
+      registeredInput=input;registration='registered';
+    }catch{registration='error'}
+  }
+  function tick(){
+    if(++ticks%12===0){scrollTopCleaner.runNow();getAdapter()?.alignFooter?.()}
+    if(ticks%20===0||!registeredInput)ensureSteamInput();
+    if(!readControllerScrollSetting())return;
+    let amount=0,source='none';
+    // Keep ordinary browser gamepads working. This source often exposes an
+    // external pad but omits the Deck's integrated Neptune controls.
+    try{
+      for(const context of windows()){
+        for(const pad of context?.navigator?.getGamepads?.()||[]){
+          if(pad?.connected===false)continue;
+          const value=normalizedRightStickY(pad);
+          if(Math.abs(value)>Math.abs(amount)){amount=value;source='browser'}
+        }
+      }
+    }catch{}
+    if(!amount){
+      const now=Date.now();
+      for(const [id,sample] of steamSticks){
+        if(now-sample.at>450){steamSticks.delete(id);continue}
+        if(Math.abs(sample.value)>Math.abs(amount)){amount=sample.value;source='steam'}
+      }
+    }
+    if(!amount)return;
+    lastSource=source;
+    const handled=getAdapter()?.scrollByStick?.(amount);
+    if(handled||scrollSteamGameInfoByStick(amount))scrollCount++;
+  }
   function start(){
     if(timer!==null)return;
-    const input=globalThis.SteamClient?.Input;
-    if(typeof input?.RegisterForControllerStateChanges==='function')try{
-      const token=input.RegisterForControllerStateChanges(changes=>{
-        for(const sample of Array.isArray(changes)?changes:[changes]){
-          if(sample&&typeof sample==='object'&&
-             ['sRightStickY','flRightStickY','fRightStickY','rStickY','rightStickY','flRightY','fRightY','sJoystickRightY'].some(k=>typeof sample[k]==='number')){
-            lastSteamStick=normalizedRightStickY(sample);lastSteamAt=Date.now();
-          }
-        }
-      });
-      stopInput=typeof token==='function'?token:typeof token?.unregister==='function'?()=>token.unregister():null;
-    }catch{}
-    // React may mount Steam's blue control long after the first Game Info
-    // draw. A child-list observer hides it in the same frame it appears.
-    const topDocs=[steamDocument,globalThis.document,...discoverDocuments()];
-    for(const doc of new Set(topDocs.filter(Boolean))){
-      const Observer=doc.defaultView?.MutationObserver||globalThis.MutationObserver;
+    ensureSteamInput();
+    const docs=[steamDocument,env.document,...discoverDocuments()];
+    for(const doc of new Set(docs.filter(Boolean))){
+      const Observer=doc.defaultView?.MutationObserver||env.MutationObserver;
       if(!Observer||!doc.documentElement)continue;
       try{
         const observer=new Observer(changes=>{
@@ -2377,24 +2450,20 @@ export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionA
       }catch{}
     }
     scrollTopCleaner.runNow();
-    timer=setInterval(()=>{
-      if(++ticks%12===0){scrollTopCleaner.runNow();getAdapter()?.alignFooter?.()}
-      if(!readControllerScrollSetting())return;
-      let amount=0;
-      try{for(const pad of globalThis.navigator?.getGamepads?.()||[]){
-        if(pad?.connected!==false)amount=normalizedRightStickY(pad);
-        if(amount)break;
-      }}catch{}
-      if(!amount&&Date.now()-lastSteamAt<350)amount=lastSteamStick;
-      if(amount){
-        const handled=getAdapter()?.scrollByStick?.(amount);
-        if(!handled)scrollSteamGameInfoByStick(amount);
-      }
-    },45);
+    const set=env.setInterval?.bind(env)||setInterval;
+    timer=set(tick,45);
   }
-  function stop(){if(timer!==null)clearInterval(timer);timer=null;for(const watcher of topWatchers.splice(0))watcher.disconnect?.();try{stopInput?.()}catch{}stopInput=null;scrollTopCleaner.stop();}
-  return {start,stop};
+  function stop(){
+    if(timer!==null){const clear=env.clearInterval?.bind(env)||clearInterval;clear(timer)}
+    timer=null;
+    for(const watcher of topWatchers.splice(0))watcher.disconnect?.();
+    try{unsubscribe?.()}catch{}
+    unsubscribe=null;registeredInput=null;steamSticks.clear();
+    scrollTopCleaner.stop();
+  }
+  return {start,stop,get diagnostics(){return {registration,callbackCount,scrollCount,lastSource}}};
 }
+/** Game Info native description overlay remains unchanged. */
 export function createDescriptionAdapter(host,getState,getDocuments=()=>[],getClass=()=>UI?.basicAppDetailsSectionStylerClasses?.AppDetailsContainer,getSteamOriginal=()=> ''){
   const MARK='data-titledeck-description',owned=new Map(),nativeInfo=new Map(),watchers=[],scrollListeners=[];
   // Warm native-styled clones and verified active game roots remain local to a
