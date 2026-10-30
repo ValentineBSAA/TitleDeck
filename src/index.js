@@ -2394,7 +2394,7 @@ export function createControllerScrollBridge(getAdapter=()=>nonSteamDescriptionA
       const candidate=context?.SteamClient?.Input;
       if(typeof candidate?.RegisterForControllerStateChanges==='function'){input=candidate;break}
     }
-    if(input===registeredInput)return;
+    if(input&&input===registeredInput)return;
     try{unsubscribe?.()}catch{}
     unsubscribe=null;registeredInput=null;steamSticks.clear();
     if(!input){registration='unavailable';return}
