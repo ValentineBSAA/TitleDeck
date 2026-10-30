@@ -5655,15 +5655,15 @@ function QuickPanel(){
  const showStickDiagnostics=()=>{
    const d=controllerScrollBridge?.diagnostics;
    if(!d){setCapture('Right-stick input bridge is not running');return}
-   setCapture('Right-stick Preview diagnostic (no private details):\\n'+
+   setCapture('Right-stick Preview diagnostic (no private details):\n'+
      'Steam input: '+d.registration+' | callbacks: '+d.callbackCount+
      ' | native packets: '+d.nativePackets+' | axis packets: '+d.nativeAxisPackets+
-     ' | other packets: '+d.unrecognizedPackets+'\\n'+
-     'Native right-Y: '+d.lastNativeAxis+' | fields: '+d.lastSteamAxisFields+'\\n'+
+     ' | other packets: '+d.unrecognizedPackets+'\n'+
+     'Native right-Y: '+d.lastNativeAxis+' | fields: '+d.lastSteamAxisFields+'\n'+
      'Browser pads: '+d.browserCount+' | active polls: '+d.browserAxisPackets+
-     ' | browser right-Y: '+d.lastBrowserAxis+'\\n'+
+     ' | browser right-Y: '+d.lastBrowserAxis+'\n'+
      'Scroll moves: '+d.scrollCount+' | last source: '+d.lastSource+
-     ' | setting: '+(d.stickEnabled?'ON':'OFF')+'\\n'+
+     ' | setting: '+(d.stickEnabled?'ON':'OFF')+'\n'+
      'Use the built-in Deck right stick on Game Info first, then return here.');
  };
  const captureArt=async()=>{try{
