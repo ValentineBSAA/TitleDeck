@@ -41,7 +41,7 @@ jobs:
           import zipfile
           from pathlib import Path
 
-          preview = '1.2.2-preview.1'
+          preview = '1.2.2-preview.2'
           root = Path.cwd()
           assert (root/'src/index.js').read_bytes() == (root/'dist/index.js').read_bytes()
           assert json.loads((root/'plugin.json').read_text())['version'] == '1.2.1'
@@ -69,12 +69,12 @@ jobs:
               dest.write_text(js)
           assert (stage/'src/index.js').read_bytes() == (stage/'dist/index.js').read_bytes()
           (stage/'PREVIEW-NOTICE.txt').write_text(
-              'TitleDeck 1.2.2-preview.1: UNVERIFIED HARDWARE TEST BUILD.\n'
-              'Right-stick Game Info repair candidate for GitHub PR #12 and issue #8.\n'
+              'TitleDeck 1.2.2-preview.2: UNVERIFIED HARDWARE TEST BUILD.\n'
+              'Preview 2: bounded Game Info scrolling, overscroll recovery, and integrated-Deck input diagnostics for GitHub PR #12 and issues #8.\n'
               'NOT Stable. Back up TitleDeck settings before testing.\n'
               'Use physical Steam Deck built-in stick and external controller.\n'
               'Report pass/fail before anyone merges or promotes this version.\n')
-          archive = root/'TitleDeck-1.2.2-RightStick-Preview1.zip'
+          archive = root/'TitleDeck-1.2.2-RightStick-Preview2.zip'
           with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as z:
               for f in sorted(stage.rglob('*')):
                   if f.is_file(): z.write(f, str(f.relative_to(stage.parent)))
@@ -86,8 +86,8 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: TitleDeck-1.2.2-RightStick-Preview1
-          path: TitleDeck-1.2.2-RightStick-Preview1.zip
+          name: TitleDeck-1.2.2-RightStick-Preview2
+          path: TitleDeck-1.2.2-RightStick-Preview2.zip
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
