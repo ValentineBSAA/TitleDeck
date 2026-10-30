@@ -25,14 +25,49 @@ test('scroll only succeeds when a Steam Game Info ancestor actually moves',async
   assert.equal(m.scrollGameInfoElementByStick({ownerDocument:doc,parentElement:blocked},1),false,'a clipped Steam element cannot claim scroll success');
 });
 
-test('when the first Game Info scroller is at its end, try its outer native Steam scroller',async()=>{
+test('native Game Info scroll never escapes into an outer Steam page after hitting its end',async()=>{
   const m=await load(),doc={defaultView:{getComputedStyle:()=>({overflowY:'auto'})}};
   const outer={scrollTop:0,scrollHeight:1800,clientHeight:500,parentElement:null};
   const inner={scrollTop:400,scrollHeight:500,clientHeight:100,parentElement:outer};
   const panel={ownerDocument:doc,parentElement:inner};
-  assert.equal(m.scrollGameInfoElementByStick(panel,1),true);
+  assert.equal(m.scrollGameInfoElementByStick(panel,1),false);
   assert.equal(inner.scrollTop,400);
-  assert.equal(outer.scrollTop,25);
+  assert.equal(outer.scrollTop,0,'outer Steam page must remain unchanged');
+});
+
+test('description geometry clamps scrolling before empty Steam spacer and enables immediate reverse recovery',async()=>{
+  const m=await load();
+  const doc={defaultView:{innerHeight:400,getComputedStyle:()=>({overflowY:'auto'})}};
+  const scroller={scrollTop:100,scrollHeight:2000,clientHeight:400,parentElement:null,
+    getBoundingClientRect(){return {top:0,bottom:400}}};
+  // Simulate description's final line being just 10 px above the visible bottom.
+  const content={ownerDocument:doc,parentElement:scroller,
+    getBoundingClientRect(){return {top:0,bottom:390- (scroller.scrollTop-100)}}};
+  assert.equal(m.scrollGameInfoElementByStick(content,1),true,'can expose remaining line');
+  assert.equal(scroller.scrollTop,102,'clamp to end-of-description, not native 1600 px scroll limit');
+  assert.equal(m.scrollGameInfoElementByStick(content,1),false,'no further blank-space motion');
+  scroller.scrollTop=900; // simulate prior Preview 1 overscroll
+  assert.equal(m.scrollGameInfoElementByStick(content,-1),true,'first reverse stroke should recover');
+  assert(scroller.scrollTop<900-25,'correct overscroll without repeated stick taps');
+});
+
+test('input diagnostics report native-controller axes, not user data',async()=>{
+  const m=await load();
+  let tick,cb;
+  const env={SteamClient:{Input:{RegisterForControllerStateChanges(fn){cb=fn;return ()=>{}}}},
+    navigator:{getGamepads:()=>[]},setInterval(fn){tick=fn;return 44},clearInterval(){}};
+  const bridge=m.createControllerScrollBridge(()=>({scrollByStick:()=>true}),env);
+  bridge.start();
+  cb([{unControllerIndex:0,ulButtons:3}]); // No stick axis in this event
+  cb([{unControllerIndex:0,sRightStickY:-12000}]);
+  tick();
+  const d=bridge.diagnostics;
+  assert.equal(d.callbackCount,2);assert.equal(d.nativePackets,2);
+  assert.equal(d.unrecognizedPackets,1);assert.equal(d.nativeAxisPackets,1);
+  assert.equal(d.lastSteamAxisFields,'sRightStickY');
+  assert(d.lastNativeAxis>0);
+  assert.equal(Object.hasOwn(d,'deviceId'),false);
+  bridge.stop();
 });
 
 test('native Steam Deck input is registered after a delayed SteamClient mount and stops cleanly',async()=>{
