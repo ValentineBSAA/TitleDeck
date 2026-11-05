@@ -20,5 +20,5 @@ test('1.2.1 RENAMED marker stays above uncut art and blurred backdrop',()=>{
   assert.match(badge[1],/pointer-events:none!important/);
   assert(source.includes("aliases[game.appid]?h('span',{className:'td-game-mark'},'RENAMED'):null"));
   assert(source.includes("className:'td-game-artbox'},h(Cover,"));
-  assert(source.includes("PLUGIN_VERSION = '1.2.1'"));
+  assert(source.includes("PLUGIN_VERSION = '1.2.2'"));
 });
