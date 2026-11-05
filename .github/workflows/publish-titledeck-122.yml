@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-titledeck-122.yml'
+      - 'docs/RELEASE_NOTES_1.2.2.md'
   workflow_dispatch:
 
 permissions:
@@ -78,7 +79,8 @@ jobs:
         run: |
           set -euo pipefail
           if gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release 1.2.2 already exists; verifying it without overwriting the published ZIP.'
+            echo 'Release 1.2.2 already exists; updating its text only (keeping the published ZIP untouched).'
+            gh release edit 1.2.2 --repo "$GITHUB_REPOSITORY" --notes-file docs/RELEASE_NOTES_1.2.2.md
             gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,assets,url
             exit 0
           fi
