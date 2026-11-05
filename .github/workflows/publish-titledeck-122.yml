@@ -1,0 +1,87 @@
+name: Publish TitleDeck 1.2.2 Stable
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-titledeck-122.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Ensure checked-in files exactly match the tested installer payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object src/index.js)" = "7b4cf59f3980fbb76f58c838a4d618fa45d85b7c"
+          test "$(git hash-object dist/index.js)" = "7b4cf59f3980fbb76f58c838a4d618fa45d85b7c"
+          test "$(git hash-object plugin.json)" = "03542331f5665d05b1eb70de5a2494310644c072"
+          test "$(git hash-object package.json)" = "62b66c55fcee156758c7c3a58dc049f75dcc8e0d"
+          test "$(git hash-object main.py)" = "f22162970a0a3b1322c2937ba4d6801bf7a7d2f8"
+          test "$(git hash-object assets/titledeck-icon.png)" = "4dd95c394d72a7b7acced499ebd85d1418c8dd03"
+          test "$(git hash-object assets/titledeck-qam.webp)" = "157d18889a0a95e64516a67bb2b66bfac00dafb7"
+          test "$(git hash-object LICENSE)" = "b51babebc6b91313f44b90e3369c8b78416ebd32"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          assert json.loads(Path('plugin.json').read_text())['version']=='1.2.2'
+          assert json.loads(Path('package.json').read_text())['version']=='1.2.2'
+          assert Path('src/index.js').read_bytes()==Path('dist/index.js').read_bytes()
+          print('Exact creator-tested TitleDeck 1.2.2 payload verified.')
+          PY
+      - name: Run frontend and backend regression suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test --test-force-exit tests/*.test.cjs
+          python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Package Decky-ready TitleDeck 1.2.2 ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/titledeck-122-build/TitleDeck/src"
+          mkdir -p "$RUNNER_TEMP/titledeck-122-build/TitleDeck/dist"
+          mkdir -p "$RUNNER_TEMP/titledeck-122-build/TitleDeck/assets"
+          cp plugin.json package.json main.py LICENSE "$RUNNER_TEMP/titledeck-122-build/TitleDeck/"
+          cp src/index.js "$RUNNER_TEMP/titledeck-122-build/TitleDeck/src/index.js"
+          cp dist/index.js "$RUNNER_TEMP/titledeck-122-build/TitleDeck/dist/index.js"
+          cp assets/titledeck-icon.png assets/titledeck-qam.webp "$RUNNER_TEMP/titledeck-122-build/TitleDeck/assets/"
+          (cd "$RUNNER_TEMP/titledeck-122-build" && zip -q -r "$RUNNER_TEMP/TitleDeck-1.2.2-Stable.zip" TitleDeck)
+          unzip -t "$RUNNER_TEMP/TitleDeck-1.2.2-Stable.zip"
+          sha256sum "$RUNNER_TEMP/TitleDeck-1.2.2-Stable.zip"
+          python3 - <<'PY'
+          import os,hashlib
+          from pathlib import Path
+          from zipfile import ZipFile
+          z=ZipFile(Path(os.environ['RUNNER_TEMP'])/'TitleDeck-1.2.2-Stable.zip')
+          for path in ('plugin.json','package.json','main.py','LICENSE','src/index.js','dist/index.js','assets/titledeck-icon.png','assets/titledeck-qam.webp'):
+              assert z.read('TitleDeck/'+path)==Path(path).read_bytes(),path
+          print('Archive matches the exact checked-in, creator-tested source payload.')
+          PY
+      - name: Publish GitHub Stable release (never prerelease)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release 1.2.2 already exists; refusing to overwrite it.'
+            exit 1
+          fi
+          gh release create 1.2.2 "$RUNNER_TEMP/TitleDeck-1.2.2-Stable.zip" \
+            --repo "$GITHUB_REPOSITORY" --title 'TitleDeck 1.2.2 Stable' \
+            --notes-file docs/RELEASE_NOTES_1.2.2.md --latest --target "$GITHUB_SHA"
+          gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,isLatest,assets,url
