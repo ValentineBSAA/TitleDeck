@@ -50,7 +50,7 @@ function setupMock({games=[],aliases={},descriptions={},description_position='be
 test('source and packaged frontend match; approved logo/version consistent',()=>{
  assert.equal(source,fs.readFileSync(dist,'utf8'));
  const p=JSON.parse(fs.readFileSync(path.join(root,'plugin.json'))),pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json')));
- assert.equal(p.version,'1.2.1');assert.equal(pkg.version,'1.2.1');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
+ assert.equal(p.version,'1.2.2');assert.equal(pkg.version,'1.2.2');assert(fs.statSync(path.join(root,p.publish.image)).size>10000);
  assert(source.includes('QAM_VERSION_STYLE')&&source.includes('td-version-chip'));
 });
 test('retired Steam-card badges have no injected adapter and no settings control',async()=>{
@@ -1413,7 +1413,8 @@ test('1.1.8 public Quick Access hides diagnostics unless developer opt-in is ena
    assert(!all.some(n=>String(n.children||'').includes('Capture Game Info timing')));
    assert(!all.some(n=>String(n.children||'').includes('Developer timing capture')));
    assert(!all.some(n=>String(n.children||'').includes('Switch Community / Game Info')));
-   assert.equal(all.filter(n=>n.type==='buttonitem').length,1,'only the full library manager is public');
+   assert.equal(all.filter(n=>n.type==='buttonitem').length,2,'library manager and GitHub developer link are public');
+    assert(all.some(n=>n.props?.['aria-label']==='Visit ValentineBSAA on GitHub'));
    assert(!all.some(n=>n.children?.includes('Save LB/RB input diagnostic')));
    assert(!all.some(n=>n.children?.includes('Diagnose non-Steam artwork')));
    const settingsNodes=walk(mock.render());
@@ -3232,7 +3233,7 @@ test('1.0.4 no inert Top button, palette remains selectable and title metadata u
  assert.match(source,/focusNode\(tile\)/);
  assert.match(source,/grid-template-columns:minmax\(0,1fr\)!important/);
  assert.match(source,/TITLEDECK_COLOR_SWATCHES/);
- assert.match(source,/PLUGIN_VERSION = '1.2.1'/);
+ assert.match(source,/PLUGIN_VERSION = '1.2.2'/);
 });
 
 test('1.0.4 Steam scroll-to-top cleanup can reach an outer UI document with no library route',async()=>{
@@ -3746,7 +3747,7 @@ test('1.1.5 controller diagnostic snapshots only bounded input-state fields',asy
  const m=await moduleForTest();
  const report=m.titleDeckControllerDiagnostic();
  assert.equal(report.format,'titledeck-controller-v1');
- assert.equal(report.version,'1.2.1');
+ assert.equal(report.version,'1.2.2');
  assert(Array.isArray(report.events));
  assert(report.events.length<=64);
  assert(!JSON.stringify(report).includes('titledeck.json'));
@@ -3903,4 +3904,14 @@ test('1.1.8 preserves 1.1.6 native shoulder paging while hiding public diagnosti
   assert(source.includes('createLibraryShoulderBridge'));
   assert(source.includes("h(UI.ButtonItem,{onClick:captureController,layout:'below'},'Save LB/RB input diagnostic')"));
   assert(source.includes("...(developerDiagnosticsEnabled()?["));
+});
+
+test('1.2.2 developer button opens GitHub through Steam-native navigation without mutating titles',async()=>{
+ const m=await moduleForTest();
+ const called=[];
+ assert.equal(m.openDeveloperGitHubProfile({NavigateToExternalWeb(url){called.push(url)}}),'steam-navigation');
+ assert.deepEqual(called,['https://github.com/ValentineBSAA']);
+ const fallback=[];
+ assert.equal(m.openDeveloperGitHubProfile({}, {SteamClient:{System:{OpenExternalBrowser(url){fallback.push(url)}}}}),'steam-client');
+ assert.deepEqual(fallback,called);
 });
