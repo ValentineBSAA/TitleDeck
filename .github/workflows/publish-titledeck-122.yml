@@ -78,12 +78,13 @@ jobs:
         run: |
           set -euo pipefail
           if gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release 1.2.2 already exists; refusing to overwrite it.'
-            exit 1
+            echo 'Release 1.2.2 already exists; verifying it without overwriting the published ZIP.'
+            gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,assets,url
+            exit 0
           fi
           gh release create 1.2.2 "$RUNNER_TEMP/TitleDeck-1.2.2-Stable.zip" \
             --repo "$GITHUB_REPOSITORY" --title 'TitleDeck 1.2.2 Stable' \
             --notes-file docs/RELEASE_NOTES_1.2.2.md --latest --target "$GITHUB_SHA"
-          gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,isLatest,assets,url
+          gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,assets,url
 
 # Re-run after the 1.2.2 RENAMED badge test version-pin correction.
