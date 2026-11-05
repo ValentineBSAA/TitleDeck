@@ -14,12 +14,12 @@ class DocsAndReleaseTests(unittest.TestCase):
     def test_current_stable_version_and_runtime_sha(self):
         plugin = json.loads((ROOT / "plugin.json").read_text(encoding="utf-8"))
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
-        self.assertEqual(plugin["version"], "1.2.1")
+        self.assertEqual(plugin["version"], "1.2.2")
         self.assertEqual(package["version"], plugin["version"])
         src = (ROOT / "src/index.js").read_bytes()
         self.assertEqual(src, (ROOT / "dist/index.js").read_bytes())
         self.assertEqual(hashlib.sha256(src).hexdigest(),
-                         "cce53a7a4ed73b53fcdbafa3592237427c55bd51a4ac1a9996fa7d09ea7e6fc4")
+                         "7664cc3795a77725003e6381805d594f03eb8c8cb87c37f61e92de14ebf17535")
 
     def test_internal_markdown_links(self):
         broken = []
