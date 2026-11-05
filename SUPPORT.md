@@ -6,7 +6,7 @@
 
 ## TitleDeck 1.2.2 stable features
 
-**How do I visit the creator's GitHub?** Open the TitleDeck Quick Access plugin panel, focus the ValentineBSAA developer-logo button beneath Open Full Library Manager, and press A. This opened the correct GitHub profile during the creator's Steam Deck test.
+**How can I find the developer's GitHub?** I added my own **ValentineBSAA** profile logo directly below **Open Full Library Manager** in Quick Access. Focus it and press **A**, or tap it, to visit [my GitHub profile](https://github.com/ValentineBSAA). I tested the link on my Steam Deck in 1.2.2.
 
 **How do I edit the game I am highlighting?** Select it in Steam's library, press the controller's **Options (☰)** button, and choose **Edit with TitleDeck**. The exact game's editor opens directly. This feature is included in the published **1.2.1 Stable** release.
 
@@ -16,7 +16,7 @@
 
 **Does the renamed title appear in the physical STEAM-button menu?** With **STEAM-button menu titles** turned ON in Full Library Manager Settings, yes on the tested Steam Catherine Classic and non-Steam Most Wanted games. Turning it OFF restores the original text. The logo on the menu's right side is artwork and stays unchanged.
 
-**Does this mean everything is compatible?** No. Steam internals can change between updates. See the [beta hardware matrix](docs/VERIFIED_ON_DECK.md) and [1.2.1 release preparation](docs/RELEASE_NOTES_1.2.1.md).
+**Does this mean everything is compatible?** No. Steam internals can change between updates. See the [hardware verification record](docs/VERIFIED_ON_DECK.md) and [1.2.2 release notes](docs/RELEASE_NOTES_1.2.2.md).
 
 ## Frequently asked questions
 
@@ -49,5 +49,7 @@
 ## Bug reports
 
 Include the TitleDeck version, game/App ID, Steam versus non-Steam, whether the problem occurs in the editor or Steam's Game Info, SteamOS channel, Decky version, controller(s), theme, steps, and cropped screenshots. Never share Steam Guard codes, passwords, private paths or personal text in diagnostic reports.
+
+Thanks for trying TitleDeck. If something doesn't work, even a small report helps me improve it. I appreciate everyone who's tested it or shared feedback.
 
 [Hardware verification](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md)
