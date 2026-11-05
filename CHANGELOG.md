@@ -1,5 +1,14 @@
 # TitleDeck changelog
 
+## 1.2.2 — Stable (November 4, 2026)
+
+- Added a controller-focusable ValentineBSAA developer button to the Quick Access menu, showing the developer's GitHub avatar and a clear link label.
+- The button opens the developer's GitHub profile through Steam's native web navigation when available, with browser fallbacks.
+- Preserved all 1.2.1 game-renaming, custom-description, context-menu, backup/restore, and controller behavior.
+- The creator physically tested the new Quick Menu link on a Steam Deck and confirmed it opens the correct GitHub profile.
+- Source and distribution bundle are byte-for-byte identical to the tested 1.2.2 installer payload; the right-stick Game Info issue remains tracked in #8.
+
+
 ## 1.2.1 — Published stable release (October 28, 2026)
 
 - All 1.2.1 Beta functionality accepted on physical Steam Deck. The context-menu shortcut and the new **650 ms B/Circle hold** passed the maintainer's final tests.
