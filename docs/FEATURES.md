@@ -4,7 +4,8 @@
 
 ## New in published TitleDeck 1.2.2 Stable
 
-- **Developer GitHub button:** Quick Access includes a controller-focusable developer-avatar button that opens the ValentineBSAA GitHub profile, hardware-tested in 1.2.2.
+- **My GitHub logo:** In Quick Access, the **ValentineBSAA** button beneath **Open Full Library Manager** shows my personal profile avatar. Focus it with the D-pad and press **A**, or tap it, to open [my GitHub](https://github.com/ValentineBSAA). I tested the link on my Steam Deck.
+- **Graceful fallback:** If the profile image can't load, the button shows a crimson V instead. The link is optional and doesn't interrupt game editing.
 
 ## Carried forward from TitleDeck 1.2.1 Stable
 
@@ -15,7 +16,7 @@
 - The original game logos/artwork inside Steam's menu are **not renamed**. Your original game files and Steam metadata stay unchanged.
 - If the menu is rebuilt by Steam or a theme, the shortcut depends on Steam's internal UI and may not be available.
 
-[1.2.1 stable release notes](RELEASE_NOTES_1.2.1.md) · [Physical testing record](VERIFIED_ON_DECK.md). The **stable installer is published** and available from the GitHub release linked above.
+[1.2.2 stable release notes](RELEASE_NOTES_1.2.2.md) · [1.2.1 feature history](RELEASE_NOTES_1.2.1.md) · [Physical testing record](VERIFIED_ON_DECK.md). The **stable installer is published** and available from the GitHub release linked above.
 
 ## Custom game names
 - Edit a displayed title with Steam's keyboard; save explicitly.
@@ -30,7 +31,7 @@
 - Restore a single original description without necessarily deleting the custom name; full original-game restoration available.
 - No enforced historical yellow-warning threshold.
 - Physically verified saved descriptions persist through a Steam Deck reboot.
-- **Known limitation (also present in 1.2.1):** the **built-in Steam Deck right stick** does not scroll Steam or non-Steam **Game Info descriptions**, although an **external controller's right stick works** for both. The Settings toggle does not establish built-in-input support. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+- **Known limitation (still present in 1.2.2):** the **built-in Steam Deck right stick** does not scroll Steam or non-Steam **Game Info descriptions**, although an **external controller's right stick works** for both. The Settings toggle does not establish built-in-input support. [Issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
 ## Full Library Manager
 - Artwork cards, green Installed badges, and **All games / Installed / Renamed** filters.
