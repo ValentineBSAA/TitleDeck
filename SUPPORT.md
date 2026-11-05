@@ -1,10 +1,12 @@
-# TitleDeck 1.2.1: troubleshooting and support
+# TitleDeck 1.2.2: troubleshooting and support
 
-**Current public version:** [TitleDeck 1.2.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1). Primary verified platform: Valve Steam Deck, SteamOS Gaming Mode with Decky Loader.
+**Current public version:** [TitleDeck 1.2.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2). Primary verified platform: Valve Steam Deck, SteamOS Gaming Mode with Decky Loader.
 
 [Report a bug](https://github.com/ValentineBSAA/TitleDeck/issues) · [Community discussion](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Illustrated beginner guide](docs/BEGINNER_GUIDE.md)
 
-## TitleDeck 1.2.1 stable features
+## TitleDeck 1.2.2 stable features
+
+**How do I visit the creator's GitHub?** Open the TitleDeck Quick Access plugin panel, focus the ValentineBSAA developer-logo button beneath Open Full Library Manager, and press A. This opened the correct GitHub profile during the creator's Steam Deck test.
 
 **How do I edit the game I am highlighting?** Select it in Steam's library, press the controller's **Options (☰)** button, and choose **Edit with TitleDeck**. The exact game's editor opens directly. This feature is included in the published **1.2.1 Stable** release.
 
