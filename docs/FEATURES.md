@@ -1,8 +1,12 @@
-# TitleDeck 1.2.1: complete feature reference
+# TitleDeck 1.2.2: complete feature reference
 
-[Home](../README.md) · [Step-by-step beginner guide](BEGINNER_GUIDE.md) · [Gallery](SCREENSHOTS.md) · [Latest stable release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1)
+[Home](../README.md) · [Step-by-step beginner guide](BEGINNER_GUIDE.md) · [Gallery](SCREENSHOTS.md) · [Latest stable release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2)
 
-## New in published TitleDeck 1.2.1 Stable
+## New in published TitleDeck 1.2.2 Stable
+
+- **Developer GitHub button:** Quick Access includes a controller-focusable developer-avatar button that opens the ValentineBSAA GitHub profile, hardware-tested in 1.2.2.
+
+## Carried forward from TitleDeck 1.2.1 Stable
 
 - On a game in Steam's library, press **Options (☰)**, then choose **Edit with TitleDeck**. The selected Steam or non-Steam game's own editor opens immediately; you do not have to search the manager or wait for its full artwork grid.
 - In **Full Library Manager → Settings → Game Options menu placement**, choose **After Developer** (the default) or **Before Properties**. When a non-Steam shortcut has Properties only within its Manage submenu, the second placement falls back to the end of top-level actions, above Cancel where shown.
