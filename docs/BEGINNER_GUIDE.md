@@ -1,8 +1,18 @@
-# TitleDeck 1.2.1: the complete beginner's guide
+# TitleDeck 1.2.2: the complete beginner's guide
 
 New to Steam Deck customization? Start here. This guide includes **every main feature and Settings section**, with links to real Steam Deck screenshots. TitleDeck is a Decky Loader plugin for Gaming Mode, not a replacement for Steam or a game mod.
 
-[← Home](../README.md) · [Image gallery](SCREENSHOTS.md) · [Feature reference](FEATURES.md) · [Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1)
+[← Home](../README.md) · [Image gallery](SCREENSHOTS.md) · [Feature reference](FEATURES.md) · [Latest release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2)
+
+## New in 1.2.2: my GitHub logo in Quick Access 🌸
+
+I've added my personal **ValentineBSAA** GitHub avatar beneath **Open Full Library Manager** in TitleDeck's Quick Access panel. Focus **View developer on GitHub ↗** with the D-pad and press **A**, or tap the button, to open [my GitHub profile](https://github.com/ValentineBSAA). If the image can't load, you'll see a crimson V instead.
+
+I tested the new link on my Steam Deck and confirmed that it opens my profile. It doesn't change how you rename games or edit descriptions.
+
+Thanks to everyone who's downloaded TitleDeck or tested it out. Community suggestions helped shape this project, and I appreciate you giving something I've built a try. [Read my 1.2.2 release note](RELEASE_NOTES_1.2.2.md).
+
+**Screenshot note:** The Quick Access image below is a genuine **1.1.8** capture and does **not** show the new 1.2.2 logo button.
 
 ## New in 1.2.1 Stable: edit the highlighted game without opening the catalog
 
@@ -16,24 +26,24 @@ New to Steam Deck customization? Start here. This guide includes **every main fe
 
 In **Full Library Manager → ⚙ Settings → Game Options menu placement**, select **After Developer** (default) or **Before Properties**. On some non-Steam games, Properties is nested under Manage rather than displayed as a top-level action; TitleDeck then appears at the end of the main actions (before Cancel, when present) rather than incorrectly before Launch Options. The setting does not reorder GTM, SteamGridDB or other plugins.
 
-### STEAM-button menu aliases (1.2.0 feature preserved in 1.2.1)
+### STEAM-button menu aliases (1.2.0 feature preserved in 1.2.2)
 
 In Full Library Manager → Settings, turn **STEAM-button menu titles** ON to show a saved custom name for the *running* game in the physical STEAM-button menu. Turn it OFF to restore the original displayed game name there. The maintainer verified Catherine Classic → Catherine (including reboot persistence) and a non-Steam Most Wanted custom alias. The right-side **artwork/logo remains original**, because the name setting only changes text.
 
-These features are included in the **published, physically tested TitleDeck 1.2.1 Stable** release. [Stable release preparation](RELEASE_NOTES_1.2.1.md).
+These features were tested for **1.2.1 Stable** and remain available in **1.2.2 Stable**. [1.2.1 feature history](RELEASE_NOTES_1.2.1.md) · [current 1.2.2 release](RELEASE_NOTES_1.2.2.md).
 
 ## 1. What you need
 
 - A **Valve Steam Deck**, in **SteamOS Gaming Mode**, with **Decky Loader** installed.
-- The **1.2.1 Stable plugin ZIP** from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1).
+- The **1.2.2 Stable plugin ZIP** from [GitHub Releases](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2).
 - A game, app, demo or non-Steam shortcut already added to your Steam library.
 
 No coding, terminal, game-file editing, or external keyboard is necessary.
 
 ## 2. Install or update TitleDeck
 
-1. In Gaming Mode, open the [TitleDeck 1.2.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1).
-2. Download **`TitleDeck-1.2.1-Stable.zip`**. **Do not unzip it.** An image archive, if available, is *not* a plugin installer.
+1. In Gaming Mode, open the [TitleDeck 1.2.2 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2).
+2. Download **`TitleDeck-1.2.2-Stable.zip`**. **Do not unzip it.** An image archive, if available, is *not* a plugin installer.
 3. Press the **•••** button to open **Quick Access**. Select the **Decky Loader plug icon**.
 4. Open **Decky Loader Settings (gear) → Developer → Install Plugin from ZIP** and choose the downloaded ZIP. If this option isn't present, consult your installed Decky Loader version's instructions.
 5. Open **Quick Access → Decky Loader → TitleDeck** and check the version badge.
@@ -97,7 +107,7 @@ Restore Original Game can return the standard Steam non-Steam explanation and or
 
 ### Description length and scrolling
 
-There is **no old yellow advisory character threshold** or enforced advisory cap. Long content still depends on Steam's current layout. **Known issue (still present in 1.2.1):** the Steam Deck's **built-in right stick does not scroll** text in Steam or non-Steam Game Info description areas; an **external controller's right stick works** for both. Use touch/scrollbar where available. Saved descriptions and restart persistence are separate, working features. [Tracked issue](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+There is **no old yellow advisory character threshold** or enforced advisory cap. Long content still depends on Steam's current layout. **Known issue (still present in 1.2.2):** the Steam Deck's **built-in right stick does not scroll** text in Steam or non-Steam Game Info description areas; an **external controller's right stick works** for both. Use touch/scrollbar where available. Saved descriptions and restart persistence are separate, working features. [Tracked issue](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
 ## 7. Where to find TitleDeck Settings
 
@@ -105,7 +115,7 @@ Inside Full Library Manager, go to the top row and choose **⚙ Settings** (near
 
 ![Settings layout](screenshots/v1.1.8/15-settings-title-replacements.jpeg)
 
-Below is a walkthrough of **every core Settings section** (screenshots captured in 1.1.8; newer 1.2.1 controls are described above).
+Below is a walkthrough of **every core Settings section** (screenshots captured in 1.1.8; newer 1.2.x controls are described above).
 
 ### 7.1 Display title replacement
 
