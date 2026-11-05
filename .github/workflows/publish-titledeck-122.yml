@@ -85,3 +85,5 @@ jobs:
             --repo "$GITHUB_REPOSITORY" --title 'TitleDeck 1.2.2 Stable' \
             --notes-file docs/RELEASE_NOTES_1.2.2.md --latest --target "$GITHUB_SHA"
           gh release view 1.2.2 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,isLatest,assets,url
+
+# Re-run after the 1.2.2 RENAMED badge test version-pin correction.
