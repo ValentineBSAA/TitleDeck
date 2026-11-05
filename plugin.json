@@ -12,6 +12,6 @@
     "description": "Customize Steam Deck game titles and locally displayed game descriptions, with safe restoration and controller-friendly editing.",
     "image": "assets/titledeck-icon.png"
   },
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Customize Steam Deck game titles, including the STEAM-button menu, and locally displayed game descriptions with safe restoration."
 }
