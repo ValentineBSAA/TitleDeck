@@ -1,6 +1,20 @@
-# TitleDeck 1.2.1: release and verification record
+# TitleDeck: stable release and verification record (current 1.2.2)
 
-## 1.2.1 stable release acceptance and repository synchronization
+## 1.2.2 Stable acceptance and publication
+
+- [x] Add my GitHub avatar and **ValentineBSAA** profile link as a focusable button in the Quick Access menu.
+- [x] Install 1.2.2 on my physical Steam Deck and confirm the link opens the right profile.
+- [x] Preserve 1.2.1 renaming, descriptions, options-menu integration, controller navigation and restoration.
+- [x] Match the released 1.2.2 source/distribution assets to the creator-tested plugin payload.
+- [x] Publish [TitleDeck 1.2.2 Stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2), including the actual `TitleDeck-1.2.2-Stable.zip` asset.
+- [x] Verify the publication workflow [completed successfully](https://github.com/ValentineBSAA/TitleDeck/actions/runs/41984327633).
+- [x] Update the main documentation for 1.2.2, keeping old version notes and screenshots labeled accurately.
+- [x] Include a personal note thanking the community for trying, testing and shaping the plugin.
+- [ ] Add genuine 1.2.2 Steam Deck screenshots of the new developer button when available; do not relabel 1.1.8 images.
+
+**Known limitation:** Built-in Steam Deck right-stick scrolling in custom Steam/non-Steam Game Info remains tracked in [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+
+## Historical 1.2.1 stable release acceptance and repository synchronization
 
 - [x] Package `TitleDeck-1.2.1-Beta.zip` with matching `v1.2.1-beta.1` frontend, `plugin.json`, and `package.json`.
 - [x] Reduce **context-launched hold B / Circle** from 850 to **650 ms**; preserve a quick tap's normal Back.
@@ -43,4 +57,4 @@ The corresponding asset has been published: [TitleDeck 1.2.1](https://github.com
 
 **Note:** Don't use an image ZIP as a plugin installer. The gallery contains extracted JPEGs and the release has the official plugin ZIP.
 
-[Hardware verification](VERIFIED_ON_DECK.md) · [1.2.1 release notes](RELEASE_NOTES_1.2.1.md) · [Source](../SOURCE.md)
+[Hardware verification](VERIFIED_ON_DECK.md) · [1.2.2 release notes](RELEASE_NOTES_1.2.2.md) · [1.2.1 history](RELEASE_NOTES_1.2.1.md) · [Source](../SOURCE.md)
