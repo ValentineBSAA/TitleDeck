@@ -1,6 +1,18 @@
 # TitleDeck source and release provenance
 
-**Latest publicly published stable:** [TitleDeck 1.2.1](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1).
+**Latest stable version:** [TitleDeck 1.2.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2). The new release adds a focusable ValentineBSAA GitHub button, physically tested on a Steam Deck.
+
+**Installer:** [TitleDeck-1.2.2-Stable.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.2.2/TitleDeck-1.2.2-Stable.zip). It contains the creator-tested 1.2.2 plugin files packaged from the matching GitHub repository source.
+
+**Verified payload source parity:** `src/index.js` and `dist/index.js` are byte-identical to the locally hardware-tested TitleDeck 1.2.2 ZIP, Git blob SHA `7b4cf59f3980fbb76f58c838a4d618fa45d85b7c`, SHA-256 `7664cc3795a77725003e6381805d594f03eb8c8cb87c37f61e92de14ebf17535`. `plugin.json` and `package.json` are likewise byte-identical. The GitHub Actions packaging step may generate different outer ZIP timestamps from the creator-tested local installer, so ZIP-level SHA-256 values need not match even when the installation payloads do.
+
+**Known limitation:** Steam/non-Steam Game Info descriptions can still fail to scroll with the Steam Deck's built-in right stick; external-controller scrolling was previously accepted. See [issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
+
+[1.2.2 release notes](docs/RELEASE_NOTES_1.2.2.md) · [Hardware verification](docs/VERIFIED_ON_DECK.md) · [Version history](CHANGELOG.md).
+
+---
+
+## Archived 1.2.1 release provenance
 
 **Published installer:** [TitleDeck-1.2.1-Stable.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.2.1/TitleDeck-1.2.1-Stable.zip). GitHub lists the asset at **1,957,477 bytes**, matching the locally created installer. The independently verified **local** ZIP SHA-256 is:
 
