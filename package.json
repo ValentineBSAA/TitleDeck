@@ -1,8 +1,8 @@
 {
   "name": "titledeck",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "private": true,
-  "description": "TitleDeck 1.2.1 Stable: native game context menu editing, preferred menu placement, fast direct launch, and 650 ms B/Circle quick exit.",
+  "description": "TitleDeck 1.2.2 Stable: controller-focusable GitHub developer branding in Quick Menu; retains 1.2.1 library editing and navigation.",
   "type": "module",
   "license": "MIT",
   "author": "Valentine",
