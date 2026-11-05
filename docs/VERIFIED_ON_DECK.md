@@ -1,6 +1,17 @@
-# TitleDeck: physical Steam Deck verification (1.2.1 published stable; 1.1.8 historical tests)
+# TitleDeck: physical Steam Deck verification (current stable 1.2.2; historical tests preserved)
 
-## Later private hardware acceptance: 1.2.0 and 1.2.1 Preview 3
+## New in 1.2.2 Stable: developer logo button
+
+| Feature / behavior | Physical Steam Deck result |
+| --- | --- |
+| My **ValentineBSAA GitHub profile logo** appears as an optional Quick Access button | Added in 1.2.2 |
+| Selecting the new developer link opens my GitHub profile | ✅ I installed the 1.2.2 build on my Steam Deck and confirmed that it works |
+| Focusable button using Decky controller navigation | Built as a focusable control; a separate input-device-specific test was not reported |
+| Previous Steam/non-Steam library features | Carried forward without functional redesign; see older test records below |
+
+This verifies the GitHub link behavior I actually checked on my Steam Deck. It is not a blanket verification of every theme, controller or SteamOS release. I'm grateful to everyone who has tried TitleDeck and helped me test earlier versions. [1.2.2 release notes](RELEASE_NOTES_1.2.2.md).
+
+## Previous hardware acceptance: 1.2.0 and 1.2.1 Preview 3
 
 | Later feature / behavior | Maintainer's physical Steam Deck result |
 | --- | --- |
@@ -16,7 +27,7 @@
 | Quick tap B/Circle retains familiar Back behavior | ✅ Passed |
 | **1.2.1: hold B / Circle for 650 ms** | ✅ **Maintainer physically verified responsive long-hold quick exit** |
 
-The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement have been reported working on actual hardware. The final **650 ms** interaction has now passed hardware acceptance, but this does **not** establish compatibility with every game, Steam version, or controller. The maintainer has now published 1.2.1 Stable. [Published 1.2.1 release notes](RELEASE_NOTES_1.2.1.md).
+The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement have been reported working on actual hardware. The final **650 ms** interaction has now passed hardware acceptance, but this does **not** establish compatibility with every game, Steam version, or controller. The 1.2.1 features were published in 1.2.1 Stable and retained in the current 1.2.2 Stable. [Published 1.2.1 release notes](RELEASE_NOTES_1.2.1.md).
 
 ## Original 1.1.8 acceptance
 
@@ -48,4 +59,4 @@ The game aliases, direct-editor shortcut, ON/OFF restoration, and menu placement
 
 **Automated build tests**, such as the reported 211 frontend and 26 backend passes, are not substitutes for real-device testing.
 
-[1.2.1 release notes](RELEASE_NOTES_1.2.1.md) · [Compatibility](COMPATIBILITY.md) · [Known issue](https://github.com/ValentineBSAA/TitleDeck/issues/8)
+[1.2.2 release notes](RELEASE_NOTES_1.2.2.md) · [1.2.1 test history](RELEASE_NOTES_1.2.1.md) · [Compatibility](COMPATIBILITY.md) · [Known issue](https://github.com/ValentineBSAA/TitleDeck/issues/8)
