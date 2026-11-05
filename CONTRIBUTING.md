@@ -1,6 +1,6 @@
 # Contributing to TitleDeck
 
-Thanks for helping improve TitleDeck! The project targets **physical Steam Deck / SteamOS Gaming Mode** with Decky Loader.
+Thanks for taking the time to try TitleDeck or help me improve it. I appreciate feedback, testing, and the suggestions that have shaped this plugin. It targets **physical Steam Deck / SteamOS Gaming Mode** with Decky Loader.
 
 ## Start here
 - Read [Beginner guide](docs/BEGINNER_GUIDE.md) for feature behavior and Settings terminology.
@@ -8,11 +8,11 @@ Thanks for helping improve TitleDeck! The project targets **physical Steam Deck 
 - Use [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) for reproducible bugs and [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) for ideas.
 
 ## Development workflow
-- **Published stable is 1.2.1**. The source must match the published `TitleDeck-1.2.1-Stable.zip` asset before code changes are accepted. Verify source/build parity, manifest version, archived historical tests, and CI after synchronization.
+- **Published stable is 1.2.2**. The source must match the payload of the published `TitleDeck-1.2.2-Stable.zip` asset before code changes are accepted. Verify source/build parity, manifest version, archived historical tests, and CI after synchronization.
 - Frontend checks: `node --test tests/*.test.cjs`.
 - Backend / documentation checks: `python3 -m unittest discover -s tests -p 'test_*.py'`.
 - Preserve `src/index.js` / `dist/index.js` byte parity within any release version; align backend and manifests with the exact intended ZIP.
-- Keep hardware observations separate from simulated checks. The maintainer has confirmed 1.1.8 custom descriptions after reboot and built-in/PS4 LB/RB paging, but **Game Info description right-stick scrolling is not currently working**.
+- Keep hardware observations separate from simulated checks. The maintainer has confirmed 1.1.8 custom descriptions after reboot and built-in/PS4 LB/RB paging, but **the Deck's built-in right stick still does not scroll custom Game Info descriptions**, while an external controller's right stick has worked in the tested cases.
 - Avoid broad Steam DOM or controller rewrites when fixing an isolated issue. Protect working restoration, custom artwork, Steam-native navigation and explicit saves.
 - TitleDeck must not modify installed executables, original Steam metadata, game sort identities, or delete hidden Steam shortcuts.
 - Keep developer diagnostics opt-in, not displayed in the public UI.
@@ -21,6 +21,6 @@ Thanks for helping improve TitleDeck! The project targets **physical Steam Deck 
 ## Before proposing a release
 - Verify game rename / Save, Steam and non-Steam descriptions, original restoration, LB/RB on actual Deck, TitleDeck manager right-stick, artwork and Settings.
 - Record any outstanding failure rather than overstating compatibility.
-- Follow [1.2.1 release checklist](docs/RELEASE_CHECKLIST.md) and [source integrity](SOURCE.md).
+- Follow [the current release checklist](docs/RELEASE_CHECKLIST.md) and [source integrity](SOURCE.md).
 
-MIT licensed. Thank you to u/TacoOfGod and u/All-Stars64 for the original feature ideas.
+MIT licensed. Special thanks to **u/TacoOfGod** and **u/All-Stars64** for the early feature ideas. Thanks as well to everyone who's downloaded, tested, or taken the time to share a suggestion. It really does help.
