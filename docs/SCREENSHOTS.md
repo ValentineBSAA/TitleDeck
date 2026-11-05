@@ -2,10 +2,10 @@
 
 **23 real Steam Deck Gaming Mode screenshots**, organized by what a user is trying to do. These are individual images checked into the repository, not a screenshot archive or an installer.
 
-[← Back to README](../README.md) · [Beginner guide](BEGINNER_GUIDE.md) · [current 1.2.1 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.1) · [1.1.8 historical release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
+[← Back to README](../README.md) · [Beginner guide](BEGINNER_GUIDE.md) · [current 1.2.2 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2) · [1.1.8 historical release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8)
 
 > [!NOTE]
-> **New 1.2.1 screenshots are not yet committed in this gallery.** The 23 images below are authentic **1.1.8** captures, not representations of the new native game Options shortcut, STEAM-button menu aliases or the 650 ms hold. The maintainer has visually verified Catherine and non-Steam Most Wanted in those newer surfaces, but new images should be uploaded and reviewed before labeling a 1.2.1 gallery complete. [1.2.1 release notes](RELEASE_NOTES_1.2.1.md).
+> **The 1.2.2 GitHub developer-logo button is not pictured here yet.** These 23 images are genuine **1.1.8** screenshots and do not show features added later, including 1.2.1's native game Options shortcut and 1.2.2's profile link. I've tested the new link on my Steam Deck, but I won't label an older screenshot as a new one. [1.2.2 release notes](RELEASE_NOTES_1.2.2.md) · [1.2.1 feature history](RELEASE_NOTES_1.2.1.md).
 
 ## 1. Start here: Quick Access and Full Library Manager
 
