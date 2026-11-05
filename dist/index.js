@@ -1,5 +1,5 @@
-/** TitleDeck 1.2.1 Stable: verified Steam/non-Steam context menu editing and 650 ms B/Circle hold. */
-const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.2.1', ROUTE = '/titledeck/manager';
+/** TitleDeck 1.2.2 Stable: adds a controller-focusable developer GitHub link in the Quick Menu. */
+const PLUGIN = 'TitleDeck', PLUGIN_VERSION = '1.2.2', ROUTE = '/titledeck/manager';
 // Private developer opt-in. Normal users never see scan controls or timing logs;
 // the bounded timing recorder remains available for future Steam UI regressions.
 export function developerDiagnosticsEnabled(){
@@ -9,6 +9,23 @@ const R = globalThis.SP_REACT;
 const UI = globalThis.DFL;
 const h = (...a) => R.createElement(...a);
 const QAM_VERSION_STYLE = {display:'inline-flex',alignItems:'center',fontSize:10,fontWeight:800,color:'#e9eef6',background:'#384257',border:'1px solid #7d8aa5',borderRadius:99,padding:'3px 7px',lineHeight:1};
+// Stable user ID keeps the avatar link intact if the GitHub handle changes.
+const DEVELOPER_GITHUB_URL='https://github.com/ValentineBSAA';
+const DEVELOPER_AVATAR_URL='https://avatars.githubusercontent.com/u/83792921?s=128&v=4';
+// If Steam is offline, retain a recognizable crimson V in place of a broken image.
+const DEVELOPER_AVATAR_FALLBACK='data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><defs><radialGradient id="b"><stop stop-color="#4b1723"/><stop offset="1" stop-color="#10080f"/></radialGradient><linearGradient id="v" x2="1" y2="1"><stop stop-color="#f8a0a8"/><stop offset=".5" stop-color="#a82841"/><stop offset="1" stop-color="#f84f69"/></linearGradient></defs><rect width="80" height="80" rx="40" fill="url(#b)"/><circle cx="40" cy="40" r="36" fill="none" stroke="#a6384b" stroke-width="2"/><path d="M17 17 40 65 63 17" fill="none" stroke="url(#v)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><g fill="#f06b8d"><circle cx="61" cy="12" r="3"/><circle cx="66" cy="17" r="3"/><circle cx="56" cy="17" r="3"/><circle cx="61" cy="22" r="3"/></g></svg>`);
+// Use Decky's native Steam browser navigation first: it is controller-friendly.
+export function openDeveloperGitHubProfile(navigation=UI?.Navigation,host=globalThis){
+  if(typeof navigation?.NavigateToExternalWeb==='function'){
+    navigation.NavigateToExternalWeb(DEVELOPER_GITHUB_URL);return 'steam-navigation';
+  }
+  if(typeof host?.SteamClient?.System?.OpenExternalBrowser==='function'){
+    host.SteamClient.System.OpenExternalBrowser(DEVELOPER_GITHUB_URL);return 'steam-client';
+  }
+  if(typeof host?.open==='function'&&host.open(DEVELOPER_GITHUB_URL,'_blank','noopener,noreferrer'))return 'browser';
+  throw new Error('Unable to open GitHub on this Steam client.');
+}
+
 const ICON_DATA_URI = 'data:image/webp;base64,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';
 
 let bridge, adapter, homeMenuAdapter, descriptionAdapter, nonSteamDescriptionAdapter, gameInfoDataAdapter, controllerScrollBridge, gameContextMenuAdapter;
@@ -5554,6 +5571,7 @@ function Manager(){
 function QuickPanel(){
  const data=useStateSnapshot(),[error,setError]=R.useState(''),[capture,setCapture]=R.useState('');
  const open=()=>{try{UI.Navigation.CloseSideMenus?.();UI.Navigation.Navigate(ROUTE);}catch(e){setError(String(e));}};
+ const openGitHub=()=>{try{setError('');openDeveloperGitHubProfile();}catch(e){setError(String(e?.message||e));}};
  const scan=()=>{try{setCapture(descriptionAdapter?.timingReport?.()||'Game Info adapter not connected')}
    catch(e){setCapture('Game Info scan error: '+String(e?.message||e))}};
  const captureController=async()=>{try{
@@ -5570,6 +5588,14 @@ function QuickPanel(){
  return h(UI.PanelSection,{title:'TitleDeck'},h('div',{'data-titledeck-ui':'true'},
    h('div',{style:{display:'flex',alignItems:'center',gap:9,padding:'6px 0'}},h('img',{src:ICON_DATA_URI,style:{width:42,height:42,borderRadius:9}}),h('div',null,h('div',{style:{display:'flex',alignItems:'center',gap:7}},h('strong',null,'TitleDeck'),h('span',{className:'td-qam-version',style:QAM_VERSION_STYLE},`v${PLUGIN_VERSION}`)),h('div',{style:{fontSize:12,opacity:.7}},Object.keys(data.descriptions||{}).length?`${Object.keys(data.aliases||{}).length} names · ${Object.keys(data.descriptions||{}).length} descriptions`:`${Object.keys(data.aliases||{}).length} custom names`))),
    h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:open,layout:'below'},'Open full library manager')),
+   h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:openGitHub,layout:'below',focusable:true,'aria-label':'Visit ValentineBSAA on GitHub'},
+     h('span',{style:{display:'flex',alignItems:'center',gap:10,minHeight:40,textAlign:'left'}},
+       h('img',{src:DEVELOPER_AVATAR_URL,alt:'ValentineBSAA GitHub logo',loading:'eager',
+         onError:e=>{const img=e?.currentTarget;if(img&&img.src!==DEVELOPER_AVATAR_FALLBACK){img.onerror=null;img.src=DEVELOPER_AVATAR_FALLBACK;}},
+         style:{width:36,height:36,flexShrink:0,borderRadius:'50%',objectFit:'cover',background:'#22131b',border:'1px solid rgba(235,84,119,.65)'}}),
+       h('span',{style:{display:'flex',flexDirection:'column',gap:2,minWidth:0}},
+         h('strong',{style:{fontSize:13,lineHeight:1.15}},'ValentineBSAA'),
+         h('span',{style:{fontSize:11,opacity:.82,lineHeight:1.2}},'View developer on GitHub ↗'))))),
    ...(developerDiagnosticsEnabled()?[
      h(UI.PanelSectionRow,null,h(UI.ButtonItem,{onClick:captureController,layout:'below'},'Save LB/RB input diagnostic')),
      ...(nonSteamDescriptionAdapter?.shown>0?[
@@ -5585,7 +5611,7 @@ function QuickPanel(){
    error?h('div',null,error):null));
 }
 
-/** 1.2.1 Preview: Steam's native game context menu (☰/Options).
+/** 1.2.2 Stable: Steam's native game context menu (☰/Options).
  * Based on the established Decky SteamGridDB/MetaDeck context-menu hooks.
  * Never patch generic context menus or infer a missing App ID; no Steam
  * metadata is modified. On unsupported Steam clients this simply does nothing. */
