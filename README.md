@@ -15,7 +15,15 @@
 > **Tested on a physical Steam Deck running SteamOS Gaming Mode.** The 1.1.8 release was tested with both the Steam Deck's built-in LB/RB buttons and a PS4 Bluetooth controller. Steam and non-Steam custom descriptions were verified after restarting the Deck. **Known limitation:** the Steam Deck's **built-in right stick** does not scroll custom text inside the **Game Info description area**, while an **external controller's right stick does scroll** both Steam and non-Steam Game Info descriptions. This does **not** prevent descriptions from appearing, saving or surviving restarts. [Tracked issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). ROG Ally, other handhelds, Windows, Android/DroidDeck and Desktop Mode are not maintainer-verified.
 
 > [!IMPORTANT]
-> **TitleDeck 1.2.2 Stable adds a controller-focusable developer logo/link in Quick Access. The creator verified on physical Steam Deck that the new button opens the ValentineBSAA GitHub profile.** TitleDeck 1.2.1's previously verified library features remain in 1.2.2. The STEAM-button menu shows aliases for running Steam and non-Steam games, and the game's **Options (☰) → Edit with TitleDeck** opens its editor directly. In Full Library Manager → Settings, choose **After Developer** or **Before Properties** for menu placement. From a context-launched editor, **hold B / Circle for 650 ms** to return straight to Steam (hardware verified). [1.2.1 release notes](docs/RELEASE_NOTES_1.2.1.md) · [hardware tests](docs/RELEASE_TEST_RESULTS_1.2.1.md) · [verification checklist](docs/VERIFIED_ON_DECK.md).
+> **TitleDeck 1.2.2 Stable:** I added my own GitHub profile logo as a controller-focusable button in Quick Access. I tested it on my Steam Deck and confirmed it opens my GitHub profile.** TitleDeck 1.2.1's previously verified library features remain in 1.2.2. The STEAM-button menu shows aliases for running Steam and non-Steam games, and the game's **Options (☰) → Edit with TitleDeck** opens its editor directly. In Full Library Manager → Settings, choose **After Developer** or **Before Properties** for menu placement. From a context-launched editor, **hold B / Circle for 650 ms** to return straight to Steam (hardware verified). [1.2.1 release notes](docs/RELEASE_NOTES_1.2.1.md) · [hardware tests](docs/RELEASE_TEST_RESULTS_1.2.1.md) · [verification checklist](docs/VERIFIED_ON_DECK.md).
+
+## A note from me 🌸
+
+I started TitleDeck because I thought changing the names and descriptions shown in your own Steam library should be an option. The first idea came from the community, and other suggestions helped turn it into something much bigger than a simple renaming tool. I built it, tested it on my Steam Deck, and kept working through the rough edges because I wanted it to feel natural in Gaming Mode.
+
+With **1.2.2**, I've added my personal GitHub logo to the Quick Access panel. If you want to know who made TitleDeck or find my other projects, you can select it and go straight to [my GitHub profile](https://github.com/ValentineBSAA). It's a small signature, not an extra step to use the plugin.
+
+To everyone who's downloaded TitleDeck, tried it out, tested a build, reported a bug, or offered an idea: **thank you**. I really appreciate people giving something I've developed a chance, including those who simply use it without saying a word. [Read my 1.2.2 release note](docs/RELEASE_NOTES_1.2.2.md).
 
 ## See it working on Steam Deck
 
@@ -56,7 +64,7 @@
 4. Go back to **Quick Access → Decky → TitleDeck → Open Full Library Manager**.
 5. Select a game to rename it or edit its description. **Save the change** and open the game's **Game Info** tab to see the description.
 
-**Developer credit:** Quick Access now has a focusable ValentineBSAA avatar button that opens the developer's GitHub profile, tested on a physical Steam Deck in 1.2.2.
+**My developer logo:** In Quick Access, focus the **ValentineBSAA** button beneath **Open Full Library Manager** and press **A**, or tap it, to visit my GitHub profile. I confirmed it works on my Steam Deck in 1.2.2.
 
 **Not sure where Settings are?** Open **Full Library Manager → ⚙ Settings** to find backups, description placement, right-stick option, themes, hidden entries, and Restore All. See the [illustrated beginner guide](docs/BEGINNER_GUIDE.md).
 
@@ -66,10 +74,10 @@
 
 ## Community-made and reversible
 
-TitleDeck began with community interest in renaming Steam Deck games. **u/TacoOfGod** helped inspire the title-customization idea, and **u/All-Stars64** suggested editable descriptions right inside **Game Info**, beside Community. Thanks to everyone reporting bugs and testing builds on real hardware. These credits acknowledge feature ideas and feedback, not code authorship.
+TitleDeck began with ideas shared by the Steam Deck community. **u/TacoOfGod** helped inspire the title-renaming feature, and **u/All-Stars64** suggested editable descriptions in **Game Info**, beside Community. I turned those ideas into a working plugin and continued improving it through testing and feedback. Thank you to everyone who's tried TitleDeck, helped test it, or pointed out something I could improve. These credits recognize community suggestions and testing, not code authorship.
 
 ## More information
 
-[Complete beginner guide](docs/BEGINNER_GUIDE.md) · [Feature reference](docs/FEATURES.md) · [1.2.1 release notes](docs/RELEASE_NOTES_1.2.1.md) · [Verified on Deck](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md) · [Installation](docs/INSTALL.md) · [Changelog](CHANGELOG.md) · [Source and checksums](SOURCE.md) · [Contributing](CONTRIBUTING.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
+[Complete beginner guide](docs/BEGINNER_GUIDE.md) · [Feature reference](docs/FEATURES.md) · [1.2.2 release notes](docs/RELEASE_NOTES_1.2.2.md) · [1.2.1 history](docs/RELEASE_NOTES_1.2.1.md) · [Verified on Deck](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md) · [Installation](docs/INSTALL.md) · [Changelog](CHANGELOG.md) · [Source and checksums](SOURCE.md) · [Contributing](CONTRIBUTING.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
 
 MIT licensed. Independent of Valve, Steam, Decky Loader and game publishers.
