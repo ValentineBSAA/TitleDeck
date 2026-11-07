@@ -40,9 +40,15 @@ class DocsAndReleaseTests(unittest.TestCase):
             self.assertNotIn("still reflect the 0.9.0 RC1 baseline", txt)
             self.assertNotIn("still matches the historical RC1 baseline", txt)
         gallery = (ROOT / "docs/SCREENSHOTS.md").read_text(encoding="utf-8")
+        self.assertIn("22 real", gallery)
+        for name in ["01-steam-home-custom-text-glow.jpeg", "02-full-library-manager.jpeg",
+                     "11-art-hero-read-only-controls.jpeg", "22-art-hero-placement-explanation.jpeg"]:
+            self.assertIn(name, gallery)
+            self.assertTrue((ROOT / "docs/screenshots/v1.4.0" / name).is_file())
+        historical = (ROOT / "docs/SCREENSHOTS_1.1.8_ARCHIVE.md").read_text(encoding="utf-8")
         for name in ["01-quick-access-beta-version.jpeg", "02-native-game-info-description.jpeg",
                      "03-long-description-end.jpeg"]:
-            self.assertIn(name, gallery)
+            self.assertIn(name, historical)
             self.assertTrue((ROOT / "docs/screenshots/v0.9.2-beta1" / name).is_file())
 
 

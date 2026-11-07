@@ -8,7 +8,7 @@
 
 **Known limitation:** Steam/non-Steam Game Info descriptions can still fail to scroll with the Steam Deck's built-in right stick; external-controller scrolling was previously accepted. See [issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
 
-[My 1.2.2 release note and thanks to the community](docs/RELEASE_NOTES_1.2.2.md) · [Hardware verification](docs/VERIFIED_ON_DECK.md) · [Version history](CHANGELOG.md).
+[My 1.2.2 release note and thanks to the community](../docs/RELEASE_NOTES_1.2.2.md) · [Hardware verification](../docs/VERIFIED_ON_DECK.md) · [Version history](../CHANGELOG.md).
 
 ---
 
@@ -26,9 +26,9 @@
 
 **Historical 1.1.8 release:** [TitleDeck 1.1.8](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.1.8) remains archived with its original screenshot gallery, documentation and checksum `2bae38490fbbb7da783d98b33e8acd4dd6213f03ba1a7256807e60cb736f061c`. The screenshot source archive had SHA-256 `44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced`, and its 23 genuine captures are retained under `docs/screenshots/v1.1.8/`.
 
-**Previous 1.2.1 Beta:** The 650 ms exit threshold was hardware accepted before release. Beta notes remain available at [1.2.1 Beta history](docs/RELEASE_NOTES_1.2.1_BETA.md); they are not current installation instructions.
+**Previous 1.2.1 Beta:** The 650 ms exit threshold was hardware accepted before release. Beta notes remain available at [1.2.1 Beta history](../docs/RELEASE_NOTES_1.2.1_BETA.md); they are not current installation instructions.
 
-[1.2.1 release notes](docs/RELEASE_NOTES_1.2.1.md) · [Hardware and local test record](docs/RELEASE_TEST_RESULTS_1.2.1.md) · [Post-release checklist](docs/RELEASE_CHECKLIST.md).
+[1.2.1 release notes](../docs/RELEASE_NOTES_1.2.1.md) · [Hardware and local test record](../docs/RELEASE_TEST_RESULTS_1.2.1.md) · [Post-release checklist](../docs/RELEASE_CHECKLIST.md).
 
 ## For developers
 
@@ -39,6 +39,6 @@ node --test tests/*.test.cjs
 python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
-Code changes should maintain source/dist parity, preserve the hardware-tested native Deck LB/RB path and Steam/non-Steam Game Info restoration, and distinguish hardware acceptance from simulated test results. See [Contributing](CONTRIBUTING.md), [Hardware test matrix](docs/VERIFIED_ON_DECK.md), and [Release checklist](docs/RELEASE_CHECKLIST.md).
+Code changes should maintain source/dist parity, preserve the hardware-tested native Deck LB/RB path and Steam/non-Steam Game Info restoration, and distinguish hardware acceptance from simulated test results. See [Contributing](../CONTRIBUTING.md), [Hardware test matrix](../docs/VERIFIED_ON_DECK.md), and [Release checklist](../docs/RELEASE_CHECKLIST.md).
 
 **Open issue:** Steam/non-Steam **Game Info descriptions scroll with an external controller's right stick**, but **not with the Steam Deck's built-in right stick** through tested 1.2.1; see [#8](https://github.com/ValentineBSAA/TitleDeck/issues/8).
