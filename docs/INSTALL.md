@@ -1,5 +1,5 @@
 # Install or update TitleDeck 1.4.0
-[← Home](../README.md) · [Release]( https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0 ) · [Troubleshooting](../SUPPORT.md)
+[← Home](../README.md) · [Release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0 ) · [Troubleshooting](../SUPPORT.md)
 
 ## Before you begin
 Use a Steam Deck running **Gaming Mode** with [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) installed. Back up your current TitleDeck settings if you have extensive local customizations.

@@ -1,5 +1,5 @@
 # TitleDeck 1.4.0 publication and verification
-[← Home](../README.md) · [Release]( https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0 ) · [Source notes](../SOURCE.md)
+[← Home](../README.md) · [Release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0 ) · [Source notes](../SOURCE.md)
 
 ## Verified installer and screenshots
 - [x] Published [TitleDeck 1.4.0](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0) with `TitleDeck-1.4.0.zip`.
