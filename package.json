@@ -1,13 +1,17 @@
 {
   "name": "titledeck",
-  "version": "1.2.2",
+  "version": "1.4.0",
   "private": true,
-  "description": "TitleDeck 1.2.2 Stable: controller-focusable GitHub developer branding in Quick Menu; retains 1.2.1 library editing and navigation.",
+  "description": "TitleDeck 1.4.0 Stable: Steam library customization, Typography Studio and read-only Art Hero placement status; native placement controls when Art Hero is disabled.",
   "type": "module",
   "license": "MIT",
   "author": "Valentine",
   "scripts": {
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "version:sync": "node scripts/sync-version.mjs",
+    "version:check": "node scripts/sync-version.mjs --check",
+    "build": "npm run version:sync && npm run version:check",
+    "release:zip": "python3 scripts/make-release.py"
   },
   "keywords": [
     "decky",
