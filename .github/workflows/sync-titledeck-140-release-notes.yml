@@ -1,0 +1,41 @@
+name: Keep TitleDeck 1.4.0 release notes in sync
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-titledeck-140-release-notes.yml'
+      - 'docs/RELEASE_NOTES_1.4.0.md'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update-release-notes:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare self-contained release notes with working GitHub links
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os,re,posixpath
+          from pathlib import Path
+          body=Path('docs/RELEASE_NOTES_1.4.0.md').read_text(encoding='utf-8')
+          root='https://github.com/ValentineBSAA/TitleDeck/blob/main/'
+          def fix(match):
+              url=match.group(2)
+              if url.startswith(('https://','http://','#','mailto:')):
+                  return match.group(0)
+              full=posixpath.normpath('docs/'+url)
+              return ']('+root+full+')'
+          body=re.sub(r'\]\(([^)]+)\)',lambda m: (']('+root+posixpath.normpath('docs/'+m.group(1))+')') if not m.group(1).startswith(('https://','http://','#','mailto:')) else m.group(0),body)
+          Path(os.environ['RUNNER_TEMP'],'titledeck-release-140.md').write_text(body,encoding='utf-8')
+          PY
+      - name: Update public GitHub Release text only (retain verified assets)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release edit 1.4.0 --repo ValentineBSAA/TitleDeck --title 'TitleDeck 1.4.0 Stable 🌸' --notes-file "$RUNNER_TEMP/titledeck-release-140.md"
