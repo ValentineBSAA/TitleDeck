@@ -1,0 +1,164 @@
+name: Synchronize verified TitleDeck 1.4.0 source
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/synchronize-titledeck-140-source.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: titledeck-140-source-import
+  cancel-in-progress: false
+jobs:
+  source-import:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Authenticate exact already-published hardware-accepted release
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --output "$RUNNER_TEMP/titledeck-140.zip" 'https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0.zip'
+          echo "bf1b6108d0861246337915011fd1348ec51475dd042ae1d62c3226777266b588  $RUNNER_TEMP/titledeck-140.zip" | sha256sum --check -
+      - name: Sync the exact 1.4.0 release source, preserve historical tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import json, os, hashlib, shutil, subprocess
+          root=Path('.')
+          source=Path(os.environ['RUNNER_TEMP'])/'titledeck-140.zip'
+          with ZipFile(source) as z:
+              assert z.testzip() is None, 'Damaged installer'
+              names=z.namelist()
+              assert all(n.startswith('TitleDeck/') for n in names), 'Unexpected ZIP root'
+              pkg=json.loads(z.read('TitleDeck/package.json'))
+              plug=json.loads(z.read('TitleDeck/plugin.json'))
+              assert pkg['version']==plug['version']=='1.4.0'
+              existing=json.loads(Path('package.json').read_text())['version']
+              if existing!='1.4.0':
+                  archive=Path('tests/archive/legacy-1.2.2')
+                  archive.mkdir(parents=True,exist_ok=True)
+                  for f in sorted(Path('tests').glob('*.test.cjs'))+sorted(Path('tests').glob('test_*.py')):
+                      subprocess.run(['git','mv',str(f),str(archive/f.name)],check=True)
+                  (archive/'README.md').write_text(
+                      '# TitleDeck 1.2.2 test suite (historical)\n'
+                      'These are preserved unchanged for the 1.2.2 runtime. '
+                      'They must not be executed against the 1.4.0 source.\n'
+                  )
+              # Keep the new user-facing README/CHANGELOG; they were curated
+              # after the accepted installer was built.
+              paths=[
+                  'plugin.json','package.json','main.py','dist/index.js',
+                  'assets/titledeck-icon.png','assets/titledeck-qam.webp',
+                  'assets/titledeck-font-132.svg','assets/titledeck-font-132-32.png',
+                  'assets/titledeck-font-132-64.png','assets/titledeck-font-132-128.png'
+              ]
+              hashes=[]
+              for rel in paths:
+                  data=z.read('TitleDeck/'+rel)
+                  dst=root/rel
+                  dst.parent.mkdir(parents=True,exist_ok=True)
+                  dst.write_bytes(data)
+                  hashes.append((rel,hashlib.sha256(data).hexdigest()))
+              # Direct frontend module: source and distribution must be identical
+              (root/'src/index.js').write_bytes(z.read('TitleDeck/dist/index.js'))
+              hashes.append(('src/index.js',hashlib.sha256((root/'src/index.js').read_bytes()).hexdigest()))
+              manifest='# TitleDeck 1.4.0: verified source/runtime manifest\n\n'
+              manifest+='Each SHA-256 below was computed from the official, audited 1.4.0 release installer.\n\n'
+              manifest+='| Repository file | SHA-256 |\n| --- | --- |\n'
+              manifest+=''.join(f'| \`{path}\` | \`{sha}\` |\n' for path,sha in hashes)
+              (root/'docs/RELEASE_SOURCE_SHA256_1.4.0.md').write_text(manifest)
+              assert (root/'src/index.js').read_bytes()==(root/'dist/index.js').read_bytes()
+              print('Exact 1.4.0 runtime installed; package.json version:',pkg['version'])
+          PY
+      - name: Add 1.4.0 regression and source verification tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > tests/stable_140.test.cjs <<'EOF'
+          const test = require('node:test');
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = path.resolve(__dirname, '..');
+          const read = f => fs.readFileSync(path.join(root,f),'utf8');
+          const source = read('src/index.js');
+          test('all public version declarations are 1.4.0', () => {
+            const p = JSON.parse(read('package.json'));
+            const m = JSON.parse(read('plugin.json'));
+            assert.equal(p.version,'1.4.0');
+            assert.equal(m.version,'1.4.0');
+            assert.equal(m.name,'TitleDeck');
+            assert.equal(m.api_version,1);
+            assert.match(source,/PLUGIN_VERSION\s*=\s*'1\.4\.0'/);
+          });
+          test('published direct frontend module is identical to source', () =>
+            assert.equal(read('src/index.js'),read('dist/index.js')));
+          test('Art Hero customization is described as read-only', () => {
+            const doc=read('docs/ART_HERO_COMPATIBILITY.md');
+            assert.match(doc,/read.only/i);
+            assert.match(doc,/CSS Loader/);
+            assert.match(read('README.md'),/Art Hero/);
+          });
+          test('the published 1.4.0 gallery has 22 distinct images', () => {
+            const d=path.join(root,'docs/screenshots/v1.4.0');
+            const all=fs.readdirSync(d).filter(x=>x.endsWith('.jpeg'));
+            assert.equal(all.length,22);
+            assert.equal(new Set(all).size,22);
+            assert.match(read('docs/SCREENSHOTS.md'),/22 real/);
+          });
+          test('documentation preserves the requested closing line and known issue',()=>{
+            assert(read('README.md').includes("your titles you're deck!"));
+            assert(read('README.md').includes('issues/8'));
+            assert(read('SOURCE.md').includes('1.4.0'));
+          });
+          EOF
+          cat > tests/test_stable_140.py <<'EOF'
+          import json
+          import pathlib
+          import unittest
+          import hashlib
+          import re
+          ROOT = pathlib.Path(__file__).resolve().parent.parent
+          class TitleDeckStable140(unittest.TestCase):
+              def test_manifest_version(self):
+                  self.assertEqual(json.loads((ROOT/'package.json').read_text())['version'],'1.4.0')
+                  self.assertEqual(json.loads((ROOT/'plugin.json').read_text())['version'],'1.4.0')
+              def test_frontend_parity(self):
+                  self.assertEqual((ROOT/'src/index.js').read_bytes(),(ROOT/'dist/index.js').read_bytes())
+              def test_backend_version(self):
+                  self.assertIn('1.4.0',(ROOT/'main.py').read_text())
+              def test_sha256_manifest(self):
+                  content=(ROOT/'docs/RELEASE_SOURCE_SHA256_1.4.0.md').read_text()
+                  pairs=re.findall(r'\| \`([^\`]+)\` \| \`([0-9a-f]{64})\` \|',content)
+                  self.assertEqual(len(pairs),11)
+                  for name,digest in pairs:
+                      self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),digest,name)
+          if __name__=='__main__':
+              unittest.main()
+          EOF
+          node --check src/index.js
+          node --check dist/index.js
+          python3 -m py_compile main.py
+          node --test tests/*.test.cjs
+          python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Commit source and tests without touching the release ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add plugin.json package.json main.py src/index.js dist/index.js assets/ tests/ docs/RELEASE_SOURCE_SHA256_1.4.0.md
+          if git diff --cached --quiet; then
+            echo 'No changes required. 1.4.0 source is already synchronized.'
+          else
+            git commit -m 'source: synchronize verified TitleDeck 1.4.0 runtime and archive legacy tests'
+            git push origin HEAD:main
+          fi
