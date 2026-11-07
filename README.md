@@ -1,83 +1,56 @@
-<p align="center"><img src="assets/titledeck-icon.png" width="128" alt="TitleDeck logo"></p>
+<p align="center"><img src="assets/titledeck-icon.png" width="118" alt="TitleDeck icon"></p>
 <h1 align="center">TitleDeck</h1>
-<p align="center"><strong>Your library. Your names. Your descriptions.</strong></p>
+<p align="center"><strong>Your library, with your personality.</strong></p>
 <p align="center">
-<a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2"><img alt="Latest release 1.2.2" src="https://img.shields.io/badge/release-1.2.2-brightgreen"></a>
-<img alt="Hardware tested" src="https://img.shields.io/badge/tested-physical%20Steam%20Deck-blue">
-<a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
+  <a href="https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0"><img src="https://img.shields.io/badge/stable-1.4.0-4caf85?style=flat-square" alt="Stable version 1.4.0"></a>
+  <img src="https://img.shields.io/badge/platform-Steam%20Deck-2d77ba?style=flat-square" alt="Steam Deck">
+  <img src="https://img.shields.io/badge/license-MIT-a8a8a8?style=flat-square" alt="MIT license">
+  <a href="https://github.com/ValentineBSAA/TitleDeck/issues"><img src="https://img.shields.io/github/issues/ValentineBSAA/TitleDeck?style=flat-square" alt="Issues"></a>
 </p>
 
-**TitleDeck** is a free, community-made [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin that gives you control over the **displayed names and Game Info descriptions** in your Steam Deck library. It works with Steam titles **and non-Steam shortcuts**, and its customizations are local and reversible. It does not modify installed game files or Valve's canonical metadata.
+**TitleDeck** is a free [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin for customizing how **Steam and non-Steam games** are presented in Steam Deck Gaming Mode. Rename their displayed titles, write your own Game Info descriptions, restore originals, and personalize Steam Home typography. Changes are local and reversible. Your game installations and Valve's original metadata are not rewritten.
 
-**[⬇ Download TitleDeck 1.2.2](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2)** · [🧭 Start here: beginner guide](docs/BEGINNER_GUIDE.md) · [🛠 Every feature](docs/FEATURES.md) · [📸 Full screenshot gallery](docs/SCREENSHOTS.md) · [❓ Troubleshooting](SUPPORT.md)
-
-> [!NOTE]
-> **Tested on a physical Steam Deck running SteamOS Gaming Mode.** The 1.1.8 release was tested with both the Steam Deck's built-in LB/RB buttons and a PS4 Bluetooth controller. Steam and non-Steam custom descriptions were verified after restarting the Deck. **Known limitation:** the Steam Deck's **built-in right stick** does not scroll custom text inside the **Game Info description area**, while an **external controller's right stick does scroll** both Steam and non-Steam Game Info descriptions. This does **not** prevent descriptions from appearing, saving or surviving restarts. [Tracked issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8). ROG Ally, other handhelds, Windows, Android/DroidDeck and Desktop Mode are not maintainer-verified.
+### Get started
+**[⬇️ Download TitleDeck 1.4.0](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0.zip)** · [Installation guide](docs/INSTALL.md) · [Beginner's guide](docs/BEGINNER_GUIDE.md) · [Release notes](docs/RELEASE_NOTES_1.4.0.md)
 
 > [!IMPORTANT]
-> **TitleDeck 1.2.2 Stable:** I added my personal GitHub avatar as a controller-focusable button in Quick Access, and I tested the link on my Steam Deck. It opens [my GitHub profile](https://github.com/ValentineBSAA). Everything from 1.2.1 carries forward, including STEAM-button title aliases, **Options (☰) → Edit with TitleDeck**, customizable context-menu placement and the **650 ms hold B/Circle** shortcut. [1.2.2 release notes](docs/RELEASE_NOTES_1.2.2.md) · [1.2.1 feature history](docs/RELEASE_NOTES_1.2.1.md) · [hardware testing](docs/VERIFIED_ON_DECK.md).
+> Install **`TitleDeck-1.4.0.zip`**, not the screenshot archive or GitHub's automatic source archive. Decky Loader → Settings → Developer → **Install Plugin from ZIP**. Existing local customizations should be preserved during an in-place upgrade; a backup is recommended.
 
-## A note from me 🌸
+![Customized Steam Home title using TitleDeck](docs/screenshots/v1.4.0/01-steam-home-custom-text-glow.jpeg)
 
-I started TitleDeck because I thought changing the names and descriptions shown in your own Steam library should be an option. The first idea came from the community, and other suggestions helped turn it into something much bigger than a simple renaming tool. I built it, tested it on my Steam Deck, and kept working through the rough edges because I wanted it to feel natural in Gaming Mode.
-
-With **1.2.2**, I've added my personal GitHub logo to the Quick Access panel. If you want to know who made TitleDeck or find my other projects, you can select it and go straight to [my GitHub profile](https://github.com/ValentineBSAA). It's a small signature, not an extra step to use the plugin.
-
-To everyone who's downloaded TitleDeck, tried it out, tested a build, reported a bug, or offered an idea: **thank you**. I really appreciate people giving something I've developed a chance, including those who simply use it without saying a word. [Read my 1.2.2 release note](docs/RELEASE_NOTES_1.2.2.md).
-
-## See it working on Steam Deck
-
-**These historical images are genuine TitleDeck 1.1.8 captures; 1.2.1's features and 1.2.2's new developer link are described above.** The two Game Info examples deliberately distinguish a Steam game from a non-Steam shortcut.
-
-| Steam game: Catherine Classic | Non-Steam game: Need for Speed Most Wanted 2005 |
-|:---:|:---:|
-| [![Catherine Classic with a saved custom Steam Game Info description](docs/screenshots/v1.1.8/10-steam-catherine-custom-game-info.jpeg)](docs/screenshots/v1.1.8/10-steam-catherine-custom-game-info.jpeg) | [![Need for Speed Most Wanted 2005 with side-by-side cover and non-Steam Game Info description](docs/screenshots/v1.1.8/13-nonsteam-most-wanted-custom-game-info.jpeg)](docs/screenshots/v1.1.8/13-nonsteam-most-wanted-custom-game-info.jpeg) |
-| **Steam Game Info:** replace the displayed description for a game you own on Steam. | **Non-Steam Game Info:** personalize imported games while keeping their cover and Steam Play / Proton details. |
-
-| Full Library Manager | Quick Access panel |
-|:---:|:---:|
-| [![Full Library Manager cards and controller navigation](docs/screenshots/v1.1.8/02-full-library-manager.jpeg)](docs/screenshots/v1.1.8/02-full-library-manager.jpeg) | [![TitleDeck Quick Access plugin panel](docs/screenshots/v1.1.8/01-quick-access.jpeg)](docs/screenshots/v1.1.8/01-quick-access.jpeg) |
-
-[**Browse all 23 screenshots, including the keyboard, both editors, search and every Settings page →**](docs/SCREENSHOTS.md)
-
-## What can TitleDeck do?
-
-| Feature | How it helps |
+## A more personal Steam library
+| Make it yours | What TitleDeck does |
 | --- | --- |
-| **Rename displayed game titles** | Use Steam's on-screen keyboard to give Steam or non-Steam entries a local custom title. |
-| **Suggest Cleanup** | Preview safer title formatting before you apply and explicitly save it. |
-| **Write custom descriptions** | Personalize the real **Game Info** page for both Steam and non-Steam games, with no old yellow character-length warnings or enforced advisory cap. |
-| **Choose description placement** | Pick **Game Info**, **Artwork Footer**, or **Below Play** inside TitleDeck Settings. |
-| **Restore originals safely** | Restore the original name and description for one entry, or just its description. Bulk restores include confirmation and recovery safeguards. |
-| **Use the full library grid** | Browse **All games / Installed / Renamed**, search by title or App ID, and select game artwork tiles. |
-| **Use your controllers** | **D-pad**, **A**, **B**, **LB/RB paging**, on-screen controls, and touch. Both built-in Deck and PS4 Bluetooth shoulder paging passed physical tests. |
-| **Get better cover art** | Steam artwork, custom grid images, local cache and fallback covers with attractive filled tile backgrounds. Unavailable art may display a placeholder. |
-| **Hide unwanted manager entries** | **Hide tile** removes clutter (such as ES-DE (Program)) from TitleDeck only. It never deletes a Steam shortcut; Settings restores hidden entries. |
-| **Personalize colors** | Wine Red styling, presets, visual hue/saturation picker, exact RGB/hex controls and controller navigation. |
-| **Back up and recover** | Save a backup, restore it, recover after Restore All, or review a bulk restore before confirming. |
+| **Titles & descriptions** | Edit locally displayed names and Game Info descriptions for Steam and non-Steam titles; restore originals. |
+| **Full Library Manager** | Browse, filter, search and manage entries with game artwork, focus-aware controls and LB/RB navigation. |
+| **Typography Studio** | Customize Home text using font-style presets, custom HEX/RGB colors, outlines, shadows, glow and readability previews. |
+| **Steam Home layout** | Position TitleDeck's own titles above or below cards when Art Hero is not active. |
+| **Safe recovery** | Backups, restoration, hidden-entry recovery and local configuration management. |
+| **Quick Access** | Open the manager and discover useful controls without leaving Gaming Mode. |
 
-## Install in Gaming Mode
+[Explore every feature](docs/FEATURES.md) · [See the **22 new 1.4.0 screenshots**](docs/SCREENSHOTS.md) · [Download the original organized screenshot archive](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0-Organized-Screenshots.zip)
 
-1. Install [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) on your Steam Deck if you have not already.
-2. Download **[TitleDeck-1.2.2-Stable.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.2.2/TitleDeck-1.2.2-Stable.zip)**. **Do not extract the plugin ZIP.**
-3. Open **Quick Access (•••) → Decky Loader (plug icon) → Decky Settings (gear) → Developer → Install Plugin from ZIP**. Select the downloaded ZIP. The wording may differ slightly with Decky versions.
-4. Go back to **Quick Access → Decky → TitleDeck → Open Full Library Manager**.
-5. Select a game to rename it or edit its description. **Save the change** and open the game's **Game Info** tab to see the description.
+## What's changed since 1.2.2?
+Version 1.2.2 introduced the developer profile shortcut and carried forward the essential editing features. The work that followed transformed the experience: refined manager navigation and artwork loading, redesigned Settings, richer typography and color controls, and safer coexistence with CSS Loader's Art Hero.
 
-**My developer logo:** In Quick Access, focus the **ValentineBSAA** button beneath **Open Full Library Manager** and press **A**, or tap it, to visit my GitHub profile. I confirmed it works on my Steam Deck in 1.2.2.
+**[Read the complete 1.2.2 → 1.4.0 comparison](docs/UPDATE_FROM_1.2.2.md)** for a feature-by-feature breakdown, the development journey, and what was deliberately left for later.
 
-**Not sure where Settings are?** Open **Full Library Manager → ⚙ Settings** to find backups, description placement, right-stick option, themes, hidden entries, and Restore All. See the [illustrated beginner guide](docs/BEGINNER_GUIDE.md).
+## Art Hero: designed to avoid conflicting controls
+When **CSS Loader → Art Hero** is enabled, Art Hero owns Steam Home title position. TitleDeck can show its **Carousel Font Height** and Above/Below indicator, but those controls are **read-only** in 1.4.0. Adjust Art Hero in **CSS Loader**, not TitleDeck. With Art Hero disabled, TitleDeck's own placement controls are available.
 
-## Controller quick reference
+This limitation is intentional: earlier experimental cross-plugin writes did not work reliably on physical hardware. [Why we made this choice](docs/ART_HERO_COMPATIBILITY.md)
 
-**D-pad:** browse · **A:** select · **B:** back · **LB/RB:** page Full Library Manager (Deck and PS4 confirmed) · **Touch:** tap and scroll · **Right stick:** scroll longer *TitleDeck manager/editor/settings workspaces* where supported. **In Game Info, an external controller's right stick works for both game types, but the Steam Deck's built-in right stick does not** ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)). See [input differences](docs/FEATURES.md#controller-controls-and-scrolling).
+## Tested, with honest limits
+The developer reports extensive physical Steam Deck testing of 1.4.0's accessible features. The exact released installer passed the packaging audit and matched the provided source; **79 JavaScript and five Python tests** passed locally. The installer and screenshot ZIP checksums were independently matched to GitHub release assets.
 
-## Community-made and reversible
+Known areas not claimed fixed: **built-in Deck right-stick scrolling** inside Game Info descriptions ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)); an earlier Quick Access focus quirk; custom font ZIP importing; and variations across CSS Loader themes. [Compatibility & test notes](docs/COMPATIBILITY.md) · [Support](SUPPORT.md)
 
-TitleDeck began with ideas shared by the Steam Deck community. **u/TacoOfGod** helped inspire the title-renaming feature, and **u/All-Stars64** suggested editable descriptions in **Game Info**, beside Community. I turned those ideas into a working plugin and continued improving it through testing and feedback. Thank you to everyone who's tried TitleDeck, helped test it, or pointed out something I could improve. These credits recognize community suggestions and testing, not code authorship.
+## Documentation
+[Install](docs/INSTALL.md) · [Start here](docs/BEGINNER_GUIDE.md) · [Features](docs/FEATURES.md) · [Gallery](docs/SCREENSHOTS.md) · [1.4.0 release notes](docs/RELEASE_NOTES_1.4.0.md) · [Changelog](CHANGELOG.md) · [Troubleshooting](SUPPORT.md) · [Source & verification](SOURCE.md) · [Roadmap](docs/ROADMAP.md) · [Contribute](CONTRIBUTING.md)
 
-## More information
+## Made with the community ❤️
+TitleDeck started with a simple request from Steam Deck users: **let me make my library look the way I want**. Every useful bug report, suggestion, test, download, and quiet moment of enjoyment has helped guide it forward. Thank you to the people who shared the original ideas for titles and descriptions, those who tested updates, and everyone who has given this project a place on their Deck.
 
-[Complete beginner guide](docs/BEGINNER_GUIDE.md) · [Feature reference](docs/FEATURES.md) · [1.2.2 release notes](docs/RELEASE_NOTES_1.2.2.md) · [1.2.1 history](docs/RELEASE_NOTES_1.2.1.md) · [Verified on Deck](docs/VERIFIED_ON_DECK.md) · [Compatibility](docs/COMPATIBILITY.md) · [Installation](docs/INSTALL.md) · [Changelog](CHANGELOG.md) · [Source and checksums](SOURCE.md) · [Contributing](CONTRIBUTING.md) · [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
+This is an independent, community-made plugin and is not affiliated with Valve. Released under the [MIT License](LICENSE).
 
-MIT licensed. Independent of Valve, Steam, Decky Loader and game publishers.
+<p align="center"><strong>your titles you're deck!</strong></p>

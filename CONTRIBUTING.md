@@ -1,26 +1,21 @@
 # Contributing to TitleDeck
+Thank you for using TitleDeck, sharing an idea, testing a release, or reporting a problem. Those contributions have shaped the project.
 
-Thanks for taking the time to try TitleDeck or help me improve it. I appreciate feedback, testing, and the suggestions that have shaped this plugin. It targets **physical Steam Deck / SteamOS Gaming Mode** with Decky Loader.
+## Help without writing code
+Try the current [1.4.0 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0), share reproducible bugs in [Issues](https://github.com/ValentineBSAA/TitleDeck/issues), or post suggestions and experiences in [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions). Please include SteamOS/Decky/CSS Loader versions and controller details when behavior depends on themes or input.
 
-## Start here
-- Read [Beginner guide](docs/BEGINNER_GUIDE.md) for feature behavior and Settings terminology.
-- Read [Feature reference](docs/FEATURES.md), [Compatibility](docs/COMPATIBILITY.md), and [Verified on Deck](docs/VERIFIED_ON_DECK.md).
-- Use [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) for reproducible bugs and [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) for ideas.
+## Code contributions
+TitleDeck is MIT licensed. Please open an issue or discussion for larger redesigns before investing extensive work. Keep changes focused, preserve existing local data and backward compatibility, and avoid claims of on-device validation based only on automated tests.
 
-## Development workflow
-- **Published stable is 1.2.2**. The source must match the payload of the published `TitleDeck-1.2.2-Stable.zip` asset before code changes are accepted. Verify source/build parity, manifest version, archived historical tests, and CI after synchronization.
-- Frontend checks: `node --test tests/*.test.cjs`.
-- Backend / documentation checks: `python3 -m unittest discover -s tests -p 'test_*.py'`.
-- Preserve `src/index.js` / `dist/index.js` byte parity within any release version; align backend and manifests with the exact intended ZIP.
-- Keep hardware observations separate from simulated checks. The maintainer has confirmed 1.1.8 custom descriptions after reboot and built-in/PS4 LB/RB paging, but **the Deck's built-in right stick still does not scroll custom Game Info descriptions**, while an external controller's right stick has worked in the tested cases.
-- Avoid broad Steam DOM or controller rewrites when fixing an isolated issue. Protect working restoration, custom artwork, Steam-native navigation and explicit saves.
-- TitleDeck must not modify installed executables, original Steam metadata, game sort identities, or delete hidden Steam shortcuts.
-- Keep developer diagnostics opt-in, not displayed in the public UI.
-- Provide screenshots with real version labels and clear source/device context.
+The **1.4.0 installer is published** but the default branch was still at 1.2.2 when the current docs were prepared; check [SOURCE.md](SOURCE.md) for synchronization status before basing a patch on `main`.
 
-## Before proposing a release
-- Verify game rename / Save, Steam and non-Steam descriptions, original restoration, LB/RB on actual Deck, TitleDeck manager right-stick, artwork and Settings.
-- Record any outstanding failure rather than overstating compatibility.
-- Follow [the current release checklist](docs/RELEASE_CHECKLIST.md) and [source integrity](SOURCE.md).
+For verified current source, expected checks include JavaScript tests, Python unittest discovery, version synchronization, syntax checks and installer/source comparison. The submitted 1.4.0 handoff passed **79 JavaScript / five Python** tests. Any code change affecting runtime should be checked on a real Steam Deck before a stable release.
 
-MIT licensed. Special thanks to **u/TacoOfGod** and **u/All-Stars64** for the early feature ideas. Thanks as well to everyone who's downloaded, tested, or taken the time to share a suggestion. It really does help.
+## Project principles
+- Keep local customization **reversible**; never rewrite installed game files or official Steam metadata.
+- Favor Deck controller navigation and legible interfaces over decorative complexity.
+- Respect theme ownership: TitleDeck must not pretend to control Art Hero's placement.
+- Report known limitations plainly and preserve historical release documentation.
+- Keep feedback welcoming and focused on what works or can be reproduced.
+
+**your titles you're deck!**

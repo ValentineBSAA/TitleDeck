@@ -1,0 +1,60 @@
+name: Import verified TitleDeck 1.4.0 screenshots
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-titledeck-140-gallery.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-gallery:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and authenticate maintainer's organized screenshot ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/titledeck-140-screenshots.zip" 'https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0-Organized-Screenshots.zip'
+          echo '4024f292b7f91092de9a43f1900a79062efb2be55edd28cc92c41ba3509a3c69  '"$RUNNER_TEMP/titledeck-140-screenshots.zip" | sha256sum --check -
+      - name: Import only the 22 original screenshots, retaining all older galleries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          from pathlib import Path
+          import os
+          source=Path(os.environ['RUNNER_TEMP'])/'titledeck-140-screenshots.zip'
+          dest=Path('docs/screenshots/v1.4.0')
+          dest.mkdir(parents=True,exist_ok=True)
+          with ZipFile(source) as zip:
+              items=[]
+              for f in zip.infolist():
+                  name=f.filename
+                  if name.endswith('.jpeg') and (name.startswith('01_Featured_GitHub_Gallery/') or name.startswith('02_Additional_Reference/')):
+                      assert '/' not in name.rsplit('/',1)[-1]
+                      items.append(f)
+              assert len(items)==22, f'Expected 22 screenshots, got {len(items)}'
+              assert len({p.filename.rsplit('/',1)[-1] for p in items})==22
+              for f in items:
+                  (dest/f.filename.rsplit('/',1)[-1]).write_bytes(zip.read(f))
+          print('Imported',len(items),'original screenshots into',dest)
+          PY
+      - name: Commit 1.4.0 gallery to GitHub
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/screenshots/v1.4.0/
+          if git diff --cached --quiet; then
+            echo 'All screenshots already present.'
+          else
+            git commit -m 'docs: add 22 verified TitleDeck 1.4.0 screenshots'
+            git push origin HEAD:main
+          fi

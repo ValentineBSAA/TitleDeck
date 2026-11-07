@@ -1,18 +1,8 @@
-# Screenshot maintenance: historical 1.1.8 gallery (current plugin 1.2.2)
+# TitleDeck screenshots and versioned galleries
+The current **1.4.0 gallery** is [SCREENSHOTS.md](SCREENSHOTS.md). It uses **22** genuine 1920×1080 images from the maintainer's `TitleDeck-1.4.0-Organized-Screenshots.zip`, which includes 12 featured captures, 10 additional reference captures and manifests/captions.
 
-The 23 **historical 1.1.8** screenshots retained in the current gallery were supplied as a maintainer ZIP with SHA-256 `44fe0ed371c71ff241c0a30178320c9045e8c77eed10bda0f6a4bae92454eced`.
+Original archive: [download](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0-Organized-Screenshots.zip). Expected SHA-256: `4024f292b7f91092de9a43f1900a79062efb2be55edd28cc92c41ba3509a3c69`.
 
-The public documentation references **individual JPEGs**, stored in `docs/screenshots/v1.1.8/`. A screenshot ZIP is *not* a Decky plugin installer.
+The gallery uses version-scoped image paths under `docs/screenshots/v1.4.0/`. Do not replace older screenshots with newer images; maintain historic galleries by version. Do not check `__MACOSX` metadata or duplicates into the repo. Images should be authentic and not mislabel historical UI as 1.4.0.
 
-When making a future gallery update:
-1. Check captures belong to the version being documented.
-2. Extract the images and exclude `__MACOSX` metadata.
-3. Keep the real original captures (avoid invented or mislabeled screenshots).
-4. Give images stable descriptive filenames and link from the README and gallery.
-5. Keep Steam and non-Steam Game Info screenshots clearly distinguished.
-6. Preserve older screenshot folders and public-release history.
-7. Update the public guide to match the actual settings controls and hardware test status.
-
-New 1.2.2 logo-button screenshots should come from an actual Steam Deck; I won't relabel older captures as 1.2.2. Thanks to everyone helping test and document TitleDeck.
-
-[Current gallery](SCREENSHOTS.md) · [Beginner guide](BEGINNER_GUIDE.md)
+The automated import workflow `.github/workflows/import-titledeck-140-gallery.yml` validates the official release archive digest and imports **only** the 22 actual JPEG images into the versioned directory.

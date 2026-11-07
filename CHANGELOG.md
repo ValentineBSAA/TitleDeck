@@ -1,5 +1,19 @@
 # TitleDeck changelog
 
+## 1.4.0 — Published stable release (November 7, 2026)
+
+**A substantial upgrade from public 1.2.2.** Refined Full Library Manager and artwork loading; reorganized Settings and controller navigation; expanded color controls into a Typography Studio with ten font-style treatments, shadows, outlines, glow and contrast guidance; refined Quick Access presentation.
+
+Art Hero's Carousel Font Height is now **shown read-only** when Art Hero is active. Earlier experimental write attempts (1.3.7–1.3.9) were not reliable on physical hardware, so the visible controls are deliberately disabled. When Art Hero is off, TitleDeck keeps its own Above/Below placement and saved offsets.
+
+**Verification:** Extensive physical Deck testing reported by the maintainer; 79 passing JavaScript and five Python tests; exact 13/13 installer/source parity and verified release asset digests. The existing built-in right-stick Game Info issue #8 and prior Quick Access focus quirk are not presented as fixed.
+
+**Community:** Thank you for the suggestions, testing, bug reports and encouragement that guided these changes. [Release notes](docs/RELEASE_NOTES_1.4.0.md) · [From 1.2.2 to 1.4.0](docs/UPDATE_FROM_1.2.2.md) · [Screenshots](docs/SCREENSHOTS.md).
+
+**your titles you're deck!**
+
+---
+
 ## 1.2.2 — Published stable release (November 5, 2026)
 
 - I added my personal **ValentineBSAA GitHub avatar** as a controller-focusable button in Quick Access. It's a small, optional way to find me and my other projects.
@@ -257,5 +271,3 @@ Device verification needed: real Steam library badge injection and controller mo
 - Preserved the working rename/restore engine, controller library, persisted settings, recovery safeguards and approved TD icon.
 
 **Steam Deck acceptance still required:** Settings/scroll behavior under CSS Loader, actual on-screen native badges, and notifications in Gaming Mode. Badge success is not guaranteed on every Steam UI release.
-
-
