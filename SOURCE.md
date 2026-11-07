@@ -1,17 +1,17 @@
-# TitleDeck source, license and release provenance
-[← Home](README.md) · [1.4.0 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0) · [Installation](docs/INSTALL.md)
+# TitleDeck 1.4.0: source and verified release
 
-TitleDeck is licensed under [MIT](LICENSE). Its gameplay-free editing logic is local: it customizes displayed Steam Deck titles and descriptions without rewriting game installations or Valve's canonical metadata. In `package.json`, `"private": true` means **do not publish to npm**; it does not override MIT licensing.
+[← Home](README.md) · [1.4.0 release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0) · [Build and verification](docs/BUILD_AND_VERIFICATION.md)
 
-## Stable release assets
-- **Installer:** [TitleDeck-1.4.0.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0.zip) (SHA-256 `bf1b6108d0861246337915011fd1348ec51475dd042ae1d62c3226777266b588`).
-- **Screenshot archive:** [TitleDeck-1.4.0-Organized-Screenshots.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0-Organized-Screenshots.zip) (SHA-256 `4024f292b7f91092de9a43f1900a79062efb2be55edd28cc92c41ba3509a3c69`).
-- **Historical installer:** [1.2.2 Stable](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.2.2).
+The **main branch now contains the exact 1.4.0 runtime and assets** from the accepted installer: `plugin.json`, `package.json`, `main.py`, `src/index.js` and `dist/index.js`, plus all supported font and icon assets. Binary source/runtime file hashes are recorded in [the manifest](docs/RELEASE_SOURCE_SHA256_1.4.0.md). The 1.2.2 test suite is preserved under `tests/archive/legacy-1.2.2/`, not run against the new runtime.
 
-The release installer contains the 1.4.0 `main.py`, compiled front end, manifests and runtime assets. The maintainer supplied a separate 1.4.0 source archive that was audited against it: **13/13** installed files match the corresponding source, and **79 JS / five Python** tests passed.
+The original **[TitleDeck-1.4.0.zip](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0.zip)** is the device-tested installation package (SHA-256 `bf1b6108d0861246337915011fd1348ec51475dd042ae1d62c3226777266b588`). The [22-image gallery archive](https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0-Organized-Screenshots.zip) has SHA-256 `4024f292b7f91092de9a43f1900a79062efb2be55edd28cc92c41ba3509a3c69`.
 
-> [!IMPORTANT]
-> **Repository synchronization note:** The publicly checked-out `main` branch was still based on 1.2.2 when 1.4.0 release assets were published. Until the full 1.4.0 source and tests have been synchronized to the branch and verified in CI, do not use `git clone main` as proof of exact 1.4.0 source parity. This is a documentation/source-tracking issue, **not** a failure of the verified installer ZIP. The release asset is the installation source of truth.
+The developer's original handoff-source archive passed **79 JavaScript and five Python tests** locally before publication. The repository includes new 1.4.0 CI checks and selected read-only Art Hero regression tests, plus an archive of 1.2.2 tests. The count from the handoff should not be represented as the number of repository CI tests.
 
-## Contributing and reproducibility
-Follow [CONTRIBUTING.md](CONTRIBUTING.md). For features and known limitations consult [1.4.0 release notes](docs/RELEASE_NOTES_1.4.0.md) and [hardware record](docs/VERIFIED_ON_DECK.md). Historical 1.2.2 source documentation is preserved at [docs/SOURCE_1.2.2_ARCHIVE.md](docs/SOURCE_1.2.2_ARCHIVE.md).
+A checkout of `main` therefore includes the same *runtime* as the tested 1.4.0 installer; repository Markdown, build scripts and test layout can differ from the handoff's older documentation snapshot. Rebuilding an installer from a repository checkout may generate a different ZIP checksum because the README and changelog were enhanced after device acceptance. **Do not substitute a rebuilt ZIP for the original verified download without retesting.**
+
+TitleDeck is licensed under [MIT](LICENSE). The npm `"private": true` field prevents accidental npm publication; it is not a proprietary-license restriction.
+
+[Reproduction instructions](docs/BUILD_AND_VERIFICATION.md) · [Hardware acceptance](docs/VERIFIED_ON_DECK.md) · [Historical 1.2.2 provenance](docs/SOURCE_1.2.2_ARCHIVE.md).
+
+**your titles you're deck!**

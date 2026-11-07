@@ -1,22 +1,20 @@
-# TitleDeck 1.4.0 publication and verification
-[← Home](../README.md) · [Release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0 ) · [Source notes](../SOURCE.md)
+# TitleDeck 1.4.0: publication and acceptance record
 
-## Verified installer and screenshots
-- [x] Published [TitleDeck 1.4.0](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0) with `TitleDeck-1.4.0.zip`.
-- [x] Verified the published installer SHA-256: `bf1b6108d0861246337915011fd1348ec51475dd042ae1d62c3226777266b588`.
-- [x] Published organized screenshot archive with **22** actual 1920×1080 images and no duplicate captures.
-- [x] Screenshot archive SHA-256: `4024f292b7f91092de9a43f1900a79062efb2be55edd28cc92c41ba3509a3c69`.
-- [x] Provided 1.4.0 installer matches every one of the **13** corresponding source files.
-- [x] Provided source passed **79 JavaScript / five Python** tests, syntax and version checks.
-- [x] Maintainer reports physical Deck acceptance of all accessible features with Art Hero read-only limitation.
-- [x] Known controller and Art Hero limitations documented.
+[← Home](../README.md) · [Release](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0) · [Source](../SOURCE.md)
 
-## Provenance caveat
-The 1.4.0 release assets are verified against the original handoff. The GitHub **default branch was still 1.2.2 at the time this documentation update was prepared**. Do not claim that a GitHub source checkout matches the 1.4.0 payload until it has actually been synchronized and verified. The installable ZIP itself contains 1.4.0.
+## Publication and integrity
+- [x] Exact hardware-accepted installer `TitleDeck-1.4.0.zip` published; SHA-256: `bf1b6108d0861246337915011fd1348ec51475dd042ae1d62c3226777266b588`.
+- [x] User-organized screenshot ZIP published; SHA-256: `4024f292b7f91092de9a43f1900a79062efb2be55edd28cc92c41ba3509a3c69`.
+- [x] All 22 screenshots imported individually, 12 featured and ten supporting, without duplicates.
+- [x] Installer checks compared 13 files to the original handoff source; exact parity passed.
+- [x] Source ZIP regression suite passed 79 JavaScript and five Python tests locally.
+- [x] Maintainer reports extensive physical Steam Deck testing, accepting Art Hero read-only limitations.
+- [x] Repository synchronized with official installer: both manifests, backend, frontend, direct dist module, and font/icon assets.
+- [x] Older 1.2.2 tests preserved separately in a historical archive.
+- [x] Fresh 1.4.0 CI, source hashes and package scripts included.
+- [x] Art Hero, built-in Game Info right-stick issue #8 and older Quick Access focus caveats documented.
 
-## What remains to verify in future changes
-- [ ] Reconcile the complete public default-branch runtime source and test suite with the accepted 1.4.0 source tree.
-- [ ] Continue tracking right-stick Game Info scrolling issue #8 and controller-focus reports separately.
-- [ ] Recheck compatibility after major SteamOS, CSS Loader or Decky Loader changes.
+## Testing policy
+The original 79/5 tests were run against the developer's full source handoff, not the legacy main branch. GitHub CI covers the checked-in 1.4.0 source and release checks. All device-specific behavior must still be validated on physical hardware after future changes. The original installer should not be replaced by a newly rebuilt ZIP without retesting.
 
-[Historical 1.2.2 release checklist](HISTORICAL_RELEASE_CHECKLIST_1.2.2.md).
+[Build guide](BUILD_AND_VERIFICATION.md) · [Art Hero](ART_HERO_COMPATIBILITY.md) · [Screenshots](SCREENSHOTS.md) · [Historical checklist](HISTORICAL_RELEASE_CHECKLIST_1.2.2.md).

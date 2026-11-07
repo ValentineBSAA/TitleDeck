@@ -1,4 +1,4 @@
-name: TitleDeck checks
+name: TitleDeck 1.4.0 checks
 on:
   push:
     branches: [main]
@@ -7,12 +7,15 @@ on:
       - 'src/**'
       - 'dist/**'
       - 'tests/**'
+      - 'scripts/**'
+      - 'assets/**'
       - 'plugin.json'
       - 'package.json'
       - 'README.md'
       - 'SOURCE.md'
       - 'CHANGELOG.md'
       - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/workflows/validate.yml'
@@ -22,21 +25,19 @@ on:
       - 'src/**'
       - 'dist/**'
       - 'tests/**'
+      - 'scripts/**'
       - 'plugin.json'
       - 'package.json'
       - 'README.md'
       - 'SOURCE.md'
-      - 'CHANGELOG.md'
-      - 'CONTRIBUTING.md'
       - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
       - '.github/workflows/validate.yml'
 permissions:
   contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
-    name: Frontend / backend / manifest
+    name: Tests / source parity / manifest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,20 +46,35 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Frontend tests
-        run: node --test --test-force-exit tests/*.test.cjs
-      - name: Backend tests
-        run: python3 -m unittest discover -s tests -p 'test_*.py'
-      - name: Check Decky version and bundle
+      - name: Verify synchronized version
+        run: npm run version:check
+      - name: JavaScript syntax and regression tests
         run: |
+          node --check src/index.js
+          node --check dist/index.js
+          node --test --test-force-exit tests/*.test.cjs
+      - name: Python syntax and regression tests
+        run: |
+          python3 -m py_compile main.py
+          python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Verify checked-in source against the published 1.4.0 runtime hashes
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 - <<'PY'
-          import json
           from pathlib import Path
-          a=json.loads(Path('plugin.json').read_text())
-          b=json.loads(Path('package.json').read_text())
-          assert a['name']=='TitleDeck' and a['api_version']==1
-          assert a['version']==b['version']
-          assert Path('src/index.js').read_bytes()==Path('dist/index.js').read_bytes()
-          assert Path(a['publish']['image']).is_file()
-          print('Validated TitleDeck',a['version'])
+          import hashlib,re,json
+          src=Path('src/index.js').read_bytes()
+          assert src==Path('dist/index.js').read_bytes()
+          p=json.loads(Path('package.json').read_text())
+          m=json.loads(Path('plugin.json').read_text())
+          assert p['version']==m['version']=='1.4.0'
+          assert m['name']=='TitleDeck' and m['api_version']==1
+          assert Path(m['publish']['image']).is_file()
+          content=Path('docs/RELEASE_SOURCE_SHA256_1.4.0.md').read_text()
+          pairs=re.findall(r'\| `([^`]+)` \| `([0-9a-f]{64})` \|',content)
+          assert len(pairs)==11, f'Expected 11 release runtime hashes, got {len(pairs)}'
+          for name,digest in pairs:
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
+          print('Verified 1.4.0 runtime: 11 matching SHA-256 entries')
           PY

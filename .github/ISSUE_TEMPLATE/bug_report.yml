@@ -1,58 +1,57 @@
 name: Bug report
-description: Report TitleDeck behavior on Steam Deck or another clearly identified test platform
+description: Report a reproducible TitleDeck 1.4.0 issue with your device and theme details
 title: "[Bug] "
 labels: []
 body:
   - type: markdown
     attributes:
-      value: "TitleDeck's primary tested platform is a physical Steam Deck in SteamOS Gaming Mode. As of October 28, 2026, TitleDeck 1.2.1 is the published stable release. Please include the exact version from your Quick Access badge, SteamOS version, game type and controller used. Please do not upload credentials or Steam Guard codes."
+      value: "Thank you for helping improve TitleDeck! The current public stable is 1.4.0. It is designed for Steam Deck Gaming Mode; other setups are not universally verified. Do not post Steam Guard codes, passwords or account tokens."
   - type: input
     id: version
     attributes:
       label: TitleDeck version
-      placeholder: "e.g. 1.2.1 stable"
+      placeholder: "1.4.0"
     validations:
       required: true
   - type: dropdown
     id: hardware
     attributes:
-      label: Test hardware
+      label: Hardware
       options:
         - Steam Deck OLED
         - Steam Deck LCD
-        - ROG Ally / other handheld
+        - Other handheld
         - Desktop / laptop
-        - Android / DroidDeck
         - Other (describe)
     validations:
       required: true
   - type: input
     id: system
     attributes:
-      label: SteamOS / Steam client / Decky / CSS theme
-      placeholder: "Include update channel and theme, if present"
+      label: SteamOS, Decky Loader and CSS Loader versions
+      placeholder: "Include update channel and Art Hero version if installed"
     validations:
       required: true
   - type: input
     id: controller
     attributes:
-      label: Input device
-      placeholder: "Built-in Steam Deck buttons, PS4 Bluetooth, touchscreen, etc."
+      label: Controller or input device
+      placeholder: "Built-in controls, PS4 Bluetooth, touchscreen, etc."
   - type: dropdown
     id: feature
     attributes:
       label: Affected feature
       options:
-        - Steam Game Info custom description
-        - Non-Steam Game Info custom description
-        - Game Info right-stick scrolling
-        - Full Library Manager scrolling
-        - LB/RB physical paging or D-pad
-        - Library artwork / image sizing
-        - Hide tile / restore hidden entries
-        - Title renaming / Save / Suggest Cleanup
-        - Restore Original / backup
-        - Keyboard or UI theme
+        - Full Library Manager / navigation
+        - Game title rename or restore
+        - Game Info description
+        - Game Info right-stick scrolling (issue #8)
+        - Artwork loading / placeholders
+        - Typography Studio / font or color
+        - Steam Home Above / Below Cards
+        - CSS Loader Art Hero read-only compatibility
+        - Quick Access controller focus
+        - Backup / recovery / hidden entries
         - Other
     validations:
       required: true
@@ -60,7 +59,7 @@ body:
     id: steps
     attributes:
       label: Steps to reproduce
-      description: Include the game name, App ID if known, and the exact actions/buttons.
+      description: Give the game and exact sequence of buttons/settings involved.
     validations:
       required: true
   - type: textarea
@@ -72,10 +71,11 @@ body:
   - type: textarea
     id: actual
     attributes:
-      label: Actual behavior
+      label: What happened instead
     validations:
       required: true
   - type: textarea
     id: notes
     attributes:
-      label: Screenshots / other details
+      label: Screenshots, extra details and theme interaction
+      description: Note that Art Hero placement buttons are intentionally read-only while Art Hero is active.

@@ -1,11 +1,13 @@
-# TitleDeck security policy
+# TitleDeck 1.4.0 security policy
 
-TitleDeck **1.2.2 Stable** is an independently developed Decky Loader plugin for Steam Deck Gaming Mode. There is no formal bug bounty or response-time guarantee.
+TitleDeck is a community-made Decky Loader plugin for Steam Deck Gaming Mode, licensed under MIT. There is no formal bug bounty or response-time guarantee.
 
-Please never share passwords, Steam Guard codes, account tokens, session secrets or private device information publicly. Use GitHub's private vulnerability reporting if it is enabled, or contact the maintainer privately for security-sensitive concerns.
+**Never post** Steam Guard codes, passwords, cookies, account/session tokens, private filesystem exports, or sensitive device information in public issues. For security-sensitive reports, use GitHub private vulnerability reporting if available or contact the maintainer privately.
 
-TitleDeck should not ask for Steam credentials, modify game installation files, or overwrite canonical Steam metadata. User changes are local display-title and description overrides, reversible by Restore Original Game. Developer/debug diagnostics are hidden from normal Quick Access use. The new **ValentineBSAA** profile-logo button opens the public developer GitHub page; it is not an authentication prompt.
+TitleDeck customization is local. It should not request your Steam credentials, change game executables or overwrite Valve's canonical metadata. The optional developer avatar links to a public GitHub page; it is not an authentication prompt.
 
-ROG Ally, other SteamOS-like handhelds, Steam Desktop Mode, Windows and Android/DroidDeck are **unverified**. Third-party Decky plugin compatibility is not guaranteed. See [Compatibility](docs/COMPATIBILITY.md).
+In 1.4.0 the Art Hero integration is **read-only**. Its CSS Loader adapter rejects write operations to the Art Hero theme while keeping TitleDeck's own placement controls available when Art Hero is off.
 
-For ordinary bugs, use [Issues](https://github.com/ValentineBSAA/TitleDeck/issues).
+Steam Deck Gaming Mode is the primary verified platform. Other handhelds, desktop setups, and third-party CSS Loader theme combinations have not received universal hardware acceptance.
+
+[Compatibility](docs/COMPATIBILITY.md) · [Ordinary bug reports](https://github.com/ValentineBSAA/TitleDeck/issues) · [Source and verification](SOURCE.md).
