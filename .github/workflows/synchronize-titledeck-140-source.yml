@@ -73,7 +73,7 @@ jobs:
               manifest='# TitleDeck 1.4.0: verified source/runtime manifest\n\n'
               manifest+='Each SHA-256 below was computed from the official, audited 1.4.0 release installer.\n\n'
               manifest+='| Repository file | SHA-256 |\n| --- | --- |\n'
-              manifest+=''.join(f'| \`{path}\` | \`{sha}\` |\n' for path,sha in hashes)
+              manifest+=''.join(f'| `{path}` | `{sha}` |\n' for path,sha in hashes)
               (root/'docs/RELEASE_SOURCE_SHA256_1.4.0.md').write_text(manifest)
               assert (root/'src/index.js').read_bytes()==(root/'dist/index.js').read_bytes()
               print('Exact 1.4.0 runtime installed; package.json version:',pkg['version'])
@@ -137,7 +137,7 @@ jobs:
                   self.assertIn('1.4.0',(ROOT/'main.py').read_text())
               def test_sha256_manifest(self):
                   content=(ROOT/'docs/RELEASE_SOURCE_SHA256_1.4.0.md').read_text()
-                  pairs=re.findall(r'\| \`([^\`]+)\` \| \`([0-9a-f]{64})\` \|',content)
+                  pairs=re.findall(r'\| `([^`]+)` \| `([0-9a-f]{64})` \|',content)
                   self.assertEqual(len(pairs),11)
                   for name,digest in pairs:
                       self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),digest,name)
