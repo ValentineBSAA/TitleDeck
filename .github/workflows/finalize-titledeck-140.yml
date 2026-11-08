@@ -1,0 +1,56 @@
+name: Finalize TitleDeck 1.4.0 release source and tag
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finalize-titledeck-140.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: finalize-titledeck-140
+  cancel-in-progress: false
+jobs:
+  finalize:
+    if: github.repository == 'ValentineBSAA/TitleDeck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate release source and build auditable source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run version:check
+          node --check src/index.js
+          python3 -m py_compile main.py
+          npm run release:zip
+      - name: Verify unchanged physical Steam Deck accepted installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --output "$RUNNER_TEMP/titledeck-official-140.zip" 'https://github.com/ValentineBSAA/TitleDeck/releases/download/1.4.0/TitleDeck-1.4.0.zip'
+          echo "bf1b6108d0861246337915011fd1348ec51475dd042ae1d62c3226777266b588  $RUNNER_TEMP/titledeck-official-140.zip" | sha256sum --check -
+      - name: Publish complete repository source ZIP and align 1.4.0 tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_zip="$GITHUB_WORKSPACE/../TitleDeck-1.4.0-Repository-Source.zip"
+          test -s "$source_zip"
+          gh release upload 1.4.0 "$source_zip" --clobber --repo 'ValentineBSAA/TitleDeck'
+          current_type="$(gh api 'repos/ValentineBSAA/TitleDeck/git/ref/tags/1.4.0' --jq '.object.type')"
+          if [ "$current_type" = 'commit' ]; then
+            gh api --method PATCH 'repos/ValentineBSAA/TitleDeck/git/refs/tags/1.4.0' -f sha="$GITHUB_SHA" -F force=true > /dev/null
+          else
+            echo "::error::Expected lightweight version tag. Found $current_type; tag was not moved."
+            exit 1
+          fi
+          echo '1.4.0 tag now points to audited source commit:' "$GITHUB_SHA"
+          gh release view 1.4.0 --repo ValentineBSAA/TitleDeck --json tagName,assets --jq '{tagName: .tagName, assets: [.assets[].name]}'

@@ -1,21 +1,24 @@
-# TitleDeck roadmap
-[← Home](../README.md) · [Current release](RELEASE_NOTES_1.4.0.md) · [Report an issue](https://github.com/ValentineBSAA/TitleDeck/issues)
+# TitleDeck roadmap and release history
 
-### Completed in 1.4.0
-- [x] Refine the Full Library Manager and artwork loading behavior.
-- [x] Improve settings structure and controller focus/navigation.
-- [x] Expand the color editor into a complete Typography Studio with font styles and text effects.
-- [x] Provide contrast guidance and light/dark examples without rewriting chosen colors.
-- [x] Separate native Steam Home title placement from Art Hero-owned positioning.
-- [x] Make Art Hero placement **read-only** in TitleDeck after unsuccessful experimental writes.
-- [x] Hardware acceptance reported for 1.4.0 accessible features.
-- [x] Publish verified installer and new 22-image screenshot archive.
+[← Home](../README.md) · [Current release](RELEASE_NOTES_1.4.0.md) · [Archive index](ARCHIVE_INDEX.md)
 
-### Later, not promised for 1.4.0
-- [ ] Investigate built-in Steam Deck right-stick Game Info scrolling ([#8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
-- [ ] Revisit controller focus edge cases as reproducible reports arrive.
-- [ ] Evaluate custom font importing only if it can be reliable and maintainable.
-- [ ] Revisit Art Hero control only if there is a supported, verifiable integration path.
-- [ ] Reconcile full GitHub main-branch source and tests with the accepted 1.4.0 release package.
+## Completed in 1.4.0
+- [x] Improve Full Library Manager artwork loading, navigation and settings organization.
+- [x] Expand Home text color controls into Typography Studio with font-style presets, outlines, glow and shadows.
+- [x] Keep contrast previews informative rather than claiming pixel-accurate Steam Home geometry.
+- [x] Define safe Art Hero ownership: read Carousel Font Height, do not write to active CSS Loader theme settings.
+- [x] Preserve Steam and non-Steam title editing, description overrides, local backup and recovery.
+- [x] Verify and publish the exact device-accepted installer.
+- [x] Organize all 22 original release screenshots and preserve prior galleries.
+- [x] Synchronize the public GitHub source/runtime to the published 1.4.0 installer, retaining earlier tests as history.
 
-The older [1.2.2 roadmap](ROADMAP_1.2.2_ARCHIVE.md) is preserved for release history. Future priorities are guided by real user needs and tested behavior, not an arbitrary feature count.
+## Deferred for later
+- [ ] Investigate built-in Steam Deck right-stick scrolling in Game Info ([issue #8](https://github.com/ValentineBSAA/TitleDeck/issues/8)).
+- [ ] Re-evaluate reproducible Quick Access focus quirks as reports arrive.
+- [ ] Evaluate custom external font importing if it can be supported safely.
+- [ ] Revisit changing Art Hero placement only if a reliably verified integration is available.
+- [ ] Re-check SteamOS / Decky / CSS Loader compatibility after ecosystem updates.
+
+Older roadmap snapshots live in [the historical archive](ROADMAP_1.2.2_ARCHIVE.md). No dates are promised for deferred work.
+
+**your titles you're deck!**
