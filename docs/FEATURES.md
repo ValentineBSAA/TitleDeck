@@ -19,4 +19,4 @@ Open the manager quickly from Decky, access display options and follow the devel
 ## What to know
 This plugin targets **Steam Deck Gaming Mode with Decky Loader**. Theme interactions vary. The built-in Deck stick Game Info scrolling issue remains open ([#8](https://github.com/ValentineBSAA/TitleDeck/issues/8)); an earlier Quick Access focus quirk is not listed as resolved.
 
-[Install](INSTALL.md) · [Support](../SUPPORT.md) · [1.2.2 historical feature reference](FEATURES_1.2.2_ARCHIVE.md)
+[Install](INSTALL.md) · [Support](../SUPPORT.md) · [Share your experience](FEEDBACK.md) · [1.2.2 historical feature reference](FEATURES_1.2.2_ARCHIVE.md)
