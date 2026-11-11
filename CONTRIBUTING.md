@@ -5,6 +5,9 @@ Thank you for using TitleDeck, suggesting features, reporting problems, or helpi
 ## Getting started
 Use [TitleDeck 1.4.0](https://github.com/ValentineBSAA/TitleDeck/releases/tag/1.4.0) and read the [beginner guide](docs/BEGINNER_GUIDE.md), [current features](docs/FEATURES.md), and [compatibility details](docs/COMPATIBILITY.md). Post usage questions in [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) and reproducible bugs in [Issues](https://github.com/ValentineBSAA/TitleDeck/issues).
 
+## You can help without writing code
+If TitleDeck works well on your Deck, **that is useful feedback too**. [Share a screenshot, describe your setup, or tell us what you enjoy](docs/FEEDBACK.md) in [GitHub Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions). Ideas and questions are welcome; use [Issues](https://github.com/ValentineBSAA/TitleDeck/issues/new/choose) for reproducible bugs and focused feature requests. Avoid posting personal account information or private library details.
+
 ## Source and tests
 The public `main` branch now contains the **exact installed 1.4.0 backend/frontend and theme assets**, synchronized from the SHA-256 verified official installer. Run:
 
@@ -26,4 +29,4 @@ For complete packaging and provenance instructions see [Build and verification](
 
 Large changes are welcome as proposals first, with implementation and testing once the behavior is agreed upon.
 
-**your titles you're deck!**
+**Your Titles. Your Deck!**
