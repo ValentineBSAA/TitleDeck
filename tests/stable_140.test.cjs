@@ -29,8 +29,12 @@ test('the published 1.4.0 gallery has 22 distinct images', () => {
   assert.equal(new Set(all).size,22);
   assert.match(read('docs/SCREENSHOTS.md'),/22 real/);
 });
-test('documentation preserves the requested closing line and known issue',()=>{
-  assert(read('README.md').includes("your titles you're deck!"));
-  assert(read('README.md').includes('issues/8'));
+test('documentation preserves the polished tagline, user feedback and known issue',()=>{
+  const readme = read('README.md');
+  assert(readme.includes('Your Titles. Your Deck!'));
+  assert(read('CONTRIBUTING.md').includes('Your Titles. Your Deck!'));
+  assert(read('docs/FEEDBACK.md').includes('Your Titles. Your Deck!'));
+  assert(readme.includes('docs/FEEDBACK.md'));
+  assert(readme.includes('issues/8'));
   assert(read('SOURCE.md').includes('1.4.0'));
 });

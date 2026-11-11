@@ -1,7 +1,9 @@
 # Start here: TitleDeck 1.4.0
 [← Home](../README.md) · [Install](INSTALL.md) · [Features](FEATURES.md) · [Pictures](SCREENSHOTS.md)
 
-TitleDeck changes **what you see in Gaming Mode**, not the names of installed game files. It supports Steam games and non-Steam shortcuts.
+New to Decky Loader or installing TitleDeck for the first time? Start with the [installation guide](INSTALL.md), then return here. TitleDeck changes **what you see in Gaming Mode**, not the names of installed game files. It supports Steam games and non-Steam shortcuts.
+
+**A good first test:** customize one game's displayed title, confirm it appears as expected, then try **Restore Original** so you can see the change is reversible.
 
 ## 1. Open TitleDeck
 Open the Steam Deck's **••• Quick Access menu**, choose Decky Loader and select **TitleDeck**. Choose **Open Full Library Manager** to browse the collection.
@@ -30,5 +32,7 @@ You can restore original display names and use the backup/recovery settings befo
 
 ## Want more?
 [22-image gallery](SCREENSHOTS.md) · [Full features](FEATURES.md) · [What's changed from 1.2.2](UPDATE_FROM_1.2.2.md) · [Help & support](../SUPPORT.md).
+
+**Like how your library turned out?** You don't have to wait until something breaks to talk to the developer. [Share a screenshot, a quick impression, or your favorite customization](FEEDBACK.md).
 
 A [historical 1.2.2 guide](HISTORICAL_BEGINNER_GUIDE_1.2.2.md) is kept for longtime users comparing the older interface.

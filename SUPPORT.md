@@ -19,7 +19,10 @@ An earlier Quick Access focus quirk is not claimed resolved by 1.4.0. Share the 
 ## Does TitleDeck support custom fonts?
 1.4.0 includes **10 built-in font-style treatments** based on available fonts. Importing arbitrary external ZIP/TTF font files is not included.
 
+## Everything working? We'd love to see it
+No bug report required. Tell us what you customized, share a screenshot of your Steam Home or library, or say which feature is most useful. [Share in GitHub Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions) · [Simple feedback ideas](docs/FEEDBACK.md). Please crop out account names or other private details before posting screenshots.
+
 ## Reporting something new
-Please include TitleDeck and Decky versions, SteamOS version, installed CSS themes (especially Art Hero), controller type, expected behavior, actual behavior, and relevant screenshots. [Issues](https://github.com/ValentineBSAA/TitleDeck/issues) · [Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
+For an actual bug, please include TitleDeck and Decky versions, SteamOS version, installed CSS themes (especially Art Hero), controller type, expected behavior, actual behavior, and relevant screenshots. [Open a bug report](https://github.com/ValentineBSAA/TitleDeck/issues/new/choose) · [Ask a question in Discussions](https://github.com/ValentineBSAA/TitleDeck/discussions).
 
 Thank you for trying TitleDeck and for helping improve it. Even a small, reproducible report can make an enormous difference.

@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Questions and community discussion
+  - name: Share your Deck, feedback, and questions
     url: https://github.com/ValentineBSAA/TitleDeck/discussions
-    about: Ask questions or share feedback
+    about: Show off your customization, tell us what works, or ask a question. No bug required!
   - name: Installation and troubleshooting
     url: https://github.com/ValentineBSAA/TitleDeck/blob/main/SUPPORT.md
     about: Check known limitations before filing an issue
