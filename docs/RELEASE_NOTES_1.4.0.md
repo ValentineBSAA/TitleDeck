@@ -37,4 +37,4 @@ Thanks to the Steam Deck community for the ideas, real-world testing, bug report
 
 TitleDeck is community-made, free, MIT licensed, and not affiliated with Valve.
 
-**your titles you're deck!**
+**Your Titles. Your Deck!**
