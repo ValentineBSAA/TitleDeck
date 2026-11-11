@@ -4,7 +4,7 @@
 ## New to Decky Loader?
 TitleDeck runs **inside Decky Loader**. It is not a standalone Steam game or desktop app. If the **Decky Loader** entry does not appear in your Steam Deck's **••• Quick Access menu**, set up Decky Loader first:
 
-1. On your Steam Deck, switch to **Desktop Mode** and follow the current [official Decky Loader installation instructions](https://github.com/SteamDeckHomebrew/decky-loader#installation). Use the official project rather than an unrelated download site.
+1. On your Steam Deck, switch to **Desktop Mode** and follow the current [official Decky Loader installation instructions](https://github.com/SteamDeckHomebrew/decky-loader). Use the official project rather than an unrelated download site.
 2. Return to **Gaming Mode**. Press **•••** to open Quick Access and confirm that Decky Loader is available.
 3. Once Decky Loader is working, follow the TitleDeck ZIP steps below.
 
@@ -30,7 +30,7 @@ The editing and restoration functionality is preserved, with improved manager an
 If CSS Loader's **Art Hero** is active, placement is managed there. TitleDeck's Above/Below controls become read-only; this is expected. Use **CSS Loader → Art Hero → Carousel Font Height** to adjust layout. Turn Art Hero off if you want TitleDeck to manage its own placement.
 
 ## If something doesn't look right
-- **No Decky Loader menu?** Return to the [official Decky installation steps](https://github.com/SteamDeckHomebrew/decky-loader#installation) and confirm it loads in Gaming Mode.
+- **No Decky Loader menu?** Return to the [official Decky installation steps](https://github.com/SteamDeckHomebrew/decky-loader) and confirm it loads in Gaming Mode.
 - **Can't find the ZIP?** Confirm that it is on the Steam Deck itself and hasn't been extracted. Make sure you selected the installer, not a screenshot or source archive.
 - **Installed but can't see TitleDeck?** Reopen the Decky plugin menu. If it still doesn't appear, check [troubleshooting](../SUPPORT.md) and include your SteamOS and Decky versions when reporting the problem.
 
